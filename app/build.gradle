@@ -11,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "net.sourceforge.opencamera"
+        applicationId "com.ssolstice.camera.manual"
         minSdkVersion 21
         targetSdkVersion 35
         //compileSdkVersion 31 // needed to support appcompat:1.4.0 (which we need for emoji policy support, and not yet ready to target SDK 30)
@@ -21,7 +21,7 @@ android {
         // need build tools at least 20 at least to support ScriptIntrinsicHistogram
         // also need build tools at least 21 to avoid Google Play 64-bit warning (required from 1 August 2019)
 
-        testApplicationId "net.sourceforge.opencamera.test"
+        testApplicationId "com.ssolstice.camera.manual.test"
         //testInstrumentationRunner "android.test.InstrumentationTestRunner"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,7 +42,7 @@ android {
         abortOnError false
         checkReleaseBuilds false
     }
-    namespace 'net.sourceforge.opencamera'
+    namespace 'com.ssolstice.camera.manual'
     buildFeatures {
         renderScript true
         compose true

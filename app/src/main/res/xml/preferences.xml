@@ -109,7 +109,7 @@
             android:title="@string/preference_screen_camera_controls_more"
             android:icon="@drawable/ic_more_horiz_white_48dp"
             android:persistent="false"
-            android:fragment="net.sourceforge.opencamera.PreferenceSubCameraControlsMore"
+            android:fragment="com.ssolstice.camera.manual.PreferenceSubCameraControlsMore"
             />
 
         <PreferenceScreen
@@ -117,7 +117,7 @@
             android:title="@string/preference_preview"
             android:icon="@drawable/ic_more_horiz_white_48dp"
             android:persistent="false"
-            android:fragment="net.sourceforge.opencamera.PreferenceSubPreview"
+            android:fragment="com.ssolstice.camera.manual.PreferenceSubPreview"
             />
 
         <PreferenceScreen
@@ -125,7 +125,7 @@
             android:title="@string/preference_screen_gui"
             android:icon="@drawable/ic_more_horiz_white_48dp"
             android:persistent="false"
-            android:fragment="net.sourceforge.opencamera.PreferenceSubGUI"
+            android:fragment="com.ssolstice.camera.manual.PreferenceSubGUI"
             />
 
     </PreferenceCategory>
@@ -139,7 +139,7 @@
             android:title="@string/preference_screen_photo_settings"
             android:icon="@drawable/take_photo_pref"
             android:persistent="false"
-            android:fragment="net.sourceforge.opencamera.PreferenceSubPhoto"
+            android:fragment="com.ssolstice.camera.manual.PreferenceSubPhoto"
             />
     
         <PreferenceScreen
@@ -147,7 +147,7 @@
             android:title="@string/preference_screen_video_settings"
             android:icon="@drawable/take_video_pref"
             android:persistent="false"
-            android:fragment="net.sourceforge.opencamera.PreferenceSubVideo"
+            android:fragment="com.ssolstice.camera.manual.PreferenceSubVideo"
             />
 
         <PreferenceScreen
@@ -155,7 +155,7 @@
             android:title="@string/preference_screen_location_settings"
             android:icon="@drawable/ic_gps_fixed_white_48dp"
             android:persistent="false"
-            android:fragment="net.sourceforge.opencamera.PreferenceSubLocation"
+            android:fragment="com.ssolstice.camera.manual.PreferenceSubLocation"
             />
 
         <PreferenceScreen
@@ -163,7 +163,7 @@
             android:title="@string/preference_screen_processing_settings"
             android:icon="@drawable/ic_more_horiz_white_48dp"
             android:persistent="false"
-            android:fragment="net.sourceforge.opencamera.PreferenceSubProcessing"
+            android:fragment="com.ssolstice.camera.manual.PreferenceSubProcessing"
             />
 
     </PreferenceCategory>
@@ -206,7 +206,7 @@
             android:title="@string/preference_screen_licences"
             android:icon="@drawable/ic_info_outline_white_48dp"
             android:persistent="false"
-            android:fragment="net.sourceforge.opencamera.PreferenceSubLicences"
+            android:fragment="com.ssolstice.camera.manual.PreferenceSubLicences"
             />
 
         <PreferenceScreen
@@ -214,7 +214,7 @@
             android:title="@string/preference_screen_settings_manager"
             android:icon="@drawable/settings"
             android:persistent="false"
-            android:fragment="net.sourceforge.opencamera.PreferenceSubSettingsManager"
+            android:fragment="com.ssolstice.camera.manual.PreferenceSubSettingsManager"
             />
 
         </PreferenceCategory>

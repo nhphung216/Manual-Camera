@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="en">
 <head>
-<title>Open Camera Device Compatibility
+<title>ManualCamera Device Compatibility
 </title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <!-- viewport recommended by Google for mobile design, also required for Google's mobile-friendly test at https://www.google.co.uk/webmasters/tools/mobile-friendly/ -->
@@ -39,20 +39,20 @@
 
 <body>
 
-<a href="index.html"><img align="left" src="ic_launcher.png" alt="Open Camera icon" title="Open Camera icon" width="72" height="72"></a>
+<a href="index.html"><img align="left" src="ic_launcher.png" alt="ManualCamera icon" title="ManualCamera icon" width="72" height="72"></a>
 <hr>
-<div style="text-align: center;"><h2>Open Camera Device Compatibility</h2></div>
+<div style="text-align: center;"><h2>ManualCamera Device Compatibility</h2></div>
 <hr>
 
 <p>&lt; <small><a href="index.html">Main Page.</a></small></p>
 
-<p>This page provides some guidance on possible issues of Open Camera on various Android&trade; devices. Please note the following:</p>
+<p>This page provides some guidance on possible issues of ManualCamera on various Android&trade; devices. Please note the following:</p>
 <ul>
         <li>Sometimes behaviour can be affected by things like operating system version or can differ between variants of the same
-                model. Behaviour may also change over time depending on different versions of Open Camera, and different
+                model. Behaviour may also change over time depending on different versions of ManualCamera, and different
                 versions of device operating system. So something listed here isn't a guarantee of that behaviour on a
                 particular model.</li>
-        <li>This information is provided "as is" with no warranties - if you need to be certain of how Open Camera works on a
+        <li>This information is provided "as is" with no warranties - if you need to be certain of how ManualCamera works on a
                 particular device, ultimately you'll have to test it yourself.</li>
 </ul>
 
@@ -80,7 +80,7 @@
         implementations seem to have problems). Thankfully things seem to be improving on that front with newer
         devices. Please read the details below on what I know about different devices.</p>
 
-<p>Also note that just because a manufacturer advertises a particular camera feature, it doesn't mean that Open Camera can use
+<p>Also note that just because a manufacturer advertises a particular camera feature, it doesn't mean that ManualCamera can use
         it. Unfortunately some manufacturers limit some features to the "stock" camera application, and don't make it available
         through to third party cameras. This tends to be more advanced features - 4K video, high photo resolutions, high frame
         rate video, RAW.</p>
@@ -89,15 +89,15 @@
 
 <h3>Google Nexuses/Pixels</h3>
 
-<p>In general, Google Nexuses and Pixels have worked well for Open Camera.</p>
+<p>In general, Google Nexuses and Pixels have worked well for ManualCamera.</p>
 
 <p>Camera2 API on the Nexus 6 works well (there are some minor issues, e.g., manual exposure doesn't work well when recording
         video). It's hard to be sure about other Nexuses though.</p>
 
-<p>Similarly Camera2 API works well on the Pixel 6 Pro. Open Camera also supports Google's HDR+ mode on the Pixels with Pixel Visual Core
-        (including the Pixel 6 Pro). As of Open Camera 1.50, Night Sight on the Pixel 6 Pro is available via the photo mode X-Night.
-        As of Open Camera 1.50, all of the Pixel 6 Pro's cameras are available to use by zooming in or out.
-        As of Open Camera 1.54, you can also select individual cameras directly (tested on the Pixel 6 Pro).</p>
+<p>Similarly Camera2 API works well on the Pixel 6 Pro. ManualCamera also supports Google's HDR+ mode on the Pixels with Pixel Visual Core
+        (including the Pixel 6 Pro). As of ManualCamera 1.50, Night Sight on the Pixel 6 Pro is available via the photo mode X-Night.
+        As of ManualCamera 1.50, all of the Pixel 6 Pro's cameras are available to use by zooming in or out.
+        As of ManualCamera 1.54, you can also select individual cameras directly (tested on the Pixel 6 Pro).</p>
 
 <p>Color effects don't work on the Nexus 7.</p>
 
@@ -111,12 +111,12 @@
 
 <h3>Nokia</h3>
 
-<p>I've tested Open Camera with the Nokia 8. Everything seems to work as far as I can tell, including Camera2 API with full
+<p>I've tested ManualCamera with the Nokia 8. Everything seems to work as far as I can tell, including Camera2 API with full
 manual controls, RAW and 120fps video.</p>
 
 <h3>OnePlus</h3>
 
-<p>I've tested Open Camera with the OnePlus Pad. Everything seems to work as far as I can tell, including Camera2 API with full
+<p>I've tested ManualCamera with the OnePlus Pad. Everything seems to work as far as I can tell, including Camera2 API with full
         manual controls, and RAW.</p>
 
 <p>The OnePlus 3T had problems related to Camera2 API and manual exposure:</p>
@@ -146,7 +146,7 @@ manual controls, RAW and 120fps video.</p>
 
 <h3>Samsung</h3>
 
-<p>I have tested Open Camera on a Samsung Galaxy S24+ (Exynos SM-S926B) and Galaxy S10e (Exynos SM-G970F). Mostly things work, including with Camera2
+<p>I have tested ManualCamera on a Samsung Galaxy S24+ (Exynos SM-S926B) and Galaxy S10e (Exynos SM-G970F). Mostly things work, including with Camera2
         API. Known issues are:</p>
 <ul>
         <li>Night mode is available via X-Night, but unreliable on the Galaxy S24+ (it takes a zoomed in image; explicitly zooming in can cause the
@@ -163,9 +163,9 @@ manual controls, RAW and 120fps video.</p>
 </ul>
 
 <p>All the Galaxy S10e and Galaxy S24+ rear cameras are available, you can switch by zooming in or out.
-        As of Open Camera 1.54, you can also select individual cameras directly.
+        As of ManualCamera 1.54, you can also select individual cameras directly.
         Also the two modes for the front camera
-        ("cropped" and "wide") are available to Open Camera.</p>
+        ("cropped" and "wide") are available to ManualCamera.</p>
 
 <p>At least some Samsung Galaxy devices support the camera extension modes (X-Night, X-Bokeh, X-Bty) (including the Galaxy S10e and Galaxy S24+;
 in general this is likely available for the flagship S devices running Android 12+).</p>
@@ -185,7 +185,7 @@ in general this is likely available for the flagship S devices running Android 1
         used).</p>
 
 <!--<p>I've had reports of picture quality being poor on Camera2 API the Galaxy S7 and S7 Edge, though improvements were made in
-        v1.42.1 onwards of Open Camera. See
+        v1.42.1 onwards of ManualCamera. See
         <a href="https://sourceforge.net/p/opencamera/discussion/general/thread/48bd836b/">here</a> for details.</p>
 -->
 
@@ -193,9 +193,9 @@ in general this is likely available for the flagship S devices running Android 1
         Filmic have documented issues for the
         <a href="https://filmicpro.helpscoutdocs.com/article/41-samsung-s9-and-s9-filmic-pro-v6-compatibility-guide">S9 and S9+</a>, and
         <a href="https://filmicpro.helpscoutdocs.com/article/42-samsung-note-9-filmic-pro-v6-compatibility-guide">Note 9</a> (these articles
-        are for Filmic Pro, but the issues faced likely affect all third party camera applications, including Open Camera).</p>
+        are for Filmic Pro, but the issues faced likely affect all third party camera applications, including ManualCamera).</p>
 
-<p>On a related note, the Galaxy Note 4 and 5 were used with Open Camera to film
+<p>On a related note, the Galaxy Note 4 and 5 were used with ManualCamera to film
         <a href="https://sourceforge.net/p/opencamera/blog/2015/10/cai-lan-gong---worlds-first-feature-film-shot-with-a-smartphone-at-4k-resolution/">the
                 world's first 4K feature film shot on a phone</a>.</p>
 
@@ -213,9 +213,9 @@ in general this is likely available for the flagship S devices running Android 1
 <p>I've had a report that manual white balance temperature doesn't work (Sony Xperia X Compact).</p>
 
 <hr>
-<p><a href="privacy_oc.html">Open Camera Privacy Policy.</a></p>
+<p><a href="privacy_oc.html">ManualCamera Privacy Policy.</a></p>
 <p>This website uses icons from third party sources, see <a href="index.html#licence">licences.</a></p>
-<p><a href="https://sourceforge.net/projects/opencamera/">Open Camera on Sourceforge.</a></p>
+<p><a href="https://sourceforge.net/projects/opencamera/">ManualCamera on Sourceforge.</a></p>
 <hr>
 
 </body>
