@@ -46,6 +46,7 @@ android {
     buildFeatures {
         renderScript true
         compose true
+        viewBinding true
     }
     kotlinOptions {
         jvmTarget = '11'

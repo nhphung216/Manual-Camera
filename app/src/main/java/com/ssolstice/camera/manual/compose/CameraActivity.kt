@@ -1,6 +1,7 @@
 package com.ssolstice.camera.manual.compose
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,19 +12,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.ssolstice.camera.manual.MainActivity
+import com.ssolstice.camera.manual.R
 import com.ssolstice.camera.manual.compose.ui.theme.OpencameraTheme
 
 class CameraActivity : ComponentActivity() {
+
+    lateinit var mainActivityView: View
+    lateinit var mainActivity: MainActivity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Khởi tạo MainActivity dưới dạng View
+        mainActivity = MainActivity()
+        mainActivityView = layoutInflater.inflate(R.layout.activity_main, null)
+
         setContent {
             OpencameraTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    Greeting(name = "Android", modifier = Modifier.padding(innerPadding))
                 }
             }
         }
