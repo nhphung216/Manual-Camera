@@ -151,7 +151,7 @@ public class BluetoothRemoteControl {
                             mainUI.toggleExposureUI();
                         }
                         else {
-                            main_activity.clickedSwitchVideo(null);
+                            main_activity.clickedSwitchVideo();
                         }
                         break;
                     case BluetoothLeService.COMMAND_MENU:

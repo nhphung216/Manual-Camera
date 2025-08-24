@@ -21,7 +21,6 @@
             android:layout_height="100dp"
             android:background="@null"
             android:contentDescription="@string/take_photo"
-            android:onClick="clickedTakePhoto"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:stateListAnimator="@animator/button_animation"
@@ -35,7 +34,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/switch_to_front_camera"
-            android:onClick="clickedSwitchCamera"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:stateListAnimator="@animator/button_animation"
@@ -49,7 +47,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/switch_multi_camera"
-            android:onClick="clickedSwitchMultiCamera"
             android:paddingLeft="15dp"
             android:paddingTop="12dp"
             android:paddingRight="15dp"
@@ -65,7 +62,6 @@
             android:layout_height="70dp"
             android:background="@null"
             android:contentDescription="@string/pause_video"
-            android:onClick="clickedPauseVideo"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -77,7 +73,6 @@
             android:layout_height="70dp"
             android:background="@null"
             android:contentDescription="@string/cancel_panorama"
-            android:onClick="clickedCancelPanorama"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:stateListAnimator="@animator/button_animation"
@@ -92,7 +87,6 @@
             android:alpha="0.61"
             android:background="@null"
             android:contentDescription="@string/switch_to_video"
-            android:onClick="clickedSwitchVideo"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:stateListAnimator="@animator/button_animation"
@@ -105,7 +99,6 @@
             android:layout_height="70dp"
             android:background="@null"
             android:contentDescription="@string/take_photo"
-            android:onClick="clickedTakePhotoVideoSnapshot"
             android:padding="14dp"
             android:scaleType="fitCenter"
             android:stateListAnimator="@animator/button_animation"
@@ -175,7 +168,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/gallery"
-            android:onClick="clickedGallery"
             android:padding="0dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/baseline_photo_library_white_48" />
@@ -188,7 +180,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/action_settings"
-            android:onClick="clickedSettings"
             android:padding="10dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/settings" />
@@ -201,7 +192,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/action_popup"
-            android:onClick="clickedPopupSettings"
             android:padding="10dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/popup" />
@@ -214,7 +204,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/exposure"
-            android:onClick="clickedExposure"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -228,7 +217,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/exposure_lock"
-            android:onClick="clickedExposureLock"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -243,7 +231,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/white_balance_lock"
-            android:onClick="clickedWhiteBalanceLock"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -257,7 +244,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/cycle_raw"
-            android:onClick="clickedCycleRaw"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -271,7 +257,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/preference_location_enable"
-            android:onClick="clickedStoreLocation"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -285,7 +270,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/preference_textstamp_summary"
-            android:onClick="clickedTextStamp"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -299,7 +283,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/stamp_enable"
-            android:onClick="clickedStamp"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -313,7 +296,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/focus_peaking_enable"
-            android:onClick="clickedFocusPeaking"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -327,7 +309,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/auto_level_enable"
-            android:onClick="clickedAutoLevel"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -341,7 +322,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/cycle_flash"
-            android:onClick="clickedCycleFlash"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -355,7 +335,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/face_detection_enable"
-            android:onClick="clickedFaceDetection"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -369,7 +348,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/audio_control_start"
-            android:onClick="clickedAudioControl"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -397,7 +375,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/trash"
-            android:onClick="clickedTrash"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -411,7 +388,6 @@
             android:backgroundTint="@color/icons_background_tint"
             android:backgroundTintMode="src_in"
             android:contentDescription="@string/share"
-            android:onClick="clickedShare"
             android:padding="10dp"
             android:scaleType="fitCenter"
             android:visibility="gone"
@@ -438,7 +414,7 @@
                     android:id="@+id/iso_buttons"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"></RelativeLayout>
+                    android:layout_gravity="center" />
 
             </RelativeLayout>
 
@@ -463,7 +439,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/exposure_seekbar_text"
                     android:layout_alignBottom="@+id/exposure_seekbar_text"
-                    android:layout_toRightOf="@+id/exposure_seekbar_text"
+                    android:layout_toEndOf="@+id/exposure_seekbar_text"
                     android:alpha="0.9"
                     android:contentDescription="@string/exposure_compensation_seekbar" />
 
@@ -472,8 +448,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/exposure_seekbar"
-                    android:layout_alignLeft="@+id/exposure_seekbar"
-                    android:layout_alignRight="@+id/exposure_seekbar"
+                    android:layout_alignStart="@+id/exposure_seekbar"
+                    android:layout_alignEnd="@+id/exposure_seekbar"
                     android:contentDescription="@string/exposure_compensation_zoom"
                     android:gravity="center" />
             </RelativeLayout>
@@ -499,7 +475,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/iso_seekbar_text"
                     android:layout_alignBottom="@+id/iso_seekbar_text"
-                    android:layout_toRightOf="@+id/iso_seekbar_text"
+                    android:layout_toEndOf="@+id/iso_seekbar_text"
                     android:alpha="0.9"
                     android:contentDescription="@string/iso" />
 
@@ -518,7 +494,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/exposure_time_seekbar_text"
                     android:layout_alignBottom="@+id/exposure_time_seekbar_text"
-                    android:layout_toRightOf="@+id/exposure_time_seekbar_text"
+                    android:layout_toEndOf="@+id/exposure_time_seekbar_text"
                     android:alpha="0.9"
                     android:contentDescription="@string/exposure_shutter_speed" />
 
@@ -545,7 +521,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/white_balance_seekbar_text"
                     android:layout_alignBottom="@+id/white_balance_seekbar_text"
-                    android:layout_toRightOf="@+id/white_balance_seekbar_text"
+                    android:layout_toEndOf="@+id/white_balance_seekbar_text"
                     android:alpha="0.9"
                     android:contentDescription="@string/white_balance" />
 
@@ -554,10 +530,10 @@
         </LinearLayout>
 
         <FrameLayout
-            android:visibility="gone"
             android:id="@+id/locker"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
         <ScrollView
             android:id="@+id/popup_container"
