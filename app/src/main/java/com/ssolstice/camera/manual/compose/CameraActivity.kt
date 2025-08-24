@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ssolstice.camera.manual.MainActivity
 import com.ssolstice.camera.manual.R
-import com.ssolstice.camera.manual.compose.ui.theme.OpencameraTheme
+import com.ssolstice.camera.manual.compose.ui.theme.OpenCameraTheme
 
 class CameraActivity : ComponentActivity() {
 
@@ -30,7 +30,7 @@ class CameraActivity : ComponentActivity() {
         mainActivityView = layoutInflater.inflate(R.layout.activity_main, null)
 
         setContent {
-            OpencameraTheme {
+            OpenCameraTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(name = "Android", modifier = Modifier.padding(innerPadding))
                 }
@@ -50,7 +50,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    OpencameraTheme {
+    OpenCameraTheme {
         Greeting("Android")
     }
 }

@@ -191,7 +191,7 @@ public class FolderChooserDialog extends DialogFragment {
             if( show_dcim_shortcut ) {
                 if( MyDebug.LOG )
                     Log.d(TAG, "fall back to DCIM");
-                // note that we reset to DCIM rather than DCIM/OpenCamera, just to increase likelihood of getting back to a valid state
+                // note that we reset to DCIM rather than DCIM/ManualCamera, just to increase likelihood of getting back to a valid state
                 refreshList(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM));
                 if( current_folder == null ) {
                     if( MyDebug.LOG )

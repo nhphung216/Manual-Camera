@@ -695,7 +695,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
 
                         about_string.append("\nUsing SAF?: ");
                         about_string.append(sharedPreferences.getBoolean(PreferenceKeys.UsingSAFPreferenceKey, false));
-                        String save_location = sharedPreferences.getString(PreferenceKeys.SaveLocationPreferenceKey, "OpenCamera");
+                        String save_location = sharedPreferences.getString(PreferenceKeys.SaveLocationPreferenceKey, "ManualCamera");
                         about_string.append("\nSave Location: ");
                         about_string.append(save_location);
                         String save_location_saf = sharedPreferences.getString(PreferenceKeys.SaveLocationSAFPreferenceKey, "");
@@ -731,7 +731,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
                                 if( MyDebug.LOG )
                                     Log.d(TAG, "user clicked copy to clipboard");
                                 ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Activity.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("OpenCamera About", about_string);
+                                ClipData clip = ClipData.newPlainText("ManualCamera About", about_string);
                                 clipboard.setPrimaryClip(clip);
                             }
                         });

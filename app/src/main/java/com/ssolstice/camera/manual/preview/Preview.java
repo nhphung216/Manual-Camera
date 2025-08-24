@@ -428,7 +428,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     // for testing; must be volatile for test project reading the state
-    private boolean is_test; // whether called from OpenCamera.test testing
+    private boolean is_test; // whether called from ManualCamera.test testing
     private boolean is_test_junit4;
     public volatile int count_cameraStartPreview;
     public volatile int count_cameraAutoFocus;
