@@ -435,26 +435,26 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             var previousView = view
 
             val buttonsPermanent: MutableList<View> = ArrayList<View>()
-            if (this.uIPlacement == UIPlacement.UIPLACEMENT_TOP) {
-                // not part of the icon panel in TOP mode
-                view = mainActivity.findViewById<View>(R.id.gallery)
-                layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-                layoutParams.addRule(align_parent_left, 0)
-                layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-                layoutParams.addRule(align_parent_top, RelativeLayout.TRUE)
-                layoutParams.addRule(align_parent_bottom, 0)
-                layoutParams.addRule(above, 0)
-                layoutParams.addRule(below, 0)
-                layoutParams.addRule(left_of, 0)
-                layoutParams.addRule(right_of, 0)
-                setMarginsForSystemUI(layoutParams, 0, gallery_top_gap, gallery_navigation_gap, 0)
-                view.layoutParams = layoutParams
-                setViewRotation(view, ui_rotation.toFloat())
-            } else {
-                buttonsPermanent.add(mainActivity.findViewById(R.id.gallery))
-            }
+//            if (this.uIPlacement == UIPlacement.UIPLACEMENT_TOP) {
+//                // not part of the icon panel in TOP mode
+//                view = mainActivity.findViewById<View>(R.id.gallery)
+//                layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+//                layoutParams.addRule(align_parent_left, 0)
+//                layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
+//                layoutParams.addRule(align_parent_top, RelativeLayout.TRUE)
+//                layoutParams.addRule(align_parent_bottom, 0)
+//                layoutParams.addRule(above, 0)
+//                layoutParams.addRule(below, 0)
+//                layoutParams.addRule(left_of, 0)
+//                layoutParams.addRule(right_of, 0)
+//                setMarginsForSystemUI(layoutParams, 0, gallery_top_gap, gallery_navigation_gap, 0)
+//                view.layoutParams = layoutParams
+//                setViewRotation(view, ui_rotation.toFloat())
+//            } else {
+//                buttonsPermanent.add(mainActivity.findViewById(R.id.gallery))
+//            }
             buttonsPermanent.add(mainActivity.findViewById(R.id.settings))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.popup))
+//            buttonsPermanent.add(mainActivity.findViewById(R.id.popup))
             buttonsPermanent.add(mainActivity.findViewById(R.id.exposure))
             buttonsPermanent.add(mainActivity.findViewById(R.id.exposure_lock))
             buttonsPermanent.add(mainActivity.findViewById(R.id.white_balance_lock))
@@ -571,132 +571,132 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 // except for gallery, which still needs its margins set for navigation gap! (and we
                 // shouldn't change it's size, which isn't necessarily button_size)
                 // other icons still needs margins set for navigation_gap_landscape and navigation_gap_reverse_landscape
-                view = mainActivity.findViewById<View>(R.id.gallery)
-                layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-                setMarginsForSystemUI(
-                    layoutParams,
-                    0,
-                    max(gallery_top_gap, navigation_gap_reverse_landscape),
-                    gallery_navigation_gap,
-                    navigation_gap_landscape
-                )
-                view.layoutParams = layoutParams
-                for (v in buttonsPermanent) {
-                    if (v !== view) {
-                        layoutParams = v.layoutParams as RelativeLayout.LayoutParams
-                        setMarginsForSystemUI(
-                            layoutParams,
-                            0,
-                            navigation_gap_reverse_landscape,
-                            0,
-                            navigation_gap_landscape
-                        )
-                        layoutParams.width = buttonSize
-                        layoutParams.height = buttonSize
-                        v.layoutParams = layoutParams
-                    }
-                }
+//                view = mainActivity.findViewById<View>(R.id.gallery)
+//                layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+//                setMarginsForSystemUI(
+//                    layoutParams,
+//                    0,
+//                    max(gallery_top_gap, navigation_gap_reverse_landscape),
+//                    gallery_navigation_gap,
+//                    navigation_gap_landscape
+//                )
+//                view.layoutParams = layoutParams
+//                for (v in buttonsPermanent) {
+//                    if (v !== view) {
+//                        layoutParams = v.layoutParams as RelativeLayout.LayoutParams
+//                        setMarginsForSystemUI(
+//                            layoutParams,
+//                            0,
+//                            navigation_gap_reverse_landscape,
+//                            0,
+//                            navigation_gap_landscape
+//                        )
+//                        layoutParams.width = buttonSize
+//                        layoutParams.height = buttonSize
+//                        v.layoutParams = layoutParams
+//                    }
+//                }
             }
 
             // end icon panel
-            view = mainActivity.findViewById<View>(R.id.take_photo)
-            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(align_parent_left, 0)
-            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-            layoutParams.addRule(align_parent_top, 0)
-            layoutParams.addRule(align_parent_bottom, 0)
-            layoutParams.addRule(center_vertical, RelativeLayout.TRUE)
-            layoutParams.addRule(center_horizontal, 0)
-            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-            view.layoutParams = layoutParams
-            setViewRotation(view, ui_rotation.toFloat())
-
-            view = mainActivity.findViewById<View>(R.id.switch_camera)
-            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(align_parent_left, 0)
-            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-            layoutParams.addRule(align_parent_top, 0)
-            layoutParams.addRule(align_parent_bottom, 0)
-            layoutParams.addRule(ui_independent_above, R.id.take_photo)
-            layoutParams.addRule(ui_independent_below, 0)
-            layoutParams.addRule(ui_independent_left_of, 0)
-            layoutParams.addRule(ui_independent_right_of, 0)
-            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-            view.layoutParams = layoutParams
-            setViewRotation(view, ui_rotation.toFloat())
-
-            view = mainActivity.findViewById<View>(R.id.switch_multi_camera)
-            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(ui_independent_above, 0)
-            layoutParams.addRule(ui_independent_below, 0)
-            layoutParams.addRule(ui_independent_left_of, R.id.switch_camera)
-            layoutParams.addRule(ui_independent_right_of, 0)
-            layoutParams.addRule(align_top, R.id.switch_camera)
-            layoutParams.addRule(align_bottom, R.id.switch_camera)
-            layoutParams.addRule(align_left, 0)
-            layoutParams.addRule(align_right, 0)
-            run {
-                val margin = (5 * scale + 0.5f).toInt() // convert dps to pixels
-                setMarginsForSystemUI(layoutParams, 0, 0, margin, 0)
-            }
-            view.layoutParams = layoutParams
-            setViewRotation(view, ui_rotation.toFloat())
-
-            view = mainActivity.findViewById<View>(R.id.pause_video)
-            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(align_parent_left, 0)
-            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-            layoutParams.addRule(align_parent_top, 0)
-            layoutParams.addRule(align_parent_bottom, 0)
-            layoutParams.addRule(ui_independent_above, R.id.take_photo)
-            layoutParams.addRule(ui_independent_below, 0)
-            layoutParams.addRule(ui_independent_left_of, 0)
-            layoutParams.addRule(ui_independent_right_of, 0)
-            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-            view.layoutParams = layoutParams
-            setViewRotation(view, ui_rotation.toFloat())
-
-            view = mainActivity.findViewById<View>(R.id.cancel_panorama)
-            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(align_parent_left, 0)
-            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-            layoutParams.addRule(align_parent_top, 0)
-            layoutParams.addRule(align_parent_bottom, 0)
-            layoutParams.addRule(above, R.id.take_photo)
-            layoutParams.addRule(below, 0)
-            layoutParams.addRule(left_of, 0)
-            layoutParams.addRule(right_of, 0)
-            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-            view.layoutParams = layoutParams
-            setViewRotation(view, ui_rotation.toFloat())
-
-            view = mainActivity.findViewById<View>(R.id.switch_video)
-            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(align_parent_left, 0)
-            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-            layoutParams.addRule(align_parent_top, 0)
-            layoutParams.addRule(align_parent_bottom, 0)
-            layoutParams.addRule(ui_independent_above, 0)
-            layoutParams.addRule(ui_independent_below, R.id.take_photo)
-            layoutParams.addRule(ui_independent_left_of, 0)
-            layoutParams.addRule(ui_independent_right_of, 0)
-            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-            view.layoutParams = layoutParams
-            setViewRotation(view, ui_rotation.toFloat())
-
-            view = mainActivity.findViewById<View>(R.id.take_photo_when_video_recording)
-            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(align_parent_left, 0)
-            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-            layoutParams.addRule(align_parent_top, 0)
-            layoutParams.addRule(align_parent_bottom, 0)
-            layoutParams.addRule(ui_independent_above, 0)
-            layoutParams.addRule(ui_independent_below, R.id.take_photo)
-            layoutParams.addRule(ui_independent_left_of, 0)
-            layoutParams.addRule(ui_independent_right_of, 0)
-            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-            view.layoutParams = layoutParams
-            setViewRotation(view, ui_rotation.toFloat())
+//            view = mainActivity.findViewById<View>(R.id.take_photo)
+//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+//            layoutParams.addRule(align_parent_left, 0)
+//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
+//            layoutParams.addRule(align_parent_top, 0)
+//            layoutParams.addRule(align_parent_bottom, 0)
+//            layoutParams.addRule(center_vertical, RelativeLayout.TRUE)
+//            layoutParams.addRule(center_horizontal, 0)
+//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
+//            view.layoutParams = layoutParams
+//            setViewRotation(view, ui_rotation.toFloat())
+//
+//            view = mainActivity.findViewById<View>(R.id.switch_camera)
+//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+//            layoutParams.addRule(align_parent_left, 0)
+//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
+//            layoutParams.addRule(align_parent_top, 0)
+//            layoutParams.addRule(align_parent_bottom, 0)
+//            layoutParams.addRule(ui_independent_above, R.id.take_photo)
+//            layoutParams.addRule(ui_independent_below, 0)
+//            layoutParams.addRule(ui_independent_left_of, 0)
+//            layoutParams.addRule(ui_independent_right_of, 0)
+//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
+//            view.layoutParams = layoutParams
+//            setViewRotation(view, ui_rotation.toFloat())
+//
+//            view = mainActivity.findViewById<View>(R.id.switch_multi_camera)
+//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+//            layoutParams.addRule(ui_independent_above, 0)
+//            layoutParams.addRule(ui_independent_below, 0)
+//            layoutParams.addRule(ui_independent_left_of, R.id.switch_camera)
+//            layoutParams.addRule(ui_independent_right_of, 0)
+//            layoutParams.addRule(align_top, R.id.switch_camera)
+//            layoutParams.addRule(align_bottom, R.id.switch_camera)
+//            layoutParams.addRule(align_left, 0)
+//            layoutParams.addRule(align_right, 0)
+//            run {
+//                val margin = (5 * scale + 0.5f).toInt() // convert dps to pixels
+//                setMarginsForSystemUI(layoutParams, 0, 0, margin, 0)
+//            }
+//            view.layoutParams = layoutParams
+//            setViewRotation(view, ui_rotation.toFloat())
+//
+//            view = mainActivity.findViewById<View>(R.id.pause_video)
+//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+//            layoutParams.addRule(align_parent_left, 0)
+//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
+//            layoutParams.addRule(align_parent_top, 0)
+//            layoutParams.addRule(align_parent_bottom, 0)
+//            layoutParams.addRule(ui_independent_above, R.id.take_photo)
+//            layoutParams.addRule(ui_independent_below, 0)
+//            layoutParams.addRule(ui_independent_left_of, 0)
+//            layoutParams.addRule(ui_independent_right_of, 0)
+//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
+//            view.layoutParams = layoutParams
+//            setViewRotation(view, ui_rotation.toFloat())
+//
+//            view = mainActivity.findViewById<View>(R.id.cancel_panorama)
+//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+//            layoutParams.addRule(align_parent_left, 0)
+//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
+//            layoutParams.addRule(align_parent_top, 0)
+//            layoutParams.addRule(align_parent_bottom, 0)
+//            layoutParams.addRule(above, R.id.take_photo)
+//            layoutParams.addRule(below, 0)
+//            layoutParams.addRule(left_of, 0)
+//            layoutParams.addRule(right_of, 0)
+//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
+//            view.layoutParams = layoutParams
+//            setViewRotation(view, ui_rotation.toFloat())
+//
+//            view = mainActivity.findViewById<View>(R.id.switch_video)
+//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+//            layoutParams.addRule(align_parent_left, 0)
+//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
+//            layoutParams.addRule(align_parent_top, 0)
+//            layoutParams.addRule(align_parent_bottom, 0)
+//            layoutParams.addRule(ui_independent_above, 0)
+//            layoutParams.addRule(ui_independent_below, R.id.take_photo)
+//            layoutParams.addRule(ui_independent_left_of, 0)
+//            layoutParams.addRule(ui_independent_right_of, 0)
+//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
+//            view.layoutParams = layoutParams
+//            setViewRotation(view, ui_rotation.toFloat())
+//
+//            view = mainActivity.findViewById<View>(R.id.take_photo_when_video_recording)
+//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+//            layoutParams.addRule(align_parent_left, 0)
+//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
+//            layoutParams.addRule(align_parent_top, 0)
+//            layoutParams.addRule(align_parent_bottom, 0)
+//            layoutParams.addRule(ui_independent_above, 0)
+//            layoutParams.addRule(ui_independent_below, R.id.take_photo)
+//            layoutParams.addRule(ui_independent_left_of, 0)
+//            layoutParams.addRule(ui_independent_right_of, 0)
+//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
+//            view.layoutParams = layoutParams
+//            setViewRotation(view, ui_rotation.toFloat())
 
             view = mainActivity.findViewById<View>(R.id.zoom)
             layoutParams = view.layoutParams as RelativeLayout.LayoutParams
@@ -819,68 +819,14 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 view.setTranslationY((-1 * height_pixels).toFloat())
             }
 
-            /*
-            // align sliders_container
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams)view.getLayoutParams();
-            if( system_orientation_portrait || ui_rotation == 90 || ui_rotation == 270 ) {
-                // portrait
-                if( system_orientation_portrait )
-                    view.setTranslationY(2*height_pixels);
-                else
-                    view.setTranslationX(2*height_pixels);
-                lp.addRule(left_of, 0);
-                lp.addRule(right_of, 0);
-                lp.addRule(above, 0);
-                lp.addRule(below, 0);
-                lp.addRule(align_parent_top, 0);
-                lp.addRule(align_parent_bottom, 0);
-            }
-            else if( ui_rotation == (ui_placement == UIPlacement.UIPLACEMENT_LEFT ? 180 : 0) ) {
-                // landscape (or upside-down landscape if ui-left)
-                view.setTranslationY(0);
-                lp.addRule(left_of, R.id.zoom_seekbar);
-                lp.addRule(right_of, 0);
-
-                if( main_activity.showManualFocusSeekbar(true) ) {
-                    lp.addRule(above, R.id.focus_bracketing_target_seekbar);
-                    lp.addRule(below, 0);
-                    lp.addRule(align_parent_top, 0);
-                    lp.addRule(align_parent_bottom, 0);
-                }
-                else if( main_activity.showManualFocusSeekbar(false) ) {
-                    lp.addRule(above, R.id.focus_seekbar);
-                    lp.addRule(below, 0);
-                    lp.addRule(align_parent_top, 0);
-                    lp.addRule(align_parent_bottom, 0);
-                }
-                else {
-                    lp.addRule(above, 0);
-                    lp.addRule(below, 0);
-                    lp.addRule(align_parent_top, 0);
-                    lp.addRule(align_parent_bottom, RelativeLayout.TRUE);
-                }
-            }
-            else {
-                // upside-down landscape (or landscape if ui-left)
-                if( ui_rotation == 0 )
-                    view.setTranslationY(height_pixels);
-                else
-                    view.setTranslationY(-1*height_pixels);
-                lp.addRule(left_of, 0);
-                lp.addRule(right_of, 0);
-                lp.addRule(above, 0);
-                lp.addRule(below, 0);
-                lp.addRule(align_parent_bottom, 0);
-            }
-            view.setLayoutParams(lp);*/
             view = mainActivity.findViewById<View>(R.id.exposure_seekbar)
             var lp = view.getLayoutParams() as RelativeLayout.LayoutParams
             lp.width = width_pixels
             lp.height = height_pixels
-            view.setLayoutParams(lp)
+            view.layoutParams = lp
 
             view = mainActivity.findViewById<View>(R.id.exposure_seekbar_zoom)
-            view.setAlpha(0.5f)
+            view.alpha = 0.5f
 
             view = mainActivity.findViewById<View>(R.id.iso_seekbar)
             lp = view.getLayoutParams() as RelativeLayout.LayoutParams
@@ -901,74 +847,73 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             view.setLayoutParams(lp)
         }
 
-        if (popupIsOpen()) {
-            val view = mainActivity.findViewById<View>(R.id.popup_container)
-            val layoutParams = view.getLayoutParams() as RelativeLayout.LayoutParams
-            if (this.uIPlacement == UIPlacement.UIPLACEMENT_TOP) {
-                layoutParams.addRule(align_right, 0)
-                layoutParams.addRule(align_bottom, 0)
-                layoutParams.addRule(align_left, 0)
-                layoutParams.addRule(align_top, 0)
-                layoutParams.addRule(above, 0)
-                layoutParams.addRule(below, 0)
-                layoutParams.addRule(left_of, 0)
-                layoutParams.addRule(right_of, R.id.popup)
-                layoutParams.addRule(
-                    align_parent_top,
-                    if (system_orientation_portrait) 0 else RelativeLayout.TRUE
-                )
-                layoutParams.addRule(
-                    align_parent_bottom,
-                    if (system_orientation_portrait) 0 else RelativeLayout.TRUE
-                )
-                layoutParams.addRule(align_parent_left, 0)
-                layoutParams.addRule(align_parent_right, 0)
-            } else {
-                layoutParams.addRule(align_right, R.id.popup)
-                layoutParams.addRule(align_bottom, 0)
-                layoutParams.addRule(align_left, 0)
-                layoutParams.addRule(align_top, 0)
-                layoutParams.addRule(above, 0)
-                layoutParams.addRule(below, R.id.popup)
-                layoutParams.addRule(left_of, 0)
-                layoutParams.addRule(right_of, 0)
-                layoutParams.addRule(align_parent_top, 0)
-                layoutParams.addRule(
-                    align_parent_bottom,
-                    if (system_orientation_portrait) 0 else RelativeLayout.TRUE
-                )
-                layoutParams.addRule(align_parent_left, 0)
-                layoutParams.addRule(align_parent_right, 0)
-            }
-            if (system_orientation_portrait) {
-                // limit height so doesn't take up full height of screen
-                layoutParams.height = display_height
-            }
-            view.setLayoutParams(layoutParams)
-
-            //setPopupViewRotation(ui_rotation, display_height);
-            view.getViewTreeObserver().addOnGlobalLayoutListener(
-                object : OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        if (MyDebug.LOG) Log.d(TAG, "onGlobalLayout()")
-                        // We need to call setPopupViewRotation after the above layout param changes
-                        // have taken effect, otherwise we can have problems due to popup_height being incorrect.
-                        // Example bugs:
-                        // Left-handed UI, portrait: Restart and open popup, it doesn't appear until device is rotated.
-                        // Top UI, reverse-portrait: Restart and open popup, it appears in wrong location.
-                        // Top UI, reverse-landscape: Restart and open popup, it appears in wrong location.
-                        setPopupViewRotation(ui_rotation, display_height)
-
-                        // stop listening - only want to call this once!
-                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-                    }
-                }
-            )
-        }
+//        if (popupIsOpen()) {
+//            val view = mainActivity.findViewById<View>(R.id.popup_container)
+//            val layoutParams = view.getLayoutParams() as RelativeLayout.LayoutParams
+//            if (this.uIPlacement == UIPlacement.UIPLACEMENT_TOP) {
+//                layoutParams.addRule(align_right, 0)
+//                layoutParams.addRule(align_bottom, 0)
+//                layoutParams.addRule(align_left, 0)
+//                layoutParams.addRule(align_top, 0)
+//                layoutParams.addRule(above, 0)
+//                layoutParams.addRule(below, 0)
+//                layoutParams.addRule(left_of, 0)
+//                layoutParams.addRule(right_of, R.id.popup)
+//                layoutParams.addRule(
+//                    align_parent_top,
+//                    if (system_orientation_portrait) 0 else RelativeLayout.TRUE
+//                )
+//                layoutParams.addRule(
+//                    align_parent_bottom,
+//                    if (system_orientation_portrait) 0 else RelativeLayout.TRUE
+//                )
+//                layoutParams.addRule(align_parent_left, 0)
+//                layoutParams.addRule(align_parent_right, 0)
+//            } else {
+//                layoutParams.addRule(align_right, R.id.popup)
+//                layoutParams.addRule(align_bottom, 0)
+//                layoutParams.addRule(align_left, 0)
+//                layoutParams.addRule(align_top, 0)
+//                layoutParams.addRule(above, 0)
+//                layoutParams.addRule(below, R.id.popup)
+//                layoutParams.addRule(left_of, 0)
+//                layoutParams.addRule(right_of, 0)
+//                layoutParams.addRule(align_parent_top, 0)
+//                layoutParams.addRule(
+//                    align_parent_bottom,
+//                    if (system_orientation_portrait) 0 else RelativeLayout.TRUE
+//                )
+//                layoutParams.addRule(align_parent_left, 0)
+//                layoutParams.addRule(align_parent_right, 0)
+//            }
+//            if (system_orientation_portrait) {
+//                // limit height so doesn't take up full height of screen
+//                layoutParams.height = display_height
+//            }
+//            view.setLayoutParams(layoutParams)
+//
+//            //setPopupViewRotation(ui_rotation, display_height);
+//            view.getViewTreeObserver().addOnGlobalLayoutListener(
+//                object : OnGlobalLayoutListener {
+//                    override fun onGlobalLayout() {
+//                        if (MyDebug.LOG) Log.d(TAG, "onGlobalLayout()")
+//                        // We need to call setPopupViewRotation after the above layout param changes
+//                        // have taken effect, otherwise we can have problems due to popup_height being incorrect.
+//                        // Example bugs:
+//                        // Left-handed UI, portrait: Restart and open popup, it doesn't appear until device is rotated.
+//                        // Top UI, reverse-portrait: Restart and open popup, it appears in wrong location.
+//                        // Top UI, reverse-landscape: Restart and open popup, it appears in wrong location.
+//                        setPopupViewRotation(ui_rotation, display_height)
+//
+//                        // stop listening - only want to call this once!
+//                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+//                    }
+//                }
+//            )
+//        }
 
         if (!popup_container_only) {
             setTakePhotoIcon()
-            // no need to call setSwitchCameraContentDescription()
         }
 
         if (MyDebug.LOG) {
@@ -1065,10 +1010,10 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             Log.d(TAG, "popup_height: $popup_height")
             if (this.popupView != null) Log.d(
                 TAG,
-                "popup total width: " + popupView!!.getTotalWidth()
+                "popup total width: " + popupView!!.totalWidth
             )
         }
-        if (this.popupView != null && popup_width > popupView!!.getTotalWidth() * 1.2) {
+        if (this.popupView != null && popup_width > popupView!!.totalWidth * 1.2) {
             // This is a workaround for the rare but annoying bug where the popup window is too large
             // (and appears partially off-screen). Unfortunately have been unable to fix - and trying
             // to force the popup container to have a particular width just means some of the contents
@@ -1163,9 +1108,9 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             view.contentDescription = mainActivity.getResources().getString(contentDescription)
             view.tag = resource // for testing
 
-            view = mainActivity.findViewById(R.id.switch_video)
-            view.contentDescription =
-                mainActivity.getResources().getString(switchVideoContentDescription)
+//            view = mainActivity.findViewById(R.id.switch_video)
+//            view.contentDescription =
+//                mainActivity.getResources().getString(switchVideoContentDescription)
 
             resource = if (mainActivity.preview!!.isVideo) {
                 cameraViewModel.setPhotoMode(false)
@@ -1185,22 +1130,23 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      */
     fun setSwitchCameraContentDescription() {
         if (MyDebug.LOG) Log.d(TAG, "setSwitchCameraContentDescription()")
-        if (mainActivity.preview != null && mainActivity.preview!!.canSwitchCamera()) {
-            val view = mainActivity.findViewById<ImageButton>(R.id.switch_camera)
-            val cameraId = mainActivity.nextCameraId
-            val contentDescription = when (mainActivity.preview!!.cameraControllerManager.getFacing(cameraId)) {
-                Facing.FACING_FRONT -> R.string.switch_to_front_camera
-                Facing.FACING_BACK -> R.string.switch_to_back_camera
-                Facing.FACING_EXTERNAL -> R.string.switch_to_external_camera
-                else -> R.string.switch_to_unknown_camera
-            }
-            if (MyDebug.LOG) Log.d(
-                TAG,
-                "content_description: " + mainActivity.getResources()
-                    .getString(contentDescription)
-            )
-            view.contentDescription = mainActivity.getResources().getString(contentDescription)
-        }
+//        if (mainActivity.preview != null && mainActivity.preview!!.canSwitchCamera()) {
+//            val view = mainActivity.findViewById<ImageButton>(R.id.switch_camera)
+//            val cameraId = mainActivity.nextCameraId
+//            val contentDescription =
+//                when (mainActivity.preview!!.cameraControllerManager.getFacing(cameraId)) {
+//                    Facing.FACING_FRONT -> R.string.switch_to_front_camera
+//                    Facing.FACING_BACK -> R.string.switch_to_back_camera
+//                    Facing.FACING_EXTERNAL -> R.string.switch_to_external_camera
+//                    else -> R.string.switch_to_unknown_camera
+//                }
+//            if (MyDebug.LOG) Log.d(
+//                TAG,
+//                "content_description: " + mainActivity.getResources()
+//                    .getString(contentDescription)
+//            )
+//            view.contentDescription = mainActivity.getResources().getString(contentDescription)
+//        }
     }
 
     /** Set content description for pause video button.
@@ -1222,7 +1168,8 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             TAG,
             "content_description: " + mainActivity.getResources().getString(contentDescription)
         )
-        pauseVideoButton.contentDescription = mainActivity.getResources().getString(contentDescription)
+        pauseVideoButton.contentDescription =
+            mainActivity.getResources().getString(contentDescription)
     }
 
     fun updateRemoteConnectionIcon() {
@@ -1360,16 +1307,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             // if going into immersive mode, the we should set GONE the ones that are set GONE in showGUI(false)
             //final int visibility_gone = immersive_mode ? View.GONE : View.VISIBLE;
             val visibility = if (immersiveMode) View.GONE else View.VISIBLE
+
             if (MyDebug.LOG) Log.d(TAG, "setImmersiveMode: set visibility: $visibility")
             // n.b., don't hide share and trash buttons, as they require immediate user input for us to continue
-            val switchCameraButton = mainActivity.findViewById<View>(R.id.switch_camera)
-            val switchMultiCameraButton =
-                mainActivity.findViewById<View>(R.id.switch_multi_camera)
-            val switchVideoButton = mainActivity.findViewById<View>(R.id.switch_video)
             val exposureButton = mainActivity.findViewById<View>(R.id.exposure)
             val exposureLockButton = mainActivity.findViewById<View>(R.id.exposure_lock)
-            val whiteBalanceLockButton =
-                mainActivity.findViewById<View>(R.id.white_balance_lock)
+            val whiteBalanceLockButton = mainActivity.findViewById<View>(R.id.white_balance_lock)
             val cycleRawButton = mainActivity.findViewById<View>(R.id.cycle_raw)
             val storeLocationButton = mainActivity.findViewById<View>(R.id.store_location)
             val textStampButton = mainActivity.findViewById<View>(R.id.text_stamp)
@@ -1379,20 +1322,13 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             val cycleFlashButton = mainActivity.findViewById<View>(R.id.cycle_flash)
             val faceDetectionButton = mainActivity.findViewById<View>(R.id.face_detection)
             val audioControlButton = mainActivity.findViewById<View>(R.id.audio_control)
-            val popupButton = mainActivity.findViewById<View>(R.id.popup)
-            val galleryButton = mainActivity.findViewById<View>(R.id.gallery)
+//            val popupButton = mainActivity.findViewById<View>(R.id.popup)
             val settingsButton = mainActivity.findViewById<View>(R.id.settings)
             val zoomControls = mainActivity.findViewById<View>(R.id.zoom)
             val zoomSeekBar = mainActivity.findViewById<View>(R.id.zoom_seekbar)
             val focusSeekBar = mainActivity.findViewById<View>(R.id.focus_seekbar)
-            val focusBracketingTargetSeekBar =
-                mainActivity.findViewById<View>(R.id.focus_bracketing_target_seekbar)
-            if (mainActivity.preview!!.cameraControllerManager
-                    .getNumberOfCameras() > 1
-            ) switchCameraButton.visibility = visibility
-            if (mainActivity.showSwitchMultiCamIcon()) switchMultiCameraButton.visibility =
-                visibility
-            switchVideoButton.visibility = visibility
+            val focusBracketingTargetSeekBar = mainActivity.findViewById<View>(R.id.focus_bracketing_target_seekbar)
+
             if (mainActivity.supportsExposureButton()) exposureButton.visibility = visibility
             if (showExposureLockIcon()) exposureLockButton.visibility = visibility
             if (showWhiteBalanceLockIcon()) whiteBalanceLockButton.visibility = visibility
@@ -1405,29 +1341,29 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             if (showCycleFlashIcon()) cycleFlashButton.visibility = visibility
             if (showFaceDetectionIcon()) faceDetectionButton.visibility = visibility
             if (mainActivity.hasAudioControl()) audioControlButton.visibility = visibility
-            popupButton.visibility = visibility
-            galleryButton.visibility = visibility
+
+//            popupButton.visibility = visibility
             settingsButton.visibility = visibility
             if (MyDebug.LOG) {
                 Log.d(TAG, "has_zoom: " + mainActivity.preview!!.supportsZoom())
             }
-            if (mainActivity.preview!!.supportsZoom() && sharedPreferences.getBoolean(
-                    PreferenceKeys.ShowZoomControlsPreferenceKey,
-                    false
-                )
-            ) {
+            if (mainActivity.preview!!.supportsZoom()
+                && sharedPreferences.getBoolean(PreferenceKeys.ShowZoomControlsPreferenceKey, false)) {
                 zoomControls.visibility = visibility
             }
-            if (mainActivity.preview!!.supportsZoom() && sharedPreferences.getBoolean(
+            if (mainActivity.preview!!.supportsZoom()
+                && sharedPreferences.getBoolean(
                     PreferenceKeys.ShowZoomSliderControlsPreferenceKey,
                     true
                 )
             ) {
                 zoomSeekBar.visibility = visibility
             }
+
             if (mainActivity.showManualFocusSeekbar(false)) focusSeekBar.visibility = visibility
-            if (mainActivity.showManualFocusSeekbar(true)) focusBracketingTargetSeekBar.visibility =
-                visibility
+
+            if (mainActivity.showManualFocusSeekbar(true)) focusBracketingTargetSeekBar.visibility = visibility
+
             val prefImmersiveMode: String = sharedPreferences.getString(
                 PreferenceKeys.ImmersiveModePreferenceKey,
                 "immersive_mode_off"
@@ -1445,7 +1381,10 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                     val pauseVideoButton = mainActivity.findViewById<View>(R.id.pause_video)
                     pauseVideoButton.visibility = visibility
                 }
-                if (mainActivity.preview!!.supportsPhotoVideoRecording() && mainActivity.applicationInterface!!.usePhotoVideoRecording() && mainActivity.preview!!.isVideoRecording()) {
+                if (mainActivity.preview!!.supportsPhotoVideoRecording()
+                    && mainActivity.applicationInterface!!.usePhotoVideoRecording()
+                    && mainActivity.preview!!.isVideoRecording
+                ) {
                     val takePhotoVideoButton =
                         mainActivity.findViewById<View>(R.id.take_photo_when_video_recording)
                     takePhotoVideoButton.visibility = visibility
@@ -1495,10 +1434,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 if (is_panorama_recording) View.GONE else if (show_gui_photo && show_gui_video) View.VISIBLE else View.GONE // for UI that is hidden while taking photo or video
             val visibility_video =
                 if (is_panorama_recording) View.GONE else if (show_gui_photo) View.VISIBLE else View.GONE // for UI that is only hidden while taking photo
-            val switchCameraButton = mainActivity.findViewById<View>(R.id.switch_camera)
-            val switchMultiCameraButton =
-                mainActivity.findViewById<View>(R.id.switch_multi_camera)
-            val switchVideoButton = mainActivity.findViewById<View>(R.id.switch_video)
             val exposureButton = mainActivity.findViewById<View>(R.id.exposure)
             val exposureLockButton = mainActivity.findViewById<View>(R.id.exposure_lock)
             val whiteBalanceLockButton =
@@ -1512,13 +1447,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             val cycleFlashButton = mainActivity.findViewById<View>(R.id.cycle_flash)
             val faceDetectionButton = mainActivity.findViewById<View>(R.id.face_detection)
             val audioControlButton = mainActivity.findViewById<View>(R.id.audio_control)
-            val popupButton = mainActivity.findViewById<View>(R.id.popup)
-            if (mainActivity.preview!!.cameraControllerManager
-                    .getNumberOfCameras() > 1
-            ) switchCameraButton.visibility = visibility
-            if (mainActivity.showSwitchMultiCamIcon()) switchMultiCameraButton.visibility =
-                visibility
-            switchVideoButton.visibility = visibility
+//            val popupButton = mainActivity.findViewById<View>(R.id.popup)
             if (mainActivity.supportsExposureButton()) exposureButton.visibility =
                 visibility_video // still allow exposure when recording video
 
@@ -1549,8 +1478,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 if (MyDebug.LOG) Log.d(TAG, "Remote control DISconnected")
                 remoteConnectedIcon.visibility = View.GONE
             }
-            popupButton.visibility =
-                if (mainActivity.preview!!.supportsFlash()) visibility_video else visibility // still allow popup in order to change flash mode when recording video
+//            popupButton.visibility = if (mainActivity.preview!!.supportsFlash()) visibility_video else visibility // still allow popup in order to change flash mode when recording video
 
             if (show_gui_photo && show_gui_video) {
                 layoutUI() // needed for "top" UIPlacement, to auto-arrange the buttons
@@ -1630,25 +1558,25 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     fun updateCycleFlashIcon() {
         // n.b., read from preview rather than saved application preference - so the icon updates correctly when in flash
         // auto mode, but user switches to manual ISO where flash auto isn't supported
-        val flash_value = mainActivity.preview!!.getCurrentFlashValue()
-        if (flash_value != null) {
-            val view = mainActivity.findViewById<ImageButton>(R.id.cycle_flash)
-            when (flash_value) {
-                "flash_off" -> view.setImageResource(R.drawable.flash_off)
-                "flash_auto", "flash_frontscreen_auto" -> view.setImageResource(R.drawable.flash_auto)
-                "flash_on", "flash_frontscreen_on" -> view.setImageResource(R.drawable.flash_on)
-                "flash_torch", "flash_frontscreen_torch" -> view.setImageResource(R.drawable.baseline_highlight_white_48)
-                "flash_red_eye" -> view.setImageResource(R.drawable.baseline_remove_red_eye_white_48)
-                else -> {
-                    // just in case??
-                    Log.e(TAG, "unknown flash value $flash_value")
-                    view.setImageResource(R.drawable.flash_off)
-                }
-            }
-        } else {
-            val view = mainActivity.findViewById<ImageButton>(R.id.cycle_flash)
-            view.setImageResource(R.drawable.flash_off)
-        }
+//        val flash_value = mainActivity.preview!!.getCurrentFlashValue()
+//        if (flash_value != null) {
+//            val view = mainActivity.findViewById<ImageButton>(R.id.cycle_flash)
+//            when (flash_value) {
+//                "flash_off" -> view.setImageResource(R.drawable.flash_off)
+//                "flash_auto", "flash_frontscreen_auto" -> view.setImageResource(R.drawable.flash_auto)
+//                "flash_on", "flash_frontscreen_on" -> view.setImageResource(R.drawable.flash_on)
+//                "flash_torch", "flash_frontscreen_torch" -> view.setImageResource(R.drawable.baseline_highlight_white_48)
+//                "flash_red_eye" -> view.setImageResource(R.drawable.baseline_remove_red_eye_white_48)
+//                else -> {
+//                    // just in case??
+//                    Log.e(TAG, "unknown flash value $flash_value")
+//                    view.setImageResource(R.drawable.flash_off)
+//                }
+//            }
+//        } else {
+//            val view = mainActivity.findViewById<ImageButton>(R.id.cycle_flash)
+//            view.setImageResource(R.drawable.flash_off)
+//        }
     }
 
     fun updateFaceDetectionIcon() {
@@ -1861,20 +1789,20 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             PreferenceKeys.ISOPreferenceKey,
             CameraController.ISO_DEFAULT
         )!!
-        val count = iso_buttons!!.size
+        val count = isoButtons!!.size
         val step = if (previous) -1 else 1
         var found = false
         for (i in 0..<count) {
-            val button = iso_buttons!!.get(i) as Button
+            val button = isoButtons!!.get(i) as Button
             val button_text = button.getText().toString()
             if (ISOTextEquals(button_text, current_iso)) {
                 found = true
                 // Select next one, unless it's "Manual", which we skip since
                 // it's not practical in remote mode.
-                var nextButton = iso_buttons!!.get((i + count + step) % count) as Button
+                var nextButton = isoButtons!!.get((i + count + step) % count) as Button
                 val nextButton_text = nextButton.getText().toString()
                 if (nextButton_text.contains("m")) {
-                    nextButton = iso_buttons!!.get((i + count + 2 * step) % count) as Button
+                    nextButton = isoButtons!!.get((i + count + 2 * step) % count) as Button
                 }
                 nextButton.callOnClick()
                 break
@@ -1883,7 +1811,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         if (!found) {
             // For instance, we are in ISO manual mode and "M" is selected. default
             // back to "Auto" to avoid being stuck since we're with a remote control
-            iso_buttons!!.get(0)!!.callOnClick()
+            isoButtons!!.get(0)!!.callOnClick()
         }
     }
 
@@ -1913,7 +1841,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             // if the manual ISO value isn't one of the "preset" values, then instead highlight the manual ISO icon
             var found = false
             var manualButton: Button? = null
-            for (view in iso_buttons!!) {
+            for (view in isoButtons!!) {
                 val button = view as Button
                 val button_text = button.getText().toString()
                 if (ISOTextEquals(button_text, current_iso)) {
@@ -2047,8 +1975,8 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         return didProcess
     }
 
-    private var iso_buttons: MutableList<View?>? = null
-    private var iso_button_manual_index = -1
+    private var isoButtons: MutableList<View?>? = null
+    private var isoButtonManualIndex = -1
 
     init {
         if (MyDebug.LOG) Log.d(TAG, "MainUI")
@@ -2067,77 +1995,83 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         val preview = mainActivity.preview
         val view = mainActivity.findViewById<ImageButton>(R.id.exposure)
         view.setImageResource(R.drawable.ic_exposure_red_48dp)
-        val sliders_container = mainActivity.findViewById<View>(R.id.sliders_container)
-        sliders_container.visibility = View.VISIBLE
+
+        val slidersContainer = mainActivity.findViewById<View>(R.id.sliders_container)
+        slidersContainer.visibility = View.VISIBLE
+
         val animation = AnimationUtils.loadAnimation(mainActivity, R.anim.fade_in)
-        sliders_container.startAnimation(animation)
-        val iso_buttons_container = mainActivity.findViewById<ViewGroup>(R.id.iso_buttons)
-        iso_buttons_container.removeAllViews()
-        val supported_isos: MutableList<String?>?
-        if (preview!!.isVideoRecording()) {
-            supported_isos = null
+        slidersContainer.startAnimation(animation)
+
+        val isoButtonsContainer = mainActivity.findViewById<ViewGroup>(R.id.iso_buttons)
+        isoButtonsContainer.removeAllViews()
+
+        var supportedIsos: MutableList<String>
+        if (preview!!.isVideoRecording) {
+            supportedIsos = arrayListOf()
         } else if (preview.supportsISORange()) {
             if (MyDebug.LOG) Log.d(TAG, "supports ISO range")
-            val min_iso = preview.getMinimumISO()
-            val max_iso = preview.getMaximumISO()
-            val values: MutableList<String?> = ArrayList<String?>()
+            val minIso = preview.getMinimumISO()
+            val maxIso = preview.getMaximumISO()
+            val values: MutableList<String> = ArrayList()
             values.add(CameraController.ISO_DEFAULT)
             values.add(manual_iso_value)
-            iso_button_manual_index = 1 // must match where we place the manual button!
-            val iso_values = intArrayOf(50, 100, 200, 400, 800, 1600, 3200, 6400)
-            values.add(ISOToButtonText(min_iso))
-            for (iso_value in iso_values) {
-                if (iso_value > min_iso && iso_value < max_iso) {
-                    values.add(ISOToButtonText(iso_value))
+            isoButtonManualIndex = 1 // must match where we place the manual button!
+            val isoValues = intArrayOf(50, 100, 200, 400, 800, 1600, 3200, 6400)
+            values.add(ISOToButtonText(minIso))
+            for (isoValue in isoValues) {
+                if (isoValue > minIso && isoValue < maxIso) {
+                    values.add(ISOToButtonText(isoValue))
                 }
             }
-            values.add(ISOToButtonText(max_iso))
-            supported_isos = values
+            values.add(ISOToButtonText(maxIso))
+            supportedIsos = values
         } else {
-            supported_isos = preview.getSupportedISOs()
-            iso_button_manual_index = -1
+            supportedIsos = preview.getSupportedISOs()
+            isoButtonManualIndex = -1
         }
-        var current_iso: String = sharedPreferences.getString(
+        var currentIso: String = sharedPreferences.getString(
             PreferenceKeys.ISOPreferenceKey,
             CameraController.ISO_DEFAULT
         )!!
         // if the manual ISO value isn't one of the "preset" values, then instead highlight the manual ISO icon
-        if ((current_iso != CameraController.ISO_DEFAULT) && supported_isos != null && supported_isos.contains(
+        if ((currentIso != CameraController.ISO_DEFAULT) && supportedIsos.contains(
                 manual_iso_value
-            ) && !supported_isos.contains(current_iso)
-        ) current_iso = manual_iso_value
+            ) && !supportedIsos.contains(currentIso)
+        ) currentIso = manual_iso_value
 
 
-        var total_width_dp = 280
-        val max_width_dp = getMaxHeightDp(true)
-        if (total_width_dp > max_width_dp) total_width_dp = max_width_dp
-        if (MyDebug.LOG) Log.d(TAG, "total_width_dp: " + total_width_dp)
+        var totalWidthDp = 280
+        val maxWidthDp = getMaxHeightDp(true)
+        if (totalWidthDp > maxWidthDp) totalWidthDp = maxWidthDp
+        if (MyDebug.LOG) Log.d(TAG, "total_width_dp: $totalWidthDp")
 
         // n.b., we hardcode the string "ISO" as this isn't a user displayed string, rather it's used to filter out "ISO" included in old Camera API parameters
-        iso_buttons = PopupView.createButtonOptions(
-            iso_buttons_container,
+        isoButtons = PopupView.createButtonOptions(
+            isoButtonsContainer,
             mainActivity,
-            total_width_dp,
+            totalWidthDp,
             this.testUIButtonsMap,
-            supported_isos,
+            supportedIsos,
             -1,
             -1,
             "ISO",
             false,
-            current_iso,
+            currentIso,
             0,
             "TEST_ISO",
             object : ButtonOptionsPopupListener() {
-                override fun onClick(option: String) {
-                    if (MyDebug.LOG) Log.d(TAG, "clicked iso: " + option)
+                override fun onClick(option: String?) {
+                    if (MyDebug.LOG) Log.d(TAG, "clicked iso: $option")
                     val editor = sharedPreferences.edit()
-                    val old_iso: String = sharedPreferences.getString(
+                    val oldIso: String = sharedPreferences.getString(
                         PreferenceKeys.ISOPreferenceKey,
                         CameraController.ISO_DEFAULT
                     )!!
-                    if (MyDebug.LOG) Log.d(TAG, "old_iso: " + old_iso)
+                    if (MyDebug.LOG) {
+                        Log.d(TAG, "old_iso: $oldIso")
+                    }
                     editor.putString(PreferenceKeys.ISOPreferenceKey, option)
-                    var toast_option: String? = option
+                    var toastOption: String? = option
 
                     if (preview.supportsISORange()) {
                         if (option == CameraController.ISO_DEFAULT) {
@@ -2150,7 +2084,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                             editor.apply()
                             preview.showToast(
                                 null,
-                                "ISO: " + toast_option,
+                                "ISO: $toastOption",
                                 0,
                                 true
                             ) // supply offset_y_dp to be consistent with preview.setExposure(), preview.setISO()
@@ -2158,42 +2092,40 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                                 true,
                                 ""
                             ) // already showed the toast, so block from showing again
-                        } else if (old_iso == CameraController.ISO_DEFAULT) {
+                        } else if (oldIso == CameraController.ISO_DEFAULT) {
                             if (MyDebug.LOG) Log.d(TAG, "switched from auto to manual iso")
                             if (option == "m") {
                                 // if we used the generic "manual", then instead try to preserve the current iso if it exists
-                                if (preview.getCameraController() != null && preview.getCameraController()
-                                        .captureResultHasIso()
+                                if (preview.cameraController != null && preview.cameraController.captureResultHasIso()
                                 ) {
-                                    val iso = preview.getCameraController().captureResultIso()
-                                    if (MyDebug.LOG) Log.d(TAG, "apply existing iso of " + iso)
+                                    val iso = preview.cameraController.captureResultIso()
+                                    if (MyDebug.LOG) Log.d(TAG, "apply existing iso of $iso")
                                     editor.putString(
                                         PreferenceKeys.ISOPreferenceKey,
                                         iso.toString()
                                     )
-                                    toast_option = iso.toString()
+                                    toastOption = iso.toString()
                                 } else {
                                     if (MyDebug.LOG) Log.d(TAG, "no existing iso available")
                                     // use a default
                                     val iso = 800
                                     editor.putString(PreferenceKeys.ISOPreferenceKey, "" + iso)
-                                    toast_option = "" + iso
+                                    toastOption = "" + iso
                                 }
                             }
 
                             // if changing from auto to manual, preserve the current exposure time if it exists
-                            if (preview.getCameraController() != null && preview.getCameraController()
+                            if (preview.cameraController != null && preview.cameraController
                                     .captureResultHasExposureTime()
                             ) {
-                                val exposure_time =
-                                    preview.getCameraController().captureResultExposureTime()
+                                val exposureTime = preview.cameraController.captureResultExposureTime()
                                 if (MyDebug.LOG) Log.d(
                                     TAG,
-                                    "apply existing exposure time of " + exposure_time
+                                    "apply existing exposure time of $exposureTime"
                                 )
                                 editor.putLong(
                                     PreferenceKeys.ExposureTimePreferenceKey,
-                                    exposure_time
+                                    exposureTime
                                 )
                             } else {
                                 if (MyDebug.LOG) Log.d(TAG, "no existing exposure time available")
@@ -2202,7 +2134,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                             editor.apply()
                             preview.showToast(
                                 null,
-                                "ISO: " + toast_option,
+                                "ISO: $toastOption",
                                 0,
                                 true
                             ) // supply offset_y_dp to be consistent with preview.setExposure(), preview.setISO()
@@ -2214,8 +2146,8 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                             if (MyDebug.LOG) Log.d(TAG, "changed manual iso")
                             if (option == "m") {
                                 // if user selected the generic "manual", then just keep the previous non-ISO option
-                                if (MyDebug.LOG) Log.d(TAG, "keep existing iso of " + old_iso)
-                                editor.putString(PreferenceKeys.ISOPreferenceKey, old_iso)
+                                if (MyDebug.LOG) Log.d(TAG, "keep existing iso of $oldIso")
+                                editor.putString(PreferenceKeys.ISOPreferenceKey, oldIso)
                             }
 
                             editor.apply()
@@ -2225,10 +2157,10 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                                 //preview.setISO(iso);
                                 //updateSelectedISOButton();
                                 // rather than set ISO directly, we move the seekbar, and the ISO will be changed via the seekbar listener
-                                val iso_seek_bar =
+                                val isoSeekBar =
                                     mainActivity.findViewById<SeekBar?>(R.id.iso_seekbar)
                                 mainActivity.getManualSeekbars()
-                                    .setISOProgressBarToClosest(iso_seek_bar, iso.toLong())
+                                    .setISOProgressBarToClosest(isoSeekBar, iso.toLong())
                             }
                         }
                     } else {
@@ -2239,41 +2171,37 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                     setupExposureUI()
                 }
             })
-        if (supported_isos != null) {
-            val iso_container_view = mainActivity.findViewById<View>(R.id.iso_container)
-            iso_container_view.visibility = View.VISIBLE
-        }
+        val isoContainerView = mainActivity.findViewById<View>(R.id.iso_container)
+        isoContainerView.visibility = View.VISIBLE
 
-        val exposure_seek_bar = mainActivity.findViewById<View>(R.id.exposure_container)
-        val manual_exposure_seek_bar =
-            mainActivity.findViewById<View>(R.id.manual_exposure_container)
-        val iso_value = mainActivity.applicationInterface!!.isoPref
-        if (mainActivity.preview!!.usingCamera2API() && iso_value != CameraController.ISO_DEFAULT) {
-            exposure_seek_bar.visibility = View.GONE
+        val exposureSeekBar = mainActivity.findViewById<View>(R.id.exposure_container)
+        val manualExposureSeekBar = mainActivity.findViewById<View>(R.id.manual_exposure_container)
+        val isoValue = mainActivity.applicationInterface!!.isoPref
+        if (mainActivity.preview!!.usingCamera2API() && isoValue != CameraController.ISO_DEFAULT) {
+            exposureSeekBar.visibility = View.GONE
 
             // with Camera2 API, when using manual ISO we instead show sliders for ISO range and exposure time
             if (mainActivity.preview!!.supportsISORange()) {
-                manual_exposure_seek_bar.visibility = View.VISIBLE
-                val exposure_time_seek_bar =
-                    mainActivity.findViewById<SeekBar>(R.id.exposure_time_seekbar)
+                manualExposureSeekBar.visibility = View.VISIBLE
+                val exposureTimeSeekBar = mainActivity.findViewById<SeekBar>(R.id.exposure_time_seekbar)
                 if (mainActivity.preview!!.supportsExposureTime()) {
-                    exposure_time_seek_bar.visibility = View.VISIBLE
+                    exposureTimeSeekBar.visibility = View.VISIBLE
                 } else {
-                    exposure_time_seek_bar.visibility = View.GONE
+                    exposureTimeSeekBar.visibility = View.GONE
                 }
             } else {
-                manual_exposure_seek_bar.visibility = View.GONE
+                manualExposureSeekBar.visibility = View.GONE
             }
         } else {
-            manual_exposure_seek_bar.visibility = View.GONE
+            manualExposureSeekBar.visibility = View.GONE
 
             if (mainActivity.preview!!.supportsExposures()) {
-                exposure_seek_bar.visibility = View.VISIBLE
+                exposureSeekBar.visibility = View.VISIBLE
                 val seek_bar_zoom =
                     mainActivity.findViewById<ZoomControls>(R.id.exposure_seekbar_zoom)
                 seek_bar_zoom.visibility = View.VISIBLE
             } else {
-                exposure_seek_bar.visibility = View.GONE
+                exposureSeekBar.visibility = View.GONE
             }
         }
 
@@ -2309,7 +2237,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             // if the manual ISO value isn't one of the "preset" values, then instead highlight the manual ISO icon
             if (MyDebug.LOG) Log.d(TAG, "current_iso: $currentIso")
             var found = false
-            for (view in iso_buttons!!) {
+            for (view in isoButtons!!) {
                 val button = view as Button
                 if (MyDebug.LOG) Log.d(TAG, "button: " + button.text)
                 val buttonText = button.text.toString()
@@ -2322,8 +2250,8 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             }
             if (!found && currentIso != CameraController.ISO_DEFAULT) {
                 if (MyDebug.LOG) Log.d(TAG, "must be manual")
-                if (iso_button_manual_index >= 0 && iso_button_manual_index < iso_buttons!!.size) {
-                    val button = iso_buttons!![iso_button_manual_index] as Button
+                if (isoButtonManualIndex >= 0 && isoButtonManualIndex < isoButtons!!.size) {
+                    val button = isoButtons!![isoButtonManualIndex] as Button
                     PopupView.setButtonSelected(button, true)
                 }
             }
@@ -2376,24 +2304,24 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
     fun setPopupIcon() {
         if (MyDebug.LOG) Log.d(TAG, "setPopupIcon")
-        val popup = mainActivity.findViewById<ImageButton>(R.id.popup)
-        val flashValue = mainActivity.preview!!.getCurrentFlashValue()
-        if (MyDebug.LOG) Log.d(TAG, "flash_value: $flashValue")
-        if (mainActivity.mainUI!!.showCycleFlashIcon()) {
-            popup.setImageResource(R.drawable.popup)
-        } else if (flashValue != null && flashValue == "flash_off") {
-            popup.setImageResource(R.drawable.popup_flash_off)
-        } else if (flashValue != null && (flashValue == "flash_torch" || flashValue == "flash_frontscreen_torch")) {
-            popup.setImageResource(R.drawable.popup_flash_torch)
-        } else if (flashValue != null && (flashValue == "flash_auto" || flashValue == "flash_frontscreen_auto")) {
-            popup.setImageResource(R.drawable.popup_flash_auto)
-        } else if (flashValue != null && (flashValue == "flash_on" || flashValue == "flash_frontscreen_on")) {
-            popup.setImageResource(R.drawable.popup_flash_on)
-        } else if (flashValue != null && flashValue == "flash_red_eye") {
-            popup.setImageResource(R.drawable.popup_flash_red_eye)
-        } else {
-            popup.setImageResource(R.drawable.popup)
-        }
+//        val popup = mainActivity.findViewById<ImageButton>(R.id.popup)
+//        val flashValue = mainActivity.preview!!.getCurrentFlashValue()
+//        if (MyDebug.LOG) Log.d(TAG, "flash_value: $flashValue")
+//        if (mainActivity.mainUI!!.showCycleFlashIcon()) {
+//            popup.setImageResource(R.drawable.popup)
+//        } else if (flashValue != null && flashValue == "flash_off") {
+//            popup.setImageResource(R.drawable.popup_flash_off)
+//        } else if (flashValue != null && (flashValue == "flash_torch" || flashValue == "flash_frontscreen_torch")) {
+//            popup.setImageResource(R.drawable.popup_flash_torch)
+//        } else if (flashValue != null && (flashValue == "flash_auto" || flashValue == "flash_frontscreen_auto")) {
+//            popup.setImageResource(R.drawable.popup_flash_auto)
+//        } else if (flashValue != null && (flashValue == "flash_on" || flashValue == "flash_frontscreen_on")) {
+//            popup.setImageResource(R.drawable.popup_flash_on)
+//        } else if (flashValue != null && flashValue == "flash_red_eye") {
+//            popup.setImageResource(R.drawable.popup_flash_red_eye)
+//        } else {
+//            popup.setImageResource(R.drawable.popup)
+//        }
     }
 
     fun closePopup() {

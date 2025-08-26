@@ -1,0 +1,12 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="32dp"
+    android:tint="@color/color_icon"
+    android:viewportHeight="960"
+    android:viewportWidth="960"
+    android:width="32dp">
+
+    <path
+        android:fillColor="@color/color_icon"
+        android:pathData="M120,800L120,760L840,760L840,800L120,800ZM120,680L120,600L840,600L840,680L120,680ZM120,520L120,400L840,400L840,520L120,520ZM120,320L120,160L840,160L840,320L120,320Z" />
+
+</vector>

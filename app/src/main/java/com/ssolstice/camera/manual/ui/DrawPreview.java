@@ -2647,30 +2647,30 @@ public class DrawPreview {
                 thumbnail_anim_src_rect.top = 0;
                 thumbnail_anim_src_rect.right = last_thumbnail.getWidth();
                 thumbnail_anim_src_rect.bottom = last_thumbnail.getHeight();
-                View galleryButton = main_activity.findViewById(R.id.gallery);
+//                View galleryButton = main_activity.findViewById(R.id.gallery);
                 float alpha = ((float)time)/(float)duration;
 
                 int st_x = canvas.getWidth()/2;
                 int st_y = canvas.getHeight()/2;
-                int nd_x = galleryButton.getLeft() + galleryButton.getWidth()/2;
-                int nd_y = galleryButton.getTop() + galleryButton.getHeight()/2;
-                int thumbnail_x = (int)( (1.0f-alpha)*st_x + alpha*nd_x );
-                int thumbnail_y = (int)( (1.0f-alpha)*st_y + alpha*nd_y );
+//                int nd_x = galleryButton.getLeft() + galleryButton.getWidth()/2;
+//                int nd_y = galleryButton.getTop() + galleryButton.getHeight()/2;
+//                int thumbnail_x = (int)( (1.0f-alpha)*st_x + alpha*nd_x );
+//                int thumbnail_y = (int)( (1.0f-alpha)*st_y + alpha*nd_y );
 
                 float st_w = canvas.getWidth();
                 float st_h = canvas.getHeight();
-                float nd_w = galleryButton.getWidth();
-                float nd_h = galleryButton.getHeight();
+//                float nd_w = galleryButton.getWidth();
+//                float nd_h = galleryButton.getHeight();
                 //int thumbnail_w = (int)( (1.0f-alpha)*st_w + alpha*nd_w );
                 //int thumbnail_h = (int)( (1.0f-alpha)*st_h + alpha*nd_h );
-                float correction_w = st_w/nd_w - 1.0f;
-                float correction_h = st_h/nd_h - 1.0f;
-                int thumbnail_w = (int)(st_w/(1.0f+alpha*correction_w));
-                int thumbnail_h = (int)(st_h/(1.0f+alpha*correction_h));
-                thumbnail_anim_dst_rect.left = thumbnail_x - thumbnail_w/2.0f;
-                thumbnail_anim_dst_rect.top = thumbnail_y - thumbnail_h/2.0f;
-                thumbnail_anim_dst_rect.right = thumbnail_x + thumbnail_w/2.0f;
-                thumbnail_anim_dst_rect.bottom = thumbnail_y + thumbnail_h/2.0f;
+//                float correction_w = st_w/nd_w - 1.0f;
+//                float correction_h = st_h/nd_h - 1.0f;
+//                int thumbnail_w = (int)(st_w/(1.0f+alpha*correction_w));
+//                int thumbnail_h = (int)(st_h/(1.0f+alpha*correction_h));
+//                thumbnail_anim_dst_rect.left = thumbnail_x - thumbnail_w/2.0f;
+//                thumbnail_anim_dst_rect.top = thumbnail_y - thumbnail_h/2.0f;
+//                thumbnail_anim_dst_rect.right = thumbnail_x + thumbnail_w/2.0f;
+//                thumbnail_anim_dst_rect.bottom = thumbnail_y + thumbnail_h/2.0f;
                 //canvas.drawBitmap(this.thumbnail, thumbnail_anim_src_rect, thumbnail_anim_dst_rect, p);
                 thumbnail_anim_matrix.setRectToRect(thumbnail_anim_src_rect, thumbnail_anim_dst_rect, Matrix.ScaleToFit.FILL);
                 //thumbnail_anim_matrix.reset();
@@ -2997,7 +2997,7 @@ public class DrawPreview {
             }
         }
 
-        doThumbnailAnimation(canvas, time_ms);
+//        doThumbnailAnimation(canvas, time_ms);
 
         drawUI(canvas, device_ui_rotation, time_ms);
 

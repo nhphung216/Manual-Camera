@@ -1174,4 +1174,11 @@
     <string name="later">Later</string>
     <string name="s_focus">Focus</string>
     <string name="reset_all">Reset All</string>
+    <string name="strength">Strength</string>
+    <string name="contrast">Contrast</string>
+    <string name="sharpen">Sharpen</string>
+    <string name="vignette">vignette</string>
+    <string name="saturation">saturation</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
 </resources>

@@ -32,7 +32,7 @@ fun SwitchCameraButton(
             rotation += 180f
             switchCamera()
         },
-        modifier = Modifier.size(46.dp)
+        modifier = Modifier.size(56.dp)
     ) {
         Icon(
             imageVector = Icons.Default.FlipCameraAndroid,

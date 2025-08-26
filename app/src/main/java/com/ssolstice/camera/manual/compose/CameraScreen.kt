@@ -79,9 +79,8 @@ fun CameraScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0x94101010))
+            .background(Color(0x00101010))
     ) {
-
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier
@@ -93,7 +92,7 @@ fun CameraScreen(
                 OuterRing(
                     onClick = { pauseVideo() },
                     modifier =
-                        Modifier.size(46.dp)
+                        Modifier.size(56.dp)
                 ) {
                     Icon(
                         imageVector = if (isVideoRecordingPaused) Icons.Default.PlayArrow else Icons.Default.Pause,
@@ -107,13 +106,13 @@ fun CameraScreen(
                 if (galleryBitmap != null) {
                     CircleBitmapImage(
                         bitmap = galleryBitmap,
-                        size = 46,
+                        size = 56,
                         onClick = { openGallery() })
                 } else {
                     OuterRing(
                         onClick = { openGallery() },
                         modifier =
-                            Modifier.size(46.dp)
+                            Modifier.size(56.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.PhotoLibrary,
@@ -258,6 +257,6 @@ fun CameraScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(34.dp))
     }
 }

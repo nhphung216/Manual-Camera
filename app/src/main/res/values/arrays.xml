@@ -509,6 +509,16 @@
         <item>drawable/flash_on</item>
         <item>drawable/baseline_highlight_white_48</item>
     </string-array>
+    <array name="flash_icons2">
+        <item>@drawable/flash_off</item>
+        <item>@drawable/flash_auto</item>
+        <item>@drawable/flash_on</item>
+        <item>@drawable/baseline_highlight_white_48</item>
+        <item>@drawable/baseline_remove_red_eye_white_48</item>
+        <item>@drawable/flash_auto</item>
+        <item>@drawable/flash_on</item>
+        <item>@drawable/baseline_highlight_white_48</item>
+    </array>
     <string-array name="flash_entries">
         <item>@string/flash_off</item>
         <item>@string/flash_auto</item>
@@ -529,6 +539,23 @@
         <item>flash_frontscreen_on</item>
         <item>flash_frontscreen_torch</item>
     </string-array>
+
+    <array name="raw_icons">
+        <item>@drawable/ic_jpg</item>
+        <item>@drawable/raw_off_icon</item>
+        <item>@drawable/raw_only_icon</item>
+    </array>
+    <string-array name="raw_entries">
+        <item>@string/jpeg_only</item>
+        <item>@string/raw_jpeg</item>
+        <item>@string/only_raw</item>
+    </string-array>
+    <string-array name="raw_values">
+        <item>preference_raw_no</item>
+        <item>preference_raw_yes</item>
+        <item>preference_raw_only</item>
+    </string-array>
+
     <string-array name="preference_ghost_image_entries">
         <item>@string/preference_ghost_image_off</item>
         <item>@string/preference_ghost_image_last</item>

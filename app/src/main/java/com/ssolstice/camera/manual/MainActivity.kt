@@ -79,8 +79,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -93,7 +93,7 @@ import com.ssolstice.camera.manual.cameracontroller.CameraController.Facing
 import com.ssolstice.camera.manual.cameracontroller.CameraController.TonemapProfile
 import com.ssolstice.camera.manual.cameracontroller.CameraControllerManager
 import com.ssolstice.camera.manual.cameracontroller.CameraControllerManager2
-import com.ssolstice.camera.manual.compose.CameraConfigTableSettings
+import com.ssolstice.camera.manual.compose.CameraControls
 import com.ssolstice.camera.manual.compose.CameraScreen
 import com.ssolstice.camera.manual.compose.CameraSettings
 import com.ssolstice.camera.manual.compose.CameraViewModel
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     private val TAG = "PreferencesListener"
 
-    private val cameraViewModel: CameraViewModel by viewModels()
+    private val viewModel: CameraViewModel by viewModels()
 
     var isAppPaused: Boolean = true
         private set
@@ -376,7 +376,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         bluetoothRemoteControl = BluetoothRemoteControl(this)
         permissionHandler = PermissionHandler(this)
         settingsManager = SettingsManager(this)
-        mainUI = MainUI(this, cameraViewModel)
+        mainUI = MainUI(this, viewModel)
         manualSeekbars = ManualSeekbars()
         applicationInterface = MyApplicationInterface(this, savedInstanceState)
         if (MyDebug.LOG) Log.d(
@@ -534,8 +534,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
 
         // initialise on-screen button visibility
-        val switchCameraButton = binding.switchCamera
-        switchCameraButton.visibility = if (n_cameras > 1) View.VISIBLE else View.GONE
+//        val switchCameraButton = binding.switchCamera
+//        switchCameraButton.visibility = if (n_cameras > 1) View.VISIBLE else View.GONE
         // switchMultiCameraButton visibility updated below in mainUI.updateOnScreenIcons(), as it also depends on user preference
         val speechRecognizerButton = binding.audioControl
         speechRecognizerButton.visibility =
@@ -559,8 +559,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // setContentView()!
         // To be safe, we also do so for take_photo and zoom_seekbar (we already know we've had no reported crashes for focus_seekbar,
         // however).
-        val takePhotoButton = binding.takePhoto
-        takePhotoButton.visibility = View.INVISIBLE
+//        val takePhotoButton = binding.takePhoto
+//        takePhotoButton.visibility = View.INVISIBLE
 
         val zoomControls = binding.zoom
         zoomControls.visibility = View.GONE
@@ -611,43 +611,43 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     }
                 }
             }
-
-        // set up take photo long click
-        takePhotoButton.setOnLongClickListener(object : OnLongClickListener {
-            override fun onLongClick(v: View?): Boolean {
-                if (!allowLongPress()) {
-                    // return false, so a regular click will still be triggered when the user releases the touch
-                    return false
-                }
-                return longClickedTakePhoto()
-            }
-        })
-        // set up on touch listener so we can detect if we've released from a long click
-        takePhotoButton.setOnTouchListener { view, motionEvent ->
-            // the suppressed warning ClickableViewAccessibility suggests calling view.performClick for ACTION_UP, but this
-            // results in an additional call to clickedTakePhoto() - that is, if there is no long press, we get two calls to
-            // clickedTakePhoto instead one one; and if there is a long press, we get one call to clickedTakePhoto where
-            // there should be none.
-            if (motionEvent.action == MotionEvent.ACTION_UP) {
-                if (MyDebug.LOG) Log.d(TAG, "takePhotoButton ACTION_UP")
-                takePhotoButtonLongClickCancelled()
-                if (MyDebug.LOG) Log.d(TAG, "takePhotoButton ACTION_UP done")
-            }
-            false
-        }
+//
+//        // set up take photo long click
+//        takePhotoButton.setOnLongClickListener(object : OnLongClickListener {
+//            override fun onLongClick(v: View?): Boolean {
+//                if (!allowLongPress()) {
+//                    // return false, so a regular click will still be triggered when the user releases the touch
+//                    return false
+//                }
+//                return longClickedTakePhoto()
+//            }
+//        })
+//        // set up on touch listener so we can detect if we've released from a long click
+//        takePhotoButton.setOnTouchListener { view, motionEvent ->
+//            // the suppressed warning ClickableViewAccessibility suggests calling view.performClick for ACTION_UP, but this
+//            // results in an additional call to clickedTakePhoto() - that is, if there is no long press, we get two calls to
+//            // clickedTakePhoto instead one one; and if there is a long press, we get one call to clickedTakePhoto where
+//            // there should be none.
+//            if (motionEvent.action == MotionEvent.ACTION_UP) {
+//                if (MyDebug.LOG) Log.d(TAG, "takePhotoButton ACTION_UP")
+//                takePhotoButtonLongClickCancelled()
+//                if (MyDebug.LOG) Log.d(TAG, "takePhotoButton ACTION_UP done")
+//            }
+//            false
+//        }
 
         // set up gallery button long click
-        val galleryButton = binding.gallery
-        galleryButton.setOnLongClickListener(object : OnLongClickListener {
-            override fun onLongClick(v: View?): Boolean {
-                if (!allowLongPress()) {
-                    // return false, so a regular click will still be triggered when the user releases the touch
-                    return false
-                }
-                longClickedGallery()
-                return true
-            }
-        })
+//        val galleryButton = binding.gallery
+//        galleryButton.setOnLongClickListener(object : OnLongClickListener {
+//            override fun onLongClick(v: View?): Boolean {
+//                if (!allowLongPress()) {
+//                    // return false, so a regular click will still be triggered when the user releases the touch
+//                    return false
+//                }
+//                longClickedGallery()
+//                return true
+//            }
+//        })
 
         if (MyDebug.LOG) Log.d(
             TAG,
@@ -800,15 +800,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         this.hasOldSystemOrientation = true
         this.oldSystemOrientation = this.systemOrientation
 
-        binding.gallery.setOnClickListener { clickedGallery() }
-        binding.takePhoto.setOnClickListener { clickedTakePhoto() }
-        binding.switchCamera.setOnClickListener { clickedSwitchCamera() }
-
-        binding.switchVideo.setOnClickListener { clickedSwitchVideo() }
-        binding.takePhotoWhenVideoRecording.setOnClickListener { clickedTakePhotoVideoSnapshot() }
-        binding.pauseVideo.setOnClickListener { clickedPauseVideo() }
+//        binding.gallery.setOnClickListener { clickedGallery() }
+//        binding.takePhoto.setOnClickListener { clickedTakePhoto() }
+//        binding.switchCamera.setOnClickListener { clickedSwitchCamera() }
+//        binding.switchVideo.setOnClickListener { clickedSwitchVideo() }
+//        binding.takePhotoWhenVideoRecording.setOnClickListener { clickedTakePhotoVideoSnapshot() }
+//        binding.pauseVideo.setOnClickListener { clickedPauseVideo() }
         binding.settings.setOnClickListener { clickedSettings() }
-
         binding.cancelPanorama.setOnClickListener { clickedCancelPanorama() }
         binding.cycleRaw.setOnClickListener { clickedCycleRaw() }
         binding.cycleFlash.setOnClickListener { clickedCycleFlash() }
@@ -819,9 +817,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         binding.autoLevel.setOnClickListener { clickedAutoLevel() }
         binding.faceDetection.setOnClickListener { clickedFaceDetection() }
         binding.audioControl.setOnClickListener { clickedAudioControl() }
-        binding.switchMultiCamera.setOnClickListener { clickedSwitchMultiCamera() }
-
-        binding.popup.setOnClickListener { clickedPopupSettings() }
+//        binding.switchMultiCamera.setOnClickListener { clickedSwitchMultiCamera() }
+//        binding.popup.setOnClickListener { clickedPopupSettings() }
         binding.exposure.setOnClickListener { clickedExposure() }
         binding.exposureLock.setOnClickListener { clickedExposureLock() }
         binding.whiteBalanceLock.setOnClickListener { clickedWhiteBalanceLock() }
@@ -829,24 +826,31 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         binding.share.setOnClickListener { clickedShare() }
 
         binding.composeView.setContent {
-
             OpenCameraTheme {
-                val isRecording by cameraViewModel.isRecording.collectAsState()
-                val isPhotoMode by cameraViewModel.isPhotoMode.collectAsState()
-                val isVideoRecordingPaused by cameraViewModel.isVideoRecordingPaused.collectAsState()
-                val galleryBitmap by cameraViewModel.galleryBitmap.collectAsState()
-
-                val resolutions by cameraViewModel.resolutions.collectAsState()
-                val timers by cameraViewModel.timers.collectAsState()
-                val repeats by cameraViewModel.repeats.collectAsState()
-
                 val showCameraSettings = rememberSaveable { mutableStateOf(false) }
                 val showConfigTableSettings = rememberSaveable { mutableStateOf(false) }
 
-                val resolutionSelected = remember { mutableStateOf("1920x1080") }
-                val timerSelected = remember { mutableStateOf("Off") }
-                val repeatSelected = remember { mutableStateOf("Off") }
-                val speedSelected = remember { mutableStateOf("Off") }
+                val isRecording by viewModel.isRecording.collectAsState()
+                val isPhotoMode by viewModel.isPhotoMode.collectAsState()
+
+                val isVideoRecordingPaused by viewModel.isVideoRecordingPaused.collectAsState()
+                val galleryBitmap by viewModel.galleryBitmap.collectAsState()
+
+                val resolutions by viewModel.resolutionsOfPhoto.collectAsState()
+                val timers by viewModel.timers.collectAsState()
+                val repeats by viewModel.repeats.collectAsState()
+                val speeds by viewModel.speeds.collectAsState()
+                val flashList by viewModel.flashList.collectAsState()
+                val rawList by viewModel.rawList.collectAsState()
+
+                val resolutionsOfVideo by viewModel.resolutionsOfVideo.collectAsState()
+                val resolutionOfVideoSelected by viewModel.resolutionsOfVideoSelected.observeAsState()
+                val resolutionSelected by viewModel.resolutionSelected.observeAsState()
+                val timerSelected by viewModel.timerSelected.observeAsState()
+                val repeatSelected by viewModel.repeatSelected.observeAsState()
+                val speedSelected by viewModel.speedSelected.observeAsState()
+                val flashSelected by viewModel.flashSelected.observeAsState()
+                val rawSelected by viewModel.rawSelected.observeAsState()
 
                 Box {
                     CameraScreen(
@@ -862,6 +866,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         takePhotoVideoSnapshot = { clickedTakePhotoVideoSnapshot() },
                         showCameraSettings = {
                             showCameraSettings.value = !showCameraSettings.value
+                            if (showCameraSettings.value && preview != null && applicationInterface != null) {
+                                viewModel.setupCameraData(
+                                    this@MainActivity,
+                                    applicationInterface!!,
+                                    preview!!
+                                )
+                            }
                         },
                         showConfigTableSettings = {
                             showConfigTableSettings.value = !showConfigTableSettings.value
@@ -871,35 +882,89 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     if (showCameraSettings.value) {
                         CameraSettings(
                             isPhotoMode = isPhotoMode,
-                            resolutionSelected = resolutionSelected.value,
-                            timerSelected = timerSelected.value,
-                            repeatSelected = repeatSelected.value,
-                            speedSelected = speedSelected.value,
+                            resolutionSelected = resolutionSelected,
+                            timerSelected = timerSelected,
+                            repeatSelected = repeatSelected,
+                            speedSelected = speedSelected,
+                            resolutionOfVideoSelected = resolutionOfVideoSelected,
                             resolutions = resolutions,
+                            resolutionsVideo = resolutionsOfVideo,
                             timers = timers,
                             repeats = repeats,
+                            speeds = speeds,
+                            flashList = flashList,
+                            rawList = rawList,
+                            flashSelected = flashSelected,
+                            rawSelected = rawSelected,
                             onResolutionChange = {
-                                resolutionSelected.value = it
+                                if (applicationInterface != null && preview != null) {
+                                    viewModel.setResolutionSelected(
+                                        this@MainActivity,
+                                        applicationInterface!!,
+                                        preview!!,
+                                        it
+                                    )
+                                }
+                            },
+                            onRawChange = {
+                                if (applicationInterface != null && preview != null) {
+                                    viewModel.setRawSelected(
+                                        this@MainActivity,
+                                        preview!!, it
+                                    )
+                                }
+                            },
+                            onFlashChange = {
+                                if (applicationInterface != null && preview != null) {
+                                    viewModel.setFlashSelected(
+                                        this@MainActivity,
+                                        preview!!, it
+                                    )
+                                }
+                            },
+                            onResolutionOfVideoChange = {
+                                if (applicationInterface != null && preview != null) {
+                                    viewModel.setResolutionOfVideoSelected(
+                                        this@MainActivity,
+                                        applicationInterface!!,
+                                        preview!!, it
+                                    )
+                                }
                             },
                             onTimerChange = {
-                                timerSelected.value = it
+                                if (applicationInterface != null && preview != null) {
+                                    viewModel.setTimerSelected(
+                                        this@MainActivity,
+                                        it
+                                    )
+                                }
                             },
                             onRepeatChange = {
-                                repeatSelected.value = it
-
+                                if (applicationInterface != null && preview != null) {
+                                    viewModel.setRepeatSelected(
+                                        this@MainActivity,
+                                        it
+                                    )
+                                }
                             },
                             onSpeedChange = {
-                                speedSelected.value = it
+                                if (applicationInterface != null && preview != null) {
+                                    viewModel.setSpeedSelected(
+                                        this@MainActivity,
+                                        applicationInterface!!,
+                                        preview!!, it
+                                    )
+                                }
                             },
                             onClose = { showCameraSettings.value = false },
                             onOpenSettings = {
-
+                                clickedSettings()
                             },
                         )
                     }
 
                     if (showConfigTableSettings.value) {
-                        CameraConfigTableSettings(
+                        CameraControls (
                             onClose = { showConfigTableSettings.value = false }
                         )
                     }
@@ -2332,16 +2397,16 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun userSwitchToCamera(cameraId: Int, cameraIdSPhysical: String?) {
         if (MyDebug.LOG) Log.d(TAG, "userSwitchToCamera: $cameraId / $cameraIdSPhysical")
-        val switchCameraButton = binding.switchCamera
-        val switchMultiCameraButton = binding.switchMultiCamera
+//        val switchCameraButton = binding.switchCamera
+//        val switchMultiCameraButton = binding.switchMultiCamera
         // prevent slowdown if user repeatedly clicks:
-        switchCameraButton.isEnabled = false
-        switchMultiCameraButton.isEnabled = false
+//        switchCameraButton.isEnabled = false
+//        switchMultiCameraButton.isEnabled = false
         applicationInterface!!.reset(true)
         this.applicationInterface!!.drawPreview.setDimPreview(true)
         this.preview?.setCamera(cameraId, cameraIdSPhysical)
-        switchCameraButton.isEnabled = true
-        switchMultiCameraButton.isEnabled = true
+//        switchCameraButton.isEnabled = true
+//        switchMultiCameraButton.isEnabled = true
         // no need to call mainUI.setSwitchCameraContentDescription - this will be called from Preview.cameraSetup when the
         // new camera is opened
     }
@@ -2605,12 +2670,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // safe.
         applicationInterface!!.stopPanorama(true)
 
-        val switchVideoButton = binding.switchVideo
-        switchVideoButton.isEnabled = false // prevent slowdown if user repeatedly clicks
+//        val switchVideoButton = binding.switchVideo
+//        switchVideoButton.isEnabled = false // prevent slowdown if user repeatedly clicks
         applicationInterface!!.reset(false)
         this.applicationInterface!!.drawPreview.setDimPreview(true)
         this.preview?.switchVideo(false, true)
-        switchVideoButton.isEnabled = true
+//        switchVideoButton.isEnabled = true
 
         mainUI?.setTakePhotoIcon()
         mainUI?.setPopupIcon() // needed as turning to video mode or back can turn flash mode off or back on
@@ -2670,7 +2735,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun clickedPopupSettings() {
         if (MyDebug.LOG) Log.d(TAG, "clickedPopupSettings")
-        mainUI?.togglePopupSettings()
+//        mainUI?.togglePopupSettings()
     }
 
     private val preferencesListener = PreferencesListener()
@@ -3384,13 +3449,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 button.visibility = View.GONE
             }
         }
-        if (!showSwitchMultiCamIcon()) {
-            // also handle the multi-cam icon here, as this can change when switching between front/back cameras
-            // (e.g., if say a device only has multiple back cameras)
-            val button = binding.switchMultiCamera
-            changed = changed || (button.visibility != View.GONE)
-            button.visibility = View.GONE
-        }
+//        if (!showSwitchMultiCamIcon()) {
+//            // also handle the multi-cam icon here, as this can change when switching between front/back cameras
+//            // (e.g., if say a device only has multiple back cameras)
+//            val button = binding.switchMultiCamera
+//            changed = changed || (button.visibility != View.GONE)
+//            button.visibility = View.GONE
+//        }
         if (MyDebug.LOG) Log.d(TAG, "checkDisableGUIIcons: $changed")
         return changed
     }
@@ -4337,17 +4402,17 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
      */
     private fun updateGalleryIconToBlank() {
         if (MyDebug.LOG) Log.d(TAG, "updateGalleryIconToBlank")
-        val galleryButton = binding.gallery
-        val bottom = galleryButton.paddingBottom
-        val top = galleryButton.paddingTop
-        val right = galleryButton.paddingRight
-        val left = galleryButton.paddingLeft
-        galleryButton.setImageBitmap(null)
-        galleryButton.setImageResource(R.drawable.baseline_photo_library_white_48)
-        // workaround for setImageResource also resetting padding, Android bug
-        galleryButton.setPadding(left, top, right, bottom)
+//        val galleryButton = binding.gallery
+//        val bottom = galleryButton.paddingBottom
+//        val top = galleryButton.paddingTop
+//        val right = galleryButton.paddingRight
+//        val left = galleryButton.paddingLeft
+//        galleryButton.setImageBitmap(null)
+//        galleryButton.setImageResource(R.drawable.baseline_photo_library_white_48)
+////         workaround for setImageResource also resetting padding, Android bug
+//        galleryButton.setPadding(left, top, right, bottom)
         gallery_bitmap = null
-        cameraViewModel.setGalleryBitmap(gallery_bitmap)
+        viewModel.setGalleryBitmap(gallery_bitmap)
     }
 
     /** Shows a thumbnail for the gallery icon.
@@ -4362,10 +4427,10 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             if (MyDebug.LOG) Log.d(TAG, "cancel update_gallery_future")
             update_gallery_future?.cancel(true)
         }
-        val galleryButton = binding.gallery
-        galleryButton.setImageBitmap(thumbnail)
+//        val galleryButton = binding.gallery
+//        galleryButton.setImageBitmap(thumbnail)
         gallery_bitmap = thumbnail
-        cameraViewModel.setGalleryBitmap(gallery_bitmap)
+        viewModel.setGalleryBitmap(gallery_bitmap)
     }
 
     /** Updates the gallery icon by searching for the most recent photo.
@@ -4521,35 +4586,34 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun savingImage(started: Boolean) {
         if (MyDebug.LOG) Log.d(TAG, "savingImage: " + started)
-
-        this.runOnUiThread(object : Runnable {
-            override fun run() {
-                val galleryButton = binding.gallery
-                if (started) {
-                    //galleryButton.setColorFilter(0x80ffffff, PorterDuff.Mode.MULTIPLY);
-                    if (gallery_save_anim == null) {
-                        gallery_save_anim = ValueAnimator.ofInt(
-                            Color.argb(200, 255, 255, 255), Color.argb(63, 255, 255, 255)
-                        )
-                        gallery_save_anim!!.setEvaluator(ArgbEvaluator())
-                        gallery_save_anim!!.setRepeatCount(ValueAnimator.INFINITE)
-                        gallery_save_anim!!.setRepeatMode(ValueAnimator.REVERSE)
-                        gallery_save_anim!!.setDuration(500)
-                    }
-                    gallery_save_anim!!.addUpdateListener(object : AnimatorUpdateListener {
-                        override fun onAnimationUpdate(animation: ValueAnimator) {
-                            galleryButton.setColorFilter(
-                                (animation.getAnimatedValue() as Int?)!!, PorterDuff.Mode.MULTIPLY
-                            )
-                        }
-                    })
-                    gallery_save_anim!!.start()
-                } else if (gallery_save_anim != null) {
-                    gallery_save_anim!!.cancel()
-                }
-                galleryButton.setColorFilter(null)
-            }
-        })
+//        this.runOnUiThread(object : Runnable {
+//            override fun run() {
+//                val galleryButton = binding.gallery
+//                if (started) {
+//                    //galleryButton.setColorFilter(0x80ffffff, PorterDuff.Mode.MULTIPLY);
+//                    if (gallery_save_anim == null) {
+//                        gallery_save_anim = ValueAnimator.ofInt(
+//                            Color.argb(200, 255, 255, 255), Color.argb(63, 255, 255, 255)
+//                        )
+//                        gallery_save_anim!!.setEvaluator(ArgbEvaluator())
+//                        gallery_save_anim!!.setRepeatCount(ValueAnimator.INFINITE)
+//                        gallery_save_anim!!.setRepeatMode(ValueAnimator.REVERSE)
+//                        gallery_save_anim!!.setDuration(500)
+//                    }
+//                    gallery_save_anim!!.addUpdateListener(object : AnimatorUpdateListener {
+//                        override fun onAnimationUpdate(animation: ValueAnimator) {
+//                            galleryButton.setColorFilter(
+//                                (animation.getAnimatedValue() as Int?)!!, PorterDuff.Mode.MULTIPLY
+//                            )
+//                        }
+//                    })
+//                    gallery_save_anim!!.start()
+//                } else if (gallery_save_anim != null) {
+//                    gallery_save_anim!!.cancel()
+//                }
+//                galleryButton.setColorFilter(null)
+//            }
+//        })
     }
 
     /** Called when the number of images being saved in ImageSaver changes (or otherwise something
@@ -5272,14 +5336,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         this.preview?.takePicturePressed(photo_snapshot, continuous_fast_burst)
 
         if (preview?.isVideo == true) {
-            cameraViewModel.setPhotoMode(false)
+            viewModel.setPhotoMode(false)
             if (preview?.isVideoRecording == true) {
-                cameraViewModel.setVideoRecording(true)
+                viewModel.setVideoRecording(true)
             } else {
-                cameraViewModel.setVideoRecording(false)
+                viewModel.setVideoRecording(false)
             }
         } else {
-            cameraViewModel.setPhotoMode(true)
+            viewModel.setPhotoMode(true)
         }
     }
 
@@ -5446,6 +5510,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             if (MyDebug.LOG) Log.d(TAG, "using Camera2 API, so can disable the force 4K option")
             this.disableForceVideo4K()
         }
+
         if (this.supportsForceVideo4K() && preview?.videoQualityHander?.getSupportedVideoSizes() != null) {
             preview?.videoQualityHander?.getSupportedVideoSizes()?.let {
                 for (size in it) {
@@ -5459,12 +5524,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
 
         }
+
         if (MyDebug.LOG) Log.d(
             TAG,
             "cameraSetup: time after handling Force 4K option: " + (System.currentTimeMillis() - debugTime)
         )
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
         run {
             if (MyDebug.LOG) Log.d(TAG, "set up zoom")
             if (MyDebug.LOG) Log.d(TAG, "has_zoom? " + preview?.supportsZoom())
@@ -5545,24 +5612,26 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 "cameraSetup: time after setting up zoom: " + (System.currentTimeMillis() - debugTime)
             )
 
-            val takePhotoButton = binding.takePhoto
-            if (sharedPreferences.getBoolean(PreferenceKeys.ShowTakePhotoPreferenceKey, true)) {
-                if (mainUI?.inImmersiveMode() == false) {
-                    takePhotoButton.visibility = View.VISIBLE
-                }
-            } else {
-                takePhotoButton.visibility = View.INVISIBLE
-            }
+//            val takePhotoButton = binding.takePhoto
+//            if (sharedPreferences.getBoolean(PreferenceKeys.ShowTakePhotoPreferenceKey, true)) {
+//                if (mainUI?.inImmersiveMode() == false) {
+//                    takePhotoButton.visibility = View.VISIBLE
+//                }
+//            } else {
+//                takePhotoButton.visibility = View.INVISIBLE
+//            }
         }
         run {
             if (MyDebug.LOG) Log.d(TAG, "set up manual focus")
             setManualFocusSeekbar(false)
             setManualFocusSeekbar(true)
         }
+
         if (MyDebug.LOG) Log.d(
             TAG,
             "cameraSetup: time after setting up manual focus: " + (System.currentTimeMillis() - debugTime)
         )
+
         run {
             if (preview?.supportsISORange() == true) {
                 if (MyDebug.LOG) Log.d(TAG, "set up iso")
@@ -5777,9 +5846,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         if (pushSwitchedCamera) {
             pushSwitchedCamera = false
-            val switchCameraButton = binding.switchCamera
-            switchCameraButton.animate().rotationBy(180f).setDuration(250)
-                .setInterpolator(AccelerateDecelerateInterpolator()).start()
+//            val switchCameraButton = binding.switchCamera
+//            switchCameraButton.animate().rotationBy(180f).setDuration(250).setInterpolator(AccelerateDecelerateInterpolator()).start()
         }
     }
 

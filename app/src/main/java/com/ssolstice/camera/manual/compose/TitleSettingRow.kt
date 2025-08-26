@@ -15,6 +15,6 @@ fun TitleSettingRow(text: String) {
         text,
         style = MaterialTheme.typography.titleMedium,
         color = Color(0xFFD7D4D4),
-        modifier = Modifier.padding(top = 8.dp)
+        modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
     )
 }

@@ -25,12 +25,12 @@ import com.ssolstice.camera.manual.R
 
 @Preview
 @Composable
-fun CameraConfigTableSettingsPreview() {
-    CameraConfigTableSettings()
+fun CameraControlsPreview() {
+    CameraControls()
 }
 
 @Composable
-fun CameraConfigTableSettings(
+fun CameraControls(
     modifier: Modifier = Modifier,
     onClose: () -> Unit = {}
 ) {
@@ -66,17 +66,6 @@ fun CameraConfigTableSettings(
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        // flash
-        Text(stringResource(R.string.more_light), color = WhiteColor)
-        // raw
-        Text(stringResource(R.string.raw_photos), color = WhiteColor)
-        // resolution
-        Text(stringResource(R.string.resolution), color = WhiteColor)
-        // timer (photo mode)
-        Text(stringResource(R.string.preference_timer), color = WhiteColor)
-        // repeat (photo mode)
-        Text(stringResource(R.string.repeat), color = WhiteColor)
-        // speed (video mode)
-        Text(stringResource(R.string.speed), color = WhiteColor)
+        CameraControlsContent()
     }
 }
