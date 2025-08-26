@@ -2923,7 +2923,7 @@ public class DrawPreview {
         // apply any orientation ourselves. However, we're we do want to know the true rotation of the
         // device, as it affects how certain elements of the UI are layed out.
         int device_ui_rotation;
-        if( MainActivity.lock_to_landscape ) {
+        if( MainActivity.lockToLandscape) {
             device_ui_rotation = ui_rotation;
         }
         else {

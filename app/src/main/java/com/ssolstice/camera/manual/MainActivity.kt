@@ -44,7 +44,6 @@ import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.renderscript.RenderScript
 import android.speech.tts.TextToSpeech
-import android.speech.tts.TextToSpeech.OnInitListener
 import android.text.Html
 import android.text.InputFilter
 import android.text.InputType
@@ -75,21 +74,29 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.exifinterface.media.ExifInterface
-import androidx.lifecycle.lifecycleScope
 import com.ssolstice.camera.manual.MyApplicationInterface.PhotoMode
 import com.ssolstice.camera.manual.cameracontroller.CameraController
 import com.ssolstice.camera.manual.cameracontroller.CameraController.Facing
 import com.ssolstice.camera.manual.cameracontroller.CameraController.TonemapProfile
 import com.ssolstice.camera.manual.cameracontroller.CameraControllerManager
 import com.ssolstice.camera.manual.cameracontroller.CameraControllerManager2
-import com.ssolstice.camera.manual.compose.CameraAction
-import com.ssolstice.camera.manual.compose.CameraBridge
+import com.ssolstice.camera.manual.compose.CameraConfigTableSettings
 import com.ssolstice.camera.manual.compose.CameraScreen
+import com.ssolstice.camera.manual.compose.CameraSettings
+import com.ssolstice.camera.manual.compose.CameraViewModel
 import com.ssolstice.camera.manual.compose.ui.theme.OpenCameraTheme
 import com.ssolstice.camera.manual.databinding.ActivityMainBinding
 import com.ssolstice.camera.manual.preview.Preview
@@ -98,6 +105,7 @@ import com.ssolstice.camera.manual.ui.DrawPreview
 import com.ssolstice.camera.manual.ui.FolderChooserDialog
 import com.ssolstice.camera.manual.ui.MainUI
 import com.ssolstice.camera.manual.ui.ManualSeekbars
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -111,13 +119,15 @@ import kotlin.concurrent.Volatile
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
-import androidx.core.content.edit
 
 /** The main Activity for ManualCamera.
  */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     private val TAG = "PreferencesListener"
+
+    private val cameraViewModel: CameraViewModel by viewModels()
 
     var isAppPaused: Boolean = true
         private set
@@ -129,13 +139,18 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     private var bluetoothRemoteControl: BluetoothRemoteControl? = null
     private var permissionHandler: PermissionHandler? = null
     private var settingsManager: SettingsManager? = null
+
     var mainUI: MainUI? = null
         private set
+
     private var manualSeekbars: ManualSeekbars? = null
+
     var applicationInterface: MyApplicationInterface? = null
         private set
+
     var textFormatter: TextFormatter? = null
         private set
+
     private var soundPoolManager: SoundPoolManager? = null
     private var magneticSensor: MagneticSensor? = null
 
@@ -144,6 +159,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     //private SpeechControl speechControl;
     var preview: Preview? = null
         private set
+
     private var orientationEventListener: OrientationEventListener? = null
     private var layoutChangeListener: OnLayoutChangeListener? = null
     private var large_heap_memory = 0
@@ -154,11 +170,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     var saveLocationHistorySAF: SaveLocationHistory? =
         null // save location for SAF (only initialised when SAF is used)
         private set
+
     private var saf_dialog_from_preferences =
         false // if a SAF dialog is opened, this records whether we opened it from the Preferences
+
     var isCameraInBackground: Boolean =
         false // whether the camera is covered by a fragment/dialog (such as settings or folder picker)
         private set
+
     private var gestureDetector: GestureDetector? = null
 
     /** Whether the screen is locked (see lockScreen()).
@@ -227,7 +246,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         false // used when returning from Settings/Popup - if we're displaying a toast anyway, don't want to display the info toast too
     private var push_info_toast_text: String? =
         null // can be used to "push" extra text to the info text for showPhotoVideoToast()
-    private var push_switched_camera =
+    private var pushSwitchedCamera =
         false // whether to display animation for switching front/back cameras
 
     // for testing; must be volatile for test project reading the state
@@ -293,43 +312,23 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     var exposureSeekbarProgressZero: Int = 0
         private set
 
-    private val bridge = CameraBridge()
-
     lateinit var binding: ActivityMainBinding
 
+    @SuppressLint("ClickableViewAccessibility", "UseKtx")
     override fun onCreate(savedInstanceState: Bundle?) {
         var debug_time: Long = 0
         if (MyDebug.LOG) {
-            Log.d(TAG, "onCreate: " + this)
+            Log.d(TAG, "onCreate: $this")
             debug_time = System.currentTimeMillis()
         }
         activity_count++
-        if (MyDebug.LOG) Log.d(TAG, "activity_count: " + activity_count)
+        if (MyDebug.LOG) Log.d(TAG, "activity_count: $activity_count")
         //EdgeToEdge.enable(this, SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT), SystemBarStyle.dark(Color.TRANSPARENT)); // test edge-to-edge on pre-Android 15
         super.onCreate(savedInstanceState)
 
         // 2. Gán binding trong onCreate
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.getRoot())
-
-        // Lắng nghe action từ Compose
-        lifecycleScope.launchWhenStarted {
-            bridge.actions.collect { action ->
-                when (action) {
-                    CameraAction.TakePhoto -> { /* gọi MainActivity.takePhoto() */
-                    }
-
-                    CameraAction.SwitchCamera -> { /* gọi MainActivity.switchCamera() */
-                    }
-
-                    CameraAction.ToggleFlash -> { /* gọi MainActivity.toggleFlash() */
-                    }
-                }
-            }
-        }
-
-        val composeView = binding.composeView
-        composeView.setContent { OpenCameraTheme { CameraScreen() } }
 
         PreferenceManager.setDefaultValues(
             this, R.xml.preferences, false
@@ -339,22 +338,18 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             "onCreate: time after setting default preference values: " + (System.currentTimeMillis() - debug_time)
         )
 
-        if (getIntent() != null && getIntent().getExtras() != null) {
+        if (intent != null && intent.extras != null) {
             // whether called from testing
-            is_test = getIntent().getExtras()!!.getBoolean("test_project")
-            if (MyDebug.LOG) Log.d(TAG, "is_test: " + is_test)
-        }/*if( getIntent() != null && getIntent().getExtras() != null ) {
-            // whether called from Take Photo widget
-            if( MyDebug.LOG )
-                Log.d(TAG, "take_photo?: " + getIntent().getExtras().getBoolean(TakePhoto.TAKE_PHOTO));
-        }*/
+            is_test = intent.extras!!.getBoolean("test_project")
+            if (MyDebug.LOG) Log.d(TAG, "is_test: $is_test")
+        }
         if (MyDebug.LOG) {
             // whether called from Take Photo widget
             Log.d(TAG, "take_photo?: " + TakePhoto.TAKE_PHOTO)
         }
-        if (getIntent() != null && getIntent().getAction() != null) {
+        if (intent != null && intent.action != null) {
             // invoked via the manifest shortcut?
-            if (MyDebug.LOG) Log.d(TAG, "shortcut: " + getIntent().getAction())
+            if (MyDebug.LOG) Log.d(TAG, "shortcut: " + intent.action)
         }
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
@@ -362,26 +357,26 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // risk of running out of memory on lower end devices, due to manipulation of large bitmaps
         val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
         if (MyDebug.LOG) {
-            Log.d(TAG, "large max memory = " + activityManager.getLargeMemoryClass() + "MB")
+            Log.d(TAG, "large max memory = " + activityManager.largeMemoryClass + "MB")
         }
-        large_heap_memory = activityManager.getLargeMemoryClass()
+        large_heap_memory = activityManager.largeMemoryClass
         if (large_heap_memory >= 128) {
             supports_auto_stabilise = true
         }
-        if (MyDebug.LOG) Log.d(TAG, "supports_auto_stabilise? " + supports_auto_stabilise)
+        if (MyDebug.LOG) Log.d(TAG, "supports_auto_stabilise? $supports_auto_stabilise")
 
         // hack to rule out phones unlikely to have 4K video, so no point even offering the option!
         // both S5 and Note 3 have 128MB standard and 512MB large heap (tested via Samsung RTL), as does Galaxy K Zoom
-        if (activityManager.getLargeMemoryClass() >= 512) {
+        if (activityManager.largeMemoryClass >= 512) {
             supports_force_video_4k = true
         }
-        if (MyDebug.LOG) Log.d(TAG, "supports_force_video_4k? " + supports_force_video_4k)
+        if (MyDebug.LOG) Log.d(TAG, "supports_force_video_4k? $supports_force_video_4k")
 
         // set up components
         bluetoothRemoteControl = BluetoothRemoteControl(this)
         permissionHandler = PermissionHandler(this)
         settingsManager = SettingsManager(this)
-        mainUI = MainUI(this)
+        mainUI = MainUI(this, cameraViewModel)
         manualSeekbars = ManualSeekbars()
         applicationInterface = MyApplicationInterface(this, savedInstanceState)
         if (MyDebug.LOG) Log.d(
@@ -401,14 +396,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // set some per-device defaults
         // must be done before creating the Preview (as setDeviceDefaults() may set Camera2 API)
         val has_done_first_time = sharedPreferences.contains(PreferenceKeys.FirstTimePreferenceKey)
-        if (MyDebug.LOG) Log.d(TAG, "has_done_first_time: " + has_done_first_time)
+        if (MyDebug.LOG) Log.d(TAG, "has_done_first_time: $has_done_first_time")
         if (!has_done_first_time) {
             // must be done after initCamera2Support()
             setDeviceDefaults()
         }
 
         val settings_is_open = settingsIsOpen()
-        if (MyDebug.LOG) Log.d(TAG, "settings_is_open?: " + settings_is_open)
+        if (MyDebug.LOG) Log.d(TAG, "settings_is_open?: $settings_is_open")
         // settings_is_open==true can happen if application is recreated when settings is open
         // to reproduce: go to settings, then turn screen off and on (and unlock)
         if (!settings_is_open) {
@@ -426,7 +421,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             this.storageUtils!!.getSaveLocation()
         )
         checkSaveLocations()
-        if (applicationInterface!!.getStorageUtils().isUsingSAF()) {
+        if (applicationInterface!!.storageUtils.isUsingSAF()) {
             if (MyDebug.LOG) Log.d(TAG, "create new SaveLocationHistory for SAF")
             this.saveLocationHistorySAF = SaveLocationHistory(
                 this,
@@ -492,7 +487,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) layout.rotationAnimation =
                 WindowManager.LayoutParams.ROTATION_ANIMATION_SEAMLESS
             else layout.rotationAnimation = WindowManager.LayoutParams.ROTATION_ANIMATION_JUMPCUT
-            getWindow().attributes = layout
+            window.attributes = layout
         }
 
         // Setup multi-camera buttons (must be done after creating preview so we know which Camera API is being used,
@@ -540,10 +535,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         // initialise on-screen button visibility
         val switchCameraButton = binding.switchCamera
-        switchCameraButton.setVisibility(if (n_cameras > 1) View.VISIBLE else View.GONE)
+        switchCameraButton.visibility = if (n_cameras > 1) View.VISIBLE else View.GONE
         // switchMultiCameraButton visibility updated below in mainUI.updateOnScreenIcons(), as it also depends on user preference
         val speechRecognizerButton = binding.audioControl
-        speechRecognizerButton.setVisibility(View.GONE) // disabled by default, until the speech recognizer is created
+        speechRecognizerButton.visibility =
+            View.GONE // disabled by default, until the speech recognizer is created
         if (MyDebug.LOG) Log.d(
             TAG,
             "onCreate: time after setting button visibility: " + (System.currentTimeMillis() - debug_time)
@@ -575,7 +571,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // initialise state of on-screen icons
         mainUI?.updateOnScreenIcons()
 
-        if (lock_to_landscape) {
+        if (lockToLandscape) {
             // listen for orientation event change (only required if lock_to_landscape==true
             // (MainUI.onOrientationChanged() does nothing if lock_to_landscape==false)
             orientationEventListener = object : OrientationEventListener(this) {
@@ -589,21 +585,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             )
         }
 
-        layoutChangeListener = object : OnLayoutChangeListener {
-            override fun onLayoutChange(
-                v: View?,
-                left: Int,
-                top: Int,
-                right: Int,
-                bottom: Int,
-                oldLeft: Int,
-                oldTop: Int,
-                oldRight: Int,
-                oldBottom: Int
-            ) {
+        layoutChangeListener =
+            OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
                 if (MyDebug.LOG) Log.d(TAG, "onLayoutChange")
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInMultiWindowMode()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInMultiWindowMode) {
                     val display_size = Point()
                     applicationInterface!!.getDisplaySize(display_size, true)
                     if (MyDebug.LOG) {
@@ -625,7 +611,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     }
                 }
             }
-        }
 
         // set up take photo long click
         takePhotoButton.setOnLongClickListener(object : OnLongClickListener {
@@ -638,21 +623,18 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
         })
         // set up on touch listener so we can detect if we've released from a long click
-        takePhotoButton.setOnTouchListener(object : OnTouchListener {
+        takePhotoButton.setOnTouchListener { view, motionEvent ->
             // the suppressed warning ClickableViewAccessibility suggests calling view.performClick for ACTION_UP, but this
             // results in an additional call to clickedTakePhoto() - that is, if there is no long press, we get two calls to
             // clickedTakePhoto instead one one; and if there is a long press, we get one call to clickedTakePhoto where
             // there should be none.
-            @SuppressLint("ClickableViewAccessibility")
-            override fun onTouch(view: View?, motionEvent: MotionEvent): Boolean {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    if (MyDebug.LOG) Log.d(TAG, "takePhotoButton ACTION_UP")
-                    takePhotoButtonLongClickCancelled()
-                    if (MyDebug.LOG) Log.d(TAG, "takePhotoButton ACTION_UP done")
-                }
-                return false
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                if (MyDebug.LOG) Log.d(TAG, "takePhotoButton ACTION_UP")
+                takePhotoButtonLongClickCancelled()
+                if (MyDebug.LOG) Log.d(TAG, "takePhotoButton ACTION_UP done")
             }
-        })
+            false
+        }
 
         // set up gallery button long click
         val galleryButton = binding.gallery
@@ -662,7 +644,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     // return false, so a regular click will still be triggered when the user releases the touch
                     return false
                 }
-                //preview.showToast(null, "Long click");
                 longClickedGallery()
                 return true
             }
@@ -694,12 +675,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 alertDialog.setMessage(R.string.intro_text)
                 alertDialog.setPositiveButton(android.R.string.ok, null)
                 alertDialog.setNegativeButton(
-                    R.string.preference_online_help, object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface?, which: Int) {
-                            if (MyDebug.LOG) Log.d(TAG, "online help")
-                            launchOnlineHelp()
-                        }
-                    })
+                    R.string.preference_online_help
+                ) { dialog, which ->
+                    if (MyDebug.LOG) Log.d(TAG, "online help")
+                    launchOnlineHelp()
+                }
                 alertDialog.show()
             }
 
@@ -708,22 +688,22 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         run {
             // handle What's New dialog
-            var version_code = -1
+            var versionCode = -1
             try {
-                val pInfo = getPackageManager().getPackageInfo(getPackageName(), 0)
-                version_code = pInfo.versionCode
+                val pInfo = packageManager.getPackageInfo(packageName, 0)
+                versionCode = pInfo.versionCode
             } catch (e: PackageManager.NameNotFoundException) {
                 if (MyDebug.LOG) Log.d(
                     TAG, "NameNotFoundException exception trying to get version number"
                 )
                 e.printStackTrace()
             }
-            if (version_code != -1) {
-                val latest_version =
+            if (versionCode != -1) {
+                val latestVersion =
                     sharedPreferences.getInt(PreferenceKeys.LatestVersionPreferenceKey, 0)
                 if (MyDebug.LOG) {
-                    Log.d(TAG, "version_code: " + version_code)
-                    Log.d(TAG, "latest_version: " + latest_version)
+                    Log.d(TAG, "version_code: $versionCode")
+                    Log.d(TAG, "latest_version: $latestVersion")
                 }
                 //final boolean whats_new_enabled = false;
                 val whats_new_enabled = true
@@ -733,20 +713,20 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     // E.g., we have a "What's New" for 1.44 (64), but then push out a quick fix for 1.44.1 (65). We don't want to
                     // show the dialog again to people who already received 1.44 (64), but we still want to show the dialog to people
                     // upgrading from earlier versions.
-                    var whats_new_version = 91 // 1.54
-                    whats_new_version = min(
-                        whats_new_version, version_code
+                    var whatsNewVersion = 91 // 1.54
+                    whatsNewVersion = min(
+                        whatsNewVersion, versionCode
                     ) // whats_new_version should always be <= version_code, but just in case!
                     if (MyDebug.LOG) {
-                        Log.d(TAG, "whats_new_version: " + whats_new_version)
+                        Log.d(TAG, "whats_new_version: $whatsNewVersion")
                     }
-                    val force_whats_new = false
+                    val forceWhatsNew = false
                     //final boolean force_whats_new = true; // for testing
                     val allow_show_whats_new =
                         sharedPreferences.getBoolean(PreferenceKeys.ShowWhatsNewPreferenceKey, true)
-                    if (MyDebug.LOG) Log.d(TAG, "allow_show_whats_new: " + allow_show_whats_new)
+                    if (MyDebug.LOG) Log.d(TAG, "allow_show_whats_new: $allow_show_whats_new")
                     // don't show What's New if this is the first time the user has run
-                    if (has_done_first_time && allow_show_whats_new && (force_whats_new || whats_new_version > latest_version)) {
+                    if (has_done_first_time && allow_show_whats_new && (forceWhatsNew || whatsNewVersion > latestVersion)) {
                         val alertDialog = AlertDialog.Builder(this)
                         alertDialog.setTitle(R.string.whats_new)
                         alertDialog.setMessage(R.string.whats_new_text)
@@ -767,7 +747,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 // want to then show the What's New dialog next time we run! Similarly if the user had disabled showing the dialog,
                 // but then enables it, we still shouldn't show the dialog until the new time ManualCamera upgrades.
                 val editor = sharedPreferences.edit()
-                editor.putInt(PreferenceKeys.LatestVersionPreferenceKey, version_code)
+                editor.putInt(PreferenceKeys.LatestVersionPreferenceKey, versionCode)
                 editor.apply()
             }
         }
@@ -785,49 +765,148 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // initialise text to speech engine
         textToSpeechSuccess = false
         // run in separate thread so as to not delay startup time
-        Thread(object : Runnable {
-            override fun run() {
-                textToSpeech = TextToSpeech(this@MainActivity, object : OnInitListener {
-                    override fun onInit(status: Int) {
-                        if (MyDebug.LOG) Log.d(TAG, "TextToSpeech initialised")
-                        if (status == TextToSpeech.SUCCESS) {
-                            textToSpeechSuccess = true
-                            if (MyDebug.LOG) Log.d(TAG, "TextToSpeech succeeded")
-                        } else {
-                            if (MyDebug.LOG) Log.d(TAG, "TextToSpeech failed")
-                        }
-                    }
-                })
+        Thread {
+            textToSpeech = TextToSpeech(this@MainActivity) { status ->
+                if (MyDebug.LOG) Log.d(TAG, "TextToSpeech initialised")
+                if (status == TextToSpeech.SUCCESS) {
+                    textToSpeechSuccess = true
+                    if (MyDebug.LOG) Log.d(TAG, "TextToSpeech succeeded")
+                } else {
+                    if (MyDebug.LOG) Log.d(TAG, "TextToSpeech failed")
+                }
             }
-        }).start()
+        }.start()
 
         // handle on back behaviour
         popupOnBackPressedCallback = PopupOnBackPressedCallback(false)
-        this.onBackPressedDispatcher.addCallback(this, popupOnBackPressedCallback!!)
-        pausePreviewOnBackPressedCallback = PausePreviewOnBackPressedCallback(false)
-        this.onBackPressedDispatcher.addCallback(this, pausePreviewOnBackPressedCallback!!)
-        screenLockOnBackPressedCallback = ScreenLockOnBackPressedCallback(false)
-        this.onBackPressedDispatcher.addCallback(this, screenLockOnBackPressedCallback!!)
+        this.onBackPressedDispatcher.addCallback(
+            this,
+            popupOnBackPressedCallback!!
+        )
 
-        // create notification channel - only needed on Android 8+
-        // update: notifications now removed due to needing permissions on Android 13+
-        /*if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ) {
-            CharSequence name = "ManualCamera Image Saving";
-            String description = "Notification channel for processing and saving images in the background";
-            int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }*/
+        pausePreviewOnBackPressedCallback = PausePreviewOnBackPressedCallback(false)
+        this.onBackPressedDispatcher.addCallback(
+            this,
+            pausePreviewOnBackPressedCallback!!
+        )
+
+        screenLockOnBackPressedCallback = ScreenLockOnBackPressedCallback(false)
+        this.onBackPressedDispatcher.addCallback(
+            this,
+            screenLockOnBackPressedCallback!!
+        )
 
         // so we get the icons rotation even when rotating for the first time - see onSystemOrientationChanged
         this.hasOldSystemOrientation = true
         this.oldSystemOrientation = this.systemOrientation
 
-        initClickedView()
+        binding.gallery.setOnClickListener { clickedGallery() }
+        binding.takePhoto.setOnClickListener { clickedTakePhoto() }
+        binding.switchCamera.setOnClickListener { clickedSwitchCamera() }
+
+        binding.switchVideo.setOnClickListener { clickedSwitchVideo() }
+        binding.takePhotoWhenVideoRecording.setOnClickListener { clickedTakePhotoVideoSnapshot() }
+        binding.pauseVideo.setOnClickListener { clickedPauseVideo() }
+        binding.settings.setOnClickListener { clickedSettings() }
+
+        binding.cancelPanorama.setOnClickListener { clickedCancelPanorama() }
+        binding.cycleRaw.setOnClickListener { clickedCycleRaw() }
+        binding.cycleFlash.setOnClickListener { clickedCycleFlash() }
+        binding.storeLocation.setOnClickListener { clickedStoreLocation() }
+        binding.textStamp.setOnClickListener { clickedTextStamp() }
+        binding.stamp.setOnClickListener { clickedStamp() }
+        binding.focusPeaking.setOnClickListener { clickedFocusPeaking() }
+        binding.autoLevel.setOnClickListener { clickedAutoLevel() }
+        binding.faceDetection.setOnClickListener { clickedFaceDetection() }
+        binding.audioControl.setOnClickListener { clickedAudioControl() }
+        binding.switchMultiCamera.setOnClickListener { clickedSwitchMultiCamera() }
+
+        binding.popup.setOnClickListener { clickedPopupSettings() }
+        binding.exposure.setOnClickListener { clickedExposure() }
+        binding.exposureLock.setOnClickListener { clickedExposureLock() }
+        binding.whiteBalanceLock.setOnClickListener { clickedWhiteBalanceLock() }
+        binding.trash.setOnClickListener { clickedTrash() }
+        binding.share.setOnClickListener { clickedShare() }
+
+        binding.composeView.setContent {
+
+            OpenCameraTheme {
+                val isRecording by cameraViewModel.isRecording.collectAsState()
+                val isPhotoMode by cameraViewModel.isPhotoMode.collectAsState()
+                val isVideoRecordingPaused by cameraViewModel.isVideoRecordingPaused.collectAsState()
+                val galleryBitmap by cameraViewModel.galleryBitmap.collectAsState()
+
+                val resolutions by cameraViewModel.resolutions.collectAsState()
+                val timers by cameraViewModel.timers.collectAsState()
+                val repeats by cameraViewModel.repeats.collectAsState()
+
+                val showCameraSettings = rememberSaveable { mutableStateOf(false) }
+                val showConfigTableSettings = rememberSaveable { mutableStateOf(false) }
+
+                val resolutionSelected = remember { mutableStateOf("1920x1080") }
+                val timerSelected = remember { mutableStateOf("Off") }
+                val repeatSelected = remember { mutableStateOf("Off") }
+                val speedSelected = remember { mutableStateOf("Off") }
+
+                Box {
+                    CameraScreen(
+                        isRecording = isRecording,
+                        isVideoRecordingPaused = isVideoRecordingPaused,
+                        isPhotoMode = isPhotoMode,
+                        galleryBitmap = galleryBitmap,
+                        openGallery = { clickedGallery() },
+                        switchCamera = { clickedSwitchCamera() },
+                        switchVideoMode = { clickedSwitchVideo() },
+                        pauseVideo = { clickedPauseVideo() },
+                        takePhoto = { clickedTakePhoto() },
+                        takePhotoVideoSnapshot = { clickedTakePhotoVideoSnapshot() },
+                        showCameraSettings = {
+                            showCameraSettings.value = !showCameraSettings.value
+                        },
+                        showConfigTableSettings = {
+                            showConfigTableSettings.value = !showConfigTableSettings.value
+                        }
+                    )
+
+                    if (showCameraSettings.value) {
+                        CameraSettings(
+                            isPhotoMode = isPhotoMode,
+                            resolutionSelected = resolutionSelected.value,
+                            timerSelected = timerSelected.value,
+                            repeatSelected = repeatSelected.value,
+                            speedSelected = speedSelected.value,
+                            resolutions = resolutions,
+                            timers = timers,
+                            repeats = repeats,
+                            onResolutionChange = {
+                                resolutionSelected.value = it
+                            },
+                            onTimerChange = {
+                                timerSelected.value = it
+                            },
+                            onRepeatChange = {
+                                repeatSelected.value = it
+
+                            },
+                            onSpeedChange = {
+                                speedSelected.value = it
+                            },
+                            onClose = { showCameraSettings.value = false },
+                            onOpenSettings = {
+
+                            },
+                        )
+                    }
+
+                    if (showConfigTableSettings.value) {
+                        CameraConfigTableSettings(
+                            onClose = { showConfigTableSettings.value = false }
+                        )
+                    }
+                }
+
+            }
+        }
 
         if (MyDebug.LOG) {
             Log.d(
@@ -1354,19 +1433,21 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (MyDebug.LOG) Log.d(TAG, "onKeyDown: " + keyCode)
+        if (MyDebug.LOG) Log.d(TAG, "onKeyDown: $keyCode")
         if (this.isCameraInBackground) {
             // don't allow keys such as volume keys for taking photo when camera in background!
             if (MyDebug.LOG) Log.d(TAG, "camera is in background")
         } else {
-            val handled = mainUI?.onKeyDown(keyCode, event) ?: false
-            if (handled) return true
+            if (event != null) {
+                val handled = mainUI?.onKeyDown(keyCode, event) ?: false
+                if (handled) return true
+            }
         }
         return super.onKeyDown(keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-        if (MyDebug.LOG) Log.d(TAG, "onKeyUp: " + keyCode)
+        if (MyDebug.LOG) Log.d(TAG, "onKeyUp: $keyCode")
         if (this.isCameraInBackground) {
             // don't allow keys such as volume keys for taking photo when camera in background!
             if (MyDebug.LOG) Log.d(TAG, "camera is in background")
@@ -1378,7 +1459,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     private fun zoomByStep(change: Int) {
         var change = change
-        if (MyDebug.LOG) Log.d(TAG, "zoomByStep: " + change)
+        if (MyDebug.LOG) Log.d(TAG, "zoomByStep: $change")
         if (preview?.supportsZoom() == true && change != 0) {
             if (preview?.cameraController != null) {
                 // If the minimum zoom is < 1.0, the seekbar will have repeated entries for 1x zoom
@@ -1386,7 +1467,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 // volume keys etc to zoom, we want to skip over these repeated values.
                 val zoom_factor = preview?.cameraController?.getZoom() ?: 1
                 var new_zoom_factor = zoom_factor + change
-                if (MyDebug.LOG) Log.d(TAG, "new_zoom_factor: " + new_zoom_factor)
+                if (MyDebug.LOG) Log.d(TAG, "new_zoom_factor: $new_zoom_factor")
                 while (new_zoom_factor > 0 && new_zoom_factor < preview?.getMaxZoom() ?: 1 && preview?.getZoomRatio(
                         new_zoom_factor
                     ) == preview?.getZoomRatio()
@@ -1394,7 +1475,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     if (change > 0) change++
                     else change--
                     new_zoom_factor = zoom_factor + change
-                    if (MyDebug.LOG) Log.d(TAG, "skip over constant region: " + new_zoom_factor)
+                    if (MyDebug.LOG) Log.d(TAG, "skip over constant region: $new_zoom_factor")
                 }
             }
 
@@ -1435,7 +1516,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         if (change > 0) change++
                         else change--
                         new_progress = progress + change
-                        if (MyDebug.LOG) Log.d(TAG, "skip over constant region: " + new_progress)
+                        if (MyDebug.LOG) Log.d(TAG, "skip over constant region: $new_progress")
                     }
                 }
             }
@@ -1491,7 +1572,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         // Set black window background; also needed if we hide the virtual buttons in immersive mode
         // Note that we do it here rather than customising the theme's android:windowBackground, so this doesn't affect other views - in particular, the MyPreferenceFragment settings
-        getWindow().getDecorView().getRootView().setBackgroundColor(Color.BLACK)
+        window.decorView.rootView.setBackgroundColor(Color.BLACK)
 
         if (edgeToEdgeMode && Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             // needed on Android 15, otherwise the navigation bar is not transparent
@@ -1507,7 +1588,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         if (orientationEventListener != null) {
             orientationEventListener!!.enable()
         }
-        getWindow().getDecorView().addOnLayoutChangeListener(layoutChangeListener)
+        window.decorView.addOnLayoutChangeListener(layoutChangeListener)
 
         // if BLE remote control is enabled, then start the background BLE service
         bluetoothRemoteControl!!.startRemoteControl()
@@ -1515,7 +1596,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         //speechControl.initSpeechRecognizer();
         initLocation()
         initGyroSensors()
-        applicationInterface!!.getImageSaver().onResume()
+        applicationInterface!!.imageSaver.onResume()
         soundPoolManager!!.initSound()
         soundPoolManager!!.loadSound(R.raw.mybeep)
         soundPoolManager!!.loadSound(R.raw.mybeep_hi)
@@ -1528,16 +1609,16 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // been deleted).
         // If it doesn't have exif datetime tags, updateGalleryIcon() may not be able to find the most
         // recent media, so we stick with the cached uri if we can test that it's still accessible.
-        if (!this.storageUtils!!.getLastMediaScannedHasNoExifDateTime()) {
+        if (!this.storageUtils!!.lastMediaScannedHasNoExifDateTime) {
             updateGalleryIcon()
         } else {
             if (MyDebug.LOG) Log.d(TAG, "last media has no exif datetime, so check it still exists")
             var uri_exists = false
             var inputStream: InputStream? = null
-            val check_uri = this.storageUtils!!.getLastMediaScannedCheckUri()
-            if (MyDebug.LOG) Log.d(TAG, "check_uri: " + check_uri)
+            val check_uri = this.storageUtils!!.lastMediaScannedCheckUri
+            if (MyDebug.LOG) Log.d(TAG, "check_uri: $check_uri")
             try {
-                inputStream = this.getContentResolver().openInputStream(check_uri)
+                inputStream = this.contentResolver.openInputStream(check_uri)
                 if (inputStream != null) uri_exists = true
             } catch (ignored: Exception) {
             } finally {
@@ -1588,7 +1669,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     while (i < cameraId && camera_is_default) {
                         val that_front_facing = camera_controller_manager?.getFacing(i)
                         if (MyDebug.LOG) Log.d(
-                            TAG, "camera " + i + " that_front_facing: " + that_front_facing
+                            TAG, "camera $i that_front_facing: $that_front_facing"
                         )
                         if (that_front_facing == front_facing) {
                             // found an earlier camera with same front/back facing
@@ -1596,7 +1677,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         }
                         i++
                     }
-                    if (MyDebug.LOG) Log.d(TAG, "camera_is_default: " + camera_is_default)
+                    if (MyDebug.LOG) Log.d(TAG, "camera_is_default: $camera_is_default")
                     if (!camera_is_default) {
                         this.pushCameraIdToast(cameraId, cameraIdSPhysical)
                     }
@@ -1604,7 +1685,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
         }
 
-        push_switched_camera = false // just in case
+        pushSwitchedCamera = false // just in case
 
         if (MyDebug.LOG) {
             Log.d(
@@ -1614,7 +1695,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
-        if (MyDebug.LOG) Log.d(TAG, "onWindowFocusChanged: " + hasFocus)
+        if (MyDebug.LOG) Log.d(TAG, "onWindowFocusChanged: $hasFocus")
         super.onWindowFocusChanged(hasFocus)
         if (!this.isCameraInBackground && hasFocus) {
             // low profile mode is cleared when app goes into background
@@ -1640,21 +1721,21 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         if (orientationEventListener != null) {
             orientationEventListener!!.disable()
         }
-        getWindow().getDecorView().removeOnLayoutChangeListener(layoutChangeListener)
+        window.decorView.removeOnLayoutChangeListener(layoutChangeListener)
         bluetoothRemoteControl!!.stopRemoteControl()
         freeAudioListener(false)
         //speechControl.stopSpeechRecognizer();
-        applicationInterface!!.getLocationSupplier().freeLocationListeners()
+        applicationInterface!!.locationSupplier.freeLocationListeners()
         applicationInterface!!.stopPanorama(true) // in practice not needed as we should stop panorama when camera is closed, but good to do it explicitly here, before disabling the gyro sensors
-        applicationInterface!!.getGyroSensor().disableSensors()
-        applicationInterface!!.getImageSaver().onPause()
+        applicationInterface!!.gyroSensor.disableSensors()
+        applicationInterface!!.imageSaver.onPause()
         soundPoolManager!!.releaseSound()
         applicationInterface!!.clearLastImages() // this should happen when pausing the preview, but call explicitly just to be safe
         applicationInterface!!.drawPreview.clearGhostImage()
         preview?.onPause()
         applicationInterface!!.drawPreview.setCoverPreview(true) // must be after we've closed the preview (otherwise risk that further frames from preview will unset the cover_preview flag in DrawPreview)
 
-        if (applicationInterface!!.getImageSaver().getNImagesToSave() > 0) {
+        if (applicationInterface!!.imageSaver.nImagesToSave > 0) {
             createImageSavingNotification()
         }
 
@@ -1663,7 +1744,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
 
         // intentionally do this again, just in case something turned location on since - keep this right at the end:
-        applicationInterface!!.getLocationSupplier().freeLocationListeners()
+        applicationInterface!!.locationSupplier.freeLocationListeners()
 
         // don't want to enter immersive mode when in background
         // needs to be last in case anything above indirectly called initImmersiveMode()
@@ -1678,10 +1759,10 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         private var old_rotation: Int
 
         init {
-            val rotation = this@MainActivity.getWindowManager().getDefaultDisplay().getRotation()
+            val rotation = this@MainActivity.windowManager.defaultDisplay.rotation
             if (MyDebug.LOG) {
                 Log.d(TAG, "MyDisplayListener")
-                Log.d(TAG, "rotation: " + rotation)
+                Log.d(TAG, "rotation: $rotation")
             }
             old_rotation = rotation
         }
@@ -1693,11 +1774,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
 
         override fun onDisplayChanged(displayId: Int) {
-            val rotation = this@MainActivity.getWindowManager().getDefaultDisplay().getRotation()
+            val rotation = this@MainActivity.windowManager.defaultDisplay.rotation
             if (MyDebug.LOG) {
-                Log.d(TAG, "onDisplayChanged: " + displayId)
-                Log.d(TAG, "rotation: " + rotation)
-                Log.d(TAG, "old_rotation: " + old_rotation)
+                Log.d(TAG, "onDisplayChanged: $displayId")
+                Log.d(TAG, "rotation: $rotation")
+                Log.d(TAG, "old_rotation: $old_rotation")
             }
             if ((rotation == Surface.ROTATION_0 && old_rotation == Surface.ROTATION_180) || (rotation == Surface.ROTATION_180 && old_rotation == Surface.ROTATION_0) || (rotation == Surface.ROTATION_90 && old_rotation == Surface.ROTATION_270) || (rotation == Surface.ROTATION_270 && old_rotation == Surface.ROTATION_90)) {
                 if (MyDebug.LOG) Log.d(
@@ -1715,7 +1796,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
      */
     private fun registerDisplayListener() {
         if (MyDebug.LOG) Log.d(TAG, "registerDisplayListener")
-        if (!lock_to_landscape) {
+        if (!lockToLandscape) {
             displayListener = MyDisplayListener()
             val displayManager = this.getSystemService(DISPLAY_SERVICE) as DisplayManager
             displayManager.registerDisplayListener(displayListener, null)
@@ -1751,7 +1832,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         resetCachedSystemOrientation()
 
         preview?.setCameraDisplayOrientation()
-        if (!lock_to_landscape) {
+        if (!lockToLandscape) {
             val newSystemOrientation = this.systemOrientation
             if (hasOldSystemOrientation && oldSystemOrientation == newSystemOrientation) {
                 if (MyDebug.LOG) Log.d(
@@ -1793,24 +1874,24 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             if (test_force_system_orientation) {
                 return test_system_orientation
             }
-            if (lock_to_landscape) {
+            if (lockToLandscape) {
                 return SystemOrientation.LANDSCAPE
             }
             if (has_cached_system_orientation) {
                 return cached_system_orientation!!
             }
             var result: SystemOrientation
-            val system_orientation = getResources().getConfiguration().orientation
+            val system_orientation = getResources().configuration.orientation
             if (MyDebug.LOG) Log.d(
-                TAG, "system orientation: " + system_orientation
+                TAG, "system orientation: $system_orientation"
             )
             when (system_orientation) {
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     result = SystemOrientation.LANDSCAPE
                     run {
-                        val rotation = getWindowManager().getDefaultDisplay().getRotation()
+                        val rotation = windowManager.getDefaultDisplay().rotation
                         if (MyDebug.LOG) Log.d(
-                            TAG, "rotation: " + rotation
+                            TAG, "rotation: $rotation"
                         )
                         when (rotation) {
                             Surface.ROTATION_0, Surface.ROTATION_90 ->                             // landscape
@@ -1827,7 +1908,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             }
 
                             else -> if (MyDebug.LOG) Log.e(
-                                TAG, "unknown rotation: " + rotation
+                                TAG, "unknown rotation: $rotation"
                             )
                         }
                     }
@@ -1837,20 +1918,20 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
                 Configuration.ORIENTATION_UNDEFINED -> {
                     if (MyDebug.LOG) Log.e(
-                        TAG, "unknown system orientation: " + system_orientation
+                        TAG, "unknown system orientation: $system_orientation"
                     )
                     result = SystemOrientation.LANDSCAPE
                 }
 
                 else -> {
                     if (MyDebug.LOG) Log.e(
-                        TAG, "unknown system orientation: " + system_orientation
+                        TAG, "unknown system orientation: $system_orientation"
                     )
                     result = SystemOrientation.LANDSCAPE
                 }
             }
             if (MyDebug.LOG) Log.d(
-                TAG, "system orientation is now: " + result
+                TAG, "system orientation is now: $result"
             )
             this.has_cached_system_orientation = true
             this.cached_system_orientation = result
@@ -1865,12 +1946,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     /** A wrapper for getWindowManager().getDefaultDisplay().getRotation(), except if
      * lock_to_landscape==false && prefer_later==false, this uses a cached value.
      */
-    fun getDisplayRotation(prefer_later: Boolean): Int {/*if( MyDebug.LOG ) {
+    fun getDisplayRotation(preferLater: Boolean): Int {/*if( MyDebug.LOG ) {
             Log.d(TAG, "getDisplayRotationDegrees");
             Log.d(TAG, "prefer_later: " + prefer_later);
         }*/
-        if (lock_to_landscape || prefer_later) {
-            return getWindowManager().getDefaultDisplay().getRotation()
+        if (lockToLandscape || preferLater) {
+            return windowManager.defaultDisplay.rotation
         }
         // we cache to reduce effect of annoying problem where rotation changes shortly before the
         // configuration actually changes (several frames), so on-screen elements would briefly show
@@ -1882,7 +1963,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             return cached_display_rotation
         }
         has_cached_display_rotation = true
-        val rotation = getWindowManager().getDefaultDisplay().getRotation()
+        val rotation = windowManager.defaultDisplay.rotation
         cached_display_rotation = rotation
         cached_display_rotation_time_ms = time_ms
         return rotation
@@ -1890,7 +1971,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun waitUntilImageQueueEmpty() {
         if (MyDebug.LOG) Log.d(TAG, "waitUntilImageQueueEmpty")
-        applicationInterface!!.getImageSaver().waitUntilDone()
+        applicationInterface!!.imageSaver.waitUntilDone()
     }
 
     /**
@@ -1899,7 +1980,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
      */
     private fun longClickedTakePhoto(): Boolean {
         if (MyDebug.LOG) Log.d(TAG, "longClickedTakePhoto")
-        if (preview?.isVideo() == true) {
+        if (preview?.isVideo == true) {
             // no long-click action for video mode
         } else if (supportsFastBurst()) {
             // need to check whether fast burst is supported (including for the current resolution),
@@ -1924,34 +2005,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
         // return false, so a regular click will still be triggered when the user releases the touch
         return false
-    }
-
-    fun initClickedView() {
-        binding.takePhoto.setOnClickListener { clickedTakePhoto() }
-        binding.takePhotoWhenVideoRecording.setOnClickListener { clickedTakePhotoVideoSnapshot() }
-        binding.pauseVideo.setOnClickListener { clickedPauseVideo() }
-        binding.cancelPanorama.setOnClickListener { clickedCancelPanorama() }
-        binding.cycleRaw.setOnClickListener { clickedCycleRaw() }
-        binding.cycleFlash.setOnClickListener { clickedCycleFlash() }
-        binding.storeLocation.setOnClickListener { clickedStoreLocation() }
-        binding.textStamp.setOnClickListener { clickedTextStamp() }
-        binding.stamp.setOnClickListener { clickedStamp() }
-        binding.focusPeaking.setOnClickListener { clickedFocusPeaking() }
-        binding.autoLevel.setOnClickListener { clickedAutoLevel() }
-        binding.faceDetection.setOnClickListener { clickedFaceDetection() }
-        binding.audioControl.setOnClickListener { clickedAudioControl() }
-        binding.switchMultiCamera.setOnClickListener { clickedSwitchMultiCamera() }
-        binding.switchCamera.setOnClickListener { clickedSwitchCamera() }
-        binding.switchVideo.setOnClickListener { clickedSwitchVideo() }
-
-        binding.gallery.setOnClickListener { clickedGallery() }
-        binding.settings.setOnClickListener { clickedSettings() }
-        binding.popup.setOnClickListener { clickedPopupSettings() }
-        binding.exposure.setOnClickListener { clickedExposure() }
-        binding.exposureLock.setOnClickListener { clickedExposureLock() }
-        binding.whiteBalanceLock.setOnClickListener { clickedWhiteBalanceLock() }
-        binding.trash.setOnClickListener { clickedTrash() }
-        binding.share.setOnClickListener { clickedShare() }
     }
 
     fun clickedTakePhoto() {
@@ -2320,7 +2373,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
             userSwitchToCamera(cameraId, null)
 
-            push_switched_camera = true
+            pushSwitchedCamera = true
         }
     }
 
@@ -2381,7 +2434,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 "clickedSwitchMultiCamera: time before getDescription: " + (System.currentTimeMillis() - debug_time)
             )
             var camera_name =
-                logical_camera_id.toString() + ": " + preview?.cameraControllerManager?.getDescription(
+                "$logical_camera_id: " + preview?.cameraControllerManager?.getDescription(
                     this, logical_camera_id
                 )
             if (MyDebug.LOG) Log.d(
@@ -2396,8 +2449,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 if (curr_physical_camera_id == null) {
                     // the logical camera is being used directly
                     selected = index
-                    //String html_camera_name = "<b>[" + camera_name + "]</b>";
-                    val html_camera_name = "<b>" + camera_name + "</b>"
+                    val html_camera_name = "<b>$camera_name</b>"
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         items[index] = Html.fromHtml(html_camera_name, Html.FROM_HTML_MODE_LEGACY)
                     } else {
@@ -2449,7 +2501,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 ): Int {
                                     if (o1 != null && o2 != null) {
                                         val diff =
-                                            o2.view_angle.getWidth() - o1.view_angle.getWidth()
+                                            o2.view_angle.width - o1.view_angle.width
                                         if (abs(diff) < 1.0e-5f) return 0
                                         else if (diff > 0.0f) return 1
                                         else return -1
@@ -2469,8 +2521,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         if (curr_physical_camera_id != null && curr_physical_camera_id == physical_id) {
                             // this is the current physical camera
                             selected = index
-                            //html_camera_name = indent + "<b>[" + camera_name + "]</b>";
-                            html_camera_name = indent + "<b>" + camera_name + "</b>"
+                            html_camera_name = "$indent<b>$camera_name</b>"
                         } else {
                             html_camera_name = indent + camera_name
                         }
@@ -2493,30 +2544,24 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 items_physical_camera_id[index] = null
                 index++
             }
-        }/*if( preview.hasPhysicalCameras() ) {
-            items[index] = getResources().getString(R.string.physical_cameras_info);
-            items_logical_camera_id[index] = -1;
-            items_physical_camera_id[index] = null;
-            //index++;
-        }*/
+        }
         if (MyDebug.LOG) Log.d(
             TAG,
             "clickedSwitchMultiCamera: time after building menu: " + (System.currentTimeMillis() - debug_time)
         )
 
-        //alertDialog.setItems(items, new DialogInterface.OnClickListener() {
         alertDialog.setSingleChoiceItems(items, selected, object : DialogInterface.OnClickListener {
             override fun onClick(dialog: DialogInterface, which: Int) {
-                if (MyDebug.LOG) Log.d(TAG, "selected: " + which)
+                if (MyDebug.LOG) Log.d(TAG, "selected: $which")
                 val logical_camera = items_logical_camera_id[which]
                 val physical_camera = items_physical_camera_id[which]
                 if (MyDebug.LOG) {
-                    Log.d(TAG, "logical_camera: " + logical_camera)
-                    Log.d(TAG, "physical_camera: " + physical_camera)
+                    Log.d(TAG, "logical_camera: $logical_camera")
+                    Log.d(TAG, "physical_camera: $physical_camera")
                 }
                 val n_cameras = preview?.cameraControllerManager?.getNumberOfCameras() ?: 1
                 if (logical_camera >= 0 && logical_camera < n_cameras) {
-                    if (preview?.isOpeningCamera() == true) {
+                    if (preview?.isOpeningCamera == true) {
                         if (MyDebug.LOG) Log.d(TAG, "already opening camera in background thread")
                         return
                     }
@@ -2526,31 +2571,19 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         userSwitchToCamera(logical_camera, physical_camera)
                     }
                 }
-                //setWindowFlagsForCamera();
-                //showPreview(true);
                 dialog.dismiss() // need to explicitly dismiss for setSingleChoiceItems
             }
-        })/*alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface arg0) {
-                setWindowFlagsForCamera();
-                showPreview(true);
-            }
-        });*/
-        //setWindowFlagsForSettings(false); // set set_lock_protect to false - no need to protect this dialog with lock screen (fine to run above lock screen if that option is set)
-        //showAlert(alertDialog.create());
+        })
         val dialog = alertDialog.create()
         if (preview?.hasPhysicalCameras() == true) {
             val footer = TextView(this)
             footer.setText(R.string.physical_cameras_info)
-            val scale = getResources().getDisplayMetrics().density
+            val scale = getResources().displayMetrics.density
             val padding = (5 * scale + 0.5f).toInt() // convert dps to pixels
             footer.setPadding(padding, padding, padding, padding)
-            dialog.getListView().addFooterView(footer, null, false)
+            dialog.listView.addFooterView(footer, null, false)
         }
-        if (dialog.getWindow() != null) {
-            dialog.getWindow()!!.setWindowAnimations(R.style.DialogAnimation)
-        }
+        dialog.window?.setWindowAnimations(R.style.DialogAnimation)
         dialog.show()
         if (MyDebug.LOG) Log.d(
             TAG,
@@ -4000,7 +4033,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             setRecentsScreenshotEnabled(false)
         }
 
-        if (lock_to_landscape) {
+        if (lockToLandscape) {
             // force to landscape mode
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE); // testing for devices with unusual sensor orientation (e.g., Nexus 5X)
@@ -4119,7 +4152,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // similarly we close the camera
         preview?.onPause(false)
 
-        push_switched_camera = false // just in case
+        pushSwitchedCamera = false // just in case
     }
 
     private fun showWhenLocked(show: Boolean) {
@@ -4314,23 +4347,25 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // workaround for setImageResource also resetting padding, Android bug
         galleryButton.setPadding(left, top, right, bottom)
         gallery_bitmap = null
+        cameraViewModel.setGalleryBitmap(gallery_bitmap)
     }
 
     /** Shows a thumbnail for the gallery icon.
      */
     fun updateGalleryIcon(thumbnail: Bitmap?) {
-        if (MyDebug.LOG) Log.d(TAG, "updateGalleryIcon: " + thumbnail)
+        if (MyDebug.LOG) Log.d(TAG, "updateGalleryIcon: $thumbnail")
         // If we're currently running the background task to update the gallery (see updateGalleryIcon()), we should cancel that!
         // Otherwise if user takes a photo whilst the background task is still running, the thumbnail from the latest photo will
         // be overridden when the background task completes. This is more likely when using SAF on Android 10+ with scoped storage,
         // due to SAF's poor performance for folders with large number of files.
         if (update_gallery_future != null) {
             if (MyDebug.LOG) Log.d(TAG, "cancel update_gallery_future")
-            update_gallery_future!!.cancel(true)
+            update_gallery_future?.cancel(true)
         }
         val galleryButton = binding.gallery
         galleryButton.setImageBitmap(thumbnail)
         gallery_bitmap = thumbnail
+        cameraViewModel.setGalleryBitmap(gallery_bitmap)
     }
 
     /** Updates the gallery icon by searching for the most recent photo.
@@ -4355,7 +4390,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         val handler = Handler(Looper.getMainLooper())
 
-        //new AsyncTask<Void, Void, Bitmap>() {
         val runnable: Runnable = object : Runnable {
             private val TAG = "updateGalleryIcon"
             private var uri: Uri? = null
@@ -4365,14 +4399,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             //protected Bitmap doInBackground(Void... params) {
             override fun run() {
                 if (MyDebug.LOG) Log.d(TAG, "doInBackground")
-                val media = applicationInterface!!.getStorageUtils().getLatestMedia()
+                val media = applicationInterface!!.storageUtils.getLatestMedia()
                 var thumbnail: Bitmap? = null
                 val keyguard_manager =
                     this@MainActivity.getSystemService(KEYGUARD_SERVICE) as KeyguardManager?
                 val is_locked =
                     keyguard_manager != null && keyguard_manager.inKeyguardRestrictedInputMode()
-                if (MyDebug.LOG) Log.d(TAG, "is_locked?: " + is_locked)
-                if (media != null && getContentResolver() != null && !is_locked) {
+                if (MyDebug.LOG) Log.d(TAG, "is_locked?: $is_locked")
+                if (media != null && contentResolver != null && !is_locked) {
                     // check for getContentResolver() != null, as have had reported Google Play crashes
 
                     uri = media.getMediaStoreUri(this@MainActivity)
@@ -4401,8 +4435,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 val retriever = MediaMetadataRetriever()
                                 try {
                                     pfd_saf =
-                                        getContentResolver().openFileDescriptor(media.uri, "r")
-                                    retriever.setDataSource(pfd_saf!!.getFileDescriptor())
+                                        contentResolver.openFileDescriptor(media.uri, "r")
+                                    retriever.setDataSource(pfd_saf!!.fileDescriptor)
                                     thumbnail = retriever.getFrameAtTime(-1)
                                 } catch (e: Exception) {
                                     Log.d(TAG, "failed to load video thumbnail")
@@ -4414,9 +4448,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                         // ignore
                                     }
                                     try {
-                                        if (pfd_saf != null) {
-                                            pfd_saf.close()
-                                        }
+                                        pfd_saf?.close()
                                     } catch (e: IOException) {
                                         e.printStackTrace()
                                     }
@@ -4424,7 +4456,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             } else {
                                 if (MyDebug.LOG) Log.d(TAG, "load thumbnail for video")
                                 thumbnail = MediaStore.Video.Thumbnails.getThumbnail(
-                                    getContentResolver(),
+                                    contentResolver,
                                     media.id,
                                     MediaStore.Video.Thumbnails.MINI_KIND,
                                     null
@@ -4440,31 +4472,27 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 }
 
                 //return thumbnail;
-                val thumbnail_f = thumbnail
-                handler.post(object : Runnable {
-                    override fun run() {
-                        onPostExecute(thumbnail_f)
-                    }
-                })
+                val thumbnailF = thumbnail
+                handler.post { onPostExecute(thumbnailF) }
             }
 
             /** Runs on UI thread, after background work is complete.
              */
             fun onPostExecute(thumbnail: Bitmap?) {
                 if (MyDebug.LOG) Log.d(TAG, "onPostExecute")
-                if (update_gallery_future != null && update_gallery_future!!.isCancelled()) {
+                if (update_gallery_future != null && update_gallery_future!!.isCancelled) {
                     if (MyDebug.LOG) Log.d(TAG, "was cancelled")
                     update_gallery_future = null
                     return
                 }
                 // since we're now setting the thumbnail to the latest media on disk, we need to make sure clicking the Gallery goes to this
-                applicationInterface!!.getStorageUtils().clearLastMediaScanned()
+                applicationInterface!!.storageUtils.clearLastMediaScanned()
                 if (uri != null) {
                     if (MyDebug.LOG) {
-                        Log.d(TAG, "found media uri: " + uri)
-                        Log.d(TAG, "    is_raw?: " + is_raw)
+                        Log.d(TAG, "found media uri: $uri")
+                        Log.d(TAG, "    is_raw?: $is_raw")
                     }
-                    applicationInterface!!.getStorageUtils()
+                    applicationInterface!!.storageUtils
                         .setLastMediaScanned(uri, is_raw, false, null)
                 }
                 if (thumbnail != null) {
@@ -4483,7 +4511,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
 
         val executor = Executors.newSingleThreadExecutor()
-        //executor.execute(runnable);
         update_gallery_future = executor.submit(runnable)
 
         if (MyDebug.LOG) Log.d(
@@ -5198,31 +5225,30 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     /** User has pressed the take picture button, or done an equivalent action to request this (e.g.,
      * volume buttons, audio trigger).
-     * @param photo_snapshot If true, then the user has requested taking a photo whilst video
+     * @param photoSnapshot If true, then the user has requested taking a photo whilst video
      * recording. If false, either take a photo or start/stop video depending
      * on the current mode.
      */
-    fun takePicture(photo_snapshot: Boolean) {
+    fun takePicture(photoSnapshot: Boolean) {
         if (MyDebug.LOG) Log.d(TAG, "takePicture")
-
-        if (applicationInterface!!.getPhotoMode() == PhotoMode.Panorama) {
-            if (preview?.isTakingPhoto() == true) {
+        if (applicationInterface?.getPhotoMode() == PhotoMode.Panorama) {
+            if (preview?.isTakingPhoto ?: false) {
                 if (MyDebug.LOG) Log.d(TAG, "ignore whilst taking panorama photo")
-            } else if (applicationInterface!!.getGyroSensor().isRecording()) {
+            } else if (applicationInterface?.gyroSensor?.isRecording == true) {
                 if (MyDebug.LOG) Log.d(TAG, "panorama complete")
-                applicationInterface!!.finishPanorama()
+                applicationInterface?.finishPanorama()
                 return
-            } else if (!applicationInterface!!.canTakeNewPhoto()) {
-                if (MyDebug.LOG) Log.d(TAG, "can't start new panoroma, still saving in background")
+            } else if (applicationInterface?.canTakeNewPhoto() == false) {
+                if (MyDebug.LOG) Log.d(TAG, "can't start new panorama, still saving in background")
                 // we need to test here, otherwise the Preview won't take a new photo - but we'll think we've
                 // started the panorama!
             } else {
                 if (MyDebug.LOG) Log.d(TAG, "start panorama")
-                applicationInterface!!.startPanorama()
+                applicationInterface?.startPanorama()
             }
         }
 
-        this.takePicturePressed(photo_snapshot, false)
+        this.takePicturePressed(photoSnapshot, false)
     }
 
     /** Returns whether the last photo operation was a continuous fast burst.
@@ -5244,17 +5270,27 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         this.last_continuous_fast_burst = continuous_fast_burst
         this.preview?.takePicturePressed(photo_snapshot, continuous_fast_burst)
+
+        if (preview?.isVideo == true) {
+            cameraViewModel.setPhotoMode(false)
+            if (preview?.isVideoRecording == true) {
+                cameraViewModel.setVideoRecording(true)
+            } else {
+                cameraViewModel.setVideoRecording(false)
+            }
+        } else {
+            cameraViewModel.setPhotoMode(true)
+        }
     }
 
     /** Lock the screen - this is ManualCamera's own lock to guard against accidental presses,
      * not the standard Android lock.
      */
+    @SuppressLint("ClickableViewAccessibility")
     fun lockScreen() {
         binding.locker.setOnTouchListener(object : OnTouchListener {
-            @SuppressLint("ClickableViewAccessibility")
             override fun onTouch(arg0: View?, event: MotionEvent): Boolean {
                 return gestureDetector!!.onTouchEvent(event)
-                //return true;
             }
         })
         this.isScreenLocked = true
@@ -5338,27 +5374,27 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             return false
         }
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val iso_value: String = sharedPreferences.getString(
+        val isoValue: String = sharedPreferences.getString(
             PreferenceKeys.ISOPreferenceKey, CameraController.ISO_DEFAULT
         )!!
-        val manual_iso = iso_value != CameraController.ISO_DEFAULT
-        return preview?.supportsExposures() == true || (manual_iso && preview?.supportsISORange() == true)
+        val manualIso = isoValue != CameraController.ISO_DEFAULT
+        return preview?.supportsExposures() == true || (manualIso && preview?.supportsISORange() == true)
     }
 
     fun cameraSetup() {
-        var debug_time: Long = 0
+        var debugTime: Long = 0
         if (MyDebug.LOG) {
             Log.d(TAG, "cameraSetup")
-            debug_time = System.currentTimeMillis()
+            debugTime = System.currentTimeMillis()
         }
         if (preview?.cameraController == null) {
             if (MyDebug.LOG) Log.d(TAG, "camera controller is null")
             return
         }
 
-        val old_want_no_limits = want_no_limits
+        val oldWantNoLimits = want_no_limits
         this.want_no_limits = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInMultiWindowMode()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInMultiWindowMode) {
             if (MyDebug.LOG) Log.d(TAG, "multi-window mode")
             // don't support want_no_limits mode in multi-window mode - extra complexity that the
             // preview size could change from simply resizing the window; also problem that the
@@ -5380,7 +5416,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 if (MyDebug.LOG) Log.d(TAG, "preview is wide, set want_no_limits")
                 this.want_no_limits = true
 
-                if (!old_want_no_limits) {
+                if (!oldWantNoLimits) {
                     if (MyDebug.LOG) Log.d(TAG, "need to change to FLAG_LAYOUT_NO_LIMITS")
                     // Ideally we'd just go straight to FLAG_LAYOUT_NO_LIMITS mode, but then all calls to onApplyWindowInsets()
                     // end up returning a value of 0 for the navigation_gap! So we need to wait until we know the navigation_gap.
@@ -5397,7 +5433,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         if (MyDebug.LOG) Log.d(TAG, "but navigation_gap is 0")
                     }
                 }
-            } else if (old_want_no_limits && navigation_gap != 0) {
+            } else if (oldWantNoLimits && navigation_gap != 0) {
                 if (MyDebug.LOG) Log.d(TAG, "clear FLAG_LAYOUT_NO_LIMITS")
                 showUnderNavigation(false)
                 // need to layout the UI again due to no longer taking the navigation gap into account
@@ -5425,7 +5461,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
         if (MyDebug.LOG) Log.d(
             TAG,
-            "cameraSetup: time after handling Force 4K option: " + (System.currentTimeMillis() - debug_time)
+            "cameraSetup: time after handling Force 4K option: " + (System.currentTimeMillis() - debugTime)
         )
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -5468,7 +5504,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         // indirectly set zoom via this method, from setting the zoom slider
                         // if hasSmoothZoom()==true, then the preview already handled zooming to the current value
                         if (preview?.hasSmoothZoom() == false) {
-                            val new_zoom_factor = preview?.getMaxZoom() ?: 1 - progress
+                            val new_zoom_factor = (preview?.getMaxZoom() ?: 1) - progress
                             if (fromUser && preview?.cameraController != null) {
                                 val old_zoom_ratio = preview?.getZoomRatio()
                                 val new_zoom_ratio = preview?.getZoomRatio(new_zoom_factor)
@@ -5506,7 +5542,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
             if (MyDebug.LOG) Log.d(
                 TAG,
-                "cameraSetup: time after setting up zoom: " + (System.currentTimeMillis() - debug_time)
+                "cameraSetup: time after setting up zoom: " + (System.currentTimeMillis() - debugTime)
             )
 
             val takePhotoButton = binding.takePhoto
@@ -5525,7 +5561,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
         if (MyDebug.LOG) Log.d(
             TAG,
-            "cameraSetup: time after setting up manual focus: " + (System.currentTimeMillis() - debug_time)
+            "cameraSetup: time after setting up manual focus: " + (System.currentTimeMillis() - debugTime)
         )
         run {
             if (preview?.supportsISORange() == true) {
@@ -5613,10 +5649,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
         }
         setManualWBSeekbar()
+
         if (MyDebug.LOG) Log.d(
             TAG,
-            "cameraSetup: time after setting up iso: " + (System.currentTimeMillis() - debug_time)
+            "cameraSetup: time after setting up iso: " + (System.currentTimeMillis() - debugTime)
         )
+
         run {
             exposure_seekbar_values = null
             if (preview?.supportsExposures() == true) {
@@ -5650,8 +5688,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         }
                     }
                 }
-                exposure_seek_bar.setMax(exposure_seekbar_values!!.size - 1)
-                exposure_seek_bar.setProgress(current_progress)
+                exposure_seek_bar.max = exposure_seekbar_values!!.size - 1
+                exposure_seek_bar.progress = current_progress
                 exposure_seek_bar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                     private var last_haptic_time: Long = 0
 
@@ -5659,7 +5697,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         seekBar: SeekBar, progress: Int, fromUser: Boolean
                     ) {
                         if (MyDebug.LOG) Log.d(
-                            TAG, "exposure seekbar onProgressChanged: " + progress
+                            TAG, "exposure seekbar onProgressChanged: $progress"
                         )
                         if (exposure_seekbar_values == null) {
                             Log.e(TAG, "exposure_seekbar_values is null")
@@ -5683,21 +5721,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 })
 
                 val seek_bar_zoom = binding.exposureSeekbarZoom
-                seek_bar_zoom.setOnZoomInClickListener(object : View.OnClickListener {
-                    override fun onClick(v: View?) {
-                        changeExposure(1)
-                    }
-                })
-                seek_bar_zoom.setOnZoomOutClickListener(object : View.OnClickListener {
-                    override fun onClick(v: View?) {
-                        changeExposure(-1)
-                    }
-                })
+                seek_bar_zoom.setOnZoomInClickListener { changeExposure(1) }
+                seek_bar_zoom.setOnZoomOutClickListener { changeExposure(-1) }
             }
         }
+
         if (MyDebug.LOG) Log.d(
             TAG,
-            "cameraSetup: time after setting up exposure: " + (System.currentTimeMillis() - debug_time)
+            "cameraSetup: time after setting up exposure: " + (System.currentTimeMillis() - debugTime)
         )
 
         // On-screen icons such as exposure lock, white balance lock, face detection etc are made visible if necessary in
@@ -5723,14 +5754,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         mainUI?.setPopupIcon() // needed so that the icon is set right even if no flash mode is set when starting up camera (e.g., switching to front camera with no flash)
         if (MyDebug.LOG) Log.d(
             TAG,
-            "cameraSetup: time after setting popup icon: " + (System.currentTimeMillis() - debug_time)
+            "cameraSetup: time after setting popup icon: " + (System.currentTimeMillis() - debugTime)
         )
 
         mainUI?.setTakePhotoIcon()
         mainUI?.setSwitchCameraContentDescription()
         if (MyDebug.LOG) Log.d(
             TAG,
-            "cameraSetup: time after setting take photo icon: " + (System.currentTimeMillis() - debug_time)
+            "cameraSetup: time after setting take photo icon: " + (System.currentTimeMillis() - debugTime)
         )
 
         if (!block_startup_toast) {
@@ -5739,13 +5770,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         block_startup_toast = false
         if (MyDebug.LOG) Log.d(
             TAG,
-            "cameraSetup: total time for cameraSetup: " + (System.currentTimeMillis() - debug_time)
+            "cameraSetup: total time for cameraSetup: " + (System.currentTimeMillis() - debugTime)
         )
 
         this.applicationInterface!!.drawPreview.setDimPreview(false)
 
-        if (push_switched_camera) {
-            push_switched_camera = false
+        if (pushSwitchedCamera) {
+            pushSwitchedCamera = false
             val switchCameraButton = binding.switchCamera
             switchCameraButton.animate().rotationBy(180f).setDuration(250)
                 .setInterpolator(AccelerateDecelerateInterpolator()).start()
@@ -6598,7 +6629,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         // whether to lock to landscape orientation, or allow switching between portrait and landscape orientations
         //public static final boolean lock_to_landscape = true;
-        const val lock_to_landscape: Boolean = false
+        const val lockToLandscape: Boolean = false
 
         /** Whether to use codepaths that are compatible with scoped storage.
          */

@@ -8,6 +8,7 @@
     <color name="seekbar_background">#20000000</color>
     <color name="icons_background">#20000000</color>
     <color name="icons_background_tint">#ff000000</color>
+    <color name="shutter_icon">#D9D4D4</color>
     <color name="shutter_icon_pressed">#004aad</color>
     <color name="shutter_video">#F44336</color>
     <color name="shutter_video_pressed">#EF2011</color>

@@ -2591,11 +2591,7 @@ public class MyApplicationInterface extends BasicApplicationInterface {
                     }
                 }
                 final Bitmap thumbnail_f = thumbnail;
-                main_activity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        updateThumbnail(thumbnail_f, true);
-                    }
-                });
+                main_activity.runOnUiThread(() -> updateThumbnail(thumbnail_f, true));
             }
             if( MyDebug.LOG )
                 Log.d(TAG, "    time to create thumbnail: " + (System.currentTimeMillis() - debug_time));
