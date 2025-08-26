@@ -1,5 +1,4 @@
 /.gradle/*
 /app/build/*
 /.idea/*
-/.kotlin/errors/errors-1756042584453.log
-/.kotlin/errors/errors-1756042612787.log
+/.kotlin/*
