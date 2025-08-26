@@ -36,14 +36,12 @@ import com.ssolstice.camera.manual.MyDebug
 import com.ssolstice.camera.manual.PreferenceKeys
 import com.ssolstice.camera.manual.R
 import com.ssolstice.camera.manual.cameracontroller.CameraController
-import com.ssolstice.camera.manual.cameracontroller.CameraController.Facing
 import com.ssolstice.camera.manual.compose.CameraViewModel
 import com.ssolstice.camera.manual.preview.ApplicationInterface.RawPref
 import com.ssolstice.camera.manual.ui.PopupView.ButtonOptionsPopupListener
 import java.util.Hashtable
 import kotlin.concurrent.Volatile
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.min
 
 /** This contains functionality related to the main UI.
@@ -2964,6 +2962,36 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         return alert
     }
 
+
+    fun getIconForFocus(value: String?): Int {
+        var value = value
+        if (value == null) value = ""
+        return when (value) {
+            "focus_mode_macro" -> R.drawable.ic_macro_focus
+            "focus_mode_locked" -> R.drawable.baseline_lock_24
+            "focus_mode_infinity" -> R.drawable.focus_mode_infinity
+            "focus_mode_manual2" -> R.drawable.ic_manual
+            "focus_mode_edof" -> R.drawable.focus_mode_edof
+            "focus_mode_continuous_picture" -> R.drawable.ic_rotate
+            else -> R.drawable.ic_auto_focus
+        }
+    }
+
+    fun getEntryForFocus(value: String?): String {
+        var value = value
+        if (value == null) value = ""
+        val id = when (value) {
+            "focus_mode_macro" -> R.string.focus_mode_macro
+            "focus_mode_locked" -> R.string.focus_mode_locked
+            "focus_mode_infinity" -> R.string.focus_mode_infinity
+            "focus_mode_manual2" -> R.string.focus_mode_manual2
+            "focus_mode_edof" -> R.string.focus_mode_edof
+            "focus_mode_continuous_picture" -> R.string.focus_mode_continuous_picture
+            else -> R.string.focus_mode_auto
+        }
+        return mainActivity.getResources().getString(id)
+    }
+
     /** Returns a (possibly translated) user readable string for a white balance preference value.
      * If the value is not recognised (this can happen for the old Camera API, some devices can
      * have device-specific options), then the received value is returned.
@@ -2989,6 +3017,23 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             entry = value
         }
         return entry
+    }
+
+    fun getIconForWhiteBalance(value: String?): Int {
+        var value = value
+        if (value == null) value = ""
+        return when (value) {
+            "cloudy-daylight" -> R.drawable.white_balance_cloudy
+            "daylight" -> R.drawable.baseline_wb_sunny_24
+            "fluorescent" -> R.drawable.baseline_fluorescent_24
+            "incandescent" -> R.drawable.baseline_wb_incandescent_24
+            "shade" -> R.drawable.baseline_wb_shade_24
+            "twilight" -> R.drawable.baseline_wb_twilight_24
+            "warm-fluorescent" -> R.drawable.white_balance_warm
+            "manual" -> R.drawable.custom_options
+            "lock" -> R.drawable.baseline_lock_24
+            else -> R.drawable.outline_wb_auto_24
+        }
     }
 
     /** Returns a (possibly translated) user readable string for a scene mode preference value.
@@ -3025,6 +3070,29 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         return entry
     }
 
+    fun getIconForSceneMode(value: String?): Int {
+        var value = value
+        if (value == null) value = ""
+        return when (value) {
+            "action" -> R.drawable.outline_directions_run_24
+            "barcode" -> R.drawable.outline_barcode_24
+            "beach" -> R.drawable.outline_beach_access_24
+            "candlelight" -> R.drawable.scene_mode_candlelight
+            "fireworks" -> R.drawable.scene_mode_fireworks
+            "landscape" -> R.drawable.baseline_landscape_24
+            "night" -> R.drawable.baseline_mode_night_24
+            "night-portrait" -> R.drawable.scene_mode_night_portrait
+            "party" -> R.drawable.baseline_party_mode_24
+            "portrait" -> R.drawable.baseline_portrait_24
+            "snow" -> R.drawable.outline_snowing_24
+            "sports" -> R.drawable.outline_sports_handball_24
+            "steadyphoto" -> R.drawable.ic_outline_photo
+            "sunset" -> R.drawable.rounded_sunny_snowing_24
+            "theatre" -> R.drawable.outline_theaters_24
+            else -> R.drawable.ic_auto
+        }
+    }
+
     /** Returns a (possibly translated) user readable string for a color effect preference value.
      * If the value is not recognised (this can happen for the old Camera API, some devices can
      * have device-specific options), then the received value is returned.
@@ -3050,6 +3118,22 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             entry = value
         }
         return entry
+    }
+
+    fun getIconForColorEffect(value: String?): Int {
+        var value = value
+        if (value == null) value = ""
+        return when (value) {
+            "aqua" -> R.drawable.color_effect_aqua
+            "blackboard" -> R.drawable.color_effect_blackboard
+            "mono" -> R.drawable.color_effect_mono
+            "negative" -> R.drawable.color_effect_negative
+            "posterize" -> R.drawable.color_effect_posterize
+            "sepia" -> R.drawable.color_effect_sepia
+            "solarize" -> R.drawable.color_effect_solarize
+            "whiteboard" -> R.drawable.color_effect_whiteboard
+            else -> R.drawable.ic_auto
+        }
     }
 
     /** Returns a (possibly translated) user readable string for an antibanding preference value.

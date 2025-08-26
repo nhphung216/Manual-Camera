@@ -992,7 +992,10 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         CameraControls(
                             modifier = Modifier.align(Alignment.BottomEnd),
                             onClose = { showCameraControls.value = false },
-                            cameraControls = cameraControls
+                            cameraControls = cameraControls,
+                            onControlChanged = { controlModel, value ->
+
+                            }
                         )
                     }
                 }

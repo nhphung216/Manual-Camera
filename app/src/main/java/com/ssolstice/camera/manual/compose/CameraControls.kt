@@ -33,7 +33,6 @@ fun CameraControls(
     modifier: Modifier = Modifier,
     onClose: () -> Unit = {},
 
-    onControlChanged: (CameraControlModel, Float) -> Unit,
     onExposureChanged: (Float) -> Unit = {},
     exposureValue: Float = 0f,
     exposureValueRange: ClosedFloatingPointRange<Float> = -2f..2f,
@@ -64,6 +63,7 @@ fun CameraControls(
     onColorEffectChanged: (Float) -> Unit = {},
     colorEffectValue: Float = EXPOSURE_DEFAULT,
 
+    onControlChanged: (CameraControlModel, Float) -> Unit,
     cameraControls: MutableList<CameraControlModel>,
 ) {
     Column(
@@ -73,14 +73,12 @@ fun CameraControls(
             .padding(vertical = 16.dp),
     ) {
         var itemSelected by remember { mutableStateOf("") }
-
         var showResetParams by remember { mutableStateOf(false) }
 
         Column(
             modifier = modifier
                 .fillMaxWidth(),
         ) {
-            // confirm reset parameters
             if (showResetParams) {
                 ConfirmResetParameters(onCancel = {
                     showResetParams = false
@@ -93,17 +91,38 @@ fun CameraControls(
 
             cameraControls.forEach { controlModel ->
                 if (controlModel.id == itemSelected) {
-                    CustomValueSlider(
-                        modifier = Modifier,
-                        name = itemSelected,
-                        value = shutterValue,
-                        onValueChange = { value, formatDisplay ->
-                            onControlChanged(controlModel, value)
-                        },
-                        valueRange = controlModel.valueRange,
-                        labels = controlModel.labels,
-                        steps = controlModel.steps
-                    )
+                    if (controlModel.options.isNotEmpty()) {
+                        LazyRow(
+                            modifier = modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            items(controlModel.options) { optionModel ->
+                                MenuItem(
+                                    icon = painterResource(optionModel.icon),
+                                    label = optionModel.text,
+                                    onClick = {
+                                        itemSelected = optionModel.id
+                                    },
+                                    isChanged = false,
+                                    selected = itemSelected == optionModel.id,
+                                )
+                            }
+                        }
+                    } else {
+                        CustomValueSlider(
+                            modifier = Modifier,
+                            name = itemSelected,
+                            value = shutterValue,
+                            onValueChange = { value, formatDisplay ->
+                                onControlChanged(controlModel, value)
+                            },
+                            valueRange = controlModel.valueRange,
+                            labels = controlModel.labels,
+                            steps = controlModel.steps
+                        )
+                    }
                 }
             }
 
@@ -125,166 +144,14 @@ fun CameraControls(
                     )
                 }
             }
-
-//            // shutter
-//            if (itemSelected == "shutter") {
-//                CustomValueSlider(
-//                    modifier = Modifier,
-//                    name = itemSelected,
-//                    value = shutterValue,
-//                    onValueChange = { v, formatDisplay ->
-//                        onShutterChanged(v)
-//                    },
-//                    valueRange = shutterValueRange,
-//                    labels = shutterLabels,
-//                    steps = shutterSteps
-//                )
-//            }
-//
-//            // iso
-//            if (itemSelected == "iso") {
-//                CustomValueSlider(
-//                    modifier = Modifier,
-//                    name = itemSelected,
-//                    value = isoValue,
-//                    onValueChange = { v, formatDisplay ->
-//                        onIsoChanged(v)
-//                    },
-//                    valueRange = isoValueRange,
-//                    labels = isoLabels,
-//                    steps = isoSteps
-//                )
-//            }
-//
-//            // exposure
-//            if (itemSelected == "exposure") {
-//                CustomValueSlider(
-//                    modifier = Modifier,
-//                    name = itemSelected,
-//                    value = exposureValue,
-//                    onValueChange = { v, formatDisplay ->
-//                        onExposureChanged(v)
-//                    },
-//                    valueRange = exposureValueRange,
-//                    labels = exposureLabels,
-//                    steps = exposureSteps
-//                )
-//            }
-
-//            LazyRow(
-//                modifier = modifier
-//                    .fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.spacedBy(8.dp),
-//            ) {
-//                item {
-//                    MenuItem(
-//                        icon = painterResource(R.drawable.baseline_close_white_48),
-//                        label = stringResource(R.string.close),
-//                        onClick = { onClose() },
-//                    )
-//                }
-//                item {
-//                    MenuItem(
-//                        icon = painterResource(R.drawable.outline_reset_settings),
-//                        label = stringResource(R.string.reset_all),
-//                        onClick = {
-//                            showResetParams = !showResetParams
-//                            if (showResetParams) {
-//                                itemSelected = ""
-//                            }
-//                        },
-//                        isChanged = false,
-//                        selected = false,
-//                    )
-//                }
-//
-//                item {
-//                    MenuItem(
-//                        icon = painterResource(R.drawable.ic_wb_auto),
-//                        label = stringResource(R.string.white_balance),
-//                        onClick = {
-//                            itemSelected =
-//                                if (itemSelected == "white_balance") "" else "white_balance"
-//                        },
-//                        isChanged = whiteBalanceValue != STRENGTH_DEFAULT,
-//                        selected = itemSelected == "white_balance",
-//                    )
-//                }
-//                item {
-//                    MenuItem(
-//                        icon = painterResource(R.drawable.ic_exposure_24),
-//                        label = stringResource(R.string.exposure),
-//                        onClick = {
-//                            showResetParams = false
-//                            itemSelected = if (itemSelected == "exposure") "" else "exposure"
-//                        },
-//                        isChanged = exposureValue != BRIGHTNESS_DEFAULT,
-//                        selected = itemSelected == "exposure",
-//                    )
-//                }
-//                item {
-//                    MenuItem(
-//                        icon = painterResource(R.drawable.iso_icon),
-//                        label = stringResource(R.string.iso),
-//                        onClick = {
-//                            showResetParams = false
-//                            itemSelected = if (itemSelected == "iso") "" else "iso"
-//                        },
-//                        isChanged = isoValue != BRIGHTNESS_DEFAULT,
-//                        selected = itemSelected == "iso",
-//                    )
-//                }
-//                item {
-//                    MenuItem(
-//                        icon = painterResource(R.drawable.ic_shutter_speed_24),
-//                        label = stringResource(R.string.shutter),
-//                        onClick = {
-//                            showResetParams = false
-//                            itemSelected = if (itemSelected == "shutter") "" else "shutter"
-//                        },
-//                        isChanged = shutterValue != CONTRAST_DEFAULT,
-//                        selected = itemSelected == "shutter",
-//                    )
-//                }
-//                item {
-//                    MenuItem(
-//                        icon = painterResource(R.drawable.ic_center_focus_24),
-//                        label = stringResource(R.string.focus),
-//                        onClick = {
-//                            showResetParams = false
-//                            itemSelected = if (itemSelected == "focus") "" else "focus"
-//                        },
-//                        isChanged = focusValue != EXPOSURE_DEFAULT,
-//                        selected = itemSelected == "focus",
-//                    )
-//                }
-//                item {
-//                    MenuItem(
-//                        icon = painterResource(R.drawable.ic_auto),
-//                        label = stringResource(R.string.scene_mode),
-//                        onClick = {
-//                            showResetParams = false
-//                            itemSelected = if (itemSelected == "scene_mode") "" else "scene_mode"
-//                        },
-//                        isChanged = sceneModeValue != EXPOSURE_DEFAULT,
-//                        selected = itemSelected == "scene_mode",
-//                    )
-//                }
-//                item {
-//                    MenuItem(
-//                        icon = painterResource(R.drawable.color_effect_negative),
-//                        label = stringResource(R.string.color_effect),
-//                        onClick = {
-//                            showResetParams = false
-//                            itemSelected =
-//                                if (itemSelected == "color_effect") "" else "color_effect"
-//                        },
-//                        isChanged = colorEffectValue != EXPOSURE_DEFAULT,
-//                        selected = itemSelected == "color_effect",
-//                    )
-//                }
-            //    }
         }
     }
+}
+
+@Composable
+fun CameraControlItem(
+    control: CameraControlModel,
+    onControlChanged: (CameraControlModel, Float) -> Unit
+) {
+
 }

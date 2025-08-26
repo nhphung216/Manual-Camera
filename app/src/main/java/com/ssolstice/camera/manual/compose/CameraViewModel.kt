@@ -14,7 +14,6 @@ import com.ssolstice.camera.manual.MyApplicationInterface
 import com.ssolstice.camera.manual.MyApplicationInterface.PhotoMode
 import com.ssolstice.camera.manual.PreferenceKeys
 import com.ssolstice.camera.manual.R
-import com.ssolstice.camera.manual.cameracontroller.CameraController
 import com.ssolstice.camera.manual.models.CameraControlModel
 import com.ssolstice.camera.manual.models.ControlOptionModel
 import com.ssolstice.camera.manual.models.SettingItemModel
@@ -526,15 +525,27 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         val controls: MutableList<CameraControlModel> = mutableListOf()
 
         // white balance
-        // supported White Balances
         val supportedWhiteBalances = preview.getSupportedWhiteBalances()
-        val supportedWhiteBalancesEntries: MutableList<String?> = mutableListOf()
         if (supportedWhiteBalances != null) {
+            val options: ArrayList<ControlOptionModel> = arrayListOf()
             for (value in supportedWhiteBalances) {
-                val entry: String = activity.mainUI!!.getEntryForWhiteBalance(value)
-                supportedWhiteBalancesEntries.add(entry)
+                options.add(
+                    ControlOptionModel(
+                        id = value,
+                        text = activity.mainUI!!.getEntryForWhiteBalance(value),
+                        icon = activity.mainUI!!.getIconForWhiteBalance(value)
+                    )
+                )
             }
+            val model = CameraControlModel(
+                id = "white_balance",
+                text = activity.getString(R.string.white_balance),
+                icon = R.drawable.ic_white_balance,
+                options = options,
+            )
+            controls.add(model)
         }
+
         // exposure
         if (preview.supportsExposures()) {
             val minExposure = preview.minimumExposure.toFloat()
@@ -543,21 +554,23 @@ class CameraViewModel @Inject constructor() : ViewModel() {
 
             val model = CameraControlModel(
                 id = "exposure",
-                text = "Exposure",
+                text = activity.getString(R.string.exposure),
                 icon = R.drawable.ic_exposure_24,
                 valueRange = minExposure..maxExposure,
+                currentValue = currentExposure,
                 labels = arrayListOf("-2", "-1", "0", "+1", "+2"),
                 steps = 30
             )
             controls.add(model)
         }
+
         // iso
         if (preview.supportsISORange()) {
             val minISO = preview.minimumISO.toFloat()
             val maxISO = preview.maximumISO.toFloat()
             val model = CameraControlModel(
                 id = "iso",
-                text = "ISO",
+                text = activity.getString(R.string.iso),
                 icon = R.drawable.iso_icon,
                 valueRange = minISO..maxISO,
                 labels = arrayListOf("-2", "-1", "0", "+1", "+2"),
@@ -565,13 +578,14 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             )
             controls.add(model)
         }
+
         // shutter
         if (preview.supportsExposureTime()) {
             val minExposure = preview.minimumExposureTime.toFloat()
             val maxExposure = preview.maximumExposureTime.toFloat()
             val model = CameraControlModel(
                 id = "shutter",
-                text = "Shutter",
+                text = activity.getString(R.string.shutter),
                 icon = R.drawable.ic_shutter_speed_24,
                 valueRange = minExposure..maxExposure,
                 labels = arrayListOf("-2", "-1", "0", "+1", "+2"),
@@ -581,8 +595,87 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         }
 
         // focus
+        var supportedFocusValues = preview.supportedFocusValues
+        if (!preview.isVideo && photoMode == PhotoMode.FocusBracketing) {
+            // don't show focus modes in focus bracketing mode (as we'll always run in manual focus mode)
+            supportedFocusValues = null
+        }
+
+        if (supportedFocusValues != null) {
+            val focusValues = ArrayList(supportedFocusValues)
+            // only show appropriate continuous focus mode
+            if (preview.isVideo) {
+                focusValues.remove("focus_mode_continuous_picture")
+            } else {
+                focusValues.remove("focus_mode_continuous_video")
+            }
+
+            if (!focusValues.isEmpty()) {
+                val currentFocus = preview.currentFocusValue
+                val options: ArrayList<ControlOptionModel> = arrayListOf()
+                for (value in focusValues) {
+                    options.add(
+                        ControlOptionModel(
+                            id = value,
+                            text = activity.mainUI!!.getEntryForFocus(value),
+                            icon = activity.mainUI!!.getIconForFocus(value),
+                            selected = value == currentFocus
+                        )
+                    )
+                }
+                val model = CameraControlModel(
+                    id = "focus",
+                    text = activity.getString(R.string.focus),
+                    icon = R.drawable.ic_center_focus_24,
+                    options = options,
+                )
+                controls.add(model)
+            }
+        }
+
         // scene mode
+        val supportedSceneModes = preview.supportedSceneModes
+        if (supportedSceneModes != null) {
+            val options: ArrayList<ControlOptionModel> = arrayListOf()
+            for (value in supportedSceneModes) {
+                options.add(
+                    ControlOptionModel(
+                        id = value,
+                        text = activity.mainUI!!.getEntryForSceneMode(value),
+                        icon = activity.mainUI!!.getIconForSceneMode(value)
+                    )
+                )
+            }
+            val model = CameraControlModel(
+                id = "scene_mode",
+                text = activity.getString(R.string.scene_mode),
+                icon = R.drawable.scene_mode_fireworks,
+                options = options,
+            )
+            controls.add(model)
+        }
+
         // color effect
+        val supportedColorEffects = preview.supportedColorEffects
+        if (supportedColorEffects != null) {
+            val options: ArrayList<ControlOptionModel> = arrayListOf()
+            for (value in supportedColorEffects) {
+                options.add(
+                    ControlOptionModel(
+                        id = value,
+                        text = activity.mainUI!!.getEntryForColorEffect(value),
+                        icon = activity.mainUI!!.getIconForColorEffect(value)
+                    )
+                )
+            }
+            val model = CameraControlModel(
+                id = "color_effect",
+                text = activity.getString(R.string.color_effect),
+                icon = R.drawable.color_effect_negative,
+                options = options,
+            )
+            controls.add(model)
+        }
 
         if (controls.isNotEmpty()) {
             setCameraControls(controls)
