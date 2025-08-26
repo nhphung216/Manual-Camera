@@ -16,10 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ssolstice.camera.manual.R
 import com.ssolstice.camera.manual.models.CameraControlModel
 
 @Preview
@@ -32,37 +30,8 @@ fun CameraControlsPreview() {
 fun CameraControls(
     modifier: Modifier = Modifier,
     onClose: () -> Unit = {},
-
     onExposureChanged: (Float) -> Unit = {},
-    exposureValue: Float = 0f,
-    exposureValueRange: ClosedFloatingPointRange<Float> = -2f..2f,
-    exposureLabels: List<String> = listOf("-2", "-1", "0", "1", "2"),
-    exposureSteps: Int = 30,
-
-    onIsoChanged: (Float) -> Unit = {},
-    isoValue: Float = EXPOSURE_DEFAULT,
-    isoValueRange: ClosedFloatingPointRange<Float> = -2f..2f,
-    isoLabels: List<String> = listOf("-2", "-1", "0", "1", "2"),
-    isoSteps: Int = 30,
-
-    onShutterChanged: (Float) -> Unit = {},
     shutterValue: Float = EXPOSURE_DEFAULT,
-    shutterValueRange: ClosedFloatingPointRange<Float> = -2f..2f,
-    shutterLabels: List<String> = listOf("-2", "-1", "0", "1", "2"),
-    shutterSteps: Int = 30,
-
-    onWhiteBalanceChanged: (Float) -> Unit = {},
-    whiteBalanceValue: Float = EXPOSURE_DEFAULT,
-
-    onFocusChanged: (Float) -> Unit = {},
-    focusValue: Float = EXPOSURE_DEFAULT,
-
-    onSceneModeChanged: (Float) -> Unit = {},
-    sceneModeValue: Float = EXPOSURE_DEFAULT,
-
-    onColorEffectChanged: (Float) -> Unit = {},
-    colorEffectValue: Float = EXPOSURE_DEFAULT,
-
     onControlChanged: (CameraControlModel, Float) -> Unit,
     cameraControls: MutableList<CameraControlModel>,
 ) {
@@ -93,8 +62,7 @@ fun CameraControls(
                 if (controlModel.id == itemSelected) {
                     if (controlModel.options.isNotEmpty()) {
                         LazyRow(
-                            modifier = modifier
-                                .fillMaxWidth(),
+                            modifier = modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
@@ -103,7 +71,7 @@ fun CameraControls(
                                     icon = painterResource(optionModel.icon),
                                     label = optionModel.text,
                                     onClick = {
-                                        itemSelected = optionModel.id
+
                                     },
                                     isChanged = false,
                                     selected = itemSelected == optionModel.id,
@@ -116,7 +84,7 @@ fun CameraControls(
                             name = itemSelected,
                             value = shutterValue,
                             onValueChange = { value, formatDisplay ->
-                                onControlChanged(controlModel, value)
+
                             },
                             valueRange = controlModel.valueRange,
                             labels = controlModel.labels,
@@ -146,12 +114,4 @@ fun CameraControls(
             }
         }
     }
-}
-
-@Composable
-fun CameraControlItem(
-    control: CameraControlModel,
-    onControlChanged: (CameraControlModel, Float) -> Unit
-) {
-
 }
