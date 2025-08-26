@@ -1,9 +1,7 @@
 package com.ssolstice.camera.manual
 
 import android.Manifest
-import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.AlertDialog
@@ -23,7 +21,6 @@ import android.graphics.Color
 import android.graphics.Insets
 import android.graphics.Matrix
 import android.graphics.Point
-import android.graphics.PorterDuff
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -62,13 +59,11 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import android.view.View.OnLayoutChangeListener
-import android.view.View.OnLongClickListener
 import android.view.View.OnSystemUiVisibilityChangeListener
 import android.view.View.OnTouchListener
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -82,6 +77,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.WindowCompat
@@ -828,7 +825,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         binding.composeView.setContent {
             OpenCameraTheme {
                 val showCameraSettings = rememberSaveable { mutableStateOf(false) }
-                val showConfigTableSettings = rememberSaveable { mutableStateOf(false) }
+                val showCameraControls = rememberSaveable { mutableStateOf(false) }
 
                 val isRecording by viewModel.isRecording.collectAsState()
                 val isPhotoMode by viewModel.isPhotoMode.collectAsState()
@@ -851,6 +848,16 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 val speedSelected by viewModel.speedSelected.observeAsState()
                 val flashSelected by viewModel.flashSelected.observeAsState()
                 val rawSelected by viewModel.rawSelected.observeAsState()
+
+                val cameraControls by viewModel.cameraControls.collectAsState()
+
+                //    exposureValue: Float = 0f,
+                //    isoValue: Float = EXPOSURE_DEFAULT,
+                //    shutterValue: Float = EXPOSURE_DEFAULT,
+                //    whiteBalanceValue: Float = EXPOSURE_DEFAULT,
+                //    focusValue: Float = EXPOSURE_DEFAULT,
+                //    sceneModeValue: Float = EXPOSURE_DEFAULT,
+                //    colorEffectValue: Float = EXPOSURE_DEFAULT,
 
                 Box {
                     CameraScreen(
@@ -875,7 +882,25 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             }
                         },
                         showConfigTableSettings = {
-                            showConfigTableSettings.value = !showConfigTableSettings.value
+                            if (preview != null && applicationInterface != null) {
+                                if (preview?.isVideo == true && preview?.isVideoRecording == true) {
+                                    Log.e(MainActivity.TAG, "don't add any more options")
+                                } else {
+                                    if (preview?.cameraController != null
+                                        && applicationInterface?.isCameraExtensionPref != true
+                                    ) {
+                                        showCameraControls.value = !showCameraControls.value
+                                        if (showCameraControls.value) {
+                                            viewModel.setupCameraControlsData(
+                                                this@MainActivity,
+                                                applicationInterface!!,
+                                                preview!!
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
                         }
                     )
 
@@ -963,9 +988,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         )
                     }
 
-                    if (showConfigTableSettings.value) {
-                        CameraControls (
-                            onClose = { showConfigTableSettings.value = false }
+                    if (showCameraControls.value) {
+                        CameraControls(
+                            modifier = Modifier.align(Alignment.BottomEnd),
+                            onClose = { showCameraControls.value = false },
+                            cameraControls = cameraControls
                         )
                     }
                 }

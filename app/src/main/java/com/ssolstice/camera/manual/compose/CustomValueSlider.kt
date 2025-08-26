@@ -72,11 +72,7 @@ fun CustomValueSlider(
 ) {
     Box(
         modifier = modifier
-            .background(
-                color = Color(0xAA1E1E1E),
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .padding(horizontal = 24.dp, vertical = 12.dp)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 

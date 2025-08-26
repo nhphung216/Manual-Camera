@@ -21,7 +21,7 @@
     <color name="color_info">#F8AA37</color>
     <color name="dialog_background">#ffffff</color>
     <color name="flash">#FF9800</color>
-    <color name="color_icon">?attr/colorControlNormal</color>
+    <color name="color_icon">#FFFFFF</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="title">#FF9800</color>

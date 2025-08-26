@@ -14,6 +14,9 @@ import com.ssolstice.camera.manual.MyApplicationInterface
 import com.ssolstice.camera.manual.MyApplicationInterface.PhotoMode
 import com.ssolstice.camera.manual.PreferenceKeys
 import com.ssolstice.camera.manual.R
+import com.ssolstice.camera.manual.cameracontroller.CameraController
+import com.ssolstice.camera.manual.models.CameraControlModel
+import com.ssolstice.camera.manual.models.ControlOptionModel
 import com.ssolstice.camera.manual.models.SettingItemModel
 import com.ssolstice.camera.manual.preview.Preview
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -498,5 +501,91 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             }.toMutableList()
 
         if (rawList.isNotEmpty()) setRawList(rawList)
+    }
+
+    private val _cameraControls = MutableStateFlow(mutableListOf<CameraControlModel>())
+
+    val cameraControls: StateFlow<MutableList<CameraControlModel>> = _cameraControls
+
+    fun setCameraControls(cameraControls: MutableList<CameraControlModel>) {
+        viewModelScope.launch {
+            _cameraControls.value = cameraControls
+        }
+    }
+
+    fun setupCameraControlsData(
+        activity: MainActivity,
+        applicationInterface: MyApplicationInterface,
+        preview: Preview
+    ) {
+        Log.e(TAG, "setupCameraData")
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+        val photoMode = applicationInterface.photoMode
+        Log.e(TAG, "photoMode: $photoMode")
+
+        val controls: MutableList<CameraControlModel> = mutableListOf()
+
+        // white balance
+        // supported White Balances
+        val supportedWhiteBalances = preview.getSupportedWhiteBalances()
+        val supportedWhiteBalancesEntries: MutableList<String?> = mutableListOf()
+        if (supportedWhiteBalances != null) {
+            for (value in supportedWhiteBalances) {
+                val entry: String = activity.mainUI!!.getEntryForWhiteBalance(value)
+                supportedWhiteBalancesEntries.add(entry)
+            }
+        }
+        // exposure
+        if (preview.supportsExposures()) {
+            val minExposure = preview.minimumExposure.toFloat()
+            val maxExposure = preview.maximumExposure.toFloat()
+            val currentExposure = preview.currentExposure.toFloat()
+
+            val model = CameraControlModel(
+                id = "exposure",
+                text = "Exposure",
+                icon = R.drawable.ic_exposure_24,
+                valueRange = minExposure..maxExposure,
+                labels = arrayListOf("-2", "-1", "0", "+1", "+2"),
+                steps = 30
+            )
+            controls.add(model)
+        }
+        // iso
+        if (preview.supportsISORange()) {
+            val minISO = preview.minimumISO.toFloat()
+            val maxISO = preview.maximumISO.toFloat()
+            val model = CameraControlModel(
+                id = "iso",
+                text = "ISO",
+                icon = R.drawable.iso_icon,
+                valueRange = minISO..maxISO,
+                labels = arrayListOf("-2", "-1", "0", "+1", "+2"),
+                steps = 30
+            )
+            controls.add(model)
+        }
+        // shutter
+        if (preview.supportsExposureTime()) {
+            val minExposure = preview.minimumExposureTime.toFloat()
+            val maxExposure = preview.maximumExposureTime.toFloat()
+            val model = CameraControlModel(
+                id = "shutter",
+                text = "Shutter",
+                icon = R.drawable.ic_shutter_speed_24,
+                valueRange = minExposure..maxExposure,
+                labels = arrayListOf("-2", "-1", "0", "+1", "+2"),
+                steps = 30
+            )
+            controls.add(model)
+        }
+
+        // focus
+        // scene mode
+        // color effect
+
+        if (controls.isNotEmpty()) {
+            setCameraControls(controls)
+        }
     }
 }
