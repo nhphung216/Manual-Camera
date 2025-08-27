@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.sp
 fun MenuItem(
     icon: Painter,
     label: String,
+    size: Int = 46,
+    iconSize: Int = 24,
     isChanged: Boolean = false,
     selected: Boolean = false,
     onClick: () -> Unit
@@ -39,7 +41,7 @@ fun MenuItem(
         Box(
             modifier = Modifier
                 .padding(bottom = 8.dp)
-                .size(46.dp)
+                .size(size.dp)
                 .background(
                     color = if (selected) MaterialTheme.colorScheme.primaryContainer else Color.DarkGray,
                     shape = CircleShape
@@ -49,7 +51,7 @@ fun MenuItem(
         ) {
             Image(
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(iconSize.dp)
                     .align(Alignment.Center),
                 painter = icon,
                 contentDescription = label,

@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -87,6 +88,8 @@ fun CustomValueSlider(
     name: String,
     formated: String = "",
     value: Float,
+    showReset: Boolean = true,
+    showBackgroundColor: Boolean = true,
     onValueChange: (Float, String) -> Unit,
     valueRange: ClosedFloatingPointRange<Float> = -1f..1f,
     labels: List<String> = listOf("-1", "-0.5", "-0.25", "0", "0.25", "0.5", "1+"),
@@ -113,63 +116,83 @@ fun CustomValueSlider(
                     .weight(1f)
                     .padding(start = 24.dp, end = 24.dp)
             ) {
-                Text(
-                    text = formated,
-                    color = valueColor,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+//                Text(
+//                    text = formated,
+//                    color = valueColor,
+//                    fontSize = 16.sp,
+//                    textAlign = TextAlign.Center
+//                )
+//                Spacer(modifier = Modifier.height(8.dp))
 
-                // Các nhãn
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    labels.forEach { label ->
-                        Text(
-                            text = label,
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
+                // Labels khớp value
+//                Box(modifier = Modifier.fillMaxWidth()) {
+//                    labels.forEachIndexed { pos, text ->
+//                        val percent = (pos - valueRange.start) / (valueRange.endInclusive - valueRange.start)
+//                        Text(
+//                            text = text,
+//                            color = Color.White,
+//                            fontSize = 11.sp,
+//                            textAlign = TextAlign.Center,
+//                            modifier = Modifier
+//                                .align(Alignment.CenterStart)
+//                                .fillMaxWidth(percent.toFloat()) // căn đúng vị trí
+//                        )
+//                    }
+//                }
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // Slider với custom thumb
-                Slider(
-                    value = value,
-                    onValueChange = {
-                        onValueChange(it, mapDisplayValue(name, value))
-                    },
-                    valueRange = valueRange,
-                    //steps = 55,
-                    modifier = Modifier
-                        .height(24.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 1.dp),
-                    colors = SliderDefaults.colors(
-                        thumbColor = thumbColor,              // màu nút
-                        activeTrackColor = Color.White,        // track bên trái
-                        inactiveTrackColor = Color.White, // track bên phải
-                        activeTickColor = activeColor,            // dot bên trái
-                        inactiveTickColor = inactiveColor          // dot bên phải
+                Box {
+                    if (showBackgroundColor) {
+                        Canvas(modifier = Modifier.matchParentSize()) {
+                            // Gradient từ xanh -> trắng -> đỏ
+                            drawRoundRect(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFF0091EA), // xanh dương (cool ~ 2000K)
+                                        Color.White,       // neutral
+                                        Color(0xFFFF6D00)  // đỏ cam (warm ~ 8000K)
+                                    )
+                                ),
+                                cornerRadius = CornerRadius(30f, 30f)
+                            )
+                        }
+                    }
+
+                    Slider(
+                        value = value,
+                        onValueChange = {
+                            onValueChange(it, mapDisplayValue(name, value))
+                        },
+                        valueRange = valueRange,
+                        //steps = 55,
+                        modifier = Modifier
+                            .height(24.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 1.dp),
+                        colors = SliderDefaults.colors(
+                            thumbColor = thumbColor,              // màu nút
+                            activeTrackColor = Color.White,        // track bên trái
+                            inactiveTrackColor = Color.White, // track bên phải
+                            activeTickColor = activeColor,            // dot bên trái
+                            inactiveTickColor = inactiveColor          // dot bên phải
+                        )
                     )
+                }
+            }
+            if (showReset) {
+                Icon(
+                    imageVector = Icons.Default.Autorenew,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .padding(end = 24.dp)
+                        .size(24.dp)
+                        .clickable { onReset() }
+                        .align(Alignment.Bottom)
                 )
             }
-            Icon(
-                imageVector = Icons.Default.Autorenew,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier
-                    .padding(end = 24.dp)
-                    .size(24.dp)
-                    .clickable { onReset() }
-                    .align(Alignment.Bottom)
-            )
         }
     }
 }

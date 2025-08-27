@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssolstice.camera.manual.models.CameraControlModel
+import com.ssolstice.camera.manual.models.ControlOptionModel
 
 @Preview
 @Composable
@@ -32,8 +33,8 @@ fun CameraControls(
     modifier: Modifier = Modifier,
     onClose: () -> Unit = {},
     valueFormated: String = "",
+    controlOptionModel: ControlOptionModel?,
 
-    isoMode: String = "",
     controlIdSelected: String = "white_balance",
     onControlIdSelected: (String) -> Unit = {},
 
@@ -49,12 +50,20 @@ fun CameraControls(
     onShutterChanged: (Float) -> Unit = {},
     onShutterReset: () -> Unit = {},
 
-    whiteBalanceValue: Float = 0f,
-    focusValue: Float = 0f,
-    sceneModeValue: Float = 0f,
-    colorEffectValue: Float = 0f,
+    whiteBalanceValue: String = "",
+    onWhiteBalanceChanged: (ControlOptionModel) -> Unit = {},
+    onWhiteBalanceManualChanged: (Float) -> Unit = {},
+    whiteBalanceManualValue: Float = 0f,
 
-    onControlChanged: (CameraControlModel, Float) -> Unit,
+    focusValue: String = "",
+    onFocusChanged: (ControlOptionModel) -> Unit = {},
+
+    sceneModeValue: String = "",
+    onSceneModeChanged: (ControlOptionModel) -> Unit = {},
+
+    colorEffectValue: String = "",
+    onColorEffectChanged: (ControlOptionModel) -> Unit = {},
+
     cameraControls: HashMap<String, CameraControlModel> = hashMapOf(),
 ) {
     Column(
@@ -80,25 +89,6 @@ fun CameraControls(
             val controlModel = cameraControls[controlIdSelected]
             controlModel?.let {
                 when (controlIdSelected) {
-                    "white_balance" -> {
-                        LazyRow(
-                            modifier = modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            items(controlModel.options) { optionModel ->
-                                MenuItem(
-                                    icon = painterResource(optionModel.icon),
-                                    label = optionModel.text,
-                                    onClick = {
-
-                                    },
-                                    isChanged = false,
-                                    selected = controlIdSelected == optionModel.id,
-                                )
-                            }
-                        }
-                    }
 
                     "exposure" -> {
                         CustomValueSlider(
@@ -106,9 +96,7 @@ fun CameraControls(
                             name = controlIdSelected,
                             value = exposureValue,
                             formated = valueFormated,
-                            onValueChange = { value, formatDisplay ->
-                                onExposureChanged(value)
-                            },
+                            onValueChange = { value, formatDisplay -> onExposureChanged(value) },
                             onReset = { onExposureReset() },
                             valueRange = controlModel.valueRange,
                             labels = controlModel.labels,
@@ -122,9 +110,7 @@ fun CameraControls(
                             name = controlIdSelected,
                             value = isoValue,
                             formated = valueFormated,
-                            onValueChange = { value, formatDisplay ->
-                                onIsoChanged(value)
-                            },
+                            onValueChange = { value, formatDisplay -> onIsoChanged(value) },
                             onReset = { onIsoReset() },
                             valueRange = controlModel.valueRange,
                             labels = controlModel.labels,
@@ -138,14 +124,54 @@ fun CameraControls(
                             name = controlIdSelected,
                             value = shutterValue,
                             formated = valueFormated,
-                            onValueChange = { value, formatDisplay ->
-                                onShutterChanged(value)
-                            },
+                            onValueChange = { value, formatDisplay -> onShutterChanged(value) },
                             onReset = { onShutterReset() },
                             valueRange = controlModel.valueRange,
                             labels = controlModel.labels,
                             steps = controlModel.steps
                         )
+                    }
+
+                    "white_balance" -> {
+                        if (controlOptionModel != null && controlOptionModel.id == "manual") {
+                            CustomValueSlider(
+                                modifier = Modifier,
+                                name = controlIdSelected,
+                                value = whiteBalanceManualValue,
+                                formated = valueFormated,
+                                onValueChange = { value, formatDisplay ->
+                                    onWhiteBalanceManualChanged(value)
+                                },
+                                showReset = false,
+                                showBackgroundColor = true,
+                                onReset = { onShutterReset() },
+                                valueRange = controlOptionModel.valueRange,
+                                labels = controlOptionModel.labels,
+                                steps = controlOptionModel.steps
+                            )
+//                            WhiteBalanceSlider(
+//                                value = whiteBalanceManualValue,
+//                                valueRange = controlModel.valueRange,
+//                                onValueChange = { onWhiteBalanceManualChanged(it) }
+//                            )
+                        }
+
+                        LazyRow(
+                            modifier = modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            items(controlModel.options) { option ->
+                                MenuItem(
+                                    icon = painterResource(option.icon),
+                                    label = option.text,
+                                    onClick = { onWhiteBalanceChanged(option) },
+                                    selected = whiteBalanceValue == option.id,
+                                    size = 40,
+                                    iconSize = 18,
+                                )
+                            }
+                        }
                     }
 
                     "focus" -> {
@@ -158,11 +184,10 @@ fun CameraControls(
                                 MenuItem(
                                     icon = painterResource(optionModel.icon),
                                     label = optionModel.text,
-                                    onClick = {
-
-                                    },
-                                    isChanged = false,
-                                    selected = controlIdSelected == optionModel.id,
+                                    onClick = { onFocusChanged(optionModel) },
+                                    selected = focusValue == optionModel.id,
+                                    size = 40,
+                                    iconSize = 18,
                                 )
                             }
                         }
@@ -178,11 +203,10 @@ fun CameraControls(
                                 MenuItem(
                                     icon = painterResource(optionModel.icon),
                                     label = optionModel.text,
-                                    onClick = {
-
-                                    },
-                                    isChanged = false,
-                                    selected = controlIdSelected == optionModel.id,
+                                    onClick = { onSceneModeChanged(optionModel) },
+                                    selected = sceneModeValue == optionModel.id,
+                                    size = 40,
+                                    iconSize = 18,
                                 )
                             }
                         }
@@ -198,11 +222,10 @@ fun CameraControls(
                                 MenuItem(
                                     icon = painterResource(optionModel.icon),
                                     label = optionModel.text,
-                                    onClick = {
-
-                                    },
-                                    isChanged = false,
-                                    selected = controlIdSelected == optionModel.id,
+                                    onClick = { onColorEffectChanged(optionModel) },
+                                    selected = colorEffectValue == optionModel.id,
+                                    size = 40,
+                                    iconSize = 18,
                                 )
                             }
                         }
@@ -231,10 +254,7 @@ fun CameraControls(
                         MenuItem(
                             icon = painterResource(control.icon),
                             label = control.text,
-                            onClick = {
-                                onControlIdSelected(control.id)
-                            },
-                            isChanged = false,
+                            onClick = { onControlIdSelected(control.id) },
                             selected = controlIdSelected == control.id,
                         )
                     }

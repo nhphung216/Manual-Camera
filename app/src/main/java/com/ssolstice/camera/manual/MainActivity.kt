@@ -78,12 +78,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.WindowCompat
@@ -109,7 +107,6 @@ import com.ssolstice.camera.manual.ui.FolderChooserDialog
 import com.ssolstice.camera.manual.ui.MainUI
 import com.ssolstice.camera.manual.ui.ManualSeekbars
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -857,23 +854,21 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 val rawSelected by viewModel.rawSelected.observeAsState()
 
                 val controlsMapData by viewModel.controlsMapData.observeAsState()
+                val controlOptionModel = viewModel.controlOptionModel.observeAsState()
 
                 var exposureValue by remember { mutableFloatStateOf(0f) }
                 var isoValue by remember { mutableFloatStateOf(0f) }
                 var shutterValue by remember { mutableFloatStateOf(0f) }
+                var whiteBalanceManualValue by remember { mutableFloatStateOf(0f) }
 
-                var whiteBalanceValue by remember { mutableStateOf(0f) }
-                var focusValue by remember { mutableStateOf(0f) }
-                var sceneModeValue by remember { mutableStateOf(0f) }
-                var colorEffectValue by remember { mutableStateOf(0f) }
+                var whiteBalanceValue by remember { mutableStateOf("") }
+                var focusValue by remember { mutableStateOf("") }
+                var sceneModeValue by remember { mutableStateOf("") }
+                var colorEffectValue by remember { mutableStateOf("") }
 
                 var currentControlSelected by remember { mutableStateOf("white_balance") }
 
-                var isoMode by remember { mutableStateOf(getIsoMode()) }
-
                 var valueFormated by remember { mutableStateOf("") }
-
-                val coroutine = rememberCoroutineScope()
 
                 Box {
                     CameraScreen(
@@ -1013,13 +1008,108 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             shutterValue = shutterValue,
                             valueFormated = valueFormated,
                             whiteBalanceValue = whiteBalanceValue,
+                            controlOptionModel = controlOptionModel.value,
+                            onWhiteBalanceChanged = { item ->
+                                whiteBalanceValue = item.id
+
+                                if (whiteBalanceValue == "manual") {
+                                    applicationInterface?.let {
+                                        val temperature = applicationInterface!!.whiteBalanceTemperaturePref
+                                        whiteBalanceManualValue = temperature.toFloat()
+                                        viewModel.setControlOptionModel(item)
+                                    }
+                                } else {
+                                    viewModel.setControlOptionModel(null)
+                                }
+
+                                val editor = sharedPreferences.edit()
+                                editor.putString(PreferenceKeys.WhiteBalancePreferenceKey, whiteBalanceValue)
+                                editor.apply()
+
+                                if (whiteBalanceValue == "manual") {
+                                    updateForSettings(true, "White Balance: ${whiteBalanceValue}K")
+                                } else {
+                                    updateForSettings(true, "White Balance: ${item.text}")
+                                }
+                            },
+                            whiteBalanceManualValue = whiteBalanceManualValue,
+                            onWhiteBalanceManualChanged = {
+                                whiteBalanceManualValue = it
+                                preview?.setWhiteBalanceTemperature(it.toInt())
+                            },
                             focusValue = focusValue,
+                            onFocusChanged = { item ->
+                                val selectedValue: String? = item.id
+                                focusValue = item.id
+                                preview?.updateFocus(item.id, false, true)
+                                if (preview?.cameraController != null) {
+                                    if (preview?.cameraController?.sceneModeAffectsFunctionality() == true) {
+                                        updateForSettings(
+                                            true,
+                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForFocus(
+                                                selectedValue
+                                            )
+                                        )
+                                    } else {
+                                        preview?.cameraController?.setSceneMode(selectedValue)
+                                    }
+                                }
+                            },
                             sceneModeValue = sceneModeValue,
+                            onSceneModeChanged = { item ->
+                                applicationInterface?.setSceneModePref(item.id)
+                                sceneModeValue = item.id
+                                if (preview?.cameraController != null) {
+                                    if (preview?.cameraController?.sceneModeAffectsFunctionality() == true) {
+                                        updateForSettings(
+                                            true,
+                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(item.id)
+                                        )
+                                    } else {
+                                        preview?.cameraController?.setSceneMode(item.id)
+                                        updateForSettings(
+                                            true,
+                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(item.id)
+                                        )
+                                    }
+                                }
+                            },
                             colorEffectValue = colorEffectValue,
+                            onColorEffectChanged = { item ->
+                                if (preview!!.cameraController != null) {
+                                    preview!!.cameraController.setColorEffect(item.id)
+                                    applicationInterface?.setColorEffectPref(item.id)
+                                    colorEffectValue = item.id
+                                }
+                            },
                             controlIdSelected = currentControlSelected,
-                            isoMode = isoMode,
                             onControlIdSelected = {
                                 currentControlSelected = it
+                                when (currentControlSelected) {
+                                    "exposure" -> {
+                                        valueFormated =
+                                            preview?.getExposureString(exposureValue.toInt()) ?: ""
+                                    }
+
+                                    "iso" -> {
+                                        valueFormated =
+                                            if (getIsoMode() == CameraController.ISO_DEFAULT) {
+                                                CameraController.ISO_DEFAULT
+                                            } else {
+                                                preview?.getISOString(isoValue.toInt()) ?: ""
+                                            }
+                                    }
+
+                                    "shutter" -> {
+                                        valueFormated =
+                                            if (shutterValue.toLong() == EXPOSURE_TIME_DEFAULT) {
+                                                getString(R.string.auto)
+                                            } else {
+                                                preview?.getExposureTimeString(shutterValue.toLong())
+                                                    ?: ""
+                                            }
+                                    }
+                                }
                             },
 
                             // ISO
@@ -1028,13 +1118,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 if (getIsoMode() == CameraController.ISO_DEFAULT) {
                                     setIsoManual()
                                 }
-                                isoMode = getIsoMode()
                                 preview?.setISO(it.toInt())
                                 valueFormated = preview?.getISOString(it.toInt()) ?: ""
                             },
                             onIsoReset = {
                                 setIsoAuto("")
-                                isoMode = getIsoMode()
                                 valueFormated = getString(R.string.auto)
                             },
 
@@ -1049,7 +1137,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 shutterValue = EXPOSURE_TIME_DEFAULT.toFloat()
                                 setIsoAuto("")
                                 preview?.setExposureTime(EXPOSURE_TIME_DEFAULT)
-                                valueFormated = preview?.getExposureTimeString(EXPOSURE_TIME_DEFAULT) ?: ""
+                                valueFormated =
+                                    preview?.getExposureTimeString(EXPOSURE_TIME_DEFAULT) ?: ""
                             },
 
                             // Exposure
@@ -1062,29 +1151,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 exposureValue = 0f
                                 preview?.setExposure(0)
                                 valueFormated = preview?.getExposureString(0) ?: ""
-                            },
-
-                            onControlChanged = { cameraControlModel, value ->
-                                Log.e(TAG, "onControlChanged: ${cameraControlModel.id}, $value")
-                                coroutine.launch {
-                                    when (cameraControlModel.id) {
-                                        "white_balance" -> {
-                                            whiteBalanceValue = value
-                                        }
-
-                                        "focus" -> {
-                                            focusValue = value
-                                        }
-
-                                        "scene_mode" -> {
-                                            sceneModeValue = value
-                                        }
-
-                                        "color_effect" -> {
-                                            colorEffectValue = value
-                                        }
-                                    }
-                                }
                             },
                         )
                     }

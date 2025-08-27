@@ -154,6 +154,8 @@ class CameraViewModel @Inject constructor() : ViewModel() {
     private val _speedSelected = MutableLiveData<SettingItemModel>()
     val speedSelected: LiveData<SettingItemModel> = _speedSelected
 
+    val controlOptionModel= MutableLiveData<ControlOptionModel?>()
+
     // _resolutionsOfVideo
     private val _resolutionsOfVideo = MutableStateFlow(mutableListOf<SettingItemModel>())
     val resolutionsOfVideo: StateFlow<MutableList<SettingItemModel>> = _resolutionsOfVideo
@@ -578,13 +580,26 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         if (supportedWhiteBalances != null) {
             val options: ArrayList<ControlOptionModel> = arrayListOf()
             for (value in supportedWhiteBalances) {
-                options.add(
+                val model = if (value == "manual") {
+                    val temperature = preview.cameraController.getWhiteBalanceTemperature()
+                    val minWhiteBalance = preview.getMinimumWhiteBalanceTemperature().toFloat()
+                    val maxWhiteBalance = preview.getMaximumWhiteBalanceTemperature().toFloat()
+                    ControlOptionModel(
+                        id = value,
+                        text = activity.mainUI!!.getEntryForWhiteBalance(value),
+                        icon = activity.mainUI!!.getIconForWhiteBalance(value),
+                        valueRange = minWhiteBalance..maxWhiteBalance,
+                        currentValue = temperature.toFloat(),
+                        labels = generateExposureLabels(minWhiteBalance.toInt(), maxWhiteBalance.toInt(), 6),
+                    )
+                } else {
                     ControlOptionModel(
                         id = value,
                         text = activity.mainUI!!.getEntryForWhiteBalance(value),
                         icon = activity.mainUI!!.getIconForWhiteBalance(value)
                     )
-                )
+                }
+                options.add(model)
             }
             controlsMap["white_balance"] = CameraControlModel(
                 id = "white_balance",
@@ -628,6 +643,7 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         if (preview.supportsExposureTime()) {
             val minExposure = preview.minimumExposureTime.toFloat()
             val maxExposure = preview.maximumExposureTime.toFloat()
+            Log.e(TAG, "minExposure: $minExposure, maxExposure: $maxExposure")
             controlsMap["shutter"] = CameraControlModel(
                 id = "shutter",
                 text = activity.getString(R.string.shutter),
@@ -716,5 +732,9 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             )
         }
         _controlsMapData.value = controlsMap
+    }
+
+    fun setControlOptionModel(item: ControlOptionModel?) {
+        controlOptionModel.value = item
     }
 }
