@@ -84,6 +84,13 @@ public class MyApplicationInterface extends BasicApplicationInterface {
         X_Beauty
     }
 
+    // note, okay to change the order of enums in future versions, as getPhotoMode() does not rely on the order for the saved photo mode
+    public enum VideoMode {
+        Video,
+        Slow_Motion,
+        Time_Lapse,
+    }
+
     private final MainActivity main_activity;
     private final LocationSupplier locationSupplier;
     private final GyroSensor gyroSensor;

@@ -144,7 +144,7 @@ fun CameraSettings(
             Text(
                 stringResource(if (isPhotoMode) R.string.photo_settings else R.string.video_settings),
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.primaryContainer,
                 modifier = Modifier
                     .align(Alignment.CenterStart)
             )
@@ -253,39 +253,39 @@ fun CameraSettings(
         }
 
         // speed (video mode)
-        if (!isPhotoMode) {
-            TitleSettingRow(stringResource(R.string.speed))
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                items(speeds) { item ->
-                    ItemResolution(
-                        item.text, isSelect = item.id == speedSelected?.id,
-                        onClick = { onSpeedChange(item) },
-                    )
-                }
-            }
-
-            TitleSettingRow(stringResource(R.string.resolution))
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                items(resolutionsVideo) { item ->
-                    ItemResolution(
-                        item.text, isSelect = item.id == resolutionOfVideoSelected?.id,
-                        onClick = { onResolutionOfVideoChange(item) },
-                    )
-                }
-            }
-        }
+//        if (!isPhotoMode) {
+//            TitleSettingRow(stringResource(R.string.speed))
+//            LazyRow(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            ) {
+//                items(speeds) { item ->
+//                    ItemResolution(
+//                        item.text, isSelect = item.id == speedSelected?.id,
+//                        onClick = { onSpeedChange(item) },
+//                    )
+//                }
+//            }
+//
+//            TitleSettingRow(stringResource(R.string.resolution))
+//            LazyRow(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            ) {
+//                items(resolutionsVideo) { item ->
+//                    ItemResolution(
+//                        item.text, isSelect = item.id == resolutionOfVideoSelected?.id,
+//                        onClick = { onResolutionOfVideoChange(item) },
+//                    )
+//                }
+//            }
+//        }
         Row(
             modifier = Modifier
                 .padding(top = 4.dp, end = 16.dp, bottom = 16.dp)
                 .border(
                     width = 1.dp,
-                    color = Color.LightGray,
+                    color = MaterialTheme.colorScheme.primaryContainer,
                     shape = RoundedCornerShape(16.dp) // bo góc
                 )
                 .align(Alignment.End)
@@ -294,7 +294,7 @@ fun CameraSettings(
             Text(
                 stringResource(R.string.more_settings),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.primaryContainer,
                 modifier = Modifier
                     .padding(start = 12.dp, top = 8.dp, bottom = 8.dp, end = 12.dp)
             )

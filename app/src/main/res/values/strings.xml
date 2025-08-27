@@ -1181,4 +1181,6 @@
     <string name="saturation">saturation</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
+    <string name="slow_motion">Slow Motion</string>
+    <string name="time_lapse">Time Lapse</string>
 </resources>

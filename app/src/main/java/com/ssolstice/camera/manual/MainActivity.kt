@@ -73,6 +73,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -88,7 +89,6 @@ import androidx.core.content.edit
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.exifinterface.media.ExifInterface
-import androidx.lifecycle.lifecycleScope
 import com.ssolstice.camera.manual.MyApplicationInterface.PhotoMode
 import com.ssolstice.camera.manual.cameracontroller.CameraController
 import com.ssolstice.camera.manual.cameracontroller.CameraController.EXPOSURE_TIME_DEFAULT
@@ -110,7 +110,6 @@ import com.ssolstice.camera.manual.ui.MainUI
 import com.ssolstice.camera.manual.ui.ManualSeekbars
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -330,6 +329,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         if (MyDebug.LOG) Log.d(TAG, "activity_count: $activity_count")
         //EdgeToEdge.enable(this, SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT), SystemBarStyle.dark(Color.TRANSPARENT)); // test edge-to-edge on pre-Android 15
         super.onCreate(savedInstanceState)
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
         // 2. Gán binding trong onCreate
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -869,12 +869,26 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
                 var currentControlSelected by remember { mutableStateOf("white_balance") }
                 var valueFormated by remember { mutableStateOf("") }
+
                 val photoModes = viewModel.photoModes.collectAsState()
                 val currentPhotoMode = viewModel.currentPhotoMode.collectAsState()
 
-                lifecycleScope.launch {
+                val videoModes = viewModel.videoModes.collectAsState()
+                val currentVideoMode = viewModel.currentVideoMode.collectAsState()
+                val captureRate = viewModel.captureRate.collectAsState()
+
+                LaunchedEffect(Unit) {
+                    // chạy 1 lần khi Composable được enter composition
                     delay(1000)
-                    if (preview != null) viewModel.loadPhotoModeViews(this@MainActivity, preview!!)
+                    viewModel.loadPhotoModeViews(this@MainActivity)
+
+                    if (preview != null && applicationInterface != null) {
+                        viewModel.loadVideoModeViews(
+                            this@MainActivity,
+                            applicationInterface!!,
+                            preview!!
+                        )
+                    }
                 }
 
                 Box {
@@ -920,6 +934,31 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 viewModel.setCurrentPhotoMode(it.mode)
                                 viewModel.changePhotoMode(it)
                                 changePhotoMode(it.mode)
+                            }
+                        },
+                        currentVideoMode = currentVideoMode.value,
+                        videoModes = videoModes.value,
+                        changeVideoMode = {
+                            if (it.mode == MyApplicationInterface.VideoMode.Video) {
+                                viewModel.setCaptureRate(1f)
+                                if (applicationInterface != null && preview != null) {
+                                    viewModel.setSpeedSelected2(
+                                        this@MainActivity, applicationInterface!!, preview!!, 1f
+                                    )
+                                }
+                            }
+                            if (currentVideoMode.value != it) {
+                                viewModel.setVideoMode(it)
+                                viewModel.changeVideoMode(it)
+                            }
+                        },
+                        captureRate = captureRate.value,
+                        onCaptureRateSelected = {
+                            viewModel.setCaptureRate(it)
+                            if (applicationInterface != null && preview != null) {
+                                viewModel.setSpeedSelected2(
+                                    this@MainActivity, applicationInterface!!, preview!!, it
+                                )
                             }
                         }
                     )
@@ -4547,11 +4586,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         if (lockToLandscape) {
             // force to landscape mode
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE); // testing for devices with unusual sensor orientation (e.g., Nexus 5X)
         } else {
             // allow orientation to change for camera, even if user has locked orientation
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR)
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR)
         }
         if (preview != null) {
             // also need to call preview.setCameraDisplayOrientation, as this handles if the user switched from portrait to reverse landscape whilst in settings/etc
@@ -4636,7 +4675,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
 
         // allow screen rotation
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
 
         // revert to standard screen blank behaviour
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

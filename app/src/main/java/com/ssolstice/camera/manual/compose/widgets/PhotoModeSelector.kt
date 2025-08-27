@@ -1,4 +1,4 @@
-package com.ssolstice.camera.manual.compose
+package com.ssolstice.camera.manual.compose.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,13 +22,12 @@ import com.ssolstice.camera.manual.models.PhotoModeUiModel
 
 @Composable
 fun PhotoModeSelector(
-    modes: List<PhotoModeUiModel>,
-    onModeSelected: (PhotoModeUiModel) -> Unit
+    modes: List<PhotoModeUiModel>, onModeSelected: (PhotoModeUiModel) -> Unit
 ) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 24.dp),
+            .padding(top = 48.dp, bottom = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(modes) { item ->
@@ -41,12 +40,9 @@ fun PhotoModeSelector(
                         else Color.Transparent
                     )
                     .clickable { onModeSelected(item) }
-                    .padding(8.dp)
-            ) {
+                    .padding(8.dp)) {
                 Text(
-                    text = item.text,
-                    color = Color.White,
-                    fontSize = 16.sp
+                    text = item.text, color = Color.White, fontSize = 16.sp
                 )
             }
         }
