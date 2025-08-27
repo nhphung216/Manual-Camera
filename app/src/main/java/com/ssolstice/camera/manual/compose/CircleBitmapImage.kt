@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 
-
 @Composable
 fun CircleBitmapImage(
     modifier: Modifier = Modifier,

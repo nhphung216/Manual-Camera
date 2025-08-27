@@ -2,9 +2,7 @@ package com.ssolstice.camera.manual.compose
 
 import android.graphics.Bitmap
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraEnhance
-import androidx.compose.material.icons.filled.FlipCameraAndroid
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.PlayArrow
@@ -32,14 +29,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ssolstice.camera.manual.R
+import com.ssolstice.camera.manual.compose.widgets.OuterRing
+import com.ssolstice.camera.manual.compose.widgets.ShutterButton
+import com.ssolstice.camera.manual.compose.widgets.SwitchCameraButton
+import com.ssolstice.camera.manual.models.PhotoModeUiModel
 
 @Preview
 @Composable
@@ -49,15 +45,6 @@ fun CameraPreview() {
 
 val RecordColor = Color(0xFFDD2C00)
 val WhiteColor = Color(0xFFD9D4D4)
-
-val list = arrayListOf(
-    "Option 1",
-    "Option 2",
-    "Option 3",
-    "Option 4",
-    "Option 5",
-)
-
 
 @Composable
 fun CameraScreen(
@@ -73,6 +60,8 @@ fun CameraScreen(
     switchCamera: () -> Unit = {},
     showCameraSettings: () -> Unit = {},
     showConfigTableSettings: () -> Unit = {},
+    photoModes: List<PhotoModeUiModel> = emptyList(),
+    changePhotoMode: (PhotoModeUiModel) -> Unit = {}
 ) {
     Log.e("CameraScreen", "isRecording: $isRecording")
     Log.e("CameraScreen", "isPhotoMode: $isPhotoMode")
@@ -157,24 +146,11 @@ fun CameraScreen(
             }
         }
 
-        if (list.isNotEmpty()) {
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp, bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                items(list.size) {
-                    Text(
-                        text = list[it],
-                        modifier = Modifier
-                            .background(Color.DarkGray, shape = RoundedCornerShape(16.dp))
-                            .padding(vertical = 4.dp, horizontal = 12.dp),
-                        color = WhiteColor
-                    )
-                }
-            }
+        if (photoModes.isNotEmpty()) {
+            PhotoModeSelector(
+                modes = photoModes,
+                onModeSelected = { mode -> changePhotoMode(mode) }
+            )
         }
 
         Row(

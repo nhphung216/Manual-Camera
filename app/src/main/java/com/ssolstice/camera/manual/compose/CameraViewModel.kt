@@ -2,6 +2,7 @@ package com.ssolstice.camera.manual.compose
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.hardware.camera2.CameraExtensionCharacteristics
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.core.content.edit
@@ -16,6 +17,7 @@ import com.ssolstice.camera.manual.PreferenceKeys
 import com.ssolstice.camera.manual.R
 import com.ssolstice.camera.manual.models.CameraControlModel
 import com.ssolstice.camera.manual.models.ControlOptionModel
+import com.ssolstice.camera.manual.models.PhotoModeUiModel
 import com.ssolstice.camera.manual.models.SettingItemModel
 import com.ssolstice.camera.manual.preview.Preview
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -154,7 +156,7 @@ class CameraViewModel @Inject constructor() : ViewModel() {
     private val _speedSelected = MutableLiveData<SettingItemModel>()
     val speedSelected: LiveData<SettingItemModel> = _speedSelected
 
-    val controlOptionModel= MutableLiveData<ControlOptionModel?>()
+    val controlOptionModel = MutableLiveData<ControlOptionModel?>()
 
     // _resolutionsOfVideo
     private val _resolutionsOfVideo = MutableStateFlow(mutableListOf<SettingItemModel>())
@@ -590,7 +592,11 @@ class CameraViewModel @Inject constructor() : ViewModel() {
                         icon = activity.mainUI!!.getIconForWhiteBalance(value),
                         valueRange = minWhiteBalance..maxWhiteBalance,
                         currentValue = temperature.toFloat(),
-                        labels = generateExposureLabels(minWhiteBalance.toInt(), maxWhiteBalance.toInt(), 6),
+                        labels = generateExposureLabels(
+                            minWhiteBalance.toInt(),
+                            maxWhiteBalance.toInt(),
+                            6
+                        ),
                     )
                 } else {
                     ControlOptionModel(
@@ -736,5 +742,146 @@ class CameraViewModel @Inject constructor() : ViewModel() {
 
     fun setControlOptionModel(item: ControlOptionModel?) {
         controlOptionModel.value = item
+    }
+
+    private val _photoModes = MutableStateFlow<List<PhotoModeUiModel>>(emptyList())
+    val photoModes: StateFlow<List<PhotoModeUiModel>> = _photoModes
+
+    var currentPhotoMode = MutableStateFlow(PhotoMode.Standard)
+
+    fun setCurrentPhotoMode(item: PhotoMode) {
+        currentPhotoMode.value = item
+    }
+
+    fun loadPhotoModeViews(mainActivity: MainActivity, preview: Preview) {
+        val photoModes = ArrayList<PhotoModeUiModel>()
+
+        if (mainActivity.supportsPanorama()) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.Panorama,
+                    mainActivity.getString(R.string.photo_mode_panorama_full),
+                )
+            )
+        }
+
+        if (mainActivity.supportsFocusBracketing()) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.FocusBracketing,
+                    mainActivity.getString(R.string.photo_mode_focus_bracketing_full),
+                )
+            )
+        }
+
+        if (mainActivity.supportsHDR()) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.HDR,
+                    mainActivity.getString(R.string.photo_mode_hdr),
+                )
+            )
+        }
+
+        // Standard luôn có
+        photoModes.add(
+            PhotoModeUiModel(
+                PhotoMode.Standard,
+                mainActivity.getString(R.string.photo_mode_standard_full),
+            )
+        )
+
+        if (mainActivity.supportsDRO()) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.DRO,
+                    mainActivity.getString(R.string.photo_mode_dro),
+                )
+            )
+        }
+
+        if (mainActivity.supportsNoiseReduction()) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.NoiseReduction,
+                    mainActivity.getString(R.string.photo_mode_noise_reduction_full),
+                )
+            )
+        }
+
+        if (mainActivity.supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_NIGHT)) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.X_Night,
+                    mainActivity.getString(R.string.Night),
+                )
+            )
+        }
+
+        if (mainActivity.supportsFastBurst()) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.FastBurst,
+                    mainActivity.getString(R.string.photo_mode_fast_burst_full),
+                )
+            )
+        }
+
+        if (mainActivity.supportsExpoBracketing()) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.ExpoBracketing,
+                    mainActivity.getString(R.string.photo_mode_expo_bracketing_full),
+                )
+            )
+        }
+
+        if (mainActivity.supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_AUTOMATIC)) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.X_Auto,
+                    mainActivity.getString(R.string.photo_mode_x_auto),
+                )
+            )
+        }
+
+        if (mainActivity.supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_HDR)) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.X_HDR,
+                    mainActivity.getString(R.string.photo_mode_x_hdr),
+                )
+            )
+        }
+
+        if (mainActivity.supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_BOKEH)) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.X_Bokeh,
+                    mainActivity.getString(R.string.photo_mode_x_bokeh),
+                )
+            )
+        }
+
+        if (mainActivity.supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_BEAUTY)) {
+            photoModes.add(
+                PhotoModeUiModel(
+                    PhotoMode.X_Beauty,
+                    mainActivity.getString(R.string.photo_mode_x_beauty_full),
+                )
+            )
+        }
+
+        // Mark selected
+        _photoModes.value = photoModes.map {
+            it.copy(selected = it.mode == currentPhotoMode.value)
+        }
+    }
+
+    fun changePhotoMode(mode: PhotoModeUiModel) {
+        currentPhotoMode.value = mode.mode
+        _photoModes.value = _photoModes.value.map {
+            it.copy(selected = it.mode == mode.mode)
+        }
     }
 }

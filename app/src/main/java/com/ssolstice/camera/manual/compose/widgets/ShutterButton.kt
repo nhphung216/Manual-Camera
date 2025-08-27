@@ -1,4 +1,4 @@
-package com.ssolstice.camera.manual.compose
+package com.ssolstice.camera.manual.compose.widgets
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -19,6 +19,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import com.ssolstice.camera.manual.compose.RecordColor
+import com.ssolstice.camera.manual.compose.WhiteColor
 
 @Composable
 fun ShutterButton(

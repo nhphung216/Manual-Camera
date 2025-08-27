@@ -1,4 +1,4 @@
-package com.ssolstice.camera.manual.compose
+package com.ssolstice.camera.manual.compose.widgets
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -44,8 +43,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -89,7 +86,7 @@ fun CustomValueSlider(
     formated: String = "",
     value: Float,
     showReset: Boolean = true,
-    showBackgroundColor: Boolean = true,
+    showBackgroundColor: Boolean = false,
     onValueChange: (Float, String) -> Unit,
     valueRange: ClosedFloatingPointRange<Float> = -1f..1f,
     labels: List<String> = listOf("-1", "-0.5", "-0.25", "0", "0.25", "0.5", "1+"),
@@ -151,7 +148,7 @@ fun CustomValueSlider(
                                 brush = Brush.horizontalGradient(
                                     colors = listOf(
                                         Color(0xFF0091EA), // xanh dương (cool ~ 2000K)
-                                        Color.White,       // neutral
+                                        Color.Gray,       // neutral
                                         Color(0xFFFF6D00)  // đỏ cam (warm ~ 8000K)
                                     )
                                 ),

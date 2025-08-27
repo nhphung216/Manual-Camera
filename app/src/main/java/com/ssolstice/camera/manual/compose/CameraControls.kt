@@ -17,8 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ssolstice.camera.manual.R
+import com.ssolstice.camera.manual.compose.widgets.CustomValueSlider
+import com.ssolstice.camera.manual.compose.widgets.MenuItem
 import com.ssolstice.camera.manual.models.CameraControlModel
 import com.ssolstice.camera.manual.models.ControlOptionModel
 
@@ -32,6 +36,7 @@ fun CameraControlsPreview() {
 fun CameraControls(
     modifier: Modifier = Modifier,
     onClose: () -> Unit = {},
+    onResetAllSettings: () -> Unit = {},
     valueFormated: String = "",
     controlOptionModel: ControlOptionModel?,
 
@@ -149,11 +154,6 @@ fun CameraControls(
                                 labels = controlOptionModel.labels,
                                 steps = controlOptionModel.steps
                             )
-//                            WhiteBalanceSlider(
-//                                value = whiteBalanceManualValue,
-//                                valueRange = controlModel.valueRange,
-//                                onValueChange = { onWhiteBalanceManualChanged(it) }
-//                            )
                         }
 
                         LazyRow(
@@ -248,6 +248,13 @@ fun CameraControls(
                     "scene_mode",
                     "color_effect"
                 )
+                item {
+                    MenuItem(
+                        icon = painterResource(R.drawable.outline_reset_settings),
+                        label = stringResource(R.string.reset_all),
+                        onClick = { onResetAllSettings() },
+                    )
+                }
                 controls.forEach {
                     val control = cameraControls[it] ?: return@forEach
                     item {

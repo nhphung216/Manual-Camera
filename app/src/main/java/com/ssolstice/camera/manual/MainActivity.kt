@@ -25,6 +25,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.hardware.camera2.CameraExtensionCharacteristics
 import android.hardware.display.DisplayManager
 import android.hardware.display.DisplayManager.DisplayListener
 import android.media.MediaMetadataRetriever
@@ -87,6 +88,7 @@ import androidx.core.content.edit
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.exifinterface.media.ExifInterface
+import androidx.lifecycle.lifecycleScope
 import com.ssolstice.camera.manual.MyApplicationInterface.PhotoMode
 import com.ssolstice.camera.manual.cameracontroller.CameraController
 import com.ssolstice.camera.manual.cameracontroller.CameraController.EXPOSURE_TIME_DEFAULT
@@ -107,6 +109,8 @@ import com.ssolstice.camera.manual.ui.FolderChooserDialog
 import com.ssolstice.camera.manual.ui.MainUI
 import com.ssolstice.camera.manual.ui.ManualSeekbars
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -781,20 +785,17 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // handle on back behaviour
         popupOnBackPressedCallback = PopupOnBackPressedCallback(false)
         this.onBackPressedDispatcher.addCallback(
-            this,
-            popupOnBackPressedCallback!!
+            this, popupOnBackPressedCallback!!
         )
 
         pausePreviewOnBackPressedCallback = PausePreviewOnBackPressedCallback(false)
         this.onBackPressedDispatcher.addCallback(
-            this,
-            pausePreviewOnBackPressedCallback!!
+            this, pausePreviewOnBackPressedCallback!!
         )
 
         screenLockOnBackPressedCallback = ScreenLockOnBackPressedCallback(false)
         this.onBackPressedDispatcher.addCallback(
-            this,
-            screenLockOnBackPressedCallback!!
+            this, screenLockOnBackPressedCallback!!
         )
 
         // so we get the icons rotation even when rotating for the first time - see onSystemOrientationChanged
@@ -867,8 +868,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 var colorEffectValue by remember { mutableStateOf("") }
 
                 var currentControlSelected by remember { mutableStateOf("white_balance") }
-
                 var valueFormated by remember { mutableStateOf("") }
+                val photoModes = viewModel.photoModes.collectAsState()
+                val currentPhotoMode = viewModel.currentPhotoMode.collectAsState()
+
+                lifecycleScope.launch {
+                    delay(1000)
+                    if (preview != null) viewModel.loadPhotoModeViews(this@MainActivity, preview!!)
+                }
 
                 Box {
                     CameraScreen(
@@ -886,9 +893,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             showCameraSettings.value = !showCameraSettings.value
                             if (showCameraSettings.value && preview != null && applicationInterface != null) {
                                 viewModel.setupCameraData(
-                                    this@MainActivity,
-                                    applicationInterface!!,
-                                    preview!!
+                                    this@MainActivity, applicationInterface!!, preview!!
                                 )
                             }
                         },
@@ -897,21 +902,25 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 if (preview?.isVideo == true && preview?.isVideoRecording == true) {
                                     Log.e(MainActivity.TAG, "don't add any more options")
                                 } else {
-                                    if (preview?.cameraController != null
-                                        && applicationInterface?.isCameraExtensionPref != true
-                                    ) {
+                                    if (preview?.cameraController != null && applicationInterface?.isCameraExtensionPref != true) {
                                         showCameraControls.value = !showCameraControls.value
                                         if (showCameraControls.value) {
                                             viewModel.setupCameraControlsData(
-                                                this@MainActivity,
-                                                applicationInterface!!,
-                                                preview!!
+                                                this@MainActivity, applicationInterface!!, preview!!
                                             )
                                         }
                                     }
                                 }
                             }
 
+                        },
+                        photoModes = photoModes.value,
+                        changePhotoMode = {
+                            if (currentPhotoMode.value != it.mode) {
+                                viewModel.setCurrentPhotoMode(it.mode)
+                                viewModel.changePhotoMode(it)
+                                changePhotoMode(it.mode)
+                            }
                         }
                     )
 
@@ -935,18 +944,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             onResolutionChange = {
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setResolutionSelected(
-                                        this@MainActivity,
-                                        applicationInterface!!,
-                                        preview!!,
-                                        it
+                                        this@MainActivity, applicationInterface!!, preview!!, it
                                     )
                                 }
                             },
                             onRawChange = {
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setRawSelected(
-                                        this@MainActivity,
-                                        preview!!, it
+                                        this@MainActivity, preview!!, it
                                     )
                                 }
                             },
@@ -960,34 +965,28 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             onResolutionOfVideoChange = {
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setResolutionOfVideoSelected(
-                                        this@MainActivity,
-                                        applicationInterface!!,
-                                        preview!!, it
+                                        this@MainActivity, applicationInterface!!, preview!!, it
                                     )
                                 }
                             },
                             onTimerChange = {
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setTimerSelected(
-                                        this@MainActivity,
-                                        it
+                                        this@MainActivity, it
                                     )
                                 }
                             },
                             onRepeatChange = {
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setRepeatSelected(
-                                        this@MainActivity,
-                                        it
+                                        this@MainActivity, it
                                     )
                                 }
                             },
                             onSpeedChange = {
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setSpeedSelected(
-                                        this@MainActivity,
-                                        applicationInterface!!,
-                                        preview!!, it
+                                        this@MainActivity, applicationInterface!!, preview!!, it
                                     )
                                 }
                             },
@@ -1010,12 +1009,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             whiteBalanceValue = whiteBalanceValue,
                             controlOptionModel = controlOptionModel.value,
                             onWhiteBalanceChanged = { item ->
+                                Log.e(TAG, "onWhiteBalanceChanged: $item")
                                 whiteBalanceValue = item.id
 
                                 if (whiteBalanceValue == "manual") {
                                     applicationInterface?.let {
-                                        val temperature = applicationInterface!!.whiteBalanceTemperaturePref
-                                        whiteBalanceManualValue = temperature.toFloat()
+                                        whiteBalanceManualValue =
+                                            applicationInterface!!.whiteBalanceTemperaturePref.toFloat()
                                         viewModel.setControlOptionModel(item)
                                     }
                                 } else {
@@ -1023,13 +1023,20 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 }
 
                                 val editor = sharedPreferences.edit()
-                                editor.putString(PreferenceKeys.WhiteBalancePreferenceKey, whiteBalanceValue)
+                                editor.putString(
+                                    PreferenceKeys.WhiteBalancePreferenceKey, whiteBalanceValue
+                                )
                                 editor.apply()
 
                                 if (whiteBalanceValue == "manual") {
-                                    updateForSettings(true, "White Balance: ${whiteBalanceValue}K")
+                                    updateForSettings(
+                                        true,
+                                        "${getString(R.string.white_balance)}: ${whiteBalanceManualValue.toInt()}K"
+                                    )
                                 } else {
-                                    updateForSettings(true, "White Balance: ${item.text}")
+                                    updateForSettings(
+                                        true, "${getString(R.string.white_balance)}: ${item.text}"
+                                    )
                                 }
                             },
                             whiteBalanceManualValue = whiteBalanceManualValue,
@@ -1039,8 +1046,10 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             },
                             focusValue = focusValue,
                             onFocusChanged = { item ->
+                                Log.e(TAG, "onFocusChanged: $item")
                                 val selectedValue: String? = item.id
                                 focusValue = item.id
+
                                 preview?.updateFocus(item.id, false, true)
                                 if (preview?.cameraController != null) {
                                     if (preview?.cameraController?.sceneModeAffectsFunctionality() == true) {
@@ -1057,25 +1066,31 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             },
                             sceneModeValue = sceneModeValue,
                             onSceneModeChanged = { item ->
+                                Log.e(TAG, "onSceneModeChanged: $item")
                                 applicationInterface?.setSceneModePref(item.id)
                                 sceneModeValue = item.id
                                 if (preview?.cameraController != null) {
                                     if (preview?.cameraController?.sceneModeAffectsFunctionality() == true) {
                                         updateForSettings(
                                             true,
-                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(item.id)
+                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(
+                                                item.id
+                                            )
                                         )
                                     } else {
                                         preview?.cameraController?.setSceneMode(item.id)
                                         updateForSettings(
                                             true,
-                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(item.id)
+                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(
+                                                item.id
+                                            )
                                         )
                                     }
                                 }
                             },
                             colorEffectValue = colorEffectValue,
                             onColorEffectChanged = { item ->
+                                Log.e(TAG, "onColorEffectChanged: $item")
                                 if (preview!!.cameraController != null) {
                                     preview!!.cameraController.setColorEffect(item.id)
                                     applicationInterface?.setColorEffectPref(item.id)
@@ -1122,7 +1137,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 valueFormated = preview?.getISOString(it.toInt()) ?: ""
                             },
                             onIsoReset = {
-                                setIsoAuto("")
+                                setIsoAuto()
                                 valueFormated = getString(R.string.auto)
                             },
 
@@ -1135,7 +1150,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             },
                             onShutterReset = {
                                 shutterValue = EXPOSURE_TIME_DEFAULT.toFloat()
-                                setIsoAuto("")
+                                setIsoAuto()
                                 preview?.setExposureTime(EXPOSURE_TIME_DEFAULT)
                                 valueFormated =
                                     preview?.getExposureTimeString(EXPOSURE_TIME_DEFAULT) ?: ""
@@ -1152,6 +1167,50 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 preview?.setExposure(0)
                                 valueFormated = preview?.getExposureString(0) ?: ""
                             },
+                            onResetAllSettings = {
+                                // iso
+                                setIsoAuto()
+
+                                // exposure
+                                exposureValue = 0f
+                                preview?.setExposure(0)
+
+                                // white balance
+                                whiteBalanceValue = "auto"
+                                viewModel.setControlOptionModel(null)
+                                val editor = sharedPreferences.edit()
+                                editor.putString(
+                                    PreferenceKeys.WhiteBalancePreferenceKey, whiteBalanceValue
+                                )
+                                editor.apply()
+
+                                // shutter
+                                shutterValue = EXPOSURE_TIME_DEFAULT.toFloat()
+                                preview?.setExposureTime(EXPOSURE_TIME_DEFAULT)
+
+                                // focus: focus_mode_auto
+                                focusValue = "focus_mode_auto"
+                                preview?.updateFocus(focusValue, false, true)
+                                if (preview?.cameraController?.sceneModeAffectsFunctionality() == false) {
+                                    preview?.cameraController?.setSceneMode(focusValue)
+                                }
+
+                                // scene mode: Auto
+                                applicationInterface?.setSceneModePref("auto")
+                                sceneModeValue = "auto"
+                                if (preview?.cameraController?.sceneModeAffectsFunctionality() == false) {
+                                    preview?.cameraController?.setSceneMode("auto")
+                                }
+
+                                // color effect
+                                if (preview?.cameraController != null) {
+                                    preview?.cameraController?.setColorEffect("auto")
+                                    applicationInterface?.setColorEffectPref("auto")
+                                    colorEffectValue = "auto"
+                                }
+
+                                updateForSettings(true, "Reset All")
+                            },
                         )
                     }
                 }
@@ -1166,11 +1225,180 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
     }
 
+    fun setPhotoModeViews(isVideo: Boolean) {
+        val texts: MutableList<String?> = ArrayList<String?>()
+        val values: MutableList<PhotoMode?> = ArrayList<PhotoMode?>()
+
+        if (supportsPanorama()) {
+            texts.add(getResources().getString(R.string.photo_mode_panorama_full))
+            values.add(PhotoMode.Panorama)
+        }
+
+        if (supportsFocusBracketing()) {
+            texts.add(
+                getResources().getString(R.string.photo_mode_focus_bracketing_full)
+            )
+            values.add(PhotoMode.FocusBracketing)
+        }
+
+        if (supportsHDR()) {
+            texts.add(getResources().getString(R.string.photo_mode_hdr))
+            values.add(PhotoMode.HDR)
+        }
+
+        texts.add(getResources().getString(R.string.photo_mode_standard_full))
+        values.add(PhotoMode.Standard)
+
+        if (supportsDRO()) {
+            texts.add(getResources().getString(R.string.photo_mode_dro))
+            values.add(PhotoMode.DRO)
+        }
+
+        if (supportsNoiseReduction()) {
+            texts.add(
+                getResources().getString(R.string.photo_mode_noise_reduction_full)
+            )
+            values.add(PhotoMode.NoiseReduction)
+        }
+
+        if (supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_NIGHT)) {
+            texts.add(getResources().getString(R.string.Night))
+            values.add(PhotoMode.X_Night)
+        }
+
+        if (supportsFastBurst()) {
+            texts.add(getResources().getString(R.string.photo_mode_fast_burst_full))
+            values.add(PhotoMode.FastBurst)
+        }
+
+        if (supportsExpoBracketing()) {
+            texts.add(
+                getResources().getString(R.string.photo_mode_expo_bracketing_full)
+            )
+            values.add(PhotoMode.ExpoBracketing)
+        }
+
+        if (supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_AUTOMATIC)) {
+            texts.add(getResources().getString(R.string.photo_mode_x_auto))
+            values.add(PhotoMode.X_Auto)
+        }
+
+        if (supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_HDR)) {
+            texts.add(getResources().getString(R.string.photo_mode_x_hdr))
+            values.add(PhotoMode.X_HDR)
+        }
+
+        if (supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_BOKEH)) {
+            texts.add(getResources().getString(R.string.photo_mode_x_bokeh))
+            values.add(PhotoMode.X_Bokeh)
+        }
+
+        if (supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_BEAUTY)) {
+            texts.add(getResources().getString(R.string.photo_mode_x_beauty_full))
+            values.add(PhotoMode.X_Beauty)
+        }
+    }
+
+    private fun changePhotoMode(mode: PhotoMode) {
+        Log.e(TAG, "photo mode: $mode")
+
+        var toastMessage: String? = mode.name
+        toastMessage = when (mode) {
+            PhotoMode.Standard -> getResources().getString(R.string.photo_mode_standard_full)
+            PhotoMode.ExpoBracketing -> getResources().getString(R.string.photo_mode_expo_bracketing_full)
+            PhotoMode.FocusBracketing -> getResources().getString(R.string.photo_mode_focus_bracketing_full)
+            PhotoMode.FastBurst -> getResources().getString(R.string.photo_mode_fast_burst_full)
+            PhotoMode.NoiseReduction -> getResources().getString(R.string.photo_mode_noise_reduction_full)
+            PhotoMode.Panorama -> getResources().getString(R.string.photo_mode_panorama_full)
+            PhotoMode.X_Auto -> getResources().getString(R.string.photo_mode_x_auto_full)
+            PhotoMode.X_HDR -> getResources().getString(R.string.photo_mode_x_hdr_full)
+            PhotoMode.X_Night -> getResources().getString(R.string.photo_mode_x_night_full)
+            PhotoMode.X_Bokeh -> getResources().getString(R.string.photo_mode_x_bokeh_full)
+            PhotoMode.X_Beauty -> getResources().getString(R.string.photo_mode_x_beauty_full)
+            else -> toastMessage
+        }
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = sharedPreferences.edit()
+        if (mode == PhotoMode.Standard) {
+            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_std")
+        } else if (mode == PhotoMode.DRO) {
+            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_dro")
+        } else if (mode == PhotoMode.HDR) {
+            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_hdr")
+        } else if (mode == PhotoMode.ExpoBracketing) {
+            editor.putString(
+                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_expo_bracketing"
+            )
+        } else if (mode == PhotoMode.FocusBracketing) {
+            editor.putString(
+                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_focus_bracketing"
+            )
+        } else if (mode == PhotoMode.FastBurst) {
+            editor.putString(
+                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_fast_burst"
+            )
+        } else if (mode == PhotoMode.NoiseReduction) {
+            editor.putString(
+                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_noise_reduction"
+            )
+        } else if (mode == PhotoMode.Panorama) {
+            editor.putString(
+                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_panorama"
+            )
+        } else if (mode == PhotoMode.X_Auto) {
+            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_auto")
+        } else if (mode == PhotoMode.X_HDR) {
+            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_hdr")
+        } else if (mode == PhotoMode.X_Night) {
+            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_night")
+        } else if (mode == PhotoMode.X_Bokeh) {
+            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_bokeh")
+        } else if (mode == PhotoMode.X_Beauty) {
+            editor.putString(
+                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_beauty"
+            )
+        } else {
+            Log.e(TAG, "unknown new_photo_mode: $mode")
+        }
+        editor.apply()
+
+        var doneDialog = false
+        if (mode == PhotoMode.HDR) {
+            val doneHdrInfo = sharedPreferences.contains(PreferenceKeys.HDRInfoPreferenceKey)
+            if (!doneHdrInfo) {
+                mainUI?.showInfoDialog(
+                    R.string.photo_mode_hdr,
+                    R.string.hdr_info,
+                    PreferenceKeys.HDRInfoPreferenceKey
+                )
+                doneDialog = true
+            }
+        } else if (mode == PhotoMode.Panorama) {
+            val donePanoramaInfo =
+                sharedPreferences.contains(PreferenceKeys.PanoramaInfoPreferenceKey)
+            if (!donePanoramaInfo) {
+                mainUI?.showInfoDialog(
+                    R.string.photo_mode_panorama_full,
+                    R.string.panorama_info,
+                    PreferenceKeys.PanoramaInfoPreferenceKey
+                )
+                doneDialog = true
+            }
+        }
+        if (doneDialog) toastMessage = null
+
+        applicationInterface?.drawPreview?.updateSettings() // because we cache the photomode
+        updateForSettings(
+            true, toastMessage, false, true
+        ) // need to setup the camera again, as options may change (e.g., required burst mode, or whether RAW is allowed in this mode)
+        mainUI?.destroyPopup() // need to recreate popup for new selection
+    }
+
     fun getIsoMode(): String {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         return sharedPreferences.getString(
-            PreferenceKeys.ISOModePreferenceKey,
-            CameraController.ISO_DEFAULT
+            PreferenceKeys.ISOModePreferenceKey, CameraController.ISO_DEFAULT
         ) ?: ""
     }
 
@@ -1179,8 +1407,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         val editor = sharedPreferences.edit()
         editor.putString(PreferenceKeys.ISOModePreferenceKey, "m")
-        if (preview!!.cameraController != null && preview!!.cameraController.captureResultHasIso()
-        ) {
+        if (preview!!.cameraController != null && preview!!.cameraController.captureResultHasIso()) {
             val iso = preview!!.cameraController.captureResultIso()
             editor.putString(PreferenceKeys.ISOPreferenceKey, iso.toString())
         } else {
@@ -1191,17 +1418,16 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         updateForSettings(true, "")
     }
 
-    private fun setIsoAuto(toast: String?) {
+    private fun setIsoAuto() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = sharedPreferences.edit()
         editor.putString(PreferenceKeys.ISOModePreferenceKey, CameraController.ISO_DEFAULT)
         editor.putString(PreferenceKeys.ISOPreferenceKey, CameraController.ISO_DEFAULT)
         editor.putLong(
-            PreferenceKeys.ExposureTimePreferenceKey,
-            CameraController.EXPOSURE_TIME_DEFAULT
+            PreferenceKeys.ExposureTimePreferenceKey, CameraController.EXPOSURE_TIME_DEFAULT
         )
         editor.apply()
-        updateForSettings(true, toast)
+        updateForSettings(true, "")
     }
 
     val isMultiCamEnabled: Boolean
@@ -1288,8 +1514,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             while (i < n_cameras && all_supports_camera2) {
                 if (!manager2.allowCamera2Support(i)) {
                     if (MyDebug.LOG) Log.d(
-                        TAG,
-                        "camera $i doesn't have at least LIMITED support for Camera2 API"
+                        TAG, "camera $i doesn't have at least LIMITED support for Camera2 API"
                     )
                     all_supports_camera2 = false
                 }
@@ -2788,8 +3013,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                     o1: PhysicalCamera?, o2: PhysicalCamera?
                                 ): Int {
                                     if (o1 != null && o2 != null) {
-                                        val diff =
-                                            o2.view_angle.width - o1.view_angle.width
+                                        val diff = o2.view_angle.width - o1.view_angle.width
                                         if (abs(diff) < 1.0e-5f) return 0
                                         else if (diff > 0.0f) return 1
                                         else return -1
@@ -4722,8 +4946,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                     null // keep a reference to this as long as retriever, to avoid risk of pfd_saf being garbage collected
                                 val retriever = MediaMetadataRetriever()
                                 try {
-                                    pfd_saf =
-                                        contentResolver.openFileDescriptor(media.uri, "r")
+                                    pfd_saf = contentResolver.openFileDescriptor(media.uri, "r")
                                     retriever.setDataSource(pfd_saf!!.fileDescriptor)
                                     thumbnail = retriever.getFrameAtTime(-1)
                                 } catch (e: Exception) {
@@ -4780,8 +5003,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         Log.d(TAG, "found media uri: $uri")
                         Log.d(TAG, "    is_raw?: $is_raw")
                     }
-                    applicationInterface!!.storageUtils
-                        .setLastMediaScanned(uri, is_raw, false, null)
+                    applicationInterface!!.storageUtils.setLastMediaScanned(
+                        uri,
+                        is_raw,
+                        false,
+                        null
+                    )
                 }
                 if (thumbnail != null) {
                     if (MyDebug.LOG) Log.d(TAG, "set gallery button to thumbnail")

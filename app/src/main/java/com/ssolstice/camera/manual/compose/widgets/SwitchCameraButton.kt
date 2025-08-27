@@ -1,4 +1,4 @@
-package com.ssolstice.camera.manual.compose
+package com.ssolstice.camera.manual.compose.widgets
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import com.ssolstice.camera.manual.compose.WhiteColor
 
 @Composable
 fun SwitchCameraButton(

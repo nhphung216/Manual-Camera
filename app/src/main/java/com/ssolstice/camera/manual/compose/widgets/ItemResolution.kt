@@ -1,4 +1,4 @@
-package com.ssolstice.camera.manual.compose
+package com.ssolstice.camera.manual.compose.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

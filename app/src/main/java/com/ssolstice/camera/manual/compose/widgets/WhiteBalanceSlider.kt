@@ -1,4 +1,4 @@
-package com.ssolstice.camera.manual.compose
+package com.ssolstice.camera.manual.compose.widgets
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -69,7 +70,7 @@ fun WhiteBalanceSlider(
                             Color(0xFFFF6D00)  // đỏ cam (warm ~ 8000K)
                         )
                     ),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(20f, 20f)
+                    cornerRadius = CornerRadius(20f, 20f)
                 )
 
                 // Vẽ thumb (nút)
