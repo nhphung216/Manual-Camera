@@ -1,20 +1,21 @@
 package com.ssolstice.camera.manual.compose
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,37 +31,56 @@ fun CameraControlsPreview() {
 fun CameraControls(
     modifier: Modifier = Modifier,
     onClose: () -> Unit = {},
+    valueFormated: String = "",
+
+    isoMode: String = "",
+    controlIdSelected: String = "white_balance",
+    onControlIdSelected: (String) -> Unit = {},
+
+    exposureValue: Float = 0f,
     onExposureChanged: (Float) -> Unit = {},
-    shutterValue: Float = EXPOSURE_DEFAULT,
+    onExposureReset: () -> Unit = {},
+
+    isoValue: Float = 0f,
+    onIsoChanged: (Float) -> Unit = {},
+    onIsoReset: () -> Unit = {},
+
+    shutterValue: Float = 0f,
+    onShutterChanged: (Float) -> Unit = {},
+    onShutterReset: () -> Unit = {},
+
+    whiteBalanceValue: Float = 0f,
+    focusValue: Float = 0f,
+    sceneModeValue: Float = 0f,
+    colorEffectValue: Float = 0f,
+
     onControlChanged: (CameraControlModel, Float) -> Unit,
-    cameraControls: MutableList<CameraControlModel>,
+    cameraControls: HashMap<String, CameraControlModel> = hashMapOf(),
 ) {
     Column(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
+            .background(Color(0xF0000000))
             .fillMaxWidth()
             .padding(vertical = 16.dp),
     ) {
-        var itemSelected by remember { mutableStateOf("") }
-        var showResetParams by remember { mutableStateOf(false) }
-
         Column(
-            modifier = modifier
-                .fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
         ) {
-            if (showResetParams) {
-                ConfirmResetParameters(onCancel = {
-                    showResetParams = false
-                }, onReset = {
-                    showResetParams = false
-                    itemSelected = ""
-                    onExposureChanged(EXPOSURE_DEFAULT)
-                })
-            }
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier
+                    .padding(end = 24.dp, bottom = 16.dp)
+                    .align(Alignment.End)
+                    .size(24.dp)
+                    .clickable { onClose() }
+            )
 
-            cameraControls.forEach { controlModel ->
-                if (controlModel.id == itemSelected) {
-                    if (controlModel.options.isNotEmpty()) {
+            val controlModel = cameraControls[controlIdSelected]
+            controlModel?.let {
+                when (controlIdSelected) {
+                    "white_balance" -> {
                         LazyRow(
                             modifier = modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -74,22 +94,118 @@ fun CameraControls(
 
                                     },
                                     isChanged = false,
-                                    selected = itemSelected == optionModel.id,
+                                    selected = controlIdSelected == optionModel.id,
                                 )
                             }
                         }
-                    } else {
+                    }
+
+                    "exposure" -> {
                         CustomValueSlider(
                             modifier = Modifier,
-                            name = itemSelected,
-                            value = shutterValue,
+                            name = controlIdSelected,
+                            value = exposureValue,
+                            formated = valueFormated,
                             onValueChange = { value, formatDisplay ->
-
+                                onExposureChanged(value)
                             },
+                            onReset = { onExposureReset() },
                             valueRange = controlModel.valueRange,
                             labels = controlModel.labels,
                             steps = controlModel.steps
                         )
+                    }
+
+                    "iso" -> {
+                        CustomValueSlider(
+                            modifier = Modifier,
+                            name = controlIdSelected,
+                            value = isoValue,
+                            formated = valueFormated,
+                            onValueChange = { value, formatDisplay ->
+                                onIsoChanged(value)
+                            },
+                            onReset = { onIsoReset() },
+                            valueRange = controlModel.valueRange,
+                            labels = controlModel.labels,
+                            steps = controlModel.steps
+                        )
+                    }
+
+                    "shutter" -> {
+                        CustomValueSlider(
+                            modifier = Modifier,
+                            name = controlIdSelected,
+                            value = shutterValue,
+                            formated = valueFormated,
+                            onValueChange = { value, formatDisplay ->
+                                onShutterChanged(value)
+                            },
+                            onReset = { onShutterReset() },
+                            valueRange = controlModel.valueRange,
+                            labels = controlModel.labels,
+                            steps = controlModel.steps
+                        )
+                    }
+
+                    "focus" -> {
+                        LazyRow(
+                            modifier = modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            items(controlModel.options) { optionModel ->
+                                MenuItem(
+                                    icon = painterResource(optionModel.icon),
+                                    label = optionModel.text,
+                                    onClick = {
+
+                                    },
+                                    isChanged = false,
+                                    selected = controlIdSelected == optionModel.id,
+                                )
+                            }
+                        }
+                    }
+
+                    "scene_mode" -> {
+                        LazyRow(
+                            modifier = modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            items(controlModel.options) { optionModel ->
+                                MenuItem(
+                                    icon = painterResource(optionModel.icon),
+                                    label = optionModel.text,
+                                    onClick = {
+
+                                    },
+                                    isChanged = false,
+                                    selected = controlIdSelected == optionModel.id,
+                                )
+                            }
+                        }
+                    }
+
+                    "color_effect" -> {
+                        LazyRow(
+                            modifier = modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            items(controlModel.options) { optionModel ->
+                                MenuItem(
+                                    icon = painterResource(optionModel.icon),
+                                    label = optionModel.text,
+                                    onClick = {
+
+                                    },
+                                    isChanged = false,
+                                    selected = controlIdSelected == optionModel.id,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -100,16 +216,28 @@ fun CameraControls(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(cameraControls) { cameraControl ->
-                    MenuItem(
-                        icon = painterResource(cameraControl.icon),
-                        label = cameraControl.text,
-                        onClick = {
-                            itemSelected = cameraControl.id
-                        },
-                        isChanged = false,
-                        selected = itemSelected == cameraControl.id,
-                    )
+                val controls = arrayListOf(
+                    "white_balance",
+                    "exposure",
+                    "iso",
+                    "shutter",
+                    "focus",
+                    "scene_mode",
+                    "color_effect"
+                )
+                controls.forEach {
+                    val control = cameraControls[it] ?: return@forEach
+                    item {
+                        MenuItem(
+                            icon = painterResource(control.icon),
+                            label = control.text,
+                            onClick = {
+                                onControlIdSelected(control.id)
+                            },
+                            isChanged = false,
+                            selected = controlIdSelected == control.id,
+                        )
+                    }
                 }
             }
         }

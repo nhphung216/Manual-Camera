@@ -91,6 +91,8 @@ public class PreferenceKeys {
 
     public static final String ISOPreferenceKey = "preference_iso";
 
+    public static final String ISOModePreferenceKey = "preference_iso_mode";
+
     public static final String ExposureTimePreferenceKey = "preference_exposure_time";
 
     public static final String RawPreferenceKey = "preference_raw";

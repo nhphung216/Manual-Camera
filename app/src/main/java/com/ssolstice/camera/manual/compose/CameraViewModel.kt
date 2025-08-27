@@ -30,7 +30,56 @@ import kotlin.math.abs
 class CameraViewModel @Inject constructor() : ViewModel() {
 
     companion object {
-        private const val TAG = "PopupView"
+        private const val TAG = "CameraViewModel"
+    }
+
+    private val _isRecording = MutableStateFlow(false)
+    val isRecording: StateFlow<Boolean> = _isRecording
+
+    private val _isPhotoMode = MutableStateFlow(false)
+    val isPhotoMode: StateFlow<Boolean> = _isPhotoMode
+
+    private val _isVideoRecordingPaused = MutableStateFlow(false)
+    val isVideoRecordingPaused: StateFlow<Boolean> = _isVideoRecordingPaused
+
+    fun setVideoRecordingPaused(isPaused: Boolean) {
+        viewModelScope.launch {
+            _isVideoRecordingPaused.value = isPaused
+        }
+    }
+
+    fun setPhotoMode(isPhotoMode: Boolean) {
+        viewModelScope.launch {
+            _isPhotoMode.value = isPhotoMode
+        }
+    }
+
+    fun setVideoRecording(isRecording: Boolean) {
+        viewModelScope.launch {
+            _isRecording.value = isRecording
+        }
+    }
+
+    private val _galleryBitmap = MutableStateFlow<Bitmap?>(null)
+    val galleryBitmap: StateFlow<Bitmap?> = _galleryBitmap
+
+    fun setGalleryBitmap(galleryBitmap: Bitmap?) {
+        viewModelScope.launch {
+            _galleryBitmap.value = galleryBitmap
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    private fun getAspectRatio(width: Int, height: Int): String {
+        val ratio = width.toDouble() / height
+        if (abs(ratio - 16.0 / 9) < 0.01) return "16:9"
+        if (abs(ratio - 4.0 / 3) < 0.01) return "4:3"
+        if (abs(ratio - 3.0 / 2) < 0.01) return "3:2"
+        if (abs(ratio - 1.0) < 0.01) return "1:1"
+        if (abs(ratio - 5.0 / 4) < 0.01) return "5:4"
+        if (abs(ratio - 21.0 / 9) < 0.01) return "21:9"
+        if (abs(ratio - 2) < 0.01) return "2:1"
+        return String.format("%.2f:1", ratio) // fallback dạng 1.78:1
     }
 
     // flash
@@ -117,56 +166,6 @@ class CameraViewModel @Inject constructor() : ViewModel() {
     private val _resolutionsOfVideoSelected = MutableLiveData<SettingItemModel>()
     val resolutionsOfVideoSelected: LiveData<SettingItemModel> = _resolutionsOfVideoSelected
 
-    private val _isRecording = MutableStateFlow(false)
-    val isRecording: StateFlow<Boolean> = _isRecording
-
-    private val _isPhotoMode = MutableStateFlow(false)
-    val isPhotoMode: StateFlow<Boolean> = _isPhotoMode
-
-    private val _isVideoRecordingPaused = MutableStateFlow(false)
-    val isVideoRecordingPaused: StateFlow<Boolean> = _isVideoRecordingPaused
-
-    fun setVideoRecordingPaused(isPaused: Boolean) {
-        viewModelScope.launch {
-            _isVideoRecordingPaused.value = isPaused
-        }
-    }
-
-    fun setPhotoMode(isPhotoMode: Boolean) {
-        viewModelScope.launch {
-            _isPhotoMode.value = isPhotoMode
-        }
-    }
-
-    fun setVideoRecording(isRecording: Boolean) {
-        viewModelScope.launch {
-            _isRecording.value = isRecording
-        }
-    }
-
-    private val _galleryBitmap = MutableStateFlow<Bitmap?>(null)
-    val galleryBitmap: StateFlow<Bitmap?> = _galleryBitmap
-
-    fun setGalleryBitmap(galleryBitmap: Bitmap?) {
-        viewModelScope.launch {
-            _galleryBitmap.value = galleryBitmap
-        }
-    }
-
-
-    @SuppressLint("DefaultLocale")
-    private fun getAspectRatio(width: Int, height: Int): String {
-        val ratio = width.toDouble() / height
-        if (abs(ratio - 16.0 / 9) < 0.01) return "16:9"
-        if (abs(ratio - 4.0 / 3) < 0.01) return "4:3"
-        if (abs(ratio - 3.0 / 2) < 0.01) return "3:2"
-        if (abs(ratio - 1.0) < 0.01) return "1:1"
-        if (abs(ratio - 5.0 / 4) < 0.01) return "5:4"
-        if (abs(ratio - 21.0 / 9) < 0.01) return "21:9"
-        if (abs(ratio - 2) < 0.01) return "2:1"
-        return String.format("%.2f:1", ratio) // fallback dạng 1.78:1
-    }
-
     fun setResolutionOfVideoSelected(
         activity: MainActivity,
         applicationInterface: MyApplicationInterface,
@@ -212,7 +211,6 @@ class CameraViewModel @Inject constructor() : ViewModel() {
     }
 
     fun setFlashSelected(
-        activity: MainActivity,
         preview: Preview, item: SettingItemModel
     ) {
         Log.e(TAG, "setFlashSelected: $item")
@@ -235,7 +233,7 @@ class CameraViewModel @Inject constructor() : ViewModel() {
 
         activity.mainUI?.updateCycleRawIcon()
         activity.applicationInterface?.drawPreview?.updateSettings()
-        preview.reopenCamera() // needed for RAW options to take effect
+        //preview.reopenCamera() // needed for RAW options to take effect
     }
 
     fun setRepeatSelected(
@@ -502,13 +500,67 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         if (rawList.isNotEmpty()) setRawList(rawList)
     }
 
-    private val _cameraControls = MutableStateFlow(mutableListOf<CameraControlModel>())
+    private val _controlsMapData = MutableLiveData<HashMap<String, CameraControlModel>>()
+    val controlsMapData: LiveData<HashMap<String, CameraControlModel>> = _controlsMapData
 
-    val cameraControls: StateFlow<MutableList<CameraControlModel>> = _cameraControls
+    fun generateExposureLabels(
+        min: Int,       // ví dụ -24
+        max: Int,       // ví dụ +24
+        stepsPerEv: Int // ví dụ 6 (tức 6 steps = 1 EV)
+    ): ArrayList<String> {
+        val minEv = min / stepsPerEv
+        val maxEv = max / stepsPerEv
 
-    fun setCameraControls(cameraControls: MutableList<CameraControlModel>) {
-        viewModelScope.launch {
-            _cameraControls.value = cameraControls
+        val list = ArrayList<String>()
+        for (ev in minEv..maxEv) {
+            list.add(
+                if (ev > 0) "+$ev" else ev.toString()
+            )
+        }
+        return list
+    }
+
+    fun generateIsoLabels(
+        minIso: Int,
+        maxIso: Int
+    ): ArrayList<String> {
+        val labels = arrayListOf<String>()
+
+        // Chọn ISO chuẩn gần min và max
+        var iso = 50
+        if (minIso > iso) iso = minIso
+
+        while (iso <= maxIso) {
+            labels.add(iso.toString())
+            iso *= 2 // tăng theo bội số 2
+        }
+
+        // đảm bảo có giá trị min và max
+        if (!labels.contains(minIso.toString())) labels.add(0, minIso.toString())
+        if (!labels.contains(maxIso.toString())) labels.add(maxIso.toString())
+
+        return labels
+    }
+
+    fun generateShutterSpeedLabels(
+        minSpeed: Double, // giây, ví dụ 1/8000s = 0.000125
+        maxSpeed: Double  // giây, ví dụ 30s
+    ): ArrayList<String> {
+        val labels = ArrayList<String>()
+        var speed = minSpeed
+
+        while (speed <= maxSpeed) {
+            labels.add(formatShutter(speed))
+            speed *= 2 // mỗi bước nhân đôi thời gian
+        }
+        return labels
+    }
+
+    private fun formatShutter(seconds: Double): String {
+        return if (seconds >= 1) {
+            "${seconds.toInt()}s"
+        } else {
+            "1/${(1 / seconds).toInt()}"
         }
     }
 
@@ -518,11 +570,8 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         preview: Preview
     ) {
         Log.e(TAG, "setupCameraData")
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         val photoMode = applicationInterface.photoMode
-        Log.e(TAG, "photoMode: $photoMode")
-
-        val controls: MutableList<CameraControlModel> = mutableListOf()
+        val controlsMap = hashMapOf<String, CameraControlModel>()
 
         // white balance
         val supportedWhiteBalances = preview.getSupportedWhiteBalances()
@@ -537,13 +586,12 @@ class CameraViewModel @Inject constructor() : ViewModel() {
                     )
                 )
             }
-            val model = CameraControlModel(
+            controlsMap["white_balance"] = CameraControlModel(
                 id = "white_balance",
                 text = activity.getString(R.string.white_balance),
                 icon = R.drawable.ic_white_balance,
                 options = options,
             )
-            controls.add(model)
         }
 
         // exposure
@@ -551,47 +599,43 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             val minExposure = preview.minimumExposure.toFloat()
             val maxExposure = preview.maximumExposure.toFloat()
             val currentExposure = preview.currentExposure.toFloat()
-
-            val model = CameraControlModel(
+            controlsMap["exposure"] = CameraControlModel(
                 id = "exposure",
                 text = activity.getString(R.string.exposure),
                 icon = R.drawable.ic_exposure_24,
                 valueRange = minExposure..maxExposure,
                 currentValue = currentExposure,
-                labels = arrayListOf("-2", "-1", "0", "+1", "+2"),
+                labels = generateExposureLabels(minExposure.toInt(), maxExposure.toInt(), 6),
                 steps = 30
             )
-            controls.add(model)
         }
 
         // iso
         if (preview.supportsISORange()) {
             val minISO = preview.minimumISO.toFloat()
             val maxISO = preview.maximumISO.toFloat()
-            val model = CameraControlModel(
+            controlsMap["iso"] = CameraControlModel(
                 id = "iso",
                 text = activity.getString(R.string.iso),
                 icon = R.drawable.iso_icon,
                 valueRange = minISO..maxISO,
-                labels = arrayListOf("-2", "-1", "0", "+1", "+2"),
+                labels = generateIsoLabels(minISO.toInt(), maxISO.toInt()),
                 steps = 30
             )
-            controls.add(model)
         }
 
         // shutter
         if (preview.supportsExposureTime()) {
             val minExposure = preview.minimumExposureTime.toFloat()
             val maxExposure = preview.maximumExposureTime.toFloat()
-            val model = CameraControlModel(
+            controlsMap["shutter"] = CameraControlModel(
                 id = "shutter",
                 text = activity.getString(R.string.shutter),
                 icon = R.drawable.ic_shutter_speed_24,
                 valueRange = minExposure..maxExposure,
-                labels = arrayListOf("-2", "-1", "0", "+1", "+2"),
+                labels = generateShutterSpeedLabels(minExposure.toDouble(), maxExposure.toDouble()),
                 steps = 30
             )
-            controls.add(model)
         }
 
         // focus
@@ -600,7 +644,6 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             // don't show focus modes in focus bracketing mode (as we'll always run in manual focus mode)
             supportedFocusValues = null
         }
-
         if (supportedFocusValues != null) {
             val focusValues = ArrayList(supportedFocusValues)
             // only show appropriate continuous focus mode
@@ -609,7 +652,6 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             } else {
                 focusValues.remove("focus_mode_continuous_video")
             }
-
             if (!focusValues.isEmpty()) {
                 val currentFocus = preview.currentFocusValue
                 val options: ArrayList<ControlOptionModel> = arrayListOf()
@@ -623,13 +665,12 @@ class CameraViewModel @Inject constructor() : ViewModel() {
                         )
                     )
                 }
-                val model = CameraControlModel(
+                controlsMap["focus"] = CameraControlModel(
                     id = "focus",
                     text = activity.getString(R.string.focus),
                     icon = R.drawable.ic_center_focus_24,
                     options = options,
                 )
-                controls.add(model)
             }
         }
 
@@ -646,13 +687,12 @@ class CameraViewModel @Inject constructor() : ViewModel() {
                     )
                 )
             }
-            val model = CameraControlModel(
+            controlsMap["scene_mode"] = CameraControlModel(
                 id = "scene_mode",
                 text = activity.getString(R.string.scene_mode),
                 icon = R.drawable.scene_mode_fireworks,
                 options = options,
             )
-            controls.add(model)
         }
 
         // color effect
@@ -668,17 +708,13 @@ class CameraViewModel @Inject constructor() : ViewModel() {
                     )
                 )
             }
-            val model = CameraControlModel(
+            controlsMap["color_effect"] = CameraControlModel(
                 id = "color_effect",
                 text = activity.getString(R.string.color_effect),
                 icon = R.drawable.color_effect_negative,
                 options = options,
             )
-            controls.add(model)
         }
-
-        if (controls.isNotEmpty()) {
-            setCameraControls(controls)
-        }
+        _controlsMapData.value = controlsMap
     }
 }

@@ -75,10 +75,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.WindowCompat
@@ -86,6 +91,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.exifinterface.media.ExifInterface
 import com.ssolstice.camera.manual.MyApplicationInterface.PhotoMode
 import com.ssolstice.camera.manual.cameracontroller.CameraController
+import com.ssolstice.camera.manual.cameracontroller.CameraController.EXPOSURE_TIME_DEFAULT
 import com.ssolstice.camera.manual.cameracontroller.CameraController.Facing
 import com.ssolstice.camera.manual.cameracontroller.CameraController.TonemapProfile
 import com.ssolstice.camera.manual.cameracontroller.CameraControllerManager
@@ -103,6 +109,7 @@ import com.ssolstice.camera.manual.ui.FolderChooserDialog
 import com.ssolstice.camera.manual.ui.MainUI
 import com.ssolstice.camera.manual.ui.ManualSeekbars
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -849,15 +856,24 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 val flashSelected by viewModel.flashSelected.observeAsState()
                 val rawSelected by viewModel.rawSelected.observeAsState()
 
-                val cameraControls by viewModel.cameraControls.collectAsState()
+                val controlsMapData by viewModel.controlsMapData.observeAsState()
 
-                //    exposureValue: Float = 0f,
-                //    isoValue: Float = EXPOSURE_DEFAULT,
-                //    shutterValue: Float = EXPOSURE_DEFAULT,
-                //    whiteBalanceValue: Float = EXPOSURE_DEFAULT,
-                //    focusValue: Float = EXPOSURE_DEFAULT,
-                //    sceneModeValue: Float = EXPOSURE_DEFAULT,
-                //    colorEffectValue: Float = EXPOSURE_DEFAULT,
+                var exposureValue by remember { mutableFloatStateOf(0f) }
+                var isoValue by remember { mutableFloatStateOf(0f) }
+                var shutterValue by remember { mutableFloatStateOf(0f) }
+
+                var whiteBalanceValue by remember { mutableStateOf(0f) }
+                var focusValue by remember { mutableStateOf(0f) }
+                var sceneModeValue by remember { mutableStateOf(0f) }
+                var colorEffectValue by remember { mutableStateOf(0f) }
+
+                var currentControlSelected by remember { mutableStateOf("white_balance") }
+
+                var isoMode by remember { mutableStateOf(getIsoMode()) }
+
+                var valueFormated by remember { mutableStateOf("") }
+
+                val coroutine = rememberCoroutineScope()
 
                 Box {
                     CameraScreen(
@@ -942,7 +958,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             onFlashChange = {
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setFlashSelected(
-                                        this@MainActivity,
                                         preview!!, it
                                     )
                                 }
@@ -992,14 +1007,88 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         CameraControls(
                             modifier = Modifier.align(Alignment.BottomEnd),
                             onClose = { showCameraControls.value = false },
-                            cameraControls = cameraControls,
-                            onControlChanged = { controlModel, value ->
+                            cameraControls = controlsMapData ?: hashMapOf(),
+                            exposureValue = exposureValue,
+                            isoValue = isoValue,
+                            shutterValue = shutterValue,
+                            valueFormated = valueFormated,
+                            whiteBalanceValue = whiteBalanceValue,
+                            focusValue = focusValue,
+                            sceneModeValue = sceneModeValue,
+                            colorEffectValue = colorEffectValue,
+                            controlIdSelected = currentControlSelected,
+                            isoMode = isoMode,
+                            onControlIdSelected = {
+                                currentControlSelected = it
+                            },
 
-                            }
+                            // ISO
+                            onIsoChanged = {
+                                isoValue = it
+                                if (getIsoMode() == CameraController.ISO_DEFAULT) {
+                                    setIsoManual()
+                                }
+                                isoMode = getIsoMode()
+                                preview?.setISO(it.toInt())
+                                valueFormated = preview?.getISOString(it.toInt()) ?: ""
+                            },
+                            onIsoReset = {
+                                setIsoAuto("")
+                                isoMode = getIsoMode()
+                                valueFormated = getString(R.string.auto)
+                            },
+
+                            // Shutter
+                            onShutterChanged = {
+                                shutterValue = it
+                                setIsoManual()
+                                preview?.setExposureTime(it.toLong())
+                                valueFormated = preview?.getExposureTimeString(it.toLong()) ?: ""
+                            },
+                            onShutterReset = {
+                                shutterValue = EXPOSURE_TIME_DEFAULT.toFloat()
+                                setIsoAuto("")
+                                preview?.setExposureTime(EXPOSURE_TIME_DEFAULT)
+                                valueFormated = preview?.getExposureTimeString(EXPOSURE_TIME_DEFAULT) ?: ""
+                            },
+
+                            // Exposure
+                            onExposureChanged = {
+                                exposureValue = it
+                                preview?.setExposure(it.toInt())
+                                valueFormated = preview?.getExposureString(it.toInt()) ?: ""
+                            },
+                            onExposureReset = {
+                                exposureValue = 0f
+                                preview?.setExposure(0)
+                                valueFormated = preview?.getExposureString(0) ?: ""
+                            },
+
+                            onControlChanged = { cameraControlModel, value ->
+                                Log.e(TAG, "onControlChanged: ${cameraControlModel.id}, $value")
+                                coroutine.launch {
+                                    when (cameraControlModel.id) {
+                                        "white_balance" -> {
+                                            whiteBalanceValue = value
+                                        }
+
+                                        "focus" -> {
+                                            focusValue = value
+                                        }
+
+                                        "scene_mode" -> {
+                                            sceneModeValue = value
+                                        }
+
+                                        "color_effect" -> {
+                                            colorEffectValue = value
+                                        }
+                                    }
+                                }
+                            },
                         )
                     }
                 }
-
             }
         }
 
@@ -1009,6 +1098,44 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 "onCreate: total time for Activity startup: " + (System.currentTimeMillis() - debug_time)
             )
         }
+    }
+
+    fun getIsoMode(): String {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        return sharedPreferences.getString(
+            PreferenceKeys.ISOModePreferenceKey,
+            CameraController.ISO_DEFAULT
+        ) ?: ""
+    }
+
+    private fun setIsoManual() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        val editor = sharedPreferences.edit()
+        editor.putString(PreferenceKeys.ISOModePreferenceKey, "m")
+        if (preview!!.cameraController != null && preview!!.cameraController.captureResultHasIso()
+        ) {
+            val iso = preview!!.cameraController.captureResultIso()
+            editor.putString(PreferenceKeys.ISOPreferenceKey, iso.toString())
+        } else {
+            val iso = 800
+            editor.putString(PreferenceKeys.ISOPreferenceKey, "" + iso)
+        }
+        editor.apply()
+        updateForSettings(true, "")
+    }
+
+    private fun setIsoAuto(toast: String?) {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = sharedPreferences.edit()
+        editor.putString(PreferenceKeys.ISOModePreferenceKey, CameraController.ISO_DEFAULT)
+        editor.putString(PreferenceKeys.ISOPreferenceKey, CameraController.ISO_DEFAULT)
+        editor.putLong(
+            PreferenceKeys.ExposureTimePreferenceKey,
+            CameraController.EXPOSURE_TIME_DEFAULT
+        )
+        editor.apply()
+        updateForSettings(true, toast)
     }
 
     val isMultiCamEnabled: Boolean

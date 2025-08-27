@@ -4578,6 +4578,11 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
         return getResources().getString(R.string.exposure_compensation) + " " + (exposure >= 0 ? "+" : "") + decimal_format_2dp_force0.format(exposure_ev) + " EV";
     }
 
+    public String getExposureString(int exposure) {
+        float exposure_ev = exposure * exposure_step;
+        return " " + (exposure >= 0 ? "+" : "") + decimal_format_2dp_force0.format(exposure_ev) + " EV";
+    }
+
     public String getISOString(int iso) {
         return getResources().getString(R.string.iso) + " " + iso;
     }
