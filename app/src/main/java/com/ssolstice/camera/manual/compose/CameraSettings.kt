@@ -139,7 +139,8 @@ fun CameraSettings(
         // title
         Box(
             modifier = Modifier
-                .fillMaxWidth().padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         ) {
             Text(
                 stringResource(if (isPhotoMode) R.string.photo_settings else R.string.video_settings),
@@ -162,7 +163,8 @@ fun CameraSettings(
         // flash
         Box(
             modifier = Modifier
-                .fillMaxWidth().padding(top = 16.dp)
+                .fillMaxWidth()
+                .padding(top = 16.dp)
         ) {
             Column {
                 TitleSettingRow(stringResource(R.string.more_light))
@@ -181,29 +183,30 @@ fun CameraSettings(
             }
         }
 
-        // raw jpeg
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Column {
-                TitleSettingRow(stringResource(R.string.raw_photos))
-                SubTitleSettingRow(stringResource(R.string.only_raw))
-            }
-            LazyRow(modifier = Modifier.align(Alignment.CenterEnd)) {
-                items(rawList) { item ->
-                    ItemResolution(
-                        shape = CircleShape,
-                        text = item.text,
-                        icon = item.icon,
-                        isSelect = item.id == rawSelected?.id,
-                        onClick = { onRawChange(item) },
-                    )
+        if (isPhotoMode) {
+            // raw jpeg
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Column {
+                    TitleSettingRow(stringResource(R.string.raw_photos))
+                    SubTitleSettingRow(stringResource(R.string.only_raw))
+                }
+                LazyRow(modifier = Modifier.align(Alignment.CenterEnd)) {
+                    items(rawList) { item ->
+                        ItemResolution(
+                            shape = CircleShape,
+                            text = item.text,
+                            icon = item.icon,
+                            isSelect = item.id == rawSelected?.id,
+                            onClick = { onRawChange(item) },
+                        )
+                    }
                 }
             }
-        }
 
-        if (isPhotoMode) {
+            // resolution
             TitleSettingRow(stringResource(R.string.resolution))
             LazyRow(
                 modifier = Modifier
@@ -250,36 +253,35 @@ fun CameraSettings(
                     }
                 }
             }
+        } else {
+            // speed (video mode)
+            TitleSettingRow(stringResource(R.string.speed))
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                items(speeds) { item ->
+                    ItemResolution(
+                        item.text, isSelect = item.id == speedSelected?.id,
+                        onClick = { onSpeedChange(item) },
+                    )
+                }
+            }
+
+            TitleSettingRow(stringResource(R.string.resolution))
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                items(resolutionsVideo) { item ->
+                    ItemResolution(
+                        item.text, isSelect = item.id == resolutionOfVideoSelected?.id,
+                        onClick = { onResolutionOfVideoChange(item) },
+                    )
+                }
+            }
         }
 
-        // speed (video mode)
-//        if (!isPhotoMode) {
-//            TitleSettingRow(stringResource(R.string.speed))
-//            LazyRow(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//            ) {
-//                items(speeds) { item ->
-//                    ItemResolution(
-//                        item.text, isSelect = item.id == speedSelected?.id,
-//                        onClick = { onSpeedChange(item) },
-//                    )
-//                }
-//            }
-//
-//            TitleSettingRow(stringResource(R.string.resolution))
-//            LazyRow(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//            ) {
-//                items(resolutionsVideo) { item ->
-//                    ItemResolution(
-//                        item.text, isSelect = item.id == resolutionOfVideoSelected?.id,
-//                        onClick = { onResolutionOfVideoChange(item) },
-//                    )
-//                }
-//            }
-//        }
         Row(
             modifier = Modifier
                 .padding(top = 4.dp, end = 16.dp, bottom = 16.dp)
@@ -289,7 +291,7 @@ fun CameraSettings(
                     shape = RoundedCornerShape(16.dp) // bo góc
                 )
                 .align(Alignment.End)
-                .clickable{ onOpenSettings()}
+                .clickable { onOpenSettings() }
         ) {
             Text(
                 stringResource(R.string.more_settings),

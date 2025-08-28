@@ -109,7 +109,6 @@ import com.ssolstice.camera.manual.ui.FolderChooserDialog
 import com.ssolstice.camera.manual.ui.MainUI
 import com.ssolstice.camera.manual.ui.ManualSeekbars
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -829,6 +828,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         binding.composeView.setContent {
             OpenCameraTheme {
+
+                val activity = this@MainActivity
+
                 val showCameraSettings = rememberSaveable { mutableStateOf(false) }
                 val showCameraControls = rememberSaveable { mutableStateOf(false) }
 
@@ -877,17 +879,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 val currentVideoMode = viewModel.currentVideoMode.collectAsState()
                 val captureRate = viewModel.captureRate.collectAsState()
 
-                LaunchedEffect(Unit) {
-                    // chạy 1 lần khi Composable được enter composition
-                    delay(1000)
-                    viewModel.loadPhotoModeViews(this@MainActivity)
-
-                    if (preview != null && applicationInterface != null) {
-                        viewModel.loadVideoModeViews(
-                            this@MainActivity,
-                            applicationInterface!!,
-                            preview!!
-                        )
+                LaunchedEffect(isPhotoMode) {
+                    if (isPhotoMode) {
+                        viewModel.loadPhotoModeViews(activity)
+                    } else {
+                        if (preview != null && applicationInterface != null) {
+                            viewModel.loadVideoModes(activity, applicationInterface!!, preview!!)
+                        }
                     }
                 }
 
@@ -899,7 +897,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         galleryBitmap = galleryBitmap,
                         openGallery = { clickedGallery() },
                         switchCamera = { clickedSwitchCamera() },
-                        switchVideoMode = { clickedSwitchVideo() },
+                        togglePhotoVideoMode = { clickedSwitchVideo() },
                         pauseVideo = { clickedPauseVideo() },
                         takePhoto = { clickedTakePhoto() },
                         takePhotoVideoSnapshot = { clickedTakePhotoVideoSnapshot() },
@@ -907,7 +905,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             showCameraSettings.value = !showCameraSettings.value
                             if (showCameraSettings.value && preview != null && applicationInterface != null) {
                                 viewModel.setupCameraData(
-                                    this@MainActivity, applicationInterface!!, preview!!
+                                    activity, applicationInterface!!, preview!!
                                 )
                             }
                         },
@@ -920,7 +918,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                         showCameraControls.value = !showCameraControls.value
                                         if (showCameraControls.value) {
                                             viewModel.setupCameraControlsData(
-                                                this@MainActivity, applicationInterface!!, preview!!
+                                                activity, applicationInterface!!, preview!!
                                             )
                                         }
                                     }
@@ -930,6 +928,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         },
                         photoModes = photoModes.value,
                         changePhotoMode = {
+                            Log.e(TAG, "changePhotoMode: $it")
                             if (currentPhotoMode.value != it.mode) {
                                 viewModel.setCurrentPhotoMode(it.mode)
                                 viewModel.changePhotoMode(it)
@@ -939,11 +938,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         currentVideoMode = currentVideoMode.value,
                         videoModes = videoModes.value,
                         changeVideoMode = {
+                            Log.e(TAG, "changeVideoMode: $it")
                             if (it.mode == MyApplicationInterface.VideoMode.Video) {
                                 viewModel.setCaptureRate(1f)
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setSpeedSelected2(
-                                        this@MainActivity, applicationInterface!!, preview!!, 1f
+                                        activity, applicationInterface!!, preview!!, 1f
                                     )
                                 }
                             }
@@ -954,13 +954,20 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         },
                         captureRate = captureRate.value,
                         onCaptureRateSelected = {
+                            Log.e(TAG, "onCaptureRateSelected: $it")
                             viewModel.setCaptureRate(it)
                             if (applicationInterface != null && preview != null) {
                                 viewModel.setSpeedSelected2(
-                                    this@MainActivity, applicationInterface!!, preview!!, it
+                                    activity, applicationInterface!!, preview!!, it
                                 )
                             }
-                        }
+                        },
+                        onShowSlowMotionSettings = {
+                            Log.e(TAG, "onShowSlowMotionSettings: $it")
+                        },
+                        onShowTimeLapseSettings = {
+                            Log.e(TAG, "onShowTimeLapseSettings: $it")
+                        },
                     )
 
                     if (showCameraSettings.value) {
@@ -981,51 +988,50 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             flashSelected = flashSelected,
                             rawSelected = rawSelected,
                             onResolutionChange = {
+                                Log.e(TAG, "onResolutionChange: $it")
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setResolutionSelected(
-                                        this@MainActivity, applicationInterface!!, preview!!, it
+                                        activity, applicationInterface!!, preview!!, it
                                     )
                                 }
                             },
                             onRawChange = {
+                                Log.e(TAG, "onRawChange: $it")
                                 if (applicationInterface != null && preview != null) {
-                                    viewModel.setRawSelected(
-                                        this@MainActivity, preview!!, it
-                                    )
+                                    viewModel.setRawSelected(activity, preview!!, it)
                                 }
                             },
                             onFlashChange = {
+                                Log.e(TAG, "onFlashChange: $it")
                                 if (applicationInterface != null && preview != null) {
-                                    viewModel.setFlashSelected(
-                                        preview!!, it
-                                    )
+                                    viewModel.setFlashSelected(preview!!, it)
                                 }
                             },
                             onResolutionOfVideoChange = {
+                                Log.e(TAG, "onResolutionOfVideoChange: $it")
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setResolutionOfVideoSelected(
-                                        this@MainActivity, applicationInterface!!, preview!!, it
+                                        activity, applicationInterface!!, preview!!, it
                                     )
                                 }
                             },
                             onTimerChange = {
+                                Log.e(TAG, "onTimerChange: $it")
                                 if (applicationInterface != null && preview != null) {
-                                    viewModel.setTimerSelected(
-                                        this@MainActivity, it
-                                    )
+                                    viewModel.setTimerSelected(activity, it)
                                 }
                             },
                             onRepeatChange = {
+                                Log.e(TAG, "onRepeatChange: $it")
                                 if (applicationInterface != null && preview != null) {
-                                    viewModel.setRepeatSelected(
-                                        this@MainActivity, it
-                                    )
+                                    viewModel.setRepeatSelected(activity, it)
                                 }
                             },
                             onSpeedChange = {
+                                Log.e(TAG, "onSpeedChange: $it")
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setSpeedSelected(
-                                        this@MainActivity, applicationInterface!!, preview!!, it
+                                        activity, applicationInterface!!, preview!!, it
                                     )
                                 }
                             },
@@ -3154,14 +3160,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // photo/video icon when recording, (b) at the time of writing switching to video mode
         // reopens the camera, which will stop panorama recording anyway, but we do this just to be
         // safe.
-        applicationInterface!!.stopPanorama(true)
+        applicationInterface?.stopPanorama(true)
 
-//        val switchVideoButton = binding.switchVideo
-//        switchVideoButton.isEnabled = false // prevent slowdown if user repeatedly clicks
-        applicationInterface!!.reset(false)
-        this.applicationInterface!!.drawPreview.setDimPreview(true)
+        applicationInterface?.reset(false)
+        this.applicationInterface?.drawPreview?.setDimPreview(true)
         this.preview?.switchVideo(false, true)
-//        switchVideoButton.isEnabled = true
 
         mainUI?.setTakePhotoIcon()
         mainUI?.setPopupIcon() // needed as turning to video mode or back can turn flash mode off or back on

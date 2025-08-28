@@ -117,6 +117,7 @@ public interface ApplicationInterface {
     String getVideoBitratePref(); // return "default" to let Preview choose
     String getVideoFPSPref(); // return "default" to let Preview choose; if getVideoCaptureRateFactor() returns a value other than 1.0, this is the capture fps; the resultant video's fps will be getVideoFPSPref()*getVideoCaptureRateFactor()
     float getVideoCaptureRateFactor(); // return 1.0f for standard operation, less than 1.0 for slow motion, more than 1.0 for timelapse; consider using a higher fps for slow motion, see getVideoFPSPref()
+    boolean isVideoCaptureRateFactor(); // return 1.0f for standard operation, less than 1.0 for slow motion, more than 1.0 for timelapse; consider using a higher fps for slow motion, see getVideoFPSPref()
     CameraController.TonemapProfile getVideoTonemapProfile(); // tonemap profile to use for video mode
     float getVideoLogProfileStrength(); // strength of the log profile for video mode, if getVideoTonemapProfile() returns TONEMAPPROFILE_LOG
     float getVideoProfileGamma(); // gamma for video mode, if getVideoTonemapProfile() returns TONEMAPPROFILE_GAMMA

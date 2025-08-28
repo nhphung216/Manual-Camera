@@ -146,18 +146,6 @@ class CameraViewModel @Inject constructor() : ViewModel() {
     private val _timerSelected = MutableLiveData<SettingItemModel>()
     val timerSelected: LiveData<SettingItemModel> = _timerSelected
 
-    // _speed
-    private val _speed = MutableStateFlow(mutableListOf<SettingItemModel>())
-    val speeds: StateFlow<MutableList<SettingItemModel>> = _speed
-    fun setSpeeds(speed: MutableList<SettingItemModel>) {
-        viewModelScope.launch {
-            _speed.value = speed
-        }
-    }
-
-    private val _speedSelected = MutableLiveData<SettingItemModel>()
-    val speedSelected: LiveData<SettingItemModel> = _speedSelected
-
     val controlOptionModel = MutableLiveData<ControlOptionModel?>()
 
     // _resolutionsOfVideo
@@ -274,7 +262,8 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         sharedPreferences.edit {
             putFloat(
                 PreferenceKeys.getVideoCaptureRatePreferenceKey(
-                    preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
+                    preview.getCameraId(),
+                    applicationInterface.cameraIdSPhysicalPref
                 ), item.id.toFloat()
             )
         }
@@ -295,7 +284,8 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         sharedPreferences.edit {
             putFloat(
                 PreferenceKeys.getVideoCaptureRatePreferenceKey(
-                    preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
+                    preview.getCameraId(),
+                    applicationInterface.cameraIdSPhysicalPref
                 ), rate
             )
         }
@@ -748,23 +738,6 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         currentPhotoMode.value = item
     }
 
-    private val _videoModes = MutableStateFlow<List<VideoModeUiModel>>(emptyList())
-    val videoModes: StateFlow<List<VideoModeUiModel>> = _videoModes
-
-    private val _currentVideoMode = MutableStateFlow(VideoModeUiModel())
-    val currentVideoMode: StateFlow<VideoModeUiModel> = _currentVideoMode
-
-    fun setVideoMode(newMode: VideoModeUiModel) {
-        _currentVideoMode.value = newMode
-    }
-
-    private val _captureRate = MutableStateFlow(1f)
-    val captureRate: StateFlow<Float> = _captureRate
-
-    fun setCaptureRate(newMode: Float) {
-        _captureRate.value = newMode
-    }
-
     fun loadPhotoModeViews(mainActivity: MainActivity) {
         val photoModes = ArrayList<PhotoModeUiModel>()
 
@@ -821,7 +794,10 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             )
         }
 
-        if (mainActivity.supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_NIGHT)) {
+        if (mainActivity.supportsCameraExtension(
+                CameraExtensionCharacteristics.EXTENSION_NIGHT
+            )
+        ) {
             photoModes.add(
                 PhotoModeUiModel(
                     PhotoMode.X_Night,
@@ -848,7 +824,10 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             )
         }
 
-        if (mainActivity.supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_AUTOMATIC)) {
+        if (mainActivity.supportsCameraExtension(
+                CameraExtensionCharacteristics.EXTENSION_AUTOMATIC
+            )
+        ) {
             photoModes.add(
                 PhotoModeUiModel(
                     PhotoMode.X_Auto,
@@ -857,7 +836,10 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             )
         }
 
-        if (mainActivity.supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_HDR)) {
+        if (mainActivity.supportsCameraExtension(
+                CameraExtensionCharacteristics.EXTENSION_HDR
+            )
+        ) {
             photoModes.add(
                 PhotoModeUiModel(
                     PhotoMode.X_HDR,
@@ -866,7 +848,10 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             )
         }
 
-        if (mainActivity.supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_BOKEH)) {
+        if (mainActivity.supportsCameraExtension(
+                CameraExtensionCharacteristics.EXTENSION_BOKEH
+            )
+        ) {
             photoModes.add(
                 PhotoModeUiModel(
                     PhotoMode.X_Bokeh,
@@ -875,7 +860,10 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             )
         }
 
-        if (mainActivity.supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_BEAUTY)) {
+        if (mainActivity.supportsCameraExtension(
+                CameraExtensionCharacteristics.EXTENSION_BEAUTY
+            )
+        ) {
             photoModes.add(
                 PhotoModeUiModel(
                     PhotoMode.X_Beauty,
@@ -897,7 +885,35 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun loadVideoModeViews(
+    private val _speed = MutableStateFlow(mutableListOf<SettingItemModel>())
+    val speeds: StateFlow<MutableList<SettingItemModel>> = _speed
+    fun setSpeeds(speed: MutableList<SettingItemModel>) {
+        viewModelScope.launch {
+            _speed.value = speed
+        }
+    }
+
+    private val _speedSelected = MutableLiveData<SettingItemModel>()
+    val speedSelected: LiveData<SettingItemModel> = _speedSelected
+
+    private val _videoModes = MutableStateFlow<List<VideoModeUiModel>>(emptyList())
+    val videoModes: StateFlow<List<VideoModeUiModel>> = _videoModes
+
+    private val _currentVideoMode = MutableStateFlow(VideoModeUiModel())
+    val currentVideoMode: StateFlow<VideoModeUiModel> = _currentVideoMode
+
+    fun setVideoMode(newMode: VideoModeUiModel) {
+        _currentVideoMode.value = newMode
+    }
+
+    private val _captureRate = MutableStateFlow(1f)
+    val captureRate: StateFlow<Float> = _captureRate
+
+    fun setCaptureRate(rate: Float) {
+        _captureRate.value = rate
+    }
+
+    fun loadVideoModes(
         activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
     ) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -905,8 +921,8 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         Log.e(TAG, "captureRateValues: $captureRateValues")
 
         val videoModes = listOf(
-            VideoModeUiModel(VideoMode.Video, activity.getString(R.string.video)),
             VideoModeUiModel(VideoMode.Slow_Motion, activity.getString(R.string.slow_motion)),
+            VideoModeUiModel(VideoMode.Video, activity.getString(R.string.video)),
             VideoModeUiModel(VideoMode.Time_Lapse, activity.getString(R.string.time_lapse))
         ).toMutableList()
 
@@ -936,11 +952,12 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             // gán selected theo mode và captureRate
             _videoModes.value = videoModes.map { model ->
                 val isSelected = model.mode == selectedMode &&
-                        (model.captureRates.isEmpty() || model.captureRates.contains(captureRateValue))
+                        (model.captureRates.isEmpty() || model.captureRates.contains(
+                            captureRateValue
+                        ))
                 model.copy(selected = isSelected)
             }
         } else {
-            // Trường hợp chỉ có 1 captureRate -> mặc định chọn video
             _videoModes.value = videoModes.map { model ->
                 model.copy(selected = model.mode == currentVideoMode.value.mode)
             }
@@ -948,8 +965,6 @@ class CameraViewModel @Inject constructor() : ViewModel() {
     }
 
     fun changeVideoMode(mode: VideoModeUiModel) {
-        _videoModes.value = _videoModes.value.map {
-            it.copy(selected = it.mode == mode.mode)
-        }
+        _videoModes.value = _videoModes.value.map { it.copy(selected = it.mode == mode.mode) }
     }
 }

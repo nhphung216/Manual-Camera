@@ -1,11 +1,9 @@
 package com.ssolstice.camera.manual.compose
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,30 +11,31 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.CameraEnhance
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SettingsApplications
+import androidx.compose.material.icons.filled.SlowMotionVideo
+import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material.icons.outlined.CameraAlt
-import androidx.compose.material.icons.outlined.Videocam
+import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ssolstice.camera.manual.MyApplicationInterface
 import com.ssolstice.camera.manual.compose.widgets.CaptureRateSelector
 import com.ssolstice.camera.manual.compose.widgets.OuterRing
 import com.ssolstice.camera.manual.compose.widgets.PhotoModeSelector
@@ -62,7 +61,9 @@ fun CameraScreen(
     isPhotoMode: Boolean = true,
     galleryBitmap: Bitmap? = null,
     openGallery: () -> Unit = {},
-    switchVideoMode: () -> Unit = {},
+
+    togglePhotoVideoMode: () -> Unit = {},
+
     takePhoto: () -> Unit = {},
     takePhotoVideoSnapshot: () -> Unit = {},
     pauseVideo: () -> Unit = {},
@@ -78,7 +79,10 @@ fun CameraScreen(
     currentVideoMode: VideoModeUiModel? = null,
 
     captureRate: Float = 1f,
-    onCaptureRateSelected: (Float) -> Unit = {}
+    onCaptureRateSelected: (Float) -> Unit = {},
+
+    onShowSlowMotionSettings: (VideoModeUiModel) -> Unit = {},
+    onShowTimeLapseSettings: (VideoModeUiModel) -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -86,7 +90,7 @@ fun CameraScreen(
             .background(Color(0x00101010))
     ) {
 
-        if (!isPhotoMode && currentVideoMode != null) {
+        if (!isPhotoMode && currentVideoMode != null && currentVideoMode.captureRates.isNotEmpty()) {
             CaptureRateSelector(
                 captureRates = currentVideoMode.captureRates,
                 selectedRate = captureRate,
@@ -95,6 +99,7 @@ fun CameraScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -170,26 +175,24 @@ fun CameraScreen(
             }
         }
 
-        if (isPhotoMode) {
-            if (photoModes.isNotEmpty()) {
-                PhotoModeSelector(
-                    modes = photoModes,
-                    onModeSelected = { mode -> changePhotoMode(mode) }
-                )
-            }
-        } else {
-            if (videoModes.isNotEmpty()) {
-                VideoModeSelector(
-                    modes = videoModes,
-                    onModeSelected = { mode -> changeVideoMode(mode) }
-                )
-            }
+        if (isPhotoMode && photoModes.isNotEmpty()) {
+            PhotoModeSelector(
+                modes = photoModes,
+                onModeSelected = { mode -> changePhotoMode(mode) }
+            )
+        }
+
+        if (!isPhotoMode && videoModes.isNotEmpty()) {
+            VideoModeSelector(
+                modes = videoModes,
+                onModeSelected = { mode -> changeVideoMode(mode) }
+            )
         }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -206,64 +209,121 @@ fun CameraScreen(
                     }
             )
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .background(
                         Color.DarkGray, shape = RoundedCornerShape(32.dp)
                     )
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(horizontal = 8.dp, vertical = 8.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.CameraAlt,
+                    imageVector = Icons.Filled.CameraAlt,
                     contentDescription = null,
                     tint = WhiteColor,
                     modifier = Modifier
+                        .clickable { togglePhotoVideoMode() }
                         .size(38.dp)
                         .background(
                             if (isPhotoMode) {
-                                Color(0xFF007AFF)
+                                MaterialTheme.colorScheme.onPrimaryContainer
                             } else {
                                 Color.DarkGray
                             }, shape = CircleShape
                         )
                         .padding(8.dp)
-                        .clickable {
-                            switchVideoMode()
-                        }
                 )
                 Icon(
-                    imageVector = Icons.Outlined.Videocam,
+                    imageVector = Icons.Filled.Videocam,
                     contentDescription = null,
                     tint = WhiteColor,
                     modifier = Modifier
+                        .clickable { togglePhotoVideoMode() }
                         .size(38.dp)
                         .background(
                             if (!isPhotoMode) {
-                                RecordColor
+                                MaterialTheme.colorScheme.onPrimaryContainer
                             } else {
                                 Color.DarkGray
                             },
                             shape = CircleShape
                         )
                         .padding(8.dp)
-                        .clickable {
-                            switchVideoMode()
-                        }
                 )
             }
-            Icon(
-                imageVector = Icons.Default.Tune,
-                contentDescription = null,
-                tint = WhiteColor,
-                modifier = Modifier
-                    .size(38.dp)
-                    .background(Color.DarkGray, shape = CircleShape)
-                    .padding(8.dp)
-                    .clickable {
-                        showConfigTableSettings()
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                when (currentVideoMode?.mode) {
+                    MyApplicationInterface.VideoMode.Slow_Motion -> {
+                        Row(
+                            modifier = Modifier
+                                .clickable {
+                                    onShowSlowMotionSettings(currentVideoMode)
+                                }
+                                .background(Color.DarkGray, shape = CircleShape)
+                                .padding(6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Timelapse,
+                                contentDescription = null,
+                                tint = WhiteColor,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = captureRate.toString(),
+                                color = WhiteColor,
+                                fontSize = 14.sp
+                            )
+                        }
                     }
-            )
+
+                    MyApplicationInterface.VideoMode.Time_Lapse -> {
+                        Row(
+                            modifier = Modifier
+                                .clickable {
+                                    onShowTimeLapseSettings(currentVideoMode)
+                                }
+                                .background(Color.DarkGray, shape = CircleShape)
+                                .padding(6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Timelapse,
+                                contentDescription = null,
+                                tint = WhiteColor,
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = captureRate.toString(),
+                                color = WhiteColor,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+
+                    else -> {
+                        Icon(
+                            imageVector = Icons.Default.Tune,
+                            contentDescription = null,
+                            tint = WhiteColor,
+                            modifier = Modifier
+                                .clickable {
+                                    showConfigTableSettings()
+                                }
+                                .size(38.dp)
+                                .background(Color.DarkGray, shape = CircleShape)
+                                .padding(8.dp)
+                        )
+                    }
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(34.dp))

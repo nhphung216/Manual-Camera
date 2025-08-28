@@ -3,6 +3,7 @@ package com.ssolstice.camera.manual.compose.widgets
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssolstice.camera.manual.models.PhotoModeUiModel
+import com.ssolstice.camera.manual.models.VideoModeUiModel
 
 @Composable
 fun PhotoModeSelector(
@@ -28,13 +30,13 @@ fun PhotoModeSelector(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 48.dp, bottom = 24.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         items(modes) { item ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(24.dp))
                     .background(
                         if (item.selected) MaterialTheme.colorScheme.onPrimaryContainer
                         else Color.Transparent
@@ -44,6 +46,41 @@ fun PhotoModeSelector(
                 Text(
                     text = item.text, color = Color.White, fontSize = 16.sp
                 )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun VideoModeSelector(
+    modes: List<VideoModeUiModel>, onModeSelected: (VideoModeUiModel) -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        LazyRow(
+            modifier = Modifier
+                .padding(top = 48.dp, bottom = 24.dp)
+                .align(Alignment.Center),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items(modes) { item ->
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(
+                            if (item.selected) MaterialTheme.colorScheme.onPrimaryContainer
+                            else Color.Transparent
+                        )
+                        .clickable { onModeSelected(item) }
+                        .padding(8.dp)) {
+                    Text(
+                        text = item.text, color = Color.White, fontSize = 16.sp
+                    )
+                }
             }
         }
     }

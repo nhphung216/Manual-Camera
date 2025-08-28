@@ -43,7 +43,7 @@ fun MenuItem(
                 .padding(bottom = 8.dp)
                 .size(size.dp)
                 .background(
-                    color = if (selected) MaterialTheme.colorScheme.primaryContainer else Color.DarkGray,
+                    color = if (selected) MaterialTheme.colorScheme.onPrimaryContainer else Color.DarkGray,
                     shape = CircleShape
                 )
                 .padding(4.dp),
@@ -67,7 +67,7 @@ fun MenuItem(
         }
         Text(
             text = label,
-            color = if (selected) MaterialTheme.colorScheme.primaryContainer else Color.LightGray,
+            color = if (selected) MaterialTheme.colorScheme.onPrimaryContainer else Color.LightGray,
             fontSize = 14.sp,
         )
     }
