@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssolstice.camera.manual.R
+import com.ssolstice.camera.manual.compose.ui.theme.colorMain
 import com.ssolstice.camera.manual.compose.widgets.ItemResolution
 import com.ssolstice.camera.manual.compose.widgets.SubTitleSettingRow
 import com.ssolstice.camera.manual.compose.widgets.TitleSettingRow
@@ -146,7 +147,7 @@ fun CameraSettings(
             Text(
                 stringResource(if (isPhotoMode) R.string.photo_settings else R.string.video_settings),
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = colorMain(),
                 modifier = Modifier.align(Alignment.CenterStart)
             )
             Icon(
@@ -287,7 +288,7 @@ fun CameraSettings(
                 .padding(top = 4.dp, end = 16.dp, bottom = 16.dp)
                 .border(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.primaryContainer,
+                    color = colorMain(),
                     shape = RoundedCornerShape(16.dp) // bo góc
                 )
                 .align(Alignment.End)
@@ -296,7 +297,7 @@ fun CameraSettings(
             Text(
                 stringResource(R.string.more_settings),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = colorMain(),
                 modifier = Modifier
                     .padding(start = 12.dp, top = 8.dp, bottom = 8.dp, end = 12.dp)
             )

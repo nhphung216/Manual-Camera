@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssolstice.camera.manual.compose.WhiteColor
+import com.ssolstice.camera.manual.compose.ui.theme.colorMain
 
 @Preview
 @Composable
@@ -95,7 +96,7 @@ fun CaptureRateItem(
         modifier = Modifier
             .clip(RoundedCornerShape(24.dp))
             .background(
-                if (isSelected) MaterialTheme.colorScheme.primaryContainer
+                if (isSelected) colorMain()
                 else Color.Transparent
             )
             .clickable { onClick() }

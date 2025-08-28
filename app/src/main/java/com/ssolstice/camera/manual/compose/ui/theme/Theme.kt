@@ -33,6 +33,9 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
+fun colorMain() = MaterialTheme.colorScheme.primary
+
+@Composable
 fun OpenCameraTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
@@ -51,7 +54,7 @@ fun OpenCameraTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = AppTypography,
+        typography = Typography,
         content = content
     )
 }

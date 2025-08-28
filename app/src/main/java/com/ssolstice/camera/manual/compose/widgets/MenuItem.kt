@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ssolstice.camera.manual.compose.ui.theme.colorMain
 
 
 @Composable
@@ -43,7 +44,7 @@ fun MenuItem(
                 .padding(bottom = 8.dp)
                 .size(size.dp)
                 .background(
-                    color = if (selected) MaterialTheme.colorScheme.primaryContainer else Color.DarkGray,
+                    color = if (selected) colorMain() else Color.DarkGray,
                     shape = CircleShape
                 )
                 .padding(4.dp),
@@ -67,7 +68,7 @@ fun MenuItem(
         }
         Text(
             text = label,
-            color = if (selected) MaterialTheme.colorScheme.primaryContainer else Color.LightGray,
+            color = if (selected) colorMain() else Color.LightGray,
             fontSize = 14.sp,
         )
     }
