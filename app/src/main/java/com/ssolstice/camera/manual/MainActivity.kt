@@ -939,7 +939,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         videoModes = videoModes.value,
                         changeVideoMode = {
                             Log.e(TAG, "changeVideoMode: $it")
-                            if (it.mode == MyApplicationInterface.VideoMode.Video) {
+                            if (it.mode == MyApplicationInterface.VideoMode.Video && captureRate.value != 1f) {
                                 viewModel.setCaptureRate(1f)
                                 if (applicationInterface != null && preview != null) {
                                     viewModel.setSpeedSelected2(

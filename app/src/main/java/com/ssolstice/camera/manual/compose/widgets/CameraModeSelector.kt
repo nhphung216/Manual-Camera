@@ -38,7 +38,7 @@ fun PhotoModeSelector(
                 modifier = Modifier
                     .clip(RoundedCornerShape(24.dp))
                     .background(
-                        if (item.selected) MaterialTheme.colorScheme.onPrimaryContainer
+                        if (item.selected) MaterialTheme.colorScheme.primaryContainer
                         else Color.Transparent
                     )
                     .clickable { onModeSelected(item) }
@@ -72,7 +72,7 @@ fun VideoModeSelector(
                     modifier = Modifier
                         .clip(RoundedCornerShape(24.dp))
                         .background(
-                            if (item.selected) MaterialTheme.colorScheme.onPrimaryContainer
+                            if (item.selected) MaterialTheme.colorScheme.primaryContainer
                             else Color.Transparent
                         )
                         .clickable { onModeSelected(item) }

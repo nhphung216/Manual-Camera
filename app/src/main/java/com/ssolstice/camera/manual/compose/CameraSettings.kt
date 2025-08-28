@@ -132,9 +132,10 @@ fun CameraSettings(
 ) {
     Column(
         modifier = modifier
+            .padding(vertical = 16.dp)
             .fillMaxWidth()
             .background(Color(0xF0000000))
-            .padding(vertical = 16.dp)
+            .padding(top = 16.dp)
     ) {
         // title
         Box(
@@ -146,8 +147,7 @@ fun CameraSettings(
                 stringResource(if (isPhotoMode) R.string.photo_settings else R.string.video_settings),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
+                modifier = Modifier.align(Alignment.CenterStart)
             )
             Icon(
                 imageVector = Icons.Default.Close,

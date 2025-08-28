@@ -19,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 @Composable
 fun ItemResolution(
     text: String,
@@ -52,21 +51,21 @@ fun ItemResolution(
                 modifier = Modifier.size(24.dp),
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = if (isSelect) MaterialTheme.colorScheme.onPrimaryContainer else Color.White
+                tint = Color.White
             )
         } else
             Text(
                 text = text,
                 style = MaterialTheme.typography.titleSmall,
                 fontSize = 16.sp,
-                color = if (isSelect) MaterialTheme.colorScheme.onPrimaryContainer else Color.White
+                color = Color.White
             )
         if (sub != "") {
             Text(
                 text = sub ?: "",
                 style = MaterialTheme.typography.labelSmall,
                 fontSize = 14.sp,
-                color = if (isSelect) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f) else Color.White.copy(
+                color = if (isSelect) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f) else Color.White.copy(
                     alpha = 0.7f
                 )
             )

@@ -10,10 +10,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TitleSettingRow(text: String) {
     Text(
-        text,
+        text = text,
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.secondaryContainer,
-        modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp)
+        modifier = Modifier.padding(top = 12.dp, start = 16.dp, end = 16.dp)
     )
 }
 

@@ -226,7 +226,7 @@ fun CameraScreen(
                         .size(38.dp)
                         .background(
                             if (isPhotoMode) {
-                                MaterialTheme.colorScheme.onPrimaryContainer
+                                MaterialTheme.colorScheme.primaryContainer
                             } else {
                                 Color.DarkGray
                             }, shape = CircleShape
@@ -242,7 +242,7 @@ fun CameraScreen(
                         .size(38.dp)
                         .background(
                             if (!isPhotoMode) {
-                                MaterialTheme.colorScheme.onPrimaryContainer
+                                MaterialTheme.colorScheme.primaryContainer
                             } else {
                                 Color.DarkGray
                             },
@@ -255,74 +255,18 @@ fun CameraScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                when (currentVideoMode?.mode) {
-                    MyApplicationInterface.VideoMode.Slow_Motion -> {
-                        Row(
-                            modifier = Modifier
-                                .clickable {
-                                    onShowSlowMotionSettings(currentVideoMode)
-                                }
-                                .background(Color.DarkGray, shape = CircleShape)
-                                .padding(6.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Timelapse,
-                                contentDescription = null,
-                                tint = WhiteColor,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = captureRate.toString(),
-                                color = WhiteColor,
-                                fontSize = 14.sp
-                            )
+                Icon(
+                    imageVector = Icons.Default.Tune,
+                    contentDescription = null,
+                    tint = WhiteColor,
+                    modifier = Modifier
+                        .clickable {
+                            showConfigTableSettings()
                         }
-                    }
-
-                    MyApplicationInterface.VideoMode.Time_Lapse -> {
-                        Row(
-                            modifier = Modifier
-                                .clickable {
-                                    onShowTimeLapseSettings(currentVideoMode)
-                                }
-                                .background(Color.DarkGray, shape = CircleShape)
-                                .padding(6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Timelapse,
-                                contentDescription = null,
-                                tint = WhiteColor,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = captureRate.toString(),
-                                color = WhiteColor,
-                                fontSize = 14.sp
-                            )
-                        }
-                    }
-
-                    else -> {
-                        Icon(
-                            imageVector = Icons.Default.Tune,
-                            contentDescription = null,
-                            tint = WhiteColor,
-                            modifier = Modifier
-                                .clickable {
-                                    showConfigTableSettings()
-                                }
-                                .size(38.dp)
-                                .background(Color.DarkGray, shape = CircleShape)
-                                .padding(8.dp)
-                        )
-                    }
-                }
+                        .size(38.dp)
+                        .background(Color.DarkGray, shape = CircleShape)
+                        .padding(8.dp)
+                )
             }
         }
 
