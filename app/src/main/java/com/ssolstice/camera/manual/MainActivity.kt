@@ -109,6 +109,7 @@ import com.ssolstice.camera.manual.ui.FolderChooserDialog
 import com.ssolstice.camera.manual.ui.MainUI
 import com.ssolstice.camera.manual.ui.ManualSeekbars
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -880,6 +881,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 val captureRate = viewModel.captureRate.collectAsState()
 
                 LaunchedEffect(isPhotoMode) {
+                    delay(1000)
                     if (isPhotoMode) {
                         viewModel.loadPhotoModeViews(activity)
                     } else {
