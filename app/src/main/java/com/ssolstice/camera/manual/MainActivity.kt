@@ -131,6 +131,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     private val TAG = "PreferencesListener"
 
+    lateinit var binding: ActivityMainBinding
+
     private val viewModel: CameraViewModel by viewModels()
 
     var isAppPaused: Boolean = true
@@ -250,8 +252,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         false // used when returning from Settings/Popup - if we're displaying a toast anyway, don't want to display the info toast too
     private var push_info_toast_text: String? =
         null // can be used to "push" extra text to the info text for showPhotoVideoToast()
-    private var pushSwitchedCamera =
-        false // whether to display animation for switching front/back cameras
+//    private var pushSwitchedCamera =
+//        false // whether to display animation for switching front/back cameras
 
     // for testing; must be volatile for test project reading the state
     // n.b., avoid using static, as static variables are shared between different instances of an application,
@@ -315,8 +317,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     // index in exposure_seekbar_values that maps to zero preview exposure compensation
     var exposureSeekbarProgressZero: Int = 0
         private set
-
-    lateinit var binding: ActivityMainBinding
 
     @SuppressLint("ClickableViewAccessibility", "UseKtx")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -864,6 +864,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 var isoValue by remember { mutableFloatStateOf(0f) }
                 var shutterValue by remember { mutableFloatStateOf(0f) }
                 var whiteBalanceManualValue by remember { mutableFloatStateOf(0f) }
+                var focusManualValue by remember { mutableFloatStateOf(0f) }
 
                 var whiteBalanceValue by remember { mutableStateOf("") }
                 var focusValue by remember { mutableStateOf("") }
@@ -897,12 +898,16 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         isVideoRecordingPaused = isVideoRecordingPaused,
                         isPhotoMode = isPhotoMode,
                         galleryBitmap = galleryBitmap,
-                        openGallery = { clickedGallery() },
-                        switchCamera = { clickedSwitchCamera() },
-                        togglePhotoVideoMode = { clickedSwitchVideo() },
-                        pauseVideo = { clickedPauseVideo() },
-                        takePhoto = { clickedTakePhoto() },
-                        takePhotoVideoSnapshot = { clickedTakePhotoVideoSnapshot() },
+                        onOpenGallery = { clickedGallery() },
+                        onSwitchCamera = {
+                            clickedSwitchCamera()
+                        },
+                        onSwitchMultiCamera = { clickedSwitchMultiCamera() },
+                        onTogglePhotoVideoMode = { clickedSwitchVideo() },
+                        onPauseVideo = { clickedPauseVideo() },
+                        onTakePhoto = { clickedTakePhoto() },
+                        onTakePhotoVideoSnapshot = { clickedTakePhotoVideoSnapshot() },
+
                         showCameraSettings = {
                             showCameraSettings.value = !showCameraSettings.value
                             if (showCameraSettings.value && preview != null && applicationInterface != null) {
@@ -928,8 +933,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             }
 
                         },
+
                         photoModes = photoModes.value,
-                        changePhotoMode = {
+                        onChangePhotoMode = {
                             Log.e(TAG, "changePhotoMode: $it")
                             if (currentPhotoMode.value != it.mode) {
                                 viewModel.setCurrentPhotoMode(it.mode)
@@ -937,38 +943,33 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 changePhotoMode(it.mode)
                             }
                         },
+
                         currentVideoMode = currentVideoMode.value,
                         videoModes = videoModes.value,
-                        changeVideoMode = {
-                            Log.e(TAG, "changeVideoMode: $it")
-                            if (it.mode == MyApplicationInterface.VideoMode.Video && captureRate.value != 1f) {
+                        // video, slow motion, time lapse
+                        onChangeVideoMode = { newMode ->
+                            Log.e(TAG, "onChangeVideoMode: $newMode")
+
+                            if (newMode.mode == MyApplicationInterface.VideoMode.Video) {
                                 viewModel.setCaptureRate(1f)
                                 if (applicationInterface != null && preview != null) {
-                                    viewModel.setSpeedSelected2(
+                                    viewModel.applySpeedSelectedPreview(
                                         activity, applicationInterface!!, preview!!, 1f
                                     )
                                 }
                             }
-                            if (currentVideoMode.value != it) {
-                                viewModel.setVideoMode(it)
-                                viewModel.changeVideoMode(it)
-                            }
+                            viewModel.setVideoModeSelected(newMode)
                         },
+
                         captureRate = captureRate.value,
                         onCaptureRateSelected = {
                             Log.e(TAG, "onCaptureRateSelected: $it")
                             viewModel.setCaptureRate(it)
                             if (applicationInterface != null && preview != null) {
-                                viewModel.setSpeedSelected2(
+                                viewModel.applySpeedSelectedPreview(
                                     activity, applicationInterface!!, preview!!, it
                                 )
                             }
-                        },
-                        onShowSlowMotionSettings = {
-                            Log.e(TAG, "onShowSlowMotionSettings: $it")
-                        },
-                        onShowTimeLapseSettings = {
-                            Log.e(TAG, "onShowTimeLapseSettings: $it")
                         },
                     )
 
@@ -1091,23 +1092,44 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 whiteBalanceManualValue = it
                                 preview?.setWhiteBalanceTemperature(it.toInt())
                             },
+                            focusManualValue = focusManualValue,
+                            onFocusManualChanged = { progress ->
+                                focusManualValue = progress
+                                val frac: Double = progress / 100.0
+                                val scaling = ManualSeekbars.seekbarScaling(frac)
+                                val focusDistance =
+                                    (scaling * preview!!.minimumFocusDistance).toFloat()
+                                preview?.setFocusDistance(focusDistance, true, true)
+                            },
                             focusValue = focusValue,
                             onFocusChanged = { item ->
                                 Log.e(TAG, "onFocusChanged: $item")
                                 val selectedValue: String? = item.id
                                 focusValue = item.id
 
-                                preview?.updateFocus(item.id, false, true)
-                                if (preview?.cameraController != null) {
-                                    if (preview?.cameraController?.sceneModeAffectsFunctionality() == true) {
-                                        updateForSettings(
-                                            true,
-                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForFocus(
-                                                selectedValue
+                                if (focusValue == "focus_mode_manual2") {
+                                    if (applicationInterface != null) {
+                                        focusManualValue =
+                                            applicationInterface!!.getFocusDistancePref(true)
+                                    }
+                                    viewModel.setControlOptionModel(item)
+                                } else {
+                                    viewModel.setControlOptionModel(null)
+                                }
+
+                                if (focusValue != "focus_mode_manual2") {
+                                    preview?.updateFocus(item.id, false, true)
+                                    if (preview?.cameraController != null) {
+                                        if (preview?.cameraController?.sceneModeAffectsFunctionality() == true) {
+                                            updateForSettings(
+                                                true,
+                                                getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForFocus(
+                                                    selectedValue
+                                                )
                                             )
-                                        )
-                                    } else {
-                                        preview?.cameraController?.setSceneMode(selectedValue)
+                                        } else {
+                                            preview?.cameraController?.setSceneMode(selectedValue)
+                                        }
                                     }
                                 }
                             },
@@ -2245,7 +2267,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
         }
 
-        pushSwitchedCamera = false // just in case
+//        pushSwitchedCamera = false // just in case
 
         if (MyDebug.LOG) {
             Log.d(
@@ -2933,7 +2955,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
             userSwitchToCamera(cameraId, null)
 
-            pushSwitchedCamera = true
+            if (applicationInterface != null && preview != null) {
+                viewModel.checkSwitchCamera(this, applicationInterface!!, preview!!)
+            }
         }
     }
 
@@ -4708,7 +4732,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // similarly we close the camera
         preview?.onPause(false)
 
-        pushSwitchedCamera = false // just in case
+//        pushSwitchedCamera = false // just in case
     }
 
     private fun showWhenLocked(show: Boolean) {
@@ -6338,11 +6362,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         this.applicationInterface!!.drawPreview.setDimPreview(false)
 
-        if (pushSwitchedCamera) {
-            pushSwitchedCamera = false
+//        if (pushSwitchedCamera) {
+//            pushSwitchedCamera = false
 //            val switchCameraButton = binding.switchCamera
 //            switchCameraButton.animate().rotationBy(180f).setDuration(250).setInterpolator(AccelerateDecelerateInterpolator()).start()
-        }
+//        }
     }
 
     fun setManualFocusSeekbarProgress(isTargetDistance: Boolean, focusDistance: Float) {
@@ -6387,9 +6411,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         return
                     }
                 }
-                val frac = progress / focusSeekBar.getMax().toDouble()
+                val frac = progress / focusSeekBar.max.toDouble()
                 val scaling = ManualSeekbars.seekbarScaling(frac)
-                val focusDistance = (scaling * (preview?.getMinimumFocusDistance() ?: 0f)).toFloat()
+                val focusDistance = (scaling * (preview?.minimumFocusDistance ?: 0f)).toFloat()
                 preview?.setFocusDistance(focusDistance, isTargetDistance, true)
             }
 

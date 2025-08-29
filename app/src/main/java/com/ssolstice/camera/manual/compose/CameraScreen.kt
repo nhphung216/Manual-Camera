@@ -11,37 +11,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.CameraEnhance
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PhotoLibrary
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SettingsApplications
-import androidx.compose.material.icons.filled.SlowMotionVideo
-import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.ssolstice.camera.manual.MyApplicationInterface
 import com.ssolstice.camera.manual.compose.ui.theme.colorMain
+import com.ssolstice.camera.manual.compose.widgets.CaptureCameraControls
 import com.ssolstice.camera.manual.compose.widgets.CaptureRateSelector
-import com.ssolstice.camera.manual.compose.widgets.OuterRing
 import com.ssolstice.camera.manual.compose.widgets.PhotoModeSelector
-import com.ssolstice.camera.manual.compose.widgets.ShutterButton
-import com.ssolstice.camera.manual.compose.widgets.SwitchCameraButton
 import com.ssolstice.camera.manual.compose.widgets.VideoModeSelector
 import com.ssolstice.camera.manual.models.PhotoModeUiModel
 import com.ssolstice.camera.manual.models.VideoModeUiModel
@@ -61,29 +48,27 @@ fun CameraScreen(
     isVideoRecordingPaused: Boolean = false,
     isPhotoMode: Boolean = true,
     galleryBitmap: Bitmap? = null,
-    openGallery: () -> Unit = {},
+    onOpenGallery: () -> Unit = {},
 
-    togglePhotoVideoMode: () -> Unit = {},
+    onTogglePhotoVideoMode: () -> Unit = {},
 
-    takePhoto: () -> Unit = {},
-    takePhotoVideoSnapshot: () -> Unit = {},
-    pauseVideo: () -> Unit = {},
-    switchCamera: () -> Unit = {},
+    onTakePhoto: () -> Unit = {},
+    onTakePhotoVideoSnapshot: () -> Unit = {},
+    onPauseVideo: () -> Unit = {},
+    onSwitchCamera: () -> Unit = {},
+    onSwitchMultiCamera: () -> Unit = {},
     showCameraSettings: () -> Unit = {},
     showConfigTableSettings: () -> Unit = {},
 
     photoModes: List<PhotoModeUiModel> = emptyList(),
-    changePhotoMode: (PhotoModeUiModel) -> Unit = {},
+    onChangePhotoMode: (PhotoModeUiModel) -> Unit = {},
 
     videoModes: List<VideoModeUiModel> = emptyList(),
-    changeVideoMode: (VideoModeUiModel) -> Unit = {},
+    onChangeVideoMode: (VideoModeUiModel) -> Unit = {},
     currentVideoMode: VideoModeUiModel? = null,
 
     captureRate: Float = 1f,
     onCaptureRateSelected: (Float) -> Unit = {},
-
-    onShowSlowMotionSettings: (VideoModeUiModel) -> Unit = {},
-    onShowTimeLapseSettings: (VideoModeUiModel) -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -101,92 +86,29 @@ fun CameraScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (isRecording) {
-                OuterRing(
-                    onClick = { pauseVideo() },
-                    modifier =
-                        Modifier.size(56.dp)
-                ) {
-                    Icon(
-                        imageVector = if (isVideoRecordingPaused) Icons.Default.PlayArrow else Icons.Default.Pause,
-                        contentDescription = null,
-                        tint = WhiteColor,
-                        modifier = Modifier
-                            .size(24.dp)
-                    )
-                }
-            } else {
-                if (galleryBitmap != null) {
-                    CircleBitmapImage(
-                        bitmap = galleryBitmap,
-                        size = 56,
-                        onClick = { openGallery() })
-                } else {
-                    OuterRing(
-                        onClick = { openGallery() },
-                        modifier =
-                            Modifier.size(56.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PhotoLibrary,
-                            contentDescription = null,
-                            tint = WhiteColor,
-                            modifier = Modifier
-                                .size(24.dp)
-                        )
-                    }
-                }
-
-            }
-
-            ShutterButton(
-                isRecording = isRecording,
-                isPhotoMode = isPhotoMode,
-                onClick = {
-                    takePhoto()
-                },
-                onLongPress = {
-
-                }
-            )
-
-            if (isRecording) {
-                OuterRing(
-                    onClick = {}, modifier =
-                        Modifier.size(46.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CameraEnhance,
-                        contentDescription = null,
-                        tint = WhiteColor,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable {
-                                takePhotoVideoSnapshot()
-                            })
-                }
-            } else {
-                SwitchCameraButton(switchCamera = { switchCamera() })
-            }
-        }
+        CaptureCameraControls(
+            isRecording = isRecording,
+            isVideoRecordingPaused = isVideoRecordingPaused,
+            isPhotoMode = isPhotoMode,
+            galleryBitmap = galleryBitmap,
+            openGallery = { onOpenGallery() },
+            takePhoto = { onTakePhoto() },
+            takePhotoVideoSnapshot = { onTakePhotoVideoSnapshot() },
+            pauseVideo = { onPauseVideo() },
+            switchCamera = { onSwitchCamera() },
+        )
 
         if (isPhotoMode && photoModes.isNotEmpty()) {
             PhotoModeSelector(
                 modes = photoModes,
-                onModeSelected = { mode -> changePhotoMode(mode) }
+                onModeSelected = { mode -> onChangePhotoMode(mode) }
             )
         }
 
         if (!isPhotoMode && videoModes.isNotEmpty()) {
             VideoModeSelector(
                 modes = videoModes,
-                onModeSelected = { mode -> changeVideoMode(mode) }
+                onModeSelected = { mode -> onChangeVideoMode(mode) }
             )
         }
 
@@ -223,7 +145,7 @@ fun CameraScreen(
                     contentDescription = null,
                     tint = WhiteColor,
                     modifier = Modifier
-                        .clickable { togglePhotoVideoMode() }
+                        .clickable { onTogglePhotoVideoMode() }
                         .size(38.dp)
                         .background(
                             if (isPhotoMode) {
@@ -239,7 +161,7 @@ fun CameraScreen(
                     contentDescription = null,
                     tint = WhiteColor,
                     modifier = Modifier
-                        .clickable { togglePhotoVideoMode() }
+                        .clickable { onTogglePhotoVideoMode() }
                         .size(38.dp)
                         .background(
                             if (!isPhotoMode) {

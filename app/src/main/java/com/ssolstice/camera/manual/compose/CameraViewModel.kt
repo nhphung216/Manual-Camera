@@ -273,7 +273,7 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun setSpeedSelected2(
+    fun applySpeedSelectedPreview(
         activity: MainActivity,
         applicationInterface: MyApplicationInterface,
         preview: Preview,
@@ -438,31 +438,23 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         }
 
         // flash
-        if (preview.supportsFlash()) {
-            val flashList: MutableList<SettingItemModel> = mutableListOf()
-            val supportedFlashValues = preview.supportedFlashValues
-            if (supportedFlashValues != null && supportedFlashValues.size > 1) {
-                for (index in supportedFlashValues.indices) {
-                    val flashValue = supportedFlashValues[index]
-                    val icon = when (flashValue) {
-                        "flash_off" -> R.drawable.flash_off
-                        "flash_auto", "flash_frontscreen_auto" -> R.drawable.flash_auto
-                        "flash_on", "flash_frontscreen_on" -> R.drawable.flash_on
-                        "flash_torch", "flash_frontscreen_torch" -> R.drawable.baseline_highlight_white_48
-                        "flash_red_eye" -> R.drawable.baseline_remove_red_eye_white_48
-                        else -> R.drawable.flash_off
-                    }
-                    val model = SettingItemModel(
-                        id = flashValue,
-                        selected = flashValue == preview.currentFlashValue,
-                        icon = icon
-                    )
-                    flashList.add(model)
-                    if (model.selected) setRepeatSelected(activity, model)
+        val supportedFlashValues = preview.supportedFlashValues.orEmpty()
+        if (supportedFlashValues.isNotEmpty()) {
+            val flashList = supportedFlashValues.map { flashValue ->
+                val model = SettingItemModel(
+                    id = flashValue,
+                    selected = flashValue == preview.currentFlashValue,
+                    icon = getFlashIcon(flashValue)
+                )
+                if (model.selected) {
+                    setFlashSelected(preview, model)
                 }
-            }
+                model
+            }.toMutableList()
 
-            if (flashList.isNotEmpty()) setFlashList(flashList)
+            if (flashList.isNotEmpty()) {
+                setFlashList(flashList)
+            }
         }
 
         // raw
@@ -492,6 +484,15 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         }.toMutableList()
 
         if (rawList.isNotEmpty()) setRawList(rawList)
+    }
+
+    private fun getFlashIcon(flashValue: String): Int = when (flashValue) {
+        "flash_off" -> R.drawable.flash_off
+        "flash_auto", "flash_frontscreen_auto" -> R.drawable.flash_auto
+        "flash_on", "flash_frontscreen_on" -> R.drawable.flash_on
+        "flash_torch", "flash_frontscreen_torch" -> R.drawable.baseline_highlight_white_48
+        "flash_red_eye" -> R.drawable.baseline_remove_red_eye_white_48
+        else -> R.drawable.flash_off
     }
 
     private val _controlsMapData = MutableLiveData<HashMap<String, CameraControlModel>>()
@@ -902,8 +903,9 @@ class CameraViewModel @Inject constructor() : ViewModel() {
     private val _currentVideoMode = MutableStateFlow(VideoModeUiModel())
     val currentVideoMode: StateFlow<VideoModeUiModel> = _currentVideoMode
 
-    fun setVideoMode(newMode: VideoModeUiModel) {
+    fun setVideoModeSelected(newMode: VideoModeUiModel) {
         _currentVideoMode.value = newMode
+        _videoModes.value = _videoModes.value.map { it.copy(selected = it.mode == newMode.mode) }
     }
 
     private val _captureRate = MutableStateFlow(1f)
@@ -920,51 +922,57 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         val captureRateValues = applicationInterface.getSupportedVideoCaptureRates()
         Log.e(TAG, "captureRateValues: $captureRateValues")
 
-        val videoModes = listOf(
-            VideoModeUiModel(VideoMode.Slow_Motion, activity.getString(R.string.slow_motion)),
-            VideoModeUiModel(VideoMode.Video, activity.getString(R.string.video)),
+        val captureRateValue = sharedPreferences.getFloat(
+            PreferenceKeys.getVideoCaptureRatePreferenceKey(
+                preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
+            ), 1.0f
+        )
+        Log.e(TAG, "captureRateValue: $captureRateValue")
+
+        val videoModes = mutableListOf<VideoModeUiModel>()
+        val slowMotion =
+            VideoModeUiModel(VideoMode.Slow_Motion, activity.getString(R.string.slow_motion))
+        val normalMode = VideoModeUiModel(VideoMode.Video, activity.getString(R.string.video))
+        val timeLapse =
             VideoModeUiModel(VideoMode.Time_Lapse, activity.getString(R.string.time_lapse))
-        ).toMutableList()
 
-        if (captureRateValues.size > 1) {
-            val captureRateValue = sharedPreferences.getFloat(
-                PreferenceKeys.getVideoCaptureRatePreferenceKey(
-                    preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
-                ), 1.0f
-            )
-            Log.e(TAG, "captureRateValue: $captureRateValue")
-
-            videoModes.find { it.mode == VideoMode.Slow_Motion }?.captureRates?.addAll(
-                captureRateValues.filter { it < 1f }
-            )
-
-            videoModes.find { it.mode == VideoMode.Time_Lapse }?.captureRates?.addAll(
-                captureRateValues.filter { it > 1f }
-            )
-
-            // 🔑 xác định videoMode đang chọn
-            val selectedMode = when {
-                captureRateValue < 1f -> VideoMode.Slow_Motion
-                captureRateValue > 1f -> VideoMode.Time_Lapse
-                else -> VideoMode.Video
+        captureRateValues.forEach {
+            if (it < 1f) {
+                slowMotion.captureRates.add(it)
+            } else if (it > 1f) {
+                timeLapse.captureRates.add(it)
             }
+        }
 
-            // gán selected theo mode và captureRate
-            _videoModes.value = videoModes.map { model ->
-                val isSelected = model.mode == selectedMode &&
-                        (model.captureRates.isEmpty() || model.captureRates.contains(
-                            captureRateValue
-                        ))
-                model.copy(selected = isSelected)
+        if (slowMotion.captureRates.isNotEmpty()) videoModes.add(slowMotion)
+        videoModes.add(normalMode)
+        if (timeLapse.captureRates.isNotEmpty()) videoModes.add(timeLapse)
+
+        if (captureRateValue < 1f && _currentVideoMode.value.mode != VideoMode.Slow_Motion
+            || captureRateValue > 1f && _currentVideoMode.value.mode != VideoMode.Video) {
+            setCaptureRate(1f)
+            applySpeedSelectedPreview(activity, applicationInterface, preview, _captureRate.value)
+            viewModelScope.launch {
+                delay(1000)
+                _currentVideoMode.value = normalMode
             }
-        } else {
-            _videoModes.value = videoModes.map { model ->
-                model.copy(selected = model.mode == currentVideoMode.value.mode)
-            }
+        }
+
+        _videoModes.value = videoModes.map { model ->
+            model.copy(selected = model.mode == _currentVideoMode.value.mode)
         }
     }
 
-    fun changeVideoMode(mode: VideoModeUiModel) {
-        _videoModes.value = _videoModes.value.map { it.copy(selected = it.mode == mode.mode) }
+    fun checkSwitchCamera(
+        activity: MainActivity,
+        applicationInterface: MyApplicationInterface,
+        preview: Preview
+    ) {
+        if (!isPhotoMode.value) {
+            viewModelScope.launch {
+                delay(1000)
+                loadVideoModes(activity, applicationInterface, preview)
+            }
+        }
     }
 }

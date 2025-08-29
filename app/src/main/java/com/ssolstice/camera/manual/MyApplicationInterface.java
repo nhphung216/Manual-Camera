@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -817,26 +818,42 @@ public class MyApplicationInterface extends BasicApplicationInterface {
 
     @Override
     public boolean isVideoCaptureRateFactor() {
-        Log.d(TAG, "isVideoCaptureRateFactor");
-        float captureRateFactor = sharedPreferences.getFloat(PreferenceKeys.getVideoCaptureRatePreferenceKey(main_activity.getPreview().getCameraId(), cameraIdSPhysical), 1.0f);
-        if (MyDebug.LOG) Log.d(TAG, "capture_rate_factor: " + captureRateFactor);
+        Log.e(TAG, "isVideoCaptureRateFactor");
+
+        int cameraId = main_activity.getPreview().getCameraId();
+        Log.e(TAG, "getCameraId " + cameraId);
+
+        String cameraKey = PreferenceKeys.getVideoCaptureRatePreferenceKey(cameraId, cameraIdSPhysical);
+        Log.e(TAG, "cameraKey " + cameraKey);
+
+        float captureRateFactor = sharedPreferences.getFloat(cameraKey, 1.0f);
+        Log.e(TAG, "captureRateFactor " + captureRateFactor);
+
+        Log.e(TAG, "capture_rate_factor: " + captureRateFactor);
+
         if (Math.abs(captureRateFactor - 1.0f) > 1.0e-5) {
             // check stored capture rate is valid
-            if (MyDebug.LOG) Log.d(TAG, "check stored capture rate is valid");
-            List<Float> supported_capture_rates = getSupportedVideoCaptureRates();
-            if (MyDebug.LOG) Log.d(TAG, "supported_capture_rates: " + supported_capture_rates);
+            Log.e(TAG, "check stored capture rate is valid");
+
+            List<Float> supportedVideoCaptureRates = getSupportedVideoCaptureRates();
+            Log.e(TAG, "supported_capture_rates: " + supportedVideoCaptureRates);
+
             boolean found = false;
-            for (float this_capture_rate : supported_capture_rates) {
-                if (Math.abs(captureRateFactor - this_capture_rate) < 1.0e-5) {
+
+            for (float captureRate : supportedVideoCaptureRates) {
+                if (Math.abs(captureRateFactor - captureRate) < 1.0e-5) {
                     found = true;
                     break;
                 }
             }
+
             if (!found) {
                 Log.e(TAG, "stored capture_rate_factor: " + captureRateFactor + " not supported");
             }
+
             return found;
         }
+
         return true;
     }
 

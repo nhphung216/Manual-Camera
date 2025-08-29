@@ -3222,7 +3222,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
             if( supported_flash_values != null && supported_flash_values.size() > 1 ) {
 
                 String flash_value = applicationInterface.getFlashPref();
-                if( flash_value.length() > 0 ) {
+                if(!flash_value.isEmpty()) {
                     if( MyDebug.LOG )
                         Log.d(TAG, "found existing flash_value: " + flash_value);
                     if( !updateFlash(flash_value, false) ) { // don't need to save, as this is the value that's already saved
@@ -5157,16 +5157,12 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
             if( MyDebug.LOG )
                 Log.d(TAG, "    current_flash_index is now " + current_flash_index + " (initial " + initial + ")");
 
-            //Activity activity = (Activity)this.getContext();
             String [] flash_entries = getResources().getStringArray(R.array.flash_entries);
-            //String [] flash_icons = getResources().getStringArray(R.array.flash_icons);
             String flash_value = supported_flash_values.get(current_flash_index);
             if( MyDebug.LOG )
                 Log.d(TAG, "    flash_value: " + flash_value);
             String [] flash_values = getResources().getStringArray(R.array.flash_values);
             for(int i=0;i<flash_values.length;i++) {
-				/*if( MyDebug.LOG )
-					Log.d(TAG, "    compare to: " + flash_values[i]);*/
                 if( flash_value.equals(flash_values[i]) ) {
                     if( MyDebug.LOG )
                         Log.d(TAG, "    found entry: " + i);
@@ -5179,6 +5175,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
             this.setFlash(flash_value);
             if( save ) {
                 // now save
+                Log.d(TAG, "flash_value: " + flash_value);
                 applicationInterface.setFlashPref(flash_value);
             }
         }

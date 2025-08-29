@@ -48,7 +48,9 @@ fun ShutterButton(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { onClick() },
-                    onLongPress = { onLongPress() }
+                    onLongPress = {
+                        if (isPhotoMode) onLongPress()
+                    }
                 )
             },
         contentAlignment = Alignment.Center

@@ -4,9 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -57,11 +60,15 @@ fun CameraControls(
 
     whiteBalanceValue: String = "",
     onWhiteBalanceChanged: (ControlOptionModel) -> Unit = {},
+
     onWhiteBalanceManualChanged: (Float) -> Unit = {},
     whiteBalanceManualValue: Float = 0f,
 
     focusValue: String = "",
     onFocusChanged: (ControlOptionModel) -> Unit = {},
+
+    onFocusManualChanged: (Float) -> Unit = {},
+    focusManualValue: Float = 0f,
 
     sceneModeValue: String = "",
     onSceneModeChanged: (ControlOptionModel) -> Unit = {},
@@ -149,7 +156,6 @@ fun CameraControls(
                                 },
                                 showReset = false,
                                 showBackgroundColor = true,
-                                onReset = { onShutterReset() },
                                 valueRange = controlOptionModel.valueRange,
                                 labels = controlOptionModel.labels,
                                 steps = controlOptionModel.steps
@@ -175,6 +181,39 @@ fun CameraControls(
                     }
 
                     "focus" -> {
+                        if (controlOptionModel != null && controlOptionModel.id == "focus_mode_manual2") {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Icon(
+                                    painter = painterResource(R.drawable.focus_mode_infinity),
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                CustomValueSlider(
+                                    modifier = Modifier.weight(1f),
+                                    name = controlIdSelected,
+                                    value = focusManualValue,
+                                    formated = valueFormated,
+                                    onValueChange = { value, formatDisplay ->
+                                        onFocusManualChanged(value)
+                                    },
+                                    showReset = false,
+                                    valueRange = 0f..100f,
+                                    labels = controlOptionModel.labels,
+                                    steps = controlOptionModel.steps
+                                )
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_macro_focus),
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(16.dp))
+                            }
+                        }
                         LazyRow(
                             modifier = modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -184,7 +223,9 @@ fun CameraControls(
                                 MenuItem(
                                     icon = painterResource(optionModel.icon),
                                     label = optionModel.text,
-                                    onClick = { onFocusChanged(optionModel) },
+                                    onClick = {
+                                        onFocusChanged(optionModel)
+                                    },
                                     selected = focusValue == optionModel.id,
                                     size = 40,
                                     iconSize = 18,

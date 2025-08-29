@@ -1,52 +1,30 @@
 package com.ssolstice.camera.manual.compose.widgets
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Preview
 @Composable
@@ -113,30 +91,6 @@ fun CustomValueSlider(
                     .weight(1f)
                     .padding(start = 24.dp, end = 24.dp)
             ) {
-//                Text(
-//                    text = formated,
-//                    color = valueColor,
-//                    fontSize = 16.sp,
-//                    textAlign = TextAlign.Center
-//                )
-//                Spacer(modifier = Modifier.height(8.dp))
-
-                // Labels khớp value
-//                Box(modifier = Modifier.fillMaxWidth()) {
-//                    labels.forEachIndexed { pos, text ->
-//                        val percent = (pos - valueRange.start) / (valueRange.endInclusive - valueRange.start)
-//                        Text(
-//                            text = text,
-//                            color = Color.White,
-//                            fontSize = 11.sp,
-//                            textAlign = TextAlign.Center,
-//                            modifier = Modifier
-//                                .align(Alignment.CenterStart)
-//                                .fillMaxWidth(percent.toFloat()) // căn đúng vị trí
-//                        )
-//                    }
-//                }
-
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // Slider với custom thumb
@@ -193,117 +147,3 @@ fun CustomValueSlider(
         }
     }
 }
-
-@SuppressLint("DefaultLocale")
-@Composable
-fun PillSlider(
-    modifier: Modifier = Modifier,
-    value: Float,
-    onValueChange: (Float) -> Unit,
-    range: ClosedFloatingPointRange<Float>,
-    steps: Int = 20,
-) {
-    var isDragging by remember { mutableStateOf(false) }
-    var sliderWidth by remember { mutableFloatStateOf(0f) }
-    val thumbRadiusDp = 12.dp
-    val thumbRadiusPx = with(LocalDensity.current) { thumbRadiusDp.toPx() }
-    val labelAlpha = animateFloatAsState(if (isDragging) 1f else 0f)
-
-    Box(
-        modifier = modifier
-            .height(40.dp)
-            .onSizeChanged { sliderWidth = it.width.toFloat() }
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = { isDragging = true },
-                    onDragEnd = { isDragging = false },
-                    onDragCancel = { isDragging = false },
-                    onDrag = { change, _ ->
-                        val x = change.position.x.coerceIn(0f, sliderWidth)
-                        val newValue =
-                            range.start + (x / sliderWidth) * (range.endInclusive - range.start)
-                        onValueChange(newValue.coerceIn(range.start, range.endInclusive))
-                    }
-                )
-            }
-    ) {
-        // Pill background + ticks
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.Center)
-        ) {
-            val trackHeight = size.height / 6
-            drawRoundRect(
-                color = Color.DarkGray.copy(alpha = 0.3f),
-                cornerRadius = CornerRadius(trackHeight, trackHeight),
-                size = Size(width = size.width, height = trackHeight),
-                topLeft = Offset(0f, (size.height - trackHeight) / 2)
-            )
-
-            // Tick marks
-            val stepPx = size.width / (steps - 1)
-            for (i in 0 until steps) {
-                val x = i * stepPx
-                val stroke = if (i % (steps / 5).coerceAtLeast(1) == 0) 3f else 1.5f
-                drawLine(
-                    color = Color.White,
-                    start = Offset(x, (size.height - trackHeight) / 2),
-                    end = Offset(x, (size.height + trackHeight) / 2),
-                    strokeWidth = stroke
-                )
-            }
-        }
-
-        // Thumb position
-        val thumbX = (value - range.start) / (range.endInclusive - range.start) * sliderWidth
-        Box(
-            modifier = Modifier
-                .offset { IntOffset((thumbX - thumbRadiusPx).toInt(), 0) }
-                .size(thumbRadiusDp * 2)
-                .background(Color.White, CircleShape)
-                .border(2.dp, Color.Cyan, CircleShape),
-            contentAlignment = Alignment.Center
-        ) { }
-
-        // Value label above thumb
-        if (sliderWidth > 0) {
-            Box(
-                modifier = Modifier
-                    .offset { IntOffset((thumbX - 20).toInt(), -28) }
-                    .alpha(labelAlpha.value)
-                    .background(Color.Black.copy(alpha = 0.7f), RoundedCornerShape(4.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    text = String.format("%.1fx", value),
-                    color = Color.White,
-                    fontSize = 12.sp
-                )
-            }
-        }
-    }
-}
-
-//@Preview(showBackground = true)
-//@Composable
-//fun PillSliderPreview() {
-//    var zoom by remember { mutableFloatStateOf(5f) }
-//    Column(
-//        Modifier
-//            .fillMaxWidth()
-//            .padding(20.dp),
-//        verticalArrangement = Arrangement.Center
-//    ) {
-//        Text("Zoom: %.1fx".format(zoom), color = Color.White)
-//        PillSlider(
-//            value = zoom,
-//            onValueChange = { zoom = it },
-//            range = 0.6f..10f,
-//            steps = 20,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(top = 16.dp)
-//        )
-//    }
-//}

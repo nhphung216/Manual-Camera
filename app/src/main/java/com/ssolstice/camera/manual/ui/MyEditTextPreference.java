@@ -23,7 +23,6 @@ import com.ssolstice.camera.manual.R;
  *  EditTextPreference (but check that the emoji strings still work on Android 10 or earlier!)
  */
 public class MyEditTextPreference extends DialogPreference {
-    //private static final String TAG = "MyEditTextPreference";
 
     private EditText edittext;
 

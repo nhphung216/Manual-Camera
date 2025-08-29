@@ -133,7 +133,6 @@ fun CameraSettings(
 ) {
     Column(
         modifier = modifier
-            .padding(vertical = 16.dp)
             .fillMaxWidth()
             .background(Color(0xF0000000))
             .padding(top = 16.dp)
