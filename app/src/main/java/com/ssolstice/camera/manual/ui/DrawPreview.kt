@@ -1464,7 +1464,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         time_ms: Long
     ) {
         val preview = mainActivity.preview
-        val cameraController = preview!!.cameraController
+        val camera_controller = preview!!.cameraController
         val ui_rotation = preview.getUIRotation()
 
         // set up text etc for the multiple lines of "info" (time, free mem, etc)
@@ -1539,7 +1539,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             // don't update location_y yet, as we have time and cameraid shown on the same line
             first_line_height = max(first_line_height, height)
         }
-        if (show_camera_id_pref && cameraController != null) {
+        if (show_camera_id_pref && camera_controller != null) {
             if (camera_id_string == null || time_ms > last_camera_id_time + 10000) {
                 // cache string for performance
 
@@ -1584,7 +1584,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             location_y += first_line_height
         }
 
-        if (cameraController != null && show_free_memory_pref) {
+        if (camera_controller != null && show_free_memory_pref) {
             if ((last_free_memory_time == 0L || time_ms > last_free_memory_time + 10000) && free_memory_future == null) {
                 // don't call this too often, for UI performance
 
@@ -1629,8 +1629,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
         // Now draw additional info on the lower left corner if needed
         val y_offset = (27 * scale_font + 0.5f).toInt()
-        p.textSize = 24 * scale_font + 0.5f // convert dps to pixels
-        if (OSDLine1 != null && OSDLine1!!.isNotEmpty()) {
+        p.setTextSize(24 * scale_font + 0.5f) // convert dps to pixels
+        if (OSDLine1 != null && OSDLine1!!.length > 0) {
             applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
@@ -1644,7 +1644,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 MyApplicationInterface.Shadow.SHADOW_OUTLINE
             )
         }
-        if (OSDLine2 != null && OSDLine2!!.isNotEmpty()) {
+        if (OSDLine2 != null && OSDLine2!!.length > 0) {
             applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
@@ -1660,23 +1660,23 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         }
         p.textSize = 16 * scale_font + 0.5f // Restore text size
 
-        if (cameraController != null && show_iso_pref) {
+        if (camera_controller != null && show_iso_pref) {
             if (iso_exposure_string == null || time_ms > last_iso_exposure_time + 500) {
                 iso_exposure_string = ""
-                if (cameraController.captureResultHasIso()) {
-                    val iso = cameraController.captureResultIso()
+                if (camera_controller.captureResultHasIso()) {
+                    val iso = camera_controller.captureResultIso()
                     if (iso_exposure_string!!.isNotEmpty()) iso_exposure_string += " "
                     iso_exposure_string += preview.getISOString(iso)
                 }
-                if (cameraController.captureResultHasExposureTime()) {
-                    val exposureTime = cameraController.captureResultExposureTime()
+                if (camera_controller.captureResultHasExposureTime()) {
+                    val exposureTime = camera_controller.captureResultExposureTime()
                     if (iso_exposure_string!!.isNotEmpty()) iso_exposure_string += " "
                     iso_exposure_string += preview.getExposureTimeString(exposureTime)
                 }
-                if (preview.isVideoRecording && cameraController.captureResultHasFrameDuration()) {
-                    val frameDuration = cameraController.captureResultFrameDuration()
+                if (preview.isVideoRecording && camera_controller.captureResultHasFrameDuration()) {
+                    val frame_duration = camera_controller.captureResultFrameDuration()
                     if (iso_exposure_string!!.isNotEmpty()) iso_exposure_string += " "
-                    iso_exposure_string += preview.getFrameDurationString(frameDuration)
+                    iso_exposure_string += preview.getFrameDurationString(frame_duration)
                 }
 
                 /*if( camera_controller.captureResultHasAperture() ) {
@@ -1686,7 +1686,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     iso_exposure_string += decimal_format_1dp_force0.format(aperture);
                 }*/
                 is_scanning = false
-                if (cameraController.captureResultIsAEScanning()) {
+                if (camera_controller.captureResultIsAEScanning()) {
                     // only show as scanning if in auto ISO mode (problem on Nexus 6 at least that if we're in manual ISO mode, after pausing and
                     // resuming, the camera driver continually reports CONTROL_AE_STATE_SEARCHING)
                     val value: String = sharedPreferences.getString(
@@ -1740,7 +1740,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         // padding to align with earlier text
         val flash_padding = (1 * scale_font + 0.5f).toInt() // convert dps to pixels
 
-        if (cameraController != null) {
+        if (camera_controller != null) {
             // draw info icons
 
             var location_x2 = location_x - flash_padding
@@ -2002,8 +2002,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 // note, flash_frontscreen_auto not yet support for the flash symbol (as camera_controller.needsFlash() only returns info on the built-in actual flash, not frontscreen flash)
                 if (flash_value != null &&
                     (flash_value == "flash_on"
-                            || ((flash_value == "flash_auto" || flash_value == "flash_red_eye") && cameraController.needsFlash())
-                            || cameraController.needsFrontScreenFlash()) && !applicationInterface.isVideoPref()
+                            || ((flash_value == "flash_auto" || flash_value == "flash_red_eye") && camera_controller.needsFlash())
+                            || camera_controller.needsFrontScreenFlash()) && !applicationInterface.isVideoPref()
                 ) { // flash-indicator not supported for photos taken in video mode
                     need_flash_indicator = true
                 }
@@ -2045,7 +2045,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             }
         }
 
-        if (cameraController != null && !show_last_image) {
+        if (camera_controller != null && !show_last_image) {
             // draw histogram
             if (preview.isPreviewBitmapEnabled()) {
                 val histogram = preview.getHistogram()
@@ -2204,23 +2204,12 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 // 270 is portrait
 
                 if (last_take_photo_top_time == 0L || time_ms > last_take_photo_top_time + 1000) {
-                    /*if( MyDebug.LOG )
-                        Log.d(TAG, "update cached take_photo_top");*/
                     // don't call this too often, for UI performance (due to calling View.getLocationOnScreen())
-                    val view = mainActivity.findViewById<View>(R.id.take_photo)
-                    // align with "top" of the take_photo button, but remember to take the rotation into account!
-                    val view_left = getViewOnScreenX(view)
                     preview.getView().getLocationOnScreen(gui_location)
                     val this_left = gui_location[if (system_orientation_portrait) 1 else 0]
-                    take_photo_top = view_left - this_left
+                    take_photo_top = this_left
 
                     last_take_photo_top_time = time_ms
-                    /*if( MyDebug.LOG ) {
-                        Log.d(TAG, "device_ui_rotation: " + device_ui_rotation);
-                        Log.d(TAG, "view_left: " + view_left);
-                        Log.d(TAG, "this_left: " + this_left);
-                        Log.d(TAG, "take_photo_top: " + take_photo_top);
-                    }*/
                 }
 
                 // diff_x is the difference from the centre of the canvas to the position we want
@@ -2228,13 +2217,6 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     if (system_orientation_portrait) canvas.height else canvas.width
                 val mid_x = max_x / 2
                 var diff_x = take_photo_top - mid_x
-
-                /*if( MyDebug.LOG ) {
-					Log.d(TAG, "view left: " + view_left);
-					Log.d(TAG, "this left: " + this_left);
-					Log.d(TAG, "canvas is " + canvas.width + " x " + canvas.getHeight());
-                    Log.d(TAG, "compare offset_x: " + (preview.getView().getRootView().getRight()/2 - diff_x)/scale);
-				}*/
 
                 // diff_x is the difference from the centre of the canvas to the position we want
                 // assumes canvas is centered
@@ -2271,18 +2253,14 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
             if (avoid_ui) {
                 // avoid parts of the UI
-                var view = mainActivity.findViewById<View>(R.id.focus_seekbar)
+                var view = mainActivity.binding.focusSeekbar
                 if (view.isVisible) {
                     text_base_y -= view.height
                 }
-                view = mainActivity.findViewById<View>(R.id.focus_bracketing_target_seekbar)
+                view = mainActivity.binding.focusBracketingTargetSeekbar
                 if (view.isVisible) {
                     text_base_y -= view.height
                 }
-                /*view = main_activity.findViewById(R.id.sliders_container);
-                if(view.getVisibility() == View.VISIBLE ) {
-                    text_base_y -= view.height;
-                }*/
             }
 
             val draw_angle = has_level_angle && show_angle_pref

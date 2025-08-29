@@ -68,7 +68,6 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -549,12 +548,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             TAG,
             "onCreate: time after setting button visibility: " + (System.currentTimeMillis() - debug_time)
         )
-        val pauseVideoButton = binding.pauseVideo
-        pauseVideoButton.visibility = View.GONE
-
-        val takePhotoVideoButton = binding.takePhotoWhenVideoRecording
-        takePhotoVideoButton.visibility = View.GONE
-
         val cancelPanoramaButton = binding.cancelPanorama
         cancelPanoramaButton.visibility = View.GONE
 
@@ -597,12 +590,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInMultiWindowMode) {
                     val display_size = Point()
                     applicationInterface!!.getDisplaySize(display_size, true)
-                    if (MyDebug.LOG) {
-                        Log.d(TAG, "    display width: " + display_size.x)
-                        Log.d(TAG, "    display height: " + display_size.y)
-                        Log.d(TAG, "    layoutUI display width: " + mainUI?.layoutUI_display_w)
-                        Log.d(TAG, "    layoutUI display height: " + mainUI?.layoutUI_display_h)
-                    }
+
                     // We need to call layoutUI when the window is resized without an orientation change -
                     // this can happen in split-screen or multi-window mode, where onConfigurationChanged
                     // is not guaranteed to be called.
@@ -612,47 +600,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     // causes onLayoutChange() to be called again.
                     if (display_size.x != mainUI?.layoutUI_display_w || display_size.y != mainUI?.layoutUI_display_h) {
                         if (MyDebug.LOG) Log.d(TAG, "call layoutUI due to resize")
-                        mainUI?.layoutUI()
                     }
                 }
             }
-//
-//        // set up take photo long click
-//        takePhotoButton.setOnLongClickListener(object : OnLongClickListener {
-//            override fun onLongClick(v: View?): Boolean {
-//                if (!allowLongPress()) {
-//                    // return false, so a regular click will still be triggered when the user releases the touch
-//                    return false
-//                }
-//                return longClickedTakePhoto()
-//            }
-//        })
-//        // set up on touch listener so we can detect if we've released from a long click
-//        takePhotoButton.setOnTouchListener { view, motionEvent ->
-//            // the suppressed warning ClickableViewAccessibility suggests calling view.performClick for ACTION_UP, but this
-//            // results in an additional call to clickedTakePhoto() - that is, if there is no long press, we get two calls to
-//            // clickedTakePhoto instead one one; and if there is a long press, we get one call to clickedTakePhoto where
-//            // there should be none.
-//            if (motionEvent.action == MotionEvent.ACTION_UP) {
-//                if (MyDebug.LOG) Log.d(TAG, "takePhotoButton ACTION_UP")
-//                takePhotoButtonLongClickCancelled()
-//                if (MyDebug.LOG) Log.d(TAG, "takePhotoButton ACTION_UP done")
-//            }
-//            false
-//        }
-
-        // set up gallery button long click
-//        val galleryButton = binding.gallery
-//        galleryButton.setOnLongClickListener(object : OnLongClickListener {
-//            override fun onLongClick(v: View?): Boolean {
-//                if (!allowLongPress()) {
-//                    // return false, so a regular click will still be triggered when the user releases the touch
-//                    return false
-//                }
-//                longClickedGallery()
-//                return true
-//            }
-//        })
 
         if (MyDebug.LOG) Log.d(
             TAG,
@@ -802,12 +752,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         this.hasOldSystemOrientation = true
         this.oldSystemOrientation = this.systemOrientation
 
-//        binding.gallery.setOnClickListener { clickedGallery() }
-//        binding.takePhoto.setOnClickListener { clickedTakePhoto() }
-//        binding.switchCamera.setOnClickListener { clickedSwitchCamera() }
-//        binding.switchVideo.setOnClickListener { clickedSwitchVideo() }
-//        binding.takePhotoWhenVideoRecording.setOnClickListener { clickedTakePhotoVideoSnapshot() }
-//        binding.pauseVideo.setOnClickListener { clickedPauseVideo() }
         binding.settings.setOnClickListener { clickedSettings() }
         binding.cancelPanorama.setOnClickListener { clickedCancelPanorama() }
         binding.cycleRaw.setOnClickListener { clickedCycleRaw() }
@@ -819,13 +763,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         binding.autoLevel.setOnClickListener { clickedAutoLevel() }
         binding.faceDetection.setOnClickListener { clickedFaceDetection() }
         binding.audioControl.setOnClickListener { clickedAudioControl() }
-//        binding.switchMultiCamera.setOnClickListener { clickedSwitchMultiCamera() }
-//        binding.popup.setOnClickListener { clickedPopupSettings() }
-        binding.exposure.setOnClickListener { clickedExposure() }
-        binding.exposureLock.setOnClickListener { clickedExposureLock() }
-        binding.whiteBalanceLock.setOnClickListener { clickedWhiteBalanceLock() }
-        binding.trash.setOnClickListener { clickedTrash() }
-        binding.share.setOnClickListener { clickedShare() }
+        binding.switchMultiCamera.setOnClickListener { clickedSwitchMultiCamera() }
 
         binding.composeView.setContent {
             OpenCameraTheme {
@@ -902,7 +840,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         onSwitchCamera = {
                             clickedSwitchCamera()
                         },
-                        onSwitchMultiCamera = { clickedSwitchMultiCamera() },
                         onTogglePhotoVideoMode = { clickedSwitchVideo() },
                         onPauseVideo = { clickedPauseVideo() },
                         onTakePhoto = { clickedTakePhoto() },
@@ -1461,7 +1398,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         updateForSettings(
             true, toastMessage, false, true
         ) // need to setup the camera again, as options may change (e.g., required burst mode, or whether RAW is allowed in this mode)
-        mainUI?.destroyPopup() // need to recreate popup for new selection
     }
 
     fun getIsoMode(): String {
@@ -2119,9 +2055,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
     }
 
-    fun changeFocusDistance(change: Int, is_target_distance: Boolean) {
+    fun changeFocusDistance(change: Int, isTargetDistance: Boolean) {
         mainUI?.changeSeekbar(
-            if (is_target_distance) R.id.focus_bracketing_target_seekbar else R.id.focus_seekbar,
+            if (isTargetDistance) R.id.focus_bracketing_target_seekbar else R.id.focus_seekbar,
             change
         )
     }
@@ -2184,7 +2120,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         soundPoolManager!!.loadSound(R.raw.mybeep_hi)
 
         resetCachedSystemOrientation() // just in case?
-        mainUI?.layoutUI()
 
         // If the cached last media has exif datetime info, it's fine to just call updateGalleryIcon(),
         // which will find the most recent media (and takes care of if the cached last image may have
@@ -2296,7 +2231,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         super.onPause() // docs say to call this before freeing other things
         this.isAppPaused = true
 
-        mainUI?.destroyPopup() // important as user could change/reset settings from Android settings when pausing
         unregisterDisplayListener()
         mSensorManager!!.unregisterListener(accelerometerListener)
         magneticSensor!!.unregisterMagneticListener(mSensorManager)
@@ -2431,8 +2365,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     if (start_rotation < -180) start_rotation += 360
                     else if (start_rotation > 180) start_rotation -= 360
                     mainUI?.layoutUIWithRotation(start_rotation.toFloat())
-                } else {
-                    mainUI?.layoutUI()
                 }
                 applicationInterface!!.drawPreview.updateSettings()
 
@@ -3158,20 +3090,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
         })
         val dialog = alertDialog.create()
-        if (preview?.hasPhysicalCameras() == true) {
-            val footer = TextView(this)
-            footer.setText(R.string.physical_cameras_info)
-            val scale = getResources().displayMetrics.density
-            val padding = (5 * scale + 0.5f).toInt() // convert dps to pixels
-            footer.setPadding(padding, padding, padding, padding)
-            dialog.listView.addFooterView(footer, null, false)
-        }
         dialog.window?.setWindowAnimations(R.style.DialogAnimation)
         dialog.show()
-        if (MyDebug.LOG) Log.d(
-            TAG,
-            "clickedSwitchMultiCamera: total time: " + (System.currentTimeMillis() - debug_time)
-        )
     }
 
     /**
@@ -3180,7 +3100,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     fun clickedSwitchVideo() {
         if (MyDebug.LOG) Log.d(TAG, "clickedSwitchVideo")
         this.closePopup()
-        mainUI?.destroyPopup() // important as we don't want to use a cached popup, as we can show different options depending on whether we're in photo or video mode
 
         // In practice stopping the gyro sensor shouldn't be needed as (a) we don't show the switch
         // photo/video icon when recording, (b) at the time of writing switching to video mode
@@ -3193,7 +3112,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         this.preview?.switchVideo(false, true)
 
         mainUI?.setTakePhotoIcon()
-        mainUI?.setPopupIcon() // needed as turning to video mode or back can turn flash mode off or back on
 
         // ensure icons invisible if they're affected by being in video mode or not (e.g., on-screen RAW icon)
         // (if enabling them, we'll make the icon visible later on)
@@ -3724,20 +3642,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         imageQueueChanged() // needed at least for changing photo mode, but might as well call it always
 
-        if (!keep_popup) {
-            mainUI?.destroyPopup() // important as we don't want to use a cached popup
-            if (MyDebug.LOG) {
-                Log.d(
-                    TAG,
-                    "updateForSettings: time after destroy popup: " + (System.currentTimeMillis() - debug_time)
-                )
-            }
-        }
-
-        // update camera for changes made in prefs - do this without closing and reopening the camera app if possible for speed!
-        // but need workaround for Nexus 7 bug on old camera API, where scene mode doesn't take effect unless the camera is restarted - I can reproduce this with other 3rd party camera apps, so may be a Nexus 7 issue...
-        // doesn't happen if we allow using Camera2 API on Nexus 7, but reopen for consistency (and changing scene modes via
-        // popup menu no longer should be calling updateForSettings() for Camera2, anyway)
         var need_reopen = false
         if (update_camera && preview?.cameraController != null) {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -3746,15 +3650,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             val key = PreferenceKeys.SceneModePreferenceKey
             val value: String =
                 sharedPreferences.getString(key, CameraController.SCENE_MODE_DEFAULT)!!
-            // n.b., on Android 4.3 emulator, scene mode is returned as null (this may be because it doesn't support
-            // scene modes at all) - treat this the same as auto
             if (scene_mode == null) scene_mode = CameraController.SCENE_MODE_DEFAULT
             if (value != scene_mode) {
                 if (MyDebug.LOG) Log.d(TAG, "scene mode changed to: $value")
                 need_reopen = true
             } else {
                 if (applicationInterface!!.useCamera2()) {
-                    // need to reopen if fake flash mode changed, as it changes the available camera features, and we can only set this after opening the camera
                     val camera2_fake_flash = preview?.cameraController?.useCamera2FakeFlash
                     if (MyDebug.LOG) Log.d(TAG, "camera2_fake_flash was: $camera2_fake_flash")
                     if (applicationInterface!!.useCamera2FakeFlash() != camera2_fake_flash) {
@@ -3797,21 +3698,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     need_reopen = true
                 }
             }
-        }
-        if (MyDebug.LOG) {
-            Log.d(TAG, "need_reopen: " + need_reopen)
-            Log.d(
-                TAG,
-                "updateForSettings: time after check need_reopen: " + (System.currentTimeMillis() - debug_time)
-            )
-        }
-
-        mainUI?.layoutUI() // needed in case we've changed UI placement; or in "top" mode, if we've enabled/disabled on-screen UI icons
-        if (MyDebug.LOG) {
-            Log.d(
-                TAG,
-                "updateForSettings: time after layoutUI: " + (System.currentTimeMillis() - debug_time)
-            )
         }
 
         // ensure icons invisible if disabling them from showing from the Settings
@@ -3907,22 +3793,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     private fun checkDisableGUIIcons(): Boolean {
         if (MyDebug.LOG) Log.d(TAG, "checkDisableGUIIcons")
         var changed = false
-        if (!supportsExposureButton()) {
-            val button = binding.exposure
-            changed = changed || (button.visibility != View.GONE)
-            button.visibility = View.GONE
-        }
         mainUI?.let {
-            if (mainUI?.showExposureLockIcon() == false) {
-                val button = binding.exposureLock
-                changed = changed || (button.visibility != View.GONE)
-                button.visibility = View.GONE
-            }
-            if (mainUI?.showWhiteBalanceLockIcon() == false) {
-                val button = binding.whiteBalanceLock
-                changed = changed || (button.visibility != View.GONE)
-                button.visibility = View.GONE
-            }
             if (mainUI?.showCycleRawIcon() == false) {
                 val button = binding.cycleRaw
                 changed = changed || (button.visibility != View.GONE)
@@ -4018,7 +3889,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             if (preferencesListener.anyChange()) {
                 // however we should still destroy cached popup, in case UI settings need to be kept in
                 // sync (e.g., changing the Repeat Mode)
-                mainUI?.destroyPopup()
             }
         }
     }
@@ -4372,7 +4242,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                         if (MyDebug.LOG) Log.d(
                                             TAG, "layout UI due to changing navigation_gap"
                                         )
-                                        mainUI?.layoutUI()
                                     }
                                 })
                             }
@@ -4627,18 +4496,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             // update: now probably irrelevant now that we close/reopen the camera, but keep it here anyway
             preview?.setCameraDisplayOrientation()
         }
-        if (preview != null && mainUI != null) {
-            // layoutUI() is needed because even though we call layoutUI from MainUI.onOrientationChanged(), certain things
-            // (ui_rotation) depend on the system orientation too.
-            // Without this, going to Settings, then changing orientation, then exiting settings, would show the icons with the
-            // wrong orientation.
-            // We put this here instead of onConfigurationChanged() as onConfigurationChanged() isn't called when switching from
-            // reverse landscape to landscape orientation: so it's needed to fix if the user starts in portrait, goes to settings
-            // or a dialog, then switches to reverse landscape, then exits settings/dialog - the system orientation will switch
-            // to landscape (which ManualCamera is forced to).
-            mainUI?.layoutUI()
-        }
-
 
         // keep screen active - see http://stackoverflow.com/questions/2131948/force-screen-on
         if (sharedPreferences.getBoolean(PreferenceKeys.KeepDisplayOnPreferenceKey, true)) {
@@ -6010,7 +5867,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         if (MyDebug.LOG) Log.d(
                             TAG, "layout UI due to changing want_no_limits behaviour"
                         )
-                        mainUI?.layoutUI()
                     } else {
                         if (MyDebug.LOG) Log.d(TAG, "but navigation_gap is 0")
                     }
@@ -6020,7 +5876,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 showUnderNavigation(false)
                 // need to layout the UI again due to no longer taking the navigation gap into account
                 if (MyDebug.LOG) Log.d(TAG, "layout UI due to changing want_no_limits behaviour")
-                mainUI?.layoutUI()
             }
         }
 
@@ -6318,55 +6173,22 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             "cameraSetup: time after setting up exposure: " + (System.currentTimeMillis() - debugTime)
         )
 
-        // On-screen icons such as exposure lock, white balance lock, face detection etc are made visible if necessary in
-        // MainUI.showGUI()
-        // However still need to enable visibility of icons where visibility depends on camera setup - e.g., exposure button
-        // not supported for high speed video frame rates - see testTakeVideoFPSHighSpeedManual().
-        // (Disabling is done in checkDisableGUIIcons(), called below.)
-        val exposureButton = binding.exposure
-        //exposureButton.setVisibility(supportsExposureButton() && !mainUI.inImmersiveMode() ? View.VISIBLE : View.GONE);
-        if (supportsExposureButton() && mainUI?.inImmersiveMode() == false) exposureButton.visibility =
-            View.VISIBLE
-
-        // needed as availability of some icons is per-camera (e.g., flash, RAW)
-        // for making icons visible, this is done elsewhere in call to MainUI.showGUI()
         if (checkDisableGUIIcons()) {
             if (MyDebug.LOG) Log.d(TAG, "cameraSetup: need to layoutUI as we hid some icons")
-            mainUI?.layoutUI()
         }
 
         // need to update some icons, e.g., white balance and exposure lock due to them being turned off when pause/resuming
         mainUI?.updateOnScreenIcons()
 
-        mainUI?.setPopupIcon() // needed so that the icon is set right even if no flash mode is set when starting up camera (e.g., switching to front camera with no flash)
-        if (MyDebug.LOG) Log.d(
-            TAG,
-            "cameraSetup: time after setting popup icon: " + (System.currentTimeMillis() - debugTime)
-        )
-
         mainUI?.setTakePhotoIcon()
         mainUI?.setSwitchCameraContentDescription()
-        if (MyDebug.LOG) Log.d(
-            TAG,
-            "cameraSetup: time after setting take photo icon: " + (System.currentTimeMillis() - debugTime)
-        )
 
         if (!block_startup_toast) {
             this.showPhotoVideoToast(false)
         }
         block_startup_toast = false
-        if (MyDebug.LOG) Log.d(
-            TAG,
-            "cameraSetup: total time for cameraSetup: " + (System.currentTimeMillis() - debugTime)
-        )
 
         this.applicationInterface!!.drawPreview.setDimPreview(false)
-
-//        if (pushSwitchedCamera) {
-//            pushSwitchedCamera = false
-//            val switchCameraButton = binding.switchCamera
-//            switchCameraButton.animate().rotationBy(180f).setDuration(250).setInterpolator(AccelerateDecelerateInterpolator()).start()
-//        }
     }
 
     fun setManualFocusSeekbarProgress(isTargetDistance: Boolean, focusDistance: Float) {
@@ -6406,7 +6228,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     if (fromUser) {
                         // but if user has manually changed, then exit auto mode
                         applicationInterface!!.setFocusBracketingSourceAutoPref(false)
-                        mainUI?.destroyPopup() // need to recreate popup
                     } else {
                         return
                     }

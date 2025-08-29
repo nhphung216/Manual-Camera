@@ -11,11 +11,9 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.view.KeyEvent
 import android.view.OrientationEventListener
-import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
@@ -101,17 +99,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
     // for testing:
     val testUIButtonsMap: MutableMap<String?, View?> = Hashtable<String?, View?>()
-    var test_saved_popup_width: Int = 0
-    var test_saved_popup_height: Int = 0
-
-    @Volatile
-    var test_navigation_gap: Int = 0
-
-    @Volatile
-    var test_navigation_gap_landscape: Int = 0
-
-    @Volatile
-    var test_navigation_gap_reversed_landscape: Int = 0
 
     private fun setSeekbarColors() {
         if (MyDebug.LOG) Log.d(TAG, "setSeekbarColors")
@@ -119,68 +106,34 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             val progressColor = ColorStateList.valueOf(Color.argb(255, 240, 240, 240))
             val thumbColor = ColorStateList.valueOf(Color.argb(255, 255, 255, 255))
 
-            var seekBar = mainActivity.findViewById<SeekBar>(R.id.zoom_seekbar)
+            var seekBar = mainActivity.binding.zoomSeekbar
             seekBar.progressTintList = progressColor
             seekBar.thumbTintList = thumbColor
 
-            seekBar = mainActivity.findViewById<SeekBar>(R.id.focus_seekbar)
+            seekBar = mainActivity.binding.focusSeekbar
             seekBar.progressTintList = progressColor
             seekBar.thumbTintList = thumbColor
 
-            seekBar = mainActivity.findViewById<SeekBar>(R.id.focus_bracketing_target_seekbar)
+            seekBar = mainActivity.binding.focusBracketingTargetSeekbar
             seekBar.progressTintList = progressColor
             seekBar.thumbTintList = thumbColor
 
-            seekBar = mainActivity.findViewById<SeekBar>(R.id.exposure_seekbar)
+            seekBar = mainActivity.binding.exposureSeekbar
             seekBar.progressTintList = progressColor
             seekBar.thumbTintList = thumbColor
 
-            seekBar = mainActivity.findViewById<SeekBar>(R.id.iso_seekbar)
+            seekBar = mainActivity.binding.isoSeekbar
             seekBar.progressTintList = progressColor
             seekBar.thumbTintList = thumbColor
 
-            seekBar = mainActivity.findViewById<SeekBar>(R.id.exposure_time_seekbar)
+            seekBar = mainActivity.binding.exposureTimeSeekbar
             seekBar.progressTintList = progressColor
             seekBar.thumbTintList = thumbColor
 
-            seekBar = mainActivity.findViewById<SeekBar>(R.id.white_balance_seekbar)
+            seekBar = mainActivity.binding.whiteBalanceSeekbar
             seekBar.progressTintList = progressColor
             seekBar.thumbTintList = thumbColor
         }
-    }
-
-    /** Similar view.setRotation(ui_rotation), but achieves this via an animation.
-     */
-    private fun setViewRotation(view: View, uiRotation: Float) {
-        if (!view_rotate_animation) {
-            view.rotation = uiRotation
-        }
-        if (!MainActivity.lockToLandscape) {
-            var startRotation = view_rotate_animation_start + uiRotation
-            if (startRotation >= 360.0f) startRotation -= 360.0f
-            view.rotation = startRotation
-        }
-        var rotateBy = uiRotation - view.rotation
-        if (rotateBy > 181.0f) rotateBy -= 360.0f
-        else if (rotateBy < -181.0f) rotateBy += 360.0f
-        // view.animate() modifies the view's rotation attribute, so it ends up equivalent to view.setRotation()
-        // we use rotationBy() instead of rotation(), so we get the minimal rotation for clockwise vs anti-clockwise
-        /*if( main_activity.is_test && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2 ) {
-            // We randomly get a java.lang.ArrayIndexOutOfBoundsException crash when running MainTests suite
-            // on Android emulator with Android 4.3, from deep below ViewPropertyAnimator.start().
-            // Unclear why this is - I haven't seen this on real devices and can't find out info about it.
-            view.setRotation(ui_rotation);
-        }
-        else*/
-        run {
-            view.animate().rotationBy(rotateBy)
-                .setDuration(view_rotate_animation_duration.toLong())
-                .setInterpolator(AccelerateDecelerateInterpolator()).start()
-        }
-    }
-
-    fun layoutUI() {
-        layoutUI(false)
     }
 
     fun layoutUIWithRotation(viewRotateAnimationStart: Float) {
@@ -189,7 +142,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         }
         this.view_rotate_animation = true
         this.view_rotate_animation_start = viewRotateAnimationStart
-        layoutUI()
         this.view_rotate_animation = false
         this.view_rotate_animation_start = 0.0f
     }
@@ -208,716 +160,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     // stores with width and height of the last time we laid out the UI
     var layoutUI_display_w: Int = -1
     var layoutUI_display_h: Int = -1
-
-    private fun layoutUI(popup_container_only: Boolean) {
-        var debug_time: Long = 0
-        if (MyDebug.LOG) {
-            Log.d(TAG, "layoutUI")
-            debug_time = System.currentTimeMillis()
-        }
-
-        val system_orientation = mainActivity.systemOrientation
-        val system_orientation_portrait = system_orientation == SystemOrientation.PORTRAIT
-        val system_orientation_reversed_landscape =
-            system_orientation == SystemOrientation.REVERSE_LANDSCAPE
-        if (MyDebug.LOG) {
-            Log.d(TAG, "    system_orientation = $system_orientation")
-            Log.d(TAG, "    system_orientation_portrait? $system_orientation_portrait")
-        }
-
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
-        // we cache the preference_ui_placement to save having to check it in the draw() method
-        this.uIPlacement = computeUIPlacement()
-        if (MyDebug.LOG) Log.d(TAG, "ui_placement: " + this.uIPlacement)
-        val relativeOrientation: Int
-        if (MainActivity.lockToLandscape) {
-            // new code for orientation fixed to landscape
-            // the display orientation should be locked to landscape, but how many degrees is that?
-            val rotation = mainActivity.windowManager.defaultDisplay.rotation
-            var degrees = 0
-            when (rotation) {
-                Surface.ROTATION_0 -> degrees = 0
-                Surface.ROTATION_90 -> degrees = 90
-                Surface.ROTATION_180 -> degrees = 180
-                Surface.ROTATION_270 -> degrees = 270
-                else -> {}
-            }
-            // getRotation is anti-clockwise, but current_orientation is clockwise, so we add rather than subtract
-            // relative_orientation is clockwise from landscape-left
-            //int relative_orientation = (current_orientation + 360 - degrees) % 360;
-            relativeOrientation = (current_orientation + degrees) % 360
-            if (MyDebug.LOG) {
-                Log.d(TAG, "    current_orientation = $current_orientation")
-                Log.d(TAG, "    degrees = $degrees")
-                Log.d(TAG, "    relative_orientation = $relativeOrientation")
-            }
-        } else {
-            relativeOrientation = 0
-        }
-        val ui_rotation = (360 - relativeOrientation) % 360
-        mainActivity.preview!!.setUIRotation(ui_rotation)
-        // naming convention for variables is for system_orientation==LANDSCAPE, right-handed UI
-        var align_left =
-            if (system_orientation_portrait) RelativeLayout.ALIGN_TOP else RelativeLayout.ALIGN_LEFT
-        var align_right =
-            if (system_orientation_portrait) RelativeLayout.ALIGN_BOTTOM else RelativeLayout.ALIGN_RIGHT
-        var align_top =
-            if (system_orientation_portrait) RelativeLayout.ALIGN_RIGHT else RelativeLayout.ALIGN_TOP
-        var align_bottom =
-            if (system_orientation_portrait) RelativeLayout.ALIGN_LEFT else RelativeLayout.ALIGN_BOTTOM
-        var left_of =
-            if (system_orientation_portrait) RelativeLayout.ABOVE else RelativeLayout.LEFT_OF
-        var right_of =
-            if (system_orientation_portrait) RelativeLayout.BELOW else RelativeLayout.RIGHT_OF
-        var above =
-            if (system_orientation_portrait) RelativeLayout.RIGHT_OF else RelativeLayout.ABOVE
-        var below =
-            if (system_orientation_portrait) RelativeLayout.LEFT_OF else RelativeLayout.BELOW
-        var ui_independent_left_of = left_of
-        var ui_independent_right_of = right_of
-        var ui_independent_above = above
-        var ui_independent_below = below
-        var align_parent_left =
-            if (system_orientation_portrait) RelativeLayout.ALIGN_PARENT_TOP else RelativeLayout.ALIGN_PARENT_LEFT
-        var align_parent_right =
-            if (system_orientation_portrait) RelativeLayout.ALIGN_PARENT_BOTTOM else RelativeLayout.ALIGN_PARENT_RIGHT
-        var align_parent_top =
-            if (system_orientation_portrait) RelativeLayout.ALIGN_PARENT_RIGHT else RelativeLayout.ALIGN_PARENT_TOP
-        var align_parent_bottom =
-            if (system_orientation_portrait) RelativeLayout.ALIGN_PARENT_LEFT else RelativeLayout.ALIGN_PARENT_BOTTOM
-        val center_horizontal =
-            if (system_orientation_portrait) RelativeLayout.CENTER_VERTICAL else RelativeLayout.CENTER_HORIZONTAL
-        val center_vertical =
-            if (system_orientation_portrait) RelativeLayout.CENTER_HORIZONTAL else RelativeLayout.CENTER_VERTICAL
-
-        var iconpanel_left_of = left_of
-        var iconpanel_right_of = right_of
-        var iconpanel_above = above
-        var iconpanel_below = below
-        var iconpanel_align_parent_left = align_parent_left
-        var iconpanel_align_parent_right = align_parent_right
-        var iconpanel_align_parent_top = align_parent_top
-        var iconpanel_align_parent_bottom = align_parent_bottom
-
-        if (system_orientation_reversed_landscape) {
-            var temp = align_left
-            align_left = align_right
-            align_right = temp
-            temp = align_top
-            align_top = align_bottom
-            align_bottom = temp
-            temp = left_of
-            left_of = right_of
-            right_of = temp
-            temp = above
-            above = below
-            below = temp
-
-            ui_independent_left_of = left_of
-            ui_independent_right_of = right_of
-            ui_independent_above = above
-            ui_independent_below = below
-
-            temp = align_parent_left
-            align_parent_left = align_parent_right
-            align_parent_right = temp
-            temp = align_parent_top
-            align_parent_top = align_parent_bottom
-            align_parent_bottom = temp
-
-            iconpanel_left_of = left_of
-            iconpanel_right_of = right_of
-            iconpanel_above = above
-            iconpanel_below = below
-            iconpanel_align_parent_left = align_parent_left
-            iconpanel_align_parent_right = align_parent_right
-            iconpanel_align_parent_top = align_parent_top
-            iconpanel_align_parent_bottom = align_parent_bottom
-        }
-
-        if (this.uIPlacement == UIPlacement.UIPLACEMENT_LEFT) {
-            var temp = above
-            above = below
-            below = temp
-            temp = align_parent_top
-            align_parent_top = align_parent_bottom
-            align_parent_bottom = temp
-            iconpanel_align_parent_top = align_parent_top
-            iconpanel_align_parent_bottom = align_parent_bottom
-        } else if (this.uIPlacement == UIPlacement.UIPLACEMENT_TOP) {
-            iconpanel_left_of = below
-            iconpanel_right_of = above
-            iconpanel_above = left_of
-            iconpanel_below = right_of
-            iconpanel_align_parent_left = align_parent_bottom
-            iconpanel_align_parent_right = align_parent_top
-            iconpanel_align_parent_top = align_parent_left
-            iconpanel_align_parent_bottom = align_parent_right
-        }
-
-        val display_size = Point()
-        mainActivity.applicationInterface!!.getDisplaySize(display_size, true)
-        this.layoutUI_display_w = display_size.x
-        this.layoutUI_display_h = display_size.y
-        if (MyDebug.LOG) {
-            Log.d(TAG, "layoutUI_display_w: $layoutUI_display_w")
-            Log.d(TAG, "layoutUI_display_h: $layoutUI_display_h")
-        }
-        val display_height = min(display_size.x, display_size.y)
-
-        val scale = mainActivity.getResources().displayMetrics.density
-        if (MyDebug.LOG) Log.d(TAG, "scale: $scale")
-
-        val navigation_gap = mainActivity.navigationGap
-        val navigation_gap_landscape = mainActivity.navigationGapLandscape
-        val navigation_gap_reverse_landscape = mainActivity.navigationGapReverseLandscape
-        // navigation gaps for UI elements that are aligned to align_parent_bottom (the landscape edge, or reversed landscape edge if left-handed):
-        this.navigation_gap_landscape_align_parent_bottom = navigation_gap_landscape
-        this.navigation_gap_reverse_landscape_align_parent_bottom = navigation_gap_reverse_landscape
-        if (this.uIPlacement == UIPlacement.UIPLACEMENT_LEFT) {
-            navigation_gap_landscape_align_parent_bottom = 0
-        } else {
-            navigation_gap_reverse_landscape_align_parent_bottom = 0
-        }
-        var gallery_navigation_gap = navigation_gap
-
-        var gallery_top_gap = 0
-        run {
-            // Leave space for the Android 12+ camera privacy indicator, as gallery icon would
-            // otherwise overlap when in landscape orientation.
-            // In theory we should use WindowInsets.getPrivacyIndicatorBounds() for this, but it seems
-            // to give a much larger value when required (leaving to a much larger gap), as well as
-            // obviously changing depending on orientation - but whilst this is only an issue for
-            // landscape orientation, it looks better to keep the position consistent for any
-            // orientation (otherwise the icons jump about when changing orientation, which looks
-            // especially bad for UIPLACEMENT_RIGHT.
-            // Not needed for UIPLACEMENT_LEFT - although still adjust the right hand side margin
-            // for consistency.
-            // We do for all Android versions for consistency (avoids testing overhead due to
-            // different behaviour on different Android versions).
-            if (this.uIPlacement != UIPlacement.UIPLACEMENT_LEFT) {
-                // if we did want to do this for UIPLACEMENT_LEFT for consistency, it'd be the
-                // "bottom" margin we need to change.
-                gallery_top_gap =
-                    (privacy_indicator_gap_dp * scale + 0.5f).toInt() // convert dps to pixels
-            }
-            val privacy_indicator_gap =
-                (privacy_indicator_gap_dp * scale + 0.5f).toInt() // convert dps to pixels
-            gallery_navigation_gap += privacy_indicator_gap
-        }
-        test_navigation_gap = navigation_gap
-        test_navigation_gap_landscape = navigation_gap_landscape
-        test_navigation_gap_reversed_landscape = navigation_gap_reverse_landscape
-        if (MyDebug.LOG) {
-            Log.d(TAG, "navigation_gap: $navigation_gap")
-            Log.d(TAG, "gallery_navigation_gap: $gallery_navigation_gap")
-        }
-
-        if (!popup_container_only) {
-            // reset:
-            this.topIcon = null
-
-            // we use a dummy view, so that the GUI buttons keep their positioning even if the Settings button is hidden (visibility set to View.GONE)
-            var view = mainActivity.findViewById<View>(R.id.gui_anchor)
-            var layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(iconpanel_align_parent_left, 0)
-            layoutParams.addRule(iconpanel_align_parent_right, RelativeLayout.TRUE)
-            layoutParams.addRule(iconpanel_align_parent_top, RelativeLayout.TRUE)
-            layoutParams.addRule(iconpanel_align_parent_bottom, 0)
-            layoutParams.addRule(iconpanel_above, 0)
-            layoutParams.addRule(iconpanel_below, 0)
-            layoutParams.addRule(iconpanel_left_of, 0)
-            layoutParams.addRule(iconpanel_right_of, 0)
-            view.layoutParams = layoutParams
-            setViewRotation(view, ui_rotation.toFloat())
-            var previousView = view
-
-            val buttonsPermanent: MutableList<View> = ArrayList<View>()
-//            if (this.uIPlacement == UIPlacement.UIPLACEMENT_TOP) {
-//                // not part of the icon panel in TOP mode
-//                view = mainActivity.findViewById<View>(R.id.gallery)
-//                layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-//                layoutParams.addRule(align_parent_left, 0)
-//                layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-//                layoutParams.addRule(align_parent_top, RelativeLayout.TRUE)
-//                layoutParams.addRule(align_parent_bottom, 0)
-//                layoutParams.addRule(above, 0)
-//                layoutParams.addRule(below, 0)
-//                layoutParams.addRule(left_of, 0)
-//                layoutParams.addRule(right_of, 0)
-//                setMarginsForSystemUI(layoutParams, 0, gallery_top_gap, gallery_navigation_gap, 0)
-//                view.layoutParams = layoutParams
-//                setViewRotation(view, ui_rotation.toFloat())
-//            } else {
-//                buttonsPermanent.add(mainActivity.findViewById(R.id.gallery))
-//            }
-            buttonsPermanent.add(mainActivity.findViewById(R.id.settings))
-//            buttonsPermanent.add(mainActivity.findViewById(R.id.popup))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.exposure))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.exposure_lock))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.white_balance_lock))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.cycle_raw))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.store_location))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.text_stamp))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.stamp))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.focus_peaking))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.auto_level))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.cycle_flash))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.face_detection))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.audio_control))
-            buttonsPermanent.add(mainActivity.findViewById(R.id.kraken_icon))
-
-            val buttonsAll: MutableList<View> = ArrayList<View>(buttonsPermanent)
-            // icons which only sometimes show on the icon panel:
-            buttonsAll.add(mainActivity.findViewById(R.id.trash))
-            buttonsAll.add(mainActivity.findViewById(R.id.share))
-
-            for (v in buttonsAll) {
-                layoutParams = v.layoutParams as RelativeLayout.LayoutParams
-                layoutParams.addRule(iconpanel_align_parent_left, 0)
-                layoutParams.addRule(iconpanel_align_parent_right, 0)
-                layoutParams.addRule(iconpanel_align_parent_top, RelativeLayout.TRUE)
-                layoutParams.addRule(iconpanel_align_parent_bottom, 0)
-                layoutParams.addRule(iconpanel_above, 0)
-                layoutParams.addRule(iconpanel_below, 0)
-                layoutParams.addRule(iconpanel_left_of, previousView.getId())
-                layoutParams.addRule(iconpanel_right_of, 0)
-                v.layoutParams = layoutParams
-                setViewRotation(v, ui_rotation.toFloat())
-                previousView = v
-            }
-
-            var buttonSize =
-                mainActivity.getResources().getDimensionPixelSize(R.dimen.onscreen_button_size)
-            if (this.uIPlacement == UIPlacement.UIPLACEMENT_TOP) {
-                // need to dynamically lay out the permanent icons
-
-                var count = 0
-                var first_visible_view: View? = null
-                var last_visible_view: View? = null
-                for (this_view in buttonsPermanent) {
-                    if (this_view.visibility == View.VISIBLE) {
-                        if (first_visible_view == null) first_visible_view = this_view
-                        last_visible_view = this_view
-                        count++
-                    }
-                }
-                //count = 10; // test
-                if (MyDebug.LOG) {
-                    Log.d(TAG, "count: $count")
-                    Log.d(TAG, "display_height: $display_height")
-                }
-                if (count > 0) {
-                    val totalButtonSize = count * buttonSize
-                    var margin = 0
-                    if (totalButtonSize > display_height) {
-                        if (MyDebug.LOG) Log.d(TAG, "need to reduce button size")
-                        buttonSize = display_height / count
-                    } else {
-                        if (MyDebug.LOG) Log.d(TAG, "need to increase margin")
-                        if (count > 1) margin = (display_height - totalButtonSize) / (count - 1)
-                    }
-                    if (MyDebug.LOG) {
-                        Log.d(TAG, "button_size: $buttonSize")
-                        Log.d(TAG, "total_button_size: $totalButtonSize")
-                        Log.d(TAG, "margin: $margin")
-                    }
-                    for (v in buttonsPermanent) {
-                        if (v.visibility == View.VISIBLE) {
-                            if (MyDebug.LOG) {
-                                Log.d(
-                                    TAG,
-                                    "set view layout for: " + v.contentDescription
-                                )
-                                if (v === first_visible_view) {
-                                    Log.d(TAG, "    first visible view")
-                                }
-                            }
-                            //this_view.setPadding(0, margin/2, 0, margin/2);
-                            layoutParams = v.layoutParams as RelativeLayout.LayoutParams
-                            // be careful if we change how the margins are laid out: it looks nicer when only the settings icon
-                            // is displayed (when taking a photo) if it is still shown left-most, rather than centred; also
-                            // needed for "pause preview" trash/icons to be shown properly (test by rotating the phone to update
-                            // the layout)
-                            val marginFirst =
-                                if (v === first_visible_view) navigation_gap_reverse_landscape else margin / 2
-                            val marginLast =
-                                if (v === last_visible_view) navigation_gap_landscape else margin / 2
-                            // avoid risk of privacy dot appearing on top of icon - in practice this is only a risk when in
-                            // reverse landscape mode, but we apply in all orientations to avoid icons jumping about;
-                            // similarly, as noted above we use a hardcoded dp rather than
-                            // WindowInsets.getPrivacyIndicatorBounds(), as we want the icons to stay in the same location even as
-                            // the device is rotated
-                            val privacyGapLeft =
-                                (12 * scale + 0.5f).toInt() // convert dps to pixels
-                            setMarginsForSystemUI(
-                                layoutParams,
-                                privacyGapLeft,
-                                marginFirst,
-                                0,
-                                marginLast
-                            )
-                            layoutParams.width = buttonSize
-                            layoutParams.height = buttonSize
-                            v.layoutParams = layoutParams
-                        }
-                    }
-                    this.topIcon = first_visible_view
-                }
-            } else {
-                // need to reset size/margins to their default
-                // except for gallery, which still needs its margins set for navigation gap! (and we
-                // shouldn't change it's size, which isn't necessarily button_size)
-                // other icons still needs margins set for navigation_gap_landscape and navigation_gap_reverse_landscape
-//                view = mainActivity.findViewById<View>(R.id.gallery)
-//                layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-//                setMarginsForSystemUI(
-//                    layoutParams,
-//                    0,
-//                    max(gallery_top_gap, navigation_gap_reverse_landscape),
-//                    gallery_navigation_gap,
-//                    navigation_gap_landscape
-//                )
-//                view.layoutParams = layoutParams
-//                for (v in buttonsPermanent) {
-//                    if (v !== view) {
-//                        layoutParams = v.layoutParams as RelativeLayout.LayoutParams
-//                        setMarginsForSystemUI(
-//                            layoutParams,
-//                            0,
-//                            navigation_gap_reverse_landscape,
-//                            0,
-//                            navigation_gap_landscape
-//                        )
-//                        layoutParams.width = buttonSize
-//                        layoutParams.height = buttonSize
-//                        v.layoutParams = layoutParams
-//                    }
-//                }
-            }
-
-            // end icon panel
-//            view = mainActivity.findViewById<View>(R.id.take_photo)
-//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-//            layoutParams.addRule(align_parent_left, 0)
-//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-//            layoutParams.addRule(align_parent_top, 0)
-//            layoutParams.addRule(align_parent_bottom, 0)
-//            layoutParams.addRule(center_vertical, RelativeLayout.TRUE)
-//            layoutParams.addRule(center_horizontal, 0)
-//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-//            view.layoutParams = layoutParams
-//            setViewRotation(view, ui_rotation.toFloat())
-//
-//            view = mainActivity.findViewById<View>(R.id.switch_camera)
-//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-//            layoutParams.addRule(align_parent_left, 0)
-//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-//            layoutParams.addRule(align_parent_top, 0)
-//            layoutParams.addRule(align_parent_bottom, 0)
-//            layoutParams.addRule(ui_independent_above, R.id.take_photo)
-//            layoutParams.addRule(ui_independent_below, 0)
-//            layoutParams.addRule(ui_independent_left_of, 0)
-//            layoutParams.addRule(ui_independent_right_of, 0)
-//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-//            view.layoutParams = layoutParams
-//            setViewRotation(view, ui_rotation.toFloat())
-//
-//            view = mainActivity.findViewById<View>(R.id.switch_multi_camera)
-//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-//            layoutParams.addRule(ui_independent_above, 0)
-//            layoutParams.addRule(ui_independent_below, 0)
-//            layoutParams.addRule(ui_independent_left_of, R.id.switch_camera)
-//            layoutParams.addRule(ui_independent_right_of, 0)
-//            layoutParams.addRule(align_top, R.id.switch_camera)
-//            layoutParams.addRule(align_bottom, R.id.switch_camera)
-//            layoutParams.addRule(align_left, 0)
-//            layoutParams.addRule(align_right, 0)
-//            run {
-//                val margin = (5 * scale + 0.5f).toInt() // convert dps to pixels
-//                setMarginsForSystemUI(layoutParams, 0, 0, margin, 0)
-//            }
-//            view.layoutParams = layoutParams
-//            setViewRotation(view, ui_rotation.toFloat())
-//
-//            view = mainActivity.findViewById<View>(R.id.pause_video)
-//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-//            layoutParams.addRule(align_parent_left, 0)
-//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-//            layoutParams.addRule(align_parent_top, 0)
-//            layoutParams.addRule(align_parent_bottom, 0)
-//            layoutParams.addRule(ui_independent_above, R.id.take_photo)
-//            layoutParams.addRule(ui_independent_below, 0)
-//            layoutParams.addRule(ui_independent_left_of, 0)
-//            layoutParams.addRule(ui_independent_right_of, 0)
-//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-//            view.layoutParams = layoutParams
-//            setViewRotation(view, ui_rotation.toFloat())
-//
-//            view = mainActivity.findViewById<View>(R.id.cancel_panorama)
-//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-//            layoutParams.addRule(align_parent_left, 0)
-//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-//            layoutParams.addRule(align_parent_top, 0)
-//            layoutParams.addRule(align_parent_bottom, 0)
-//            layoutParams.addRule(above, R.id.take_photo)
-//            layoutParams.addRule(below, 0)
-//            layoutParams.addRule(left_of, 0)
-//            layoutParams.addRule(right_of, 0)
-//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-//            view.layoutParams = layoutParams
-//            setViewRotation(view, ui_rotation.toFloat())
-//
-//            view = mainActivity.findViewById<View>(R.id.switch_video)
-//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-//            layoutParams.addRule(align_parent_left, 0)
-//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-//            layoutParams.addRule(align_parent_top, 0)
-//            layoutParams.addRule(align_parent_bottom, 0)
-//            layoutParams.addRule(ui_independent_above, 0)
-//            layoutParams.addRule(ui_independent_below, R.id.take_photo)
-//            layoutParams.addRule(ui_independent_left_of, 0)
-//            layoutParams.addRule(ui_independent_right_of, 0)
-//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-//            view.layoutParams = layoutParams
-//            setViewRotation(view, ui_rotation.toFloat())
-//
-//            view = mainActivity.findViewById<View>(R.id.take_photo_when_video_recording)
-//            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-//            layoutParams.addRule(align_parent_left, 0)
-//            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-//            layoutParams.addRule(align_parent_top, 0)
-//            layoutParams.addRule(align_parent_bottom, 0)
-//            layoutParams.addRule(ui_independent_above, 0)
-//            layoutParams.addRule(ui_independent_below, R.id.take_photo)
-//            layoutParams.addRule(ui_independent_left_of, 0)
-//            layoutParams.addRule(ui_independent_right_of, 0)
-//            setMarginsForSystemUI(layoutParams, 0, 0, navigation_gap, 0)
-//            view.layoutParams = layoutParams
-//            setViewRotation(view, ui_rotation.toFloat())
-
-            view = mainActivity.findViewById<View>(R.id.zoom)
-            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-            layoutParams.addRule(align_parent_left, 0)
-            layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-            layoutParams.addRule(align_parent_top, 0)
-            layoutParams.addRule(align_parent_bottom, RelativeLayout.TRUE)
-            view.layoutParams = layoutParams
-            setFixedRotation(
-                mainActivity.findViewById(R.id.zoom),
-                0,
-                navigation_gap_reverse_landscape_align_parent_bottom,
-                navigation_gap,
-                navigation_gap_landscape_align_parent_bottom
-            )
-            view.rotation =
-                view.rotation + 180.0f // should always match the zoom_seekbar, so that zoom in and out are in the same directions
-
-            view = mainActivity.findViewById<View>(R.id.zoom_seekbar)
-            layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-            // if we are showing the zoom control, then align next to that; otherwise have it aligned close to the edge of screen
-            if (sharedPreferences.getBoolean(PreferenceKeys.ShowZoomControlsPreferenceKey, false)) {
-                layoutParams.addRule(align_parent_left, 0)
-                layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-                layoutParams.addRule(align_parent_top, 0)
-                layoutParams.addRule(align_parent_bottom, 0)
-                layoutParams.addRule(above, R.id.zoom)
-                layoutParams.addRule(below, 0)
-                layoutParams.addRule(left_of, 0)
-                layoutParams.addRule(right_of, 0)
-                // margins set below in setFixedRotation()
-            } else {
-                layoutParams.addRule(align_parent_left, 0)
-                layoutParams.addRule(align_parent_right, RelativeLayout.TRUE)
-                layoutParams.addRule(align_parent_top, 0)
-                layoutParams.addRule(align_parent_bottom, RelativeLayout.TRUE)
-                // margins set below in setFixedRotation()
-                // need to clear the others, in case we turn zoom controls on/off
-                layoutParams.addRule(above, 0)
-                layoutParams.addRule(below, 0)
-                layoutParams.addRule(left_of, 0)
-                layoutParams.addRule(right_of, 0)
-            }
-            view.layoutParams = layoutParams
-            val margin = (20 * scale + 0.5f).toInt() // convert dps to pixels
-            if (sharedPreferences.getBoolean(PreferenceKeys.ShowZoomControlsPreferenceKey, false)) {
-                // if zoom control is being shown, we don't need to offset the zoom seekbar from landscape navigation gaps
-                setFixedRotation(
-                    mainActivity.findViewById(R.id.zoom_seekbar),
-                    0,
-                    0,
-                    margin + navigation_gap,
-                    0
-                )
-            } else {
-                setFixedRotation(
-                    mainActivity.findViewById(R.id.zoom_seekbar),
-                    0,
-                    navigation_gap_reverse_landscape_align_parent_bottom,
-                    margin + navigation_gap,
-                    navigation_gap_landscape_align_parent_bottom
-                )
-            }
-
-            view = mainActivity.findViewById<View>(R.id.focus_seekbar)
-            layoutParams = view.getLayoutParams() as RelativeLayout.LayoutParams
-            layoutParams.addRule(left_of, R.id.zoom_seekbar)
-            layoutParams.addRule(right_of, 0)
-            layoutParams.addRule(above, 0)
-            layoutParams.addRule(below, 0)
-            layoutParams.addRule(align_parent_top, 0)
-            layoutParams.addRule(align_parent_bottom, RelativeLayout.TRUE)
-            layoutParams.addRule(align_parent_left, 0)
-            layoutParams.addRule(align_parent_right, 0)
-            view.setLayoutParams(layoutParams)
-
-            view = mainActivity.findViewById<View>(R.id.focus_bracketing_target_seekbar)
-            layoutParams = view.getLayoutParams() as RelativeLayout.LayoutParams
-            layoutParams.addRule(left_of, R.id.zoom_seekbar)
-            layoutParams.addRule(right_of, 0)
-            layoutParams.addRule(above, R.id.focus_seekbar)
-            layoutParams.addRule(below, 0)
-            view.setLayoutParams(layoutParams)
-
-            setFocusSeekbarsRotation()
-        }
-
-        if (!popup_container_only) {
-            // set seekbar info
-            var width_dp: Int
-            if (!system_orientation_portrait && (ui_rotation == 0 || ui_rotation == 180)) {
-                // landscape
-                width_dp = 350
-            } else {
-                // portrait
-                width_dp = 250
-                // prevent being too large on smaller devices (e.g., Galaxy Nexus or smaller)
-                val max_width_dp = getMaxHeightDp(true)
-                if (width_dp > max_width_dp) width_dp = max_width_dp
-            }
-            if (MyDebug.LOG) Log.d(TAG, "width_dp: " + width_dp)
-            val height_dp = 50
-            val width_pixels = (width_dp * scale + 0.5f).toInt() // convert dps to pixels
-            val height_pixels = (height_dp * scale + 0.5f).toInt() // convert dps to pixels
-
-            var view = mainActivity.findViewById<View>(R.id.sliders_container)
-            setViewRotation(view, ui_rotation.toFloat())
-            view.setTranslationX(0.0f)
-            view.setTranslationY(0.0f)
-
-            if (system_orientation_portrait || ui_rotation == 90 || ui_rotation == 270) {
-                // portrait
-                if (system_orientation_portrait) view.setTranslationY((2 * height_pixels).toFloat())
-                else view.setTranslationX((2 * height_pixels).toFloat())
-            } else if (ui_rotation == 0) {
-                // landscape
-                view.setTranslationY(height_pixels.toFloat())
-            } else {
-                // upside-down landscape
-                view.setTranslationY((-1 * height_pixels).toFloat())
-            }
-
-            view = mainActivity.findViewById<View>(R.id.exposure_seekbar)
-            var lp = view.getLayoutParams() as RelativeLayout.LayoutParams
-            lp.width = width_pixels
-            lp.height = height_pixels
-            view.layoutParams = lp
-
-            view = mainActivity.findViewById<View>(R.id.exposure_seekbar_zoom)
-            view.alpha = 0.5f
-
-            view = mainActivity.findViewById<View>(R.id.iso_seekbar)
-            lp = view.getLayoutParams() as RelativeLayout.LayoutParams
-            lp.width = width_pixels
-            lp.height = height_pixels
-            view.setLayoutParams(lp)
-
-            view = mainActivity.findViewById<View>(R.id.exposure_time_seekbar)
-            lp = view.getLayoutParams() as RelativeLayout.LayoutParams
-            lp.width = width_pixels
-            lp.height = height_pixels
-            view.setLayoutParams(lp)
-
-            view = mainActivity.findViewById<View>(R.id.white_balance_seekbar)
-            lp = view.getLayoutParams() as RelativeLayout.LayoutParams
-            lp.width = width_pixels
-            lp.height = height_pixels
-            view.setLayoutParams(lp)
-        }
-
-//        if (popupIsOpen()) {
-//            val view = mainActivity.findViewById<View>(R.id.popup_container)
-//            val layoutParams = view.getLayoutParams() as RelativeLayout.LayoutParams
-//            if (this.uIPlacement == UIPlacement.UIPLACEMENT_TOP) {
-//                layoutParams.addRule(align_right, 0)
-//                layoutParams.addRule(align_bottom, 0)
-//                layoutParams.addRule(align_left, 0)
-//                layoutParams.addRule(align_top, 0)
-//                layoutParams.addRule(above, 0)
-//                layoutParams.addRule(below, 0)
-//                layoutParams.addRule(left_of, 0)
-//                layoutParams.addRule(right_of, R.id.popup)
-//                layoutParams.addRule(
-//                    align_parent_top,
-//                    if (system_orientation_portrait) 0 else RelativeLayout.TRUE
-//                )
-//                layoutParams.addRule(
-//                    align_parent_bottom,
-//                    if (system_orientation_portrait) 0 else RelativeLayout.TRUE
-//                )
-//                layoutParams.addRule(align_parent_left, 0)
-//                layoutParams.addRule(align_parent_right, 0)
-//            } else {
-//                layoutParams.addRule(align_right, R.id.popup)
-//                layoutParams.addRule(align_bottom, 0)
-//                layoutParams.addRule(align_left, 0)
-//                layoutParams.addRule(align_top, 0)
-//                layoutParams.addRule(above, 0)
-//                layoutParams.addRule(below, R.id.popup)
-//                layoutParams.addRule(left_of, 0)
-//                layoutParams.addRule(right_of, 0)
-//                layoutParams.addRule(align_parent_top, 0)
-//                layoutParams.addRule(
-//                    align_parent_bottom,
-//                    if (system_orientation_portrait) 0 else RelativeLayout.TRUE
-//                )
-//                layoutParams.addRule(align_parent_left, 0)
-//                layoutParams.addRule(align_parent_right, 0)
-//            }
-//            if (system_orientation_portrait) {
-//                // limit height so doesn't take up full height of screen
-//                layoutParams.height = display_height
-//            }
-//            view.setLayoutParams(layoutParams)
-//
-//            //setPopupViewRotation(ui_rotation, display_height);
-//            view.getViewTreeObserver().addOnGlobalLayoutListener(
-//                object : OnGlobalLayoutListener {
-//                    override fun onGlobalLayout() {
-//                        if (MyDebug.LOG) Log.d(TAG, "onGlobalLayout()")
-//                        // We need to call setPopupViewRotation after the above layout param changes
-//                        // have taken effect, otherwise we can have problems due to popup_height being incorrect.
-//                        // Example bugs:
-//                        // Left-handed UI, portrait: Restart and open popup, it doesn't appear until device is rotated.
-//                        // Top UI, reverse-portrait: Restart and open popup, it appears in wrong location.
-//                        // Top UI, reverse-landscape: Restart and open popup, it appears in wrong location.
-//                        setPopupViewRotation(ui_rotation, display_height)
-//
-//                        // stop listening - only want to call this once!
-//                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-//                    }
-//                }
-//            )
-//        }
-
-        if (!popup_container_only) {
-            setTakePhotoIcon()
-        }
-
-        if (MyDebug.LOG) {
-            Log.d(TAG, "layoutUI: total time: " + (System.currentTimeMillis() - debug_time))
-        }
-    }
 
     /** Wrapper for layoutParams.setMargins, but where the margins are supplied for landscape orientation,
      * and if in portrait these are automatically rotated.
@@ -954,12 +196,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     private fun setFixedRotation(view: View, left: Int, top: Int, right: Int, bottom: Int) {
         val system_orientation = mainActivity.systemOrientation
         val rotation = (360 - getRotationFromSystemOrientation(system_orientation)) % 360
-        view.setRotation(rotation.toFloat())
+        view.rotation = rotation.toFloat()
         // set margins due to rotation
-        val layoutParams = view.getLayoutParams() as RelativeLayout.LayoutParams
+        val layoutParams = view.layoutParams as RelativeLayout.LayoutParams
         if (system_orientation == SystemOrientation.PORTRAIT) {
             val diff = (layoutParams.width - layoutParams.height) / 2
-            if (MyDebug.LOG) Log.d(TAG, "diff: " + diff)
+            if (MyDebug.LOG) Log.d(TAG, "diff: $diff")
             setMarginsForSystemUI(
                 layoutParams,
                 diff + left,
@@ -970,12 +212,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         } else {
             setMarginsForSystemUI(layoutParams, left, top, right, bottom)
         }
-        view.setLayoutParams(layoutParams)
+        view.layoutParams = layoutParams
     }
 
     fun setFocusSeekbarsRotation() {
         setFixedRotation(
-            mainActivity.findViewById(R.id.focus_seekbar),
+            mainActivity.binding.focusSeekbar,
             0,
             navigation_gap_reverse_landscape_align_parent_bottom,
             0,
@@ -983,77 +225,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         )
         // don't need to set margins for navigation gap landscape for focus_bracketing_target_seekbar, as it sits above the source focus_seekbar
         setFixedRotation(
-            mainActivity.findViewById(R.id.focus_bracketing_target_seekbar),
+            mainActivity.binding.focusBracketingTargetSeekbar,
             0,
             0,
             0,
             0
         )
-    }
-
-    private fun setPopupViewRotation(ui_rotation: Int, display_height: Int) {
-        if (MyDebug.LOG) Log.d(TAG, "setPopupViewRotation")
-        val view = mainActivity.findViewById<View>(R.id.popup_container)
-        setViewRotation(view, ui_rotation.toFloat())
-        // reset:
-        view.translationX = 0.0f
-        view.translationY = 0.0f
-
-        val popup_width = view.width
-        val popup_height = view.height
-        test_saved_popup_width = popup_width
-        test_saved_popup_height = popup_height
-        if (MyDebug.LOG) {
-            Log.d(TAG, "popup_width: $popup_width")
-            Log.d(TAG, "popup_height: $popup_height")
-            if (this.popupView != null) Log.d(
-                TAG,
-                "popup total width: " + popupView!!.totalWidth
-            )
-        }
-        if (this.popupView != null && popup_width > popupView!!.totalWidth * 1.2) {
-            // This is a workaround for the rare but annoying bug where the popup window is too large
-            // (and appears partially off-screen). Unfortunately have been unable to fix - and trying
-            // to force the popup container to have a particular width just means some of the contents
-            // (e.g., Timer) are missing. But at least stop caching it, so that reopening the popup
-            // should fix it, rather than having to restart or pause/resume ManualCamera.
-            // Also note, normally we should expect popup_width == popup_view.getTotalWidth(), but
-            // have put a fudge factor of 1.2 just in case it's normally slightly larger on some
-            // devices.
-            Log.e(TAG, "### popup view is too big?!")
-            force_destroy_popup = true
-            /*popup_width = popup_view.getTotalWidth();
-			ViewGroup.LayoutParams params = new RelativeLayout.LayoutParams(
-					popup_width,
-					RelativeLayout.LayoutParams.WRAP_CONTENT);
-			view.setLayoutParams(params);*/
-        } else {
-            force_destroy_popup = false
-        }
-
-        if (ui_rotation == 0 || ui_rotation == 180) {
-            view.setPivotX(popup_width / 2.0f)
-            view.setPivotY(popup_height / 2.0f)
-        } else if (this.uIPlacement == UIPlacement.UIPLACEMENT_TOP) {
-            view.setPivotX(0.0f)
-            view.setPivotY(0.0f)
-            if (ui_rotation == 90) {
-                view.setTranslationX(popup_height.toFloat())
-            } else if (ui_rotation == 270) {
-                view.setTranslationY(display_height.toFloat())
-            }
-        } else {
-            view.setPivotX(popup_width.toFloat())
-            view.setPivotY(if (this.uIPlacement == UIPlacement.UIPLACEMENT_RIGHT) 0.0f else popup_height.toFloat())
-            if (this.uIPlacement == UIPlacement.UIPLACEMENT_RIGHT) {
-                if (ui_rotation == 90) {
-                    view.setTranslationY(popup_width.toFloat())
-                } else if (ui_rotation == 270) view.setTranslationX(-popup_height.toFloat())
-            } else {
-                if (ui_rotation == 90) view.setTranslationX(-popup_height.toFloat())
-                else if (ui_rotation == 270) view.setTranslationY(-popup_width.toFloat())
-            }
-        }
     }
 
     /** Set icons for taking photos vs videos.
@@ -1064,61 +241,28 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             Log.d(TAG, "setTakePhotoIcon()")
         }
         if (mainActivity.preview != null) {
-            var view = mainActivity.findViewById<ImageButton>(R.id.take_photo)
-            var resource: Int
-            val contentDescription: Int
-            val switchVideoContentDescription: Int
-
             if (mainActivity.preview!!.isVideo) {
                 cameraViewModel.setPhotoMode(false)
                 if (MyDebug.LOG) {
                     Log.d(TAG, "set icon to video")
                 }
-                resource = if (mainActivity.preview!!.isVideoRecording) {
-                    R.drawable.take_video_recording
-                } else {
-                    R.drawable.take_video_selector
-                }
-                contentDescription = if (mainActivity.preview!!.isVideoRecording) {
-                    R.string.stop_video
-                } else {
-                    R.string.start_video
-                }
-                switchVideoContentDescription = R.string.switch_to_photo
             } else if (mainActivity.applicationInterface!!.getPhotoMode() == MyApplicationInterface.PhotoMode.Panorama &&
                 mainActivity.applicationInterface!!.gyroSensor.isRecording
             ) {
                 if (MyDebug.LOG) {
                     Log.d(TAG, "set icon to recording panorama")
                 }
-                resource = R.drawable.baseline_check_white_48
-                contentDescription = R.string.finish_panorama
-                switchVideoContentDescription = R.string.switch_to_video
             } else {
                 if (MyDebug.LOG) {
                     Log.d(TAG, "set icon to photo")
                 }
-                resource = R.drawable.take_photo_selector
-                contentDescription = R.string.take_photo
-                switchVideoContentDescription = R.string.switch_to_video
             }
-            view.setImageResource(resource)
-            view.contentDescription = mainActivity.getResources().getString(contentDescription)
-            view.tag = resource // for testing
 
-//            view = mainActivity.findViewById(R.id.switch_video)
-//            view.contentDescription =
-//                mainActivity.getResources().getString(switchVideoContentDescription)
-
-            resource = if (mainActivity.preview!!.isVideo) {
+            if (mainActivity.preview!!.isVideo) {
                 cameraViewModel.setPhotoMode(false)
-                R.drawable.take_photo
             } else {
                 cameraViewModel.setPhotoMode(true)
-                R.drawable.take_video
             }
-            view.setImageResource(resource)
-            view.tag = resource // for testing
 
             cameraViewModel.setVideoRecording(mainActivity.preview!!.isVideoRecording)
         }
@@ -1127,63 +271,38 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     /** Set content description for switch camera button.
      */
     fun setSwitchCameraContentDescription() {
-        if (MyDebug.LOG) Log.d(TAG, "setSwitchCameraContentDescription()")
-//        if (mainActivity.preview != null && mainActivity.preview!!.canSwitchCamera()) {
-//            val view = mainActivity.findViewById<ImageButton>(R.id.switch_camera)
-//            val cameraId = mainActivity.nextCameraId
-//            val contentDescription =
-//                when (mainActivity.preview!!.cameraControllerManager.getFacing(cameraId)) {
-//                    Facing.FACING_FRONT -> R.string.switch_to_front_camera
-//                    Facing.FACING_BACK -> R.string.switch_to_back_camera
-//                    Facing.FACING_EXTERNAL -> R.string.switch_to_external_camera
-//                    else -> R.string.switch_to_unknown_camera
-//                }
-//            if (MyDebug.LOG) Log.d(
-//                TAG,
-//                "content_description: " + mainActivity.getResources()
-//                    .getString(contentDescription)
-//            )
-//            view.contentDescription = mainActivity.getResources().getString(contentDescription)
-//        }
+        if (mainActivity.preview != null && mainActivity.preview!!.canSwitchCamera()) {
+            val cameraId = mainActivity.nextCameraId
+            val contentDescription =
+                when (mainActivity.preview!!.cameraControllerManager.getFacing(cameraId)) {
+                    CameraController.Facing.FACING_FRONT -> R.string.switch_to_front_camera
+                    CameraController.Facing.FACING_BACK -> R.string.switch_to_back_camera
+                    CameraController.Facing.FACING_EXTERNAL -> R.string.switch_to_external_camera
+                    else -> R.string.switch_to_unknown_camera
+                }
+        }
     }
 
     /** Set content description for pause video button.
      */
     fun setPauseVideoContentDescription() {
         if (MyDebug.LOG) Log.d(TAG, "setPauseVideoContentDescription()")
-        val pauseVideoButton = mainActivity.findViewById<ImageButton>(R.id.pause_video)
-        val contentDescription: Int
         if (mainActivity.preview!!.isVideoRecordingPaused) {
-            contentDescription = R.string.resume_video
-            pauseVideoButton.setImageResource(R.drawable.ic_play_circle_outline_white_48dp)
             cameraViewModel.setVideoRecordingPaused(true)
         } else {
-            contentDescription = R.string.pause_video
-            pauseVideoButton.setImageResource(R.drawable.ic_pause_circle_outline_white_48dp)
             cameraViewModel.setVideoRecordingPaused(false)
         }
-        if (MyDebug.LOG) Log.d(
-            TAG,
-            "content_description: " + mainActivity.getResources().getString(contentDescription)
-        )
-        pauseVideoButton.contentDescription =
-            mainActivity.getResources().getString(contentDescription)
     }
 
     fun updateRemoteConnectionIcon() {
         val remoteConnectedIcon = mainActivity.findViewById<View>(R.id.kraken_icon)
         if (mainActivity.getBluetoothRemoteControl().remoteConnected()) {
-            if (MyDebug.LOG) Log.d(TAG, "Remote control connected")
             remoteConnectedIcon.visibility = View.VISIBLE
         } else {
-            if (MyDebug.LOG) Log.d(TAG, "Remote control DISconnected")
             remoteConnectedIcon.visibility = View.GONE
         }
     }
 
-    // ParameterCanBeLocal warning suppressed as it's incorrect here! (Or
-    // possibly it's due to effect of MainActivity.lock_to_landscape always
-    // being false.)
     fun onOrientationChanged(orientation: Int) {
         var orientation = orientation
         if (!MainActivity.lockToLandscape) return
@@ -1197,28 +316,10 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             orientation = orientation % 360
             if (orientation != current_orientation) {
                 this.current_orientation = orientation
-                if (MyDebug.LOG) {
-                    Log.d(TAG, "current_orientation is now: $current_orientation")
-                }
                 view_rotate_animation = true
-                layoutUI()
                 view_rotate_animation = false
-
-                // Call DrawPreview.updateSettings() so that we reset calculations that depend on
-                // getLocationOnScreen() - since the result is affected by a View's rotation, we need
-                // to recompute - this also means we need to delay slightly until after the rotation
-                // animation is complete.
-                // To reproduce issues, rotate from upside-down-landscape to portrait, and observe
-                // the info-text placement (when using icons-along-top), or with on-screen angle
-                // displayed when in 16:9 preview.
-                // Potentially we could use Animation.setAnimationListener(), but we set a separate
-                // animation for every icon.
-                // Note, this seems to be unneeded due to the fix in DrawPreview for
-                // "getRotation() == 180.0f", but good to clear the cached values (e.g., in case we
-                // compute them during when the icons are being rotated).
                 val handler = Handler()
                 handler.postDelayed({
-                    if (MyDebug.LOG) Log.d(TAG, "onOrientationChanged->postDelayed()")
                     mainActivity.applicationInterface!!.drawPreview.updateSettings()
                 }, (view_rotate_animation_duration + 20).toLong())
             }
@@ -1298,38 +399,25 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun setImmersiveMode(immersiveMode: Boolean) {
-        if (MyDebug.LOG) Log.d(TAG, "setImmersiveMode: $immersiveMode")
         this.immersive_mode = immersiveMode
         mainActivity.runOnUiThread {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
-            // if going into immersive mode, the we should set GONE the ones that are set GONE in showGUI(false)
-            //final int visibility_gone = immersive_mode ? View.GONE : View.VISIBLE;
-            val visibility = if (immersiveMode) View.GONE else View.VISIBLE
+            val visibility = View.VISIBLE
+            val cycleRawButton = mainActivity.binding.cycleRaw
+            val storeLocationButton = mainActivity.binding.storeLocation
+            val textStampButton = mainActivity.binding.textStamp
+            val stampButton = mainActivity.binding.stamp
+            val focusPeakingButton = mainActivity.binding.focusPeaking
+            val autoLevelButton = mainActivity.binding.autoLevel
+            val cycleFlashButton = mainActivity.binding.cycleFlash
+            val faceDetectionButton = mainActivity.binding.faceDetection
+            val audioControlButton = mainActivity.binding.audioControl
+            val settingsButton = mainActivity.binding.settings
+            val zoomControls = mainActivity.binding.zoom
+            val zoomSeekBar = mainActivity.binding.zoomSeekbar
+            val focusSeekBar = mainActivity.binding.focusSeekbar
+            val focusBracketingTargetSeekBar = mainActivity.binding.focusBracketingTargetSeekbar
 
-            if (MyDebug.LOG) Log.d(TAG, "setImmersiveMode: set visibility: $visibility")
-            // n.b., don't hide share and trash buttons, as they require immediate user input for us to continue
-            val exposureButton = mainActivity.findViewById<View>(R.id.exposure)
-            val exposureLockButton = mainActivity.findViewById<View>(R.id.exposure_lock)
-            val whiteBalanceLockButton = mainActivity.findViewById<View>(R.id.white_balance_lock)
-            val cycleRawButton = mainActivity.findViewById<View>(R.id.cycle_raw)
-            val storeLocationButton = mainActivity.findViewById<View>(R.id.store_location)
-            val textStampButton = mainActivity.findViewById<View>(R.id.text_stamp)
-            val stampButton = mainActivity.findViewById<View>(R.id.stamp)
-            val focusPeakingButton = mainActivity.findViewById<View>(R.id.focus_peaking)
-            val autoLevelButton = mainActivity.findViewById<View>(R.id.auto_level)
-            val cycleFlashButton = mainActivity.findViewById<View>(R.id.cycle_flash)
-            val faceDetectionButton = mainActivity.findViewById<View>(R.id.face_detection)
-            val audioControlButton = mainActivity.findViewById<View>(R.id.audio_control)
-//            val popupButton = mainActivity.findViewById<View>(R.id.popup)
-            val settingsButton = mainActivity.findViewById<View>(R.id.settings)
-            val zoomControls = mainActivity.findViewById<View>(R.id.zoom)
-            val zoomSeekBar = mainActivity.findViewById<View>(R.id.zoom_seekbar)
-            val focusSeekBar = mainActivity.findViewById<View>(R.id.focus_seekbar)
-            val focusBracketingTargetSeekBar = mainActivity.findViewById<View>(R.id.focus_bracketing_target_seekbar)
-
-            if (mainActivity.supportsExposureButton()) exposureButton.visibility = visibility
-            if (showExposureLockIcon()) exposureLockButton.visibility = visibility
-            if (showWhiteBalanceLockIcon()) whiteBalanceLockButton.visibility = visibility
             if (showCycleRawIcon()) cycleRawButton.visibility = visibility
             if (showStoreLocationIcon()) storeLocationButton.visibility = visibility
             if (showTextStampIcon()) textStampButton.visibility = visibility
@@ -1340,13 +428,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             if (showFaceDetectionIcon()) faceDetectionButton.visibility = visibility
             if (mainActivity.hasAudioControl()) audioControlButton.visibility = visibility
 
-//            popupButton.visibility = visibility
             settingsButton.visibility = visibility
-            if (MyDebug.LOG) {
-                Log.d(TAG, "has_zoom: " + mainActivity.preview!!.supportsZoom())
-            }
-            if (mainActivity.preview!!.supportsZoom()
-                && sharedPreferences.getBoolean(PreferenceKeys.ShowZoomControlsPreferenceKey, false)) {
+            if (mainActivity.preview!!.supportsZoom() && sharedPreferences.getBoolean(
+                    PreferenceKeys.ShowZoomControlsPreferenceKey,
+                    false
+                )
+            ) {
                 zoomControls.visibility = visibility
             }
             if (mainActivity.preview!!.supportsZoom()
@@ -1360,41 +447,21 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
             if (mainActivity.showManualFocusSeekbar(false)) focusSeekBar.visibility = visibility
 
-            if (mainActivity.showManualFocusSeekbar(true)) focusBracketingTargetSeekBar.visibility = visibility
+            if (mainActivity.showManualFocusSeekbar(true)) focusBracketingTargetSeekBar.visibility =
+                visibility
 
             val prefImmersiveMode: String = sharedPreferences.getString(
                 PreferenceKeys.ImmersiveModePreferenceKey,
                 "immersive_mode_off"
             )!!
             if (prefImmersiveMode == "immersive_mode_everything") {
-                if (sharedPreferences.getBoolean(
-                        PreferenceKeys.ShowTakePhotoPreferenceKey,
-                        true
-                    )
-                ) {
-                    val takePhotoButton = mainActivity.findViewById<View>(R.id.take_photo)
-                    takePhotoButton.visibility = visibility
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && mainActivity.preview!!.isVideoRecording) {
-                    val pauseVideoButton = mainActivity.findViewById<View>(R.id.pause_video)
-                    pauseVideoButton.visibility = visibility
-                }
-                if (mainActivity.preview!!.supportsPhotoVideoRecording()
-                    && mainActivity.applicationInterface!!.usePhotoVideoRecording()
-                    && mainActivity.preview!!.isVideoRecording
-                ) {
-                    val takePhotoVideoButton =
-                        mainActivity.findViewById<View>(R.id.take_photo_when_video_recording)
-                    takePhotoVideoButton.visibility = visibility
-                }
                 if (mainActivity.applicationInterface!!.gyroSensor.isRecording) {
                     val cancelPanoramaButton =
-                        mainActivity.findViewById<View>(R.id.cancel_panorama)
+                        mainActivity.binding.cancelPanorama
                     cancelPanoramaButton.visibility = visibility
                 }
             }
             if (!immersiveMode) {
-                // make sure the GUI is set up as expected
                 showGUI()
             }
         }
@@ -1405,21 +472,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun showGUI(show: Boolean, isVideo: Boolean) {
-        if (MyDebug.LOG) {
-            Log.d(TAG, "showGUI: $show")
-            Log.d(TAG, "is_video: $isVideo")
-        }
         if (isVideo) this.show_gui_video = show
         else this.show_gui_photo = show
         showGUI()
     }
 
     fun showGUI() {
-        if (MyDebug.LOG) {
-            Log.d(TAG, "showGUI")
-            Log.d(TAG, "show_gui_photo: " + show_gui_photo)
-            Log.d(TAG, "show_gui_video: " + show_gui_video)
-        }
         if (inImmersiveMode()) return
         if ((show_gui_photo || show_gui_video) && mainActivity.usingKitKatImmersiveMode()) {
             // call to reset the timer
@@ -1430,30 +488,15 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 mainActivity.applicationInterface!!.getGyroSensor().isRecording()
             val visibility =
                 if (is_panorama_recording) View.GONE else if (show_gui_photo && show_gui_video) View.VISIBLE else View.GONE // for UI that is hidden while taking photo or video
-            val visibility_video =
-                if (is_panorama_recording) View.GONE else if (show_gui_photo) View.VISIBLE else View.GONE // for UI that is only hidden while taking photo
-            val exposureButton = mainActivity.findViewById<View>(R.id.exposure)
-            val exposureLockButton = mainActivity.findViewById<View>(R.id.exposure_lock)
-            val whiteBalanceLockButton =
-                mainActivity.findViewById<View>(R.id.white_balance_lock)
-            val cycleRawButton = mainActivity.findViewById<View>(R.id.cycle_raw)
-            val storeLocationButton = mainActivity.findViewById<View>(R.id.store_location)
-            val textStampButton = mainActivity.findViewById<View>(R.id.text_stamp)
-            val stampButton = mainActivity.findViewById<View>(R.id.stamp)
-            val focusPeakingButton = mainActivity.findViewById<View>(R.id.focus_peaking)
-            val autoLevelButton = mainActivity.findViewById<View>(R.id.auto_level)
-            val cycleFlashButton = mainActivity.findViewById<View>(R.id.cycle_flash)
-            val faceDetectionButton = mainActivity.findViewById<View>(R.id.face_detection)
-            val audioControlButton = mainActivity.findViewById<View>(R.id.audio_control)
-//            val popupButton = mainActivity.findViewById<View>(R.id.popup)
-            if (mainActivity.supportsExposureButton()) exposureButton.visibility =
-                visibility_video // still allow exposure when recording video
-
-            if (showExposureLockIcon()) exposureLockButton.visibility =
-                visibility_video // still allow exposure lock when recording video
-
-            if (showWhiteBalanceLockIcon()) whiteBalanceLockButton.visibility =
-                visibility_video // still allow white balance lock when recording video
+            val cycleRawButton = mainActivity.binding.cycleRaw
+            val storeLocationButton = mainActivity.binding.storeLocation
+            val textStampButton = mainActivity.binding.textStamp
+            val stampButton = mainActivity.binding.stamp
+            val focusPeakingButton = mainActivity.binding.focusPeaking
+            val autoLevelButton = mainActivity.binding.autoLevel
+            val cycleFlashButton = mainActivity.binding.cycleFlash
+            val faceDetectionButton = mainActivity.binding.faceDetection
+            val audioControlButton = mainActivity.binding.audioControl
 
             if (showCycleRawIcon()) cycleRawButton.visibility = visibility
             if (showStoreLocationIcon()) storeLocationButton.visibility = visibility
@@ -1468,36 +511,29 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 closePopup() // we still allow the popup when recording video, but need to update the UI (so it only shows flash options), so easiest to just close
             }
 
-            val remoteConnectedIcon = mainActivity.findViewById<View>(R.id.kraken_icon)
+            val remoteConnectedIcon = mainActivity.binding.krakenIcon
             if (mainActivity.getBluetoothRemoteControl().remoteConnected()) {
-                if (MyDebug.LOG) Log.d(TAG, "Remote control connected")
                 remoteConnectedIcon.visibility = View.VISIBLE
             } else {
-                if (MyDebug.LOG) Log.d(TAG, "Remote control DISconnected")
                 remoteConnectedIcon.visibility = View.GONE
-            }
-//            popupButton.visibility = if (mainActivity.preview!!.supportsFlash()) visibility_video else visibility // still allow popup in order to change flash mode when recording video
-
-            if (show_gui_photo && show_gui_video) {
-                layoutUI() // needed for "top" UIPlacement, to auto-arrange the buttons
             }
         }
     }
 
     fun updateExposureLockIcon() {
-        val view = mainActivity.findViewById<ImageButton>(R.id.exposure_lock)
-        val enabled = mainActivity.preview!!.isExposureLocked
-        view.setImageResource(if (enabled) R.drawable.exposure_locked else R.drawable.exposure_unlocked)
-        view.contentDescription = mainActivity.getResources()
-            .getString(if (enabled) R.string.exposure_unlock else R.string.exposure_lock)
+//        val view = mainActivity.findViewById<ImageButton>(R.id.exposure_lock)
+//        val enabled = mainActivity.preview!!.isExposureLocked
+//        view.setImageResource(if (enabled) R.drawable.exposure_locked else R.drawable.exposure_unlocked)
+//        view.contentDescription = mainActivity.getResources()
+//            .getString(if (enabled) R.string.exposure_unlock else R.string.exposure_lock)
     }
 
     fun updateWhiteBalanceLockIcon() {
-        val view = mainActivity.findViewById<ImageButton>(R.id.white_balance_lock)
-        val enabled = mainActivity.preview!!.isWhiteBalanceLocked
-        view.setImageResource(if (enabled) R.drawable.white_balance_locked else R.drawable.white_balance_unlocked)
-        view.contentDescription = mainActivity.getResources()
-            .getString(if (enabled) R.string.white_balance_unlock else R.string.white_balance_lock)
+//        val view = mainActivity.findViewById<ImageButton>(R.id.white_balance_lock)
+//        val enabled = mainActivity.preview!!.isWhiteBalanceLocked
+//        view.setImageResource(if (enabled) R.drawable.white_balance_locked else R.drawable.white_balance_unlocked)
+//        view.contentDescription = mainActivity.getResources()
+//            .getString(if (enabled) R.string.white_balance_unlock else R.string.white_balance_lock)
     }
 
     fun updateCycleRawIcon() {
@@ -1516,21 +552,23 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun updateStoreLocationIcon() {
-        val view = mainActivity.findViewById<ImageButton>(R.id.store_location)
-        val enabled = mainActivity.applicationInterface!!.geotaggingPref
-        view.setImageResource(if (enabled) R.drawable.ic_gps_fixed_red_48dp else R.drawable.ic_gps_fixed_white_48dp)
-        view.contentDescription = mainActivity.getResources()
-            .getString(if (enabled) R.string.preference_location_disable else R.string.preference_location_enable)
+        mainActivity.applicationInterface?.let {
+            val view = mainActivity.binding.storeLocation
+            val enabled = mainActivity.applicationInterface!!.geotaggingPref
+            view.setImageResource(if (enabled) R.drawable.ic_gps_fixed_red_48dp else R.drawable.ic_gps_fixed_white_48dp)
+            view.contentDescription = mainActivity.getResources()
+                .getString(if (enabled) R.string.preference_location_disable else R.string.preference_location_enable)
+        }
     }
 
     fun updateTextStampIcon() {
-        val view = mainActivity.findViewById<ImageButton>(R.id.text_stamp)
+        val view = mainActivity.binding.textStamp
         val enabled = !mainActivity.applicationInterface!!.textStampPref.isEmpty()
         view.setImageResource(if (enabled) R.drawable.baseline_text_fields_red_48 else R.drawable.baseline_text_fields_white_48)
     }
 
     fun updateStampIcon() {
-        val view = mainActivity.findViewById<ImageButton>(R.id.stamp)
+        val view = mainActivity.binding.stamp
         val enabled = mainActivity.applicationInterface!!.stampPref == "preference_stamp_yes"
         view.setImageResource(if (enabled) R.drawable.ic_text_format_red_48dp else R.drawable.ic_text_format_white_48dp)
         view.contentDescription = mainActivity.getResources()
@@ -1538,7 +576,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun updateFocusPeakingIcon() {
-        val view = mainActivity.findViewById<ImageButton>(R.id.focus_peaking)
+        val view = mainActivity.binding.focusPeaking
         val enabled = mainActivity.applicationInterface!!.getFocusPeakingPref()
         view.setImageResource(if (enabled) R.drawable.key_visualizer_red else R.drawable.key_visualizer)
         view.contentDescription = mainActivity.getResources()
@@ -1546,7 +584,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun updateAutoLevelIcon() {
-        val view = mainActivity.findViewById<ImageButton>(R.id.auto_level)
+        val view = mainActivity.binding.autoLevel
         val enabled = mainActivity.applicationInterface!!.getAutoStabilisePref()
         view.setImageResource(if (enabled) R.drawable.auto_stabilise_icon_red else R.drawable.auto_stabilise_icon)
         view.contentDescription = mainActivity.getResources()
@@ -1556,29 +594,36 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     fun updateCycleFlashIcon() {
         // n.b., read from preview rather than saved application preference - so the icon updates correctly when in flash
         // auto mode, but user switches to manual ISO where flash auto isn't supported
-//        val flash_value = mainActivity.preview!!.getCurrentFlashValue()
-//        if (flash_value != null) {
-//            val view = mainActivity.findViewById<ImageButton>(R.id.cycle_flash)
-//            when (flash_value) {
-//                "flash_off" -> view.setImageResource(R.drawable.flash_off)
-//                "flash_auto", "flash_frontscreen_auto" -> view.setImageResource(R.drawable.flash_auto)
-//                "flash_on", "flash_frontscreen_on" -> view.setImageResource(R.drawable.flash_on)
-//                "flash_torch", "flash_frontscreen_torch" -> view.setImageResource(R.drawable.baseline_highlight_white_48)
-//                "flash_red_eye" -> view.setImageResource(R.drawable.baseline_remove_red_eye_white_48)
-//                else -> {
-//                    // just in case??
-//                    Log.e(TAG, "unknown flash value $flash_value")
-//                    view.setImageResource(R.drawable.flash_off)
-//                }
-//            }
-//        } else {
-//            val view = mainActivity.findViewById<ImageButton>(R.id.cycle_flash)
-//            view.setImageResource(R.drawable.flash_off)
-//        }
+        val flashValue = mainActivity.preview!!.getCurrentFlashValue()
+        if (flashValue != null) {
+            when (flashValue) {
+                "flash_off" -> mainActivity.binding.cycleFlash.setImageResource(R.drawable.flash_off)
+                "flash_auto", "flash_frontscreen_auto" -> mainActivity.binding.cycleFlash.setImageResource(
+                    R.drawable.flash_auto
+                )
+
+                "flash_on", "flash_frontscreen_on" -> mainActivity.binding.cycleFlash.setImageResource(
+                    R.drawable.flash_on
+                )
+
+                "flash_torch", "flash_frontscreen_torch" -> mainActivity.binding.cycleFlash.setImageResource(
+                    R.drawable.baseline_highlight_white_48
+                )
+
+                "flash_red_eye" -> mainActivity.binding.cycleFlash.setImageResource(R.drawable.baseline_remove_red_eye_white_48)
+                else -> {
+                    // just in case??
+                    Log.e(TAG, "unknown flash value $flashValue")
+                    mainActivity.binding.cycleFlash.setImageResource(R.drawable.flash_off)
+                }
+            }
+        } else {
+            mainActivity.binding.cycleFlash.setImageResource(R.drawable.flash_off)
+        }
     }
 
     fun updateFaceDetectionIcon() {
-        val view = mainActivity.findViewById<ImageButton>(R.id.face_detection)
+        val view = mainActivity.binding.faceDetection
         val enabled = mainActivity.applicationInterface!!.getFaceDetectionPref()
         view.setImageResource(if (enabled) R.drawable.ic_face_red_48dp else R.drawable.ic_face_white_48dp)
         view.contentDescription = mainActivity.getResources()
@@ -1600,27 +645,21 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun audioControlStarted() {
-        val view = mainActivity.findViewById<ImageButton>(R.id.audio_control)
-        view.setImageResource(R.drawable.ic_mic_red_48dp)
-        view.contentDescription = mainActivity.getResources().getString(R.string.audio_control_stop)
+        mainActivity.binding.audioControl.setImageResource(R.drawable.ic_mic_red_48dp)
+        mainActivity.binding.audioControl.contentDescription = mainActivity.getResources().getString(R.string.audio_control_stop)
     }
 
     fun audioControlStopped() {
-        val view = mainActivity.findViewById<ImageButton>(R.id.audio_control)
-        view.setImageResource(R.drawable.ic_mic_white_48dp)
-        view.contentDescription =
+        mainActivity.binding.audioControl.setImageResource(R.drawable.ic_mic_white_48dp)
+        mainActivity.binding.audioControl.contentDescription =
             mainActivity.getResources().getString(R.string.audio_control_start)
     }
 
     val isExposureUIOpen: Boolean
         get() {
-            val exposure_seek_bar =
-                mainActivity.findViewById<View>(R.id.exposure_container)
-            val exposure_visibility = exposure_seek_bar.visibility
-            val manual_exposure_seek_bar =
-                mainActivity.findViewById<View>(R.id.manual_exposure_container)
-            val manual_exposure_visibility = manual_exposure_seek_bar.visibility
-            return exposure_visibility == View.VISIBLE || manual_exposure_visibility == View.VISIBLE
+            val exposureVisibility = mainActivity.binding.exposureContainer.visibility
+            val manualExposureVisibility = mainActivity.binding.manualExposureContainer.visibility
+            return exposureVisibility == View.VISIBLE || manualExposureVisibility == View.VISIBLE
         }
 
     /**
@@ -1631,7 +670,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         closePopup()
         mSelectingExposureUIElement = false
         if (this.isExposureUIOpen) {
-            closeExposureUI()
         } else if (mainActivity.preview!!.cameraController != null && mainActivity.supportsExposureButton()) {
             setupExposureUI()
             if (mainActivity.getBluetoothRemoteControl().remoteEnabled()) {
@@ -1649,28 +687,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         }
     }
 
-    private fun clearRemoteControlForExposureUI() {
-        if (MyDebug.LOG) Log.d(TAG, "clearRemoteControlForExposureUI")
-        if (this.isExposureUIOpen && remote_control_mode) {
-            remote_control_mode = false
-            resetExposureUIHighlights()
-        }
-    }
-
     private fun resetExposureUIHighlights() {
-        if (MyDebug.LOG) Log.d(TAG, "resetExposureUIHighlights")
-        val iso_buttons_container =
-            mainActivity.findViewById<ViewGroup>(R.id.iso_buttons) // Shown when Camera API2 enabled
-        val exposure_seek_bar = mainActivity.findViewById<View>(R.id.exposure_container)
-        val shutter_seekbar = mainActivity.findViewById<View>(R.id.exposure_time_seekbar)
-        val iso_seekbar = mainActivity.findViewById<View>(R.id.iso_seekbar)
-        val wb_seekbar = mainActivity.findViewById<View>(R.id.white_balance_seekbar)
-        // Set all lines to black
-        iso_buttons_container.setBackgroundColor(Color.TRANSPARENT)
-        exposure_seek_bar.setBackgroundColor(Color.TRANSPARENT)
-        shutter_seekbar.setBackgroundColor(Color.TRANSPARENT)
-        iso_seekbar.setBackgroundColor(Color.TRANSPARENT)
-        wb_seekbar.setBackgroundColor(Color.TRANSPARENT)
+        mainActivity.binding.isoButtons.setBackgroundColor(Color.TRANSPARENT)
+        mainActivity.binding.exposureContainer.setBackgroundColor(Color.TRANSPARENT)
+        mainActivity.binding.exposureTimeSeekbar.setBackgroundColor(Color.TRANSPARENT)
+        mainActivity.binding.isoSeekbar.setBackgroundColor(Color.TRANSPARENT)
+        mainActivity.binding.whiteBalanceSeekbar.setBackgroundColor(Color.TRANSPARENT)
     }
 
     /**
@@ -1679,24 +701,15 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      *
      */
     private fun highlightExposureUILine(selectNext: Boolean) {
-        if (MyDebug.LOG) Log.d(TAG, "highlightExposureUILine: $selectNext")
         if (!this.isExposureUIOpen) { // Safety check
             return
         }
-        val iso_buttons_container =
-            mainActivity.findViewById<ViewGroup>(R.id.iso_buttons) // Shown when Camera API2 enabled
-        val exposure_seek_bar = mainActivity.findViewById<View>(R.id.exposure_container)
-        val shutter_seekbar = mainActivity.findViewById<View>(R.id.exposure_time_seekbar)
-        val iso_seekbar = mainActivity.findViewById<View>(R.id.iso_seekbar)
-        val wb_seekbar = mainActivity.findViewById<View>(R.id.white_balance_seekbar)
-        // Our order for lines is:
-        // - ISO buttons
-        // - ISO slider
-        // - Shutter speed
-        // - exposure seek bar
-        if (MyDebug.LOG) Log.d(TAG, "mExposureLine: $mExposureLine")
+        val iso_buttons_container = mainActivity.findViewById<ViewGroup>(R.id.iso_buttons) // Shown when Camera API2 enabled
+        val exposure_seek_bar = mainActivity.binding.exposureContainer
+        val shutter_seekbar = mainActivity.binding.exposureTimeSeekbar
+        val iso_seekbar = mainActivity.binding.isoSeekbar
+        val wb_seekbar = mainActivity.binding.whiteBalanceSeekbar
         mExposureLine = (mExposureLine + 5) % 5
-        if (MyDebug.LOG) Log.d(TAG, "mExposureLine modulo: $mExposureLine")
         if (selectNext) {
             if (mExposureLine == 0 && !iso_buttons_container.isShown) mExposureLine++
             if (mExposureLine == 1 && !iso_seekbar.isShown) mExposureLine++
@@ -1711,26 +724,15 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             if (mExposureLine == 1 && !iso_seekbar.isShown) mExposureLine--
             if (mExposureLine == 0 && !iso_buttons_container.isShown) mExposureLine--
         }
-        if (MyDebug.LOG) Log.d(TAG, "after skipping: mExposureLine: $mExposureLine")
         mExposureLine = (mExposureLine + 5) % 5
-        if (MyDebug.LOG) Log.d(TAG, "after skipping: mExposureLine modulo: $mExposureLine")
         resetExposureUIHighlights()
 
-        if (mExposureLine == 0) {
-            iso_buttons_container.setBackgroundColor(highlightColor)
-            //iso_buttons_container.setAlpha(0.5f);
-        } else if (mExposureLine == 1) {
-            iso_seekbar.setBackgroundColor(highlightColor)
-            //iso_seekbar.setAlpha(0.5f);
-        } else if (mExposureLine == 2) {
-            shutter_seekbar.setBackgroundColor(highlightColor)
-            //shutter_seekbar.setAlpha(0.5f);
-        } else if (mExposureLine == 3) { //
-            exposure_seek_bar.setBackgroundColor(highlightColor)
-            //exposure_seek_bar.setAlpha(0.5f);
-        } else if (mExposureLine == 4) {
-            wb_seekbar.setBackgroundColor(highlightColor)
-            //wb_seekbar.setAlpha(0.5f);
+        when (mExposureLine) {
+            0 -> iso_buttons_container.setBackgroundColor(highlightColor)
+            1 -> iso_seekbar.setBackgroundColor(highlightColor)
+            2 -> shutter_seekbar.setBackgroundColor(highlightColor)
+            3 -> exposure_seek_bar.setBackgroundColor(highlightColor)
+            4 -> wb_seekbar.setBackgroundColor(highlightColor)
         }
     }
 
@@ -1744,21 +746,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         highlightExposureUILine(false)
     }
 
-    /**
-     * Our order for lines is:
-     * -0: ISO buttons
-     * -1: ISO slider
-     * -2: Shutter speed
-     * -3: exposure seek bar
-     */
     private fun nextExposureUIItem() {
-        if (MyDebug.LOG) Log.d(TAG, "nextExposureUIItem")
         when (mExposureLine) {
             0 -> nextIsoItem(false)
             1 -> changeSeekbar(R.id.iso_seekbar, 10)
             2 -> changeSeekbar(R.id.exposure_time_seekbar, 5)
             3 ->                 //changeSeekbar(R.id.exposure_seekbar, 1);
-                // call via MainActivity.changeExposure(), to handle repeated zeroes
                 mainActivity.changeExposure(1)
 
             4 -> changeSeekbar(R.id.white_balance_seekbar, 3)
@@ -1766,13 +759,11 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     private fun previousExposureUIItem() {
-        if (MyDebug.LOG) Log.d(TAG, "previousExposureUIItem")
         when (mExposureLine) {
             0 -> nextIsoItem(true)
             1 -> changeSeekbar(R.id.iso_seekbar, -10)
             2 -> changeSeekbar(R.id.exposure_time_seekbar, -5)
             3 ->                 //changeSeekbar(R.id.exposure_seekbar, -1);
-                // call via MainActivity.changeExposure(), to handle repeated zeroes
                 mainActivity.changeExposure(-1)
 
             4 -> changeSeekbar(R.id.white_balance_seekbar, -3)
@@ -1780,10 +771,9 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     private fun nextIsoItem(previous: Boolean) {
-        if (MyDebug.LOG) Log.d(TAG, "nextIsoItem: " + previous)
         // Find current ISO
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
-        val current_iso: String = sharedPreferences.getString(
+        val currentIso: String = sharedPreferences.getString(
             PreferenceKeys.ISOPreferenceKey,
             CameraController.ISO_DEFAULT
         )!!
@@ -1791,48 +781,36 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         val step = if (previous) -1 else 1
         var found = false
         for (i in 0..<count) {
-            val button = isoButtons!!.get(i) as Button
-            val button_text = button.getText().toString()
-            if (ISOTextEquals(button_text, current_iso)) {
+            val button = isoButtons!![i] as Button
+            val button_text = button.text.toString()
+            if (ISOTextEquals(button_text, currentIso)) {
                 found = true
                 // Select next one, unless it's "Manual", which we skip since
                 // it's not practical in remote mode.
-                var nextButton = isoButtons!!.get((i + count + step) % count) as Button
-                val nextButton_text = nextButton.getText().toString()
+                var nextButton = isoButtons!![(i + count + step) % count] as Button
+                val nextButton_text = nextButton.text.toString()
                 if (nextButton_text.contains("m")) {
-                    nextButton = isoButtons!!.get((i + count + 2 * step) % count) as Button
+                    nextButton = isoButtons!![(i + count + 2 * step) % count] as Button
                 }
                 nextButton.callOnClick()
                 break
             }
         }
         if (!found) {
-            // For instance, we are in ISO manual mode and "M" is selected. default
-            // back to "Auto" to avoid being stuck since we're with a remote control
-            isoButtons!!.get(0)!!.callOnClick()
+            isoButtons!![0]!!.callOnClick()
         }
     }
 
-    /**
-     * Select element on exposure UI. Based on the value of mExposureLine
-     * // Our order for lines is:
-     * // - ISO buttons
-     * // - ISO slider
-     * // - Shutter speed
-     * // - exposure seek bar
-     */
     private fun selectExposureUILine() {
-        if (MyDebug.LOG) Log.d(TAG, "selectExposureUILine")
         if (!this.isExposureUIOpen) { // Safety check
             return
         }
 
         if (mExposureLine == 0) { // ISO presets
-            val iso_buttons_container = mainActivity.findViewById<ViewGroup>(R.id.iso_buttons)
-            iso_buttons_container.setBackgroundColor(highlightColorExposureUIElement)
-            //iso_buttons_container.setAlpha(1f);
+            val isoButtonsContainer = mainActivity.findViewById<ViewGroup>(R.id.iso_buttons)
+            isoButtonsContainer.setBackgroundColor(highlightColorExposureUIElement)
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
-            val current_iso: String = sharedPreferences.getString(
+            val currentIso: String = sharedPreferences.getString(
                 PreferenceKeys.ISOPreferenceKey,
                 CameraController.ISO_DEFAULT
             )!!
@@ -1841,14 +819,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             var manualButton: Button? = null
             for (view in isoButtons!!) {
                 val button = view as Button
-                val button_text = button.getText().toString()
-                if (ISOTextEquals(button_text, current_iso)) {
+                val buttonText = button.text.toString()
+                if (ISOTextEquals(buttonText, currentIso)) {
                     PopupView.setButtonSelected(button, true)
-                    //button.setBackgroundColor(highlightColorExposureUIElement);
-                    //button.setAlpha(0.3f);
                     found = true
                 } else {
-                    if (button_text.contains("m")) {
+                    if (buttonText.contains("m")) {
                         manualButton = button
                     }
                     PopupView.setButtonSelected(button, false)
@@ -1856,35 +832,27 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 }
             }
             if (!found && manualButton != null) {
-                // We are in manual ISO, highlight the "M" button
                 PopupView.setButtonSelected(manualButton, true)
                 manualButton.setBackgroundColor(highlightColorExposureUIElement)
-                //manualButton.setAlpha(0.3f);
             }
             mSelectingExposureUIElement = true
         } else if (mExposureLine == 1) {
-            // ISO seek bar - change color
-            val seek_bar = mainActivity.findViewById<View>(R.id.iso_seekbar)
-            //seek_bar.setAlpha(0.1f);
-            seek_bar.setBackgroundColor(highlightColorExposureUIElement)
+            mainActivity.binding.isoSeekbar.setBackgroundColor(highlightColorExposureUIElement)
             mSelectingExposureUIElement = true
         } else if (mExposureLine == 2) {
-            // ISO seek bar - change color
-            val seek_bar = mainActivity.findViewById<View>(R.id.exposure_time_seekbar)
-            //seek_bar.setAlpha(0.1f);
-            seek_bar.setBackgroundColor(highlightColorExposureUIElement)
+            mainActivity.binding.exposureTimeSeekbar.setBackgroundColor(
+                highlightColorExposureUIElement
+            )
             mSelectingExposureUIElement = true
         } else if (mExposureLine == 3) {
-            // Exposure compensation
-            val container = mainActivity.findViewById<View>(R.id.exposure_container)
-            //container.setAlpha(0.1f);
-            container.setBackgroundColor(highlightColorExposureUIElement)
+            mainActivity.binding.exposureContainer.setBackgroundColor(
+                highlightColorExposureUIElement
+            )
             mSelectingExposureUIElement = true
         } else if (mExposureLine == 4) {
-            // Manual white balance
-            val container = mainActivity.findViewById<View>(R.id.white_balance_seekbar)
-            //container.setAlpha(0.1f);
-            container.setBackgroundColor(highlightColorExposureUIElement)
+            mainActivity.binding.whiteBalanceSeekbar.setBackgroundColor(
+                highlightColorExposureUIElement
+            )
             mSelectingExposureUIElement = true
         }
     }
@@ -1991,14 +959,13 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         testUIButtonsMap.clear()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         val preview = mainActivity.preview
-        val view = mainActivity.findViewById<ImageButton>(R.id.exposure)
-        view.setImageResource(R.drawable.ic_exposure_red_48dp)
+//        val view = mainActivity.findViewById<ImageButton>(R.id.exposure)
+//        view.setImageResource(R.drawable.ic_exposure_red_48dp)
 
-        val slidersContainer = mainActivity.findViewById<View>(R.id.sliders_container)
-        slidersContainer.visibility = View.VISIBLE
+        mainActivity.binding.slidersContainer.visibility = View.VISIBLE
 
         val animation = AnimationUtils.loadAnimation(mainActivity, R.anim.fade_in)
-        slidersContainer.startAnimation(animation)
+        mainActivity.binding.slidersContainer.startAnimation(animation)
 
         val isoButtonsContainer = mainActivity.findViewById<ViewGroup>(R.id.iso_buttons)
         isoButtonsContainer.removeAllViews()
@@ -2007,7 +974,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         if (preview!!.isVideoRecording) {
             supportedIsos = arrayListOf()
         } else if (preview.supportsISORange()) {
-            if (MyDebug.LOG) Log.d(TAG, "supports ISO range")
             val minIso = preview.getMinimumISO()
             val maxIso = preview.getMaximumISO()
             val values: MutableList<String> = ArrayList()
@@ -2116,7 +1082,8 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                             if (preview.cameraController != null && preview.cameraController
                                     .captureResultHasExposureTime()
                             ) {
-                                val exposureTime = preview.cameraController.captureResultExposureTime()
+                                val exposureTime =
+                                    preview.cameraController.captureResultExposureTime()
                                 if (MyDebug.LOG) Log.d(
                                     TAG,
                                     "apply existing exposure time of $exposureTime"
@@ -2169,11 +1136,11 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                     setupExposureUI()
                 }
             })
-        val isoContainerView = mainActivity.findViewById<View>(R.id.iso_container)
+        val isoContainerView = mainActivity.binding.isoContainer
         isoContainerView.visibility = View.VISIBLE
 
-        val exposureSeekBar = mainActivity.findViewById<View>(R.id.exposure_container)
-        val manualExposureSeekBar = mainActivity.findViewById<View>(R.id.manual_exposure_container)
+        val exposureSeekBar = mainActivity.binding.exposureContainer
+        val manualExposureSeekBar = mainActivity.binding.manualExposureContainer
         val isoValue = mainActivity.applicationInterface!!.isoPref
         if (mainActivity.preview!!.usingCamera2API() && isoValue != CameraController.ISO_DEFAULT) {
             exposureSeekBar.visibility = View.GONE
@@ -2181,7 +1148,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             // with Camera2 API, when using manual ISO we instead show sliders for ISO range and exposure time
             if (mainActivity.preview!!.supportsISORange()) {
                 manualExposureSeekBar.visibility = View.VISIBLE
-                val exposureTimeSeekBar = mainActivity.findViewById<SeekBar>(R.id.exposure_time_seekbar)
+                val exposureTimeSeekBar = mainActivity.binding.exposureTimeSeekbar
                 if (mainActivity.preview!!.supportsExposureTime()) {
                     exposureTimeSeekBar.visibility = View.VISIBLE
                 } else {
@@ -2203,28 +1170,21 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             }
         }
 
-        val manual_white_balance_seek_bar =
-            mainActivity.findViewById<View>(R.id.manual_white_balance_container)
         if (mainActivity.preview!!.supportsWhiteBalanceTemperature()) {
-            // we also show slider for manual white balance, if in that mode
-            val white_balance_value = mainActivity.applicationInterface!!.whiteBalancePref
-            if (mainActivity.preview!!.usingCamera2API() && white_balance_value == "manual") {
-                manual_white_balance_seek_bar.visibility = View.VISIBLE
+            if (mainActivity.preview!!.usingCamera2API() && mainActivity.applicationInterface!!.whiteBalancePref == "manual") {
+                mainActivity.binding.manualWhiteBalanceContainer.visibility = View.VISIBLE
             } else {
-                manual_white_balance_seek_bar.visibility = View.GONE
+                mainActivity.binding.manualWhiteBalanceContainer.visibility = View.GONE
             }
         } else {
-            manual_white_balance_seek_bar.visibility = View.GONE
+            mainActivity.binding.manualWhiteBalanceContainer.visibility = View.GONE
         }
-
-        //layoutUI(); // needed to update alignment of exposure UI
     }
 
     /** If the exposure panel is open, updates the selected ISO button to match the current ISO value,
      * if a continuous range of ISO values are supported by the camera.
      */
     fun updateSelectedISOButton() {
-        if (MyDebug.LOG) Log.d(TAG, "updateSelectedISOButton")
         val preview = mainActivity.preview
         if (preview!!.supportsISORange() && this.isExposureUIOpen) {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
@@ -2233,11 +1193,9 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 CameraController.ISO_DEFAULT
             )!!
             // if the manual ISO value isn't one of the "preset" values, then instead highlight the manual ISO icon
-            if (MyDebug.LOG) Log.d(TAG, "current_iso: $currentIso")
             var found = false
             for (view in isoButtons!!) {
                 val button = view as Button
-                if (MyDebug.LOG) Log.d(TAG, "button: " + button.text)
                 val buttonText = button.text.toString()
                 if (ISOTextEquals(buttonText, currentIso)) {
                     PopupView.setButtonSelected(button, true)
@@ -2247,7 +1205,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 }
             }
             if (!found && currentIso != CameraController.ISO_DEFAULT) {
-                if (MyDebug.LOG) Log.d(TAG, "must be manual")
                 if (isoButtonManualIndex >= 0 && isoButtonManualIndex < isoButtons!!.size) {
                     val button = isoButtons!![isoButtonManualIndex] as Button
                     PopupView.setButtonSelected(button, true)
@@ -2257,69 +1214,22 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun setSeekbarZoom(newZoom: Int) {
-        if (MyDebug.LOG) Log.d(TAG, "setSeekbarZoom: $newZoom")
-        val zoomSeekBar = mainActivity.findViewById<SeekBar>(R.id.zoom_seekbar)
-        if (MyDebug.LOG) Log.d(TAG, "progress was: " + zoomSeekBar.progress)
-        zoomSeekBar.progress = mainActivity.preview!!.maxZoom - newZoom
-        if (MyDebug.LOG) Log.d(TAG, "progress is now: " + zoomSeekBar.progress)
+        mainActivity.binding.zoomSeekbar.progress = mainActivity.preview!!.maxZoom - newZoom
     }
 
     fun changeSeekbar(seekBarId: Int, change: Int) {
-        if (MyDebug.LOG) Log.d(TAG, "changeSeekbar: $change")
         val seekBar = mainActivity.findViewById<SeekBar>(seekBarId)
         val value = seekBar.progress
         var newValue = value + change
         if (newValue < 0) newValue = 0
         else if (newValue > seekBar.max) newValue = seekBar.max
-        if (MyDebug.LOG) {
-            Log.d(TAG, "value: $value")
-            Log.d(TAG, "new_value: $newValue")
-            Log.d(TAG, "max: " + seekBar.max)
-        }
         if (newValue != value) {
             seekBar.progress = newValue
         }
     }
 
-    /** Closes the exposure UI.
-     */
     fun closeExposureUI() {
-        val imageButton = mainActivity.findViewById<ImageButton>(R.id.exposure)
-        imageButton.setImageResource(R.drawable.ic_exposure_white_48dp)
 
-        clearRemoteControlForExposureUI() // must be called before we actually close the exposure panel
-        var view = mainActivity.findViewById<View>(R.id.sliders_container)
-        view.visibility = View.GONE
-        view = mainActivity.findViewById(R.id.iso_container)
-        view.visibility = View.GONE
-        view = mainActivity.findViewById(R.id.exposure_container)
-        view.visibility = View.GONE
-        view = mainActivity.findViewById(R.id.manual_exposure_container)
-        view.visibility = View.GONE
-        view = mainActivity.findViewById(R.id.manual_white_balance_container)
-        view.visibility = View.GONE
-    }
-
-    fun setPopupIcon() {
-        if (MyDebug.LOG) Log.d(TAG, "setPopupIcon")
-//        val popup = mainActivity.findViewById<ImageButton>(R.id.popup)
-//        val flashValue = mainActivity.preview!!.getCurrentFlashValue()
-//        if (MyDebug.LOG) Log.d(TAG, "flash_value: $flashValue")
-//        if (mainActivity.mainUI!!.showCycleFlashIcon()) {
-//            popup.setImageResource(R.drawable.popup)
-//        } else if (flashValue != null && flashValue == "flash_off") {
-//            popup.setImageResource(R.drawable.popup_flash_off)
-//        } else if (flashValue != null && (flashValue == "flash_torch" || flashValue == "flash_frontscreen_torch")) {
-//            popup.setImageResource(R.drawable.popup_flash_torch)
-//        } else if (flashValue != null && (flashValue == "flash_auto" || flashValue == "flash_frontscreen_auto")) {
-//            popup.setImageResource(R.drawable.popup_flash_auto)
-//        } else if (flashValue != null && (flashValue == "flash_on" || flashValue == "flash_frontscreen_on")) {
-//            popup.setImageResource(R.drawable.popup_flash_on)
-//        } else if (flashValue != null && flashValue == "flash_red_eye") {
-//            popup.setImageResource(R.drawable.popup_flash_red_eye)
-//        } else {
-//            popup.setImageResource(R.drawable.popup)
-//        }
     }
 
     fun closePopup() {
@@ -2332,19 +1242,8 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             clearSelectionState()
 
             popup_view_is_open = false
-            /* Not destroying the popup doesn't really gain any performance.
-             * Also there are still outstanding bugs to fix if we wanted to do this:
-             *   - Not resetting the popup menu when switching between photo and video mode. See test testVideoPopup().
-             *   - When changing options like flash/focus, the new option isn't selected when reopening the popup menu. See test
-             *     testPopup().
-             *   - Changing settings potentially means we have to recreate the popup, so the natural place to do this is in
-             *     MainActivity.updateForSettings(), but doing so makes the popup close when checking photo or video resolutions!
-             *     See test testSwitchResolution().
-             */
             if (cache_popup && !force_destroy_popup) {
                 popupView!!.visibility = View.GONE
-            } else {
-                destroyPopup()
             }
             mainActivity.initImmersiveMode() // to reset the timer when closing the popup
         }
@@ -2535,7 +1434,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
         mainActivity.enablePopupOnBackPressedCallback(true) // so that back button will close the popup instead of exiting the application
 
-        closeExposureUI()
         mainActivity.preview!!.cancelTimer() // best to cancel any timer, in case we take a photo while settings window is open, or when changing settings
         mainActivity.stopAudioListeners()
 
@@ -2574,7 +1472,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                         TAG,
                         "time after global layout: " + (System.currentTimeMillis() - time_s)
                     )
-                    layoutUI(true)
+                    //layoutUI(true)
                     if (MyDebug.LOG) Log.d(
                         TAG,
                         "time after layoutUI: " + (System.currentTimeMillis() - time_s)
@@ -2786,7 +1684,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                                 true
                             )
                             mainActivity.applicationInterface!!.drawPreview.updateSettings() // because we cache the auto-stabilise setting
-                            this.destroyPopup() // need to recreate popup in order to update the auto-level checkbox
                         } else if (!mainActivity.deviceSupportsAutoStabilise()) {
                             // n.b., need to check deviceSupportsAutoStabilise() - if we're in e.g. Panorama mode, we shouldn't display a toast (as then supportsAutoStabilise() returns false even if auto-level is supported on the device)
                             mainActivity.preview!!.showToast(

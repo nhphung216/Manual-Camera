@@ -2006,8 +2006,6 @@ public class MyApplicationInterface extends BasicApplicationInterface {
         main_activity.getMainUI().setTakePhotoIcon();
         View cancelPanoramaButton = main_activity.findViewById(R.id.cancel_panorama);
         cancelPanoramaButton.setVisibility(View.VISIBLE);
-        main_activity.getMainUI().closeExposureUI(); // close seekbars if open (popup is already closed when taking a photo)
-        // taking the photo will end up calling MainUI.showGUI(), which will hide the other on-screen icons
     }
 
     /** Ends panorama and submits the panoramic images to be processed.
@@ -2143,8 +2141,6 @@ public class MyApplicationInterface extends BasicApplicationInterface {
 
     @Override
     public void touchEvent(MotionEvent event) {
-        main_activity.getMainUI().closeExposureUI();
-        main_activity.getMainUI().closePopup();
         if (main_activity.usingKitKatImmersiveMode()) {
             main_activity.setImmersiveMode(false);
         }
@@ -2156,11 +2152,6 @@ public class MyApplicationInterface extends BasicApplicationInterface {
             main_activity.lockScreen();
         }
         main_activity.stopAudioListeners(); // important otherwise MediaRecorder will fail to start() if we have an audiolistener! Also don't want to have the speech recognizer going off
-        ImageButton view = main_activity.findViewById(R.id.take_photo);
-        view.setImageResource(R.drawable.take_video_recording);
-        view.setContentDescription(getContext().getResources().getString(R.string.stop_video));
-        view.setTag(R.drawable.take_video_recording); // for testing
-        main_activity.getMainUI().destroyPopup(); // as the available popup options change while recording video
     }
 
     private void startVideoSubtitlesTask(final VideoMethod video_method) {
@@ -2439,16 +2430,10 @@ public class MyApplicationInterface extends BasicApplicationInterface {
         if (MyDebug.LOG)
             Log.d(TAG, "startedVideo()");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (!(main_activity.getMainUI().inImmersiveMode() && main_activity.usingKitKatImmersiveModeEverything())) {
-                View pauseVideoButton = main_activity.findViewById(R.id.pause_video);
-                pauseVideoButton.setVisibility(View.VISIBLE);
-            }
             main_activity.getMainUI().setPauseVideoContentDescription();
         }
         if (main_activity.getPreview().supportsPhotoVideoRecording() && this.usePhotoVideoRecording()) {
             if (!(main_activity.getMainUI().inImmersiveMode() && main_activity.usingKitKatImmersiveModeEverything())) {
-                View takePhotoVideoButton = main_activity.findViewById(R.id.take_photo_when_video_recording);
-                takePhotoVideoButton.setVisibility(View.VISIBLE);
             }
         }
         if (main_activity.getMainUI().isExposureUIOpen()) {
@@ -2470,10 +2455,6 @@ public class MyApplicationInterface extends BasicApplicationInterface {
         if (MyDebug.LOG)
             Log.d(TAG, "stoppingVideo()");
         main_activity.unlockScreen();
-        ImageButton view = main_activity.findViewById(R.id.take_photo);
-        view.setImageResource(R.drawable.take_video_selector);
-        view.setContentDescription(getContext().getResources().getString(R.string.start_video));
-        view.setTag(R.drawable.take_video_selector); // for testing
     }
 
     @Override
@@ -2484,12 +2465,7 @@ public class MyApplicationInterface extends BasicApplicationInterface {
             Log.d(TAG, "uri " + uri);
             Log.d(TAG, "filename " + filename);
         }
-        View pauseVideoButton = main_activity.findViewById(R.id.pause_video);
-        pauseVideoButton.setVisibility(View.GONE);
-        View takePhotoVideoButton = main_activity.findViewById(R.id.take_photo_when_video_recording);
-        takePhotoVideoButton.setVisibility(View.GONE);
         main_activity.getMainUI().setPauseVideoContentDescription(); // just to be safe
-        main_activity.getMainUI().destroyPopup(); // as the available popup options change while recording video
         if (main_activity.getMainUI().isExposureUIOpen()) {
             if (MyDebug.LOG)
                 Log.d(TAG, "need to update exposure UI for stop video recording");
@@ -2504,15 +2480,11 @@ public class MyApplicationInterface extends BasicApplicationInterface {
 
         completeVideo(video_method, uri);
         boolean done = broadcastVideo(video_method, uri, filename);
-        if (MyDebug.LOG)
-            Log.d(TAG, "done? " + done);
 
         if (isVideoCaptureIntent()) {
             if (done && video_method == VideoMethod.FILE) {
                 // do nothing here - we end the activity from storageUtils.broadcastFile after the file has been scanned, as it seems caller apps seem to prefer the content:// Uri rather than one based on a File
             } else {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "from video capture intent");
                 Intent output = null;
                 if (done) {
                     // may need to pass back the Uri we saved to, if the calling application didn't specify a Uri
@@ -2521,8 +2493,6 @@ public class MyApplicationInterface extends BasicApplicationInterface {
                     if (video_method == VideoMethod.SAF || video_method == VideoMethod.MEDIASTORE) {
                         output = new Intent();
                         output.setData(uri);
-                        if (MyDebug.LOG)
-                            Log.d(TAG, "pass back output uri [saf]: " + output.getData());
                     }
                 }
                 main_activity.setResult(done ? Activity.RESULT_OK : Activity.RESULT_CANCELED, output);
@@ -2562,29 +2532,9 @@ public class MyApplicationInterface extends BasicApplicationInterface {
                 }
             }
             if (thumbnail != null) {
-//                ImageButton galleryButton = main_activity.findViewById(R.id.gallery);
-//                int width = thumbnail.getWidth();
-//                int height = thumbnail.getHeight();
-//                if( MyDebug.LOG )
-//                    Log.d(TAG, "    video thumbnail size " + width + " x " + height);
-//                if( width > galleryButton.getWidth() ) {
-//                    float scale = (float) galleryButton.getWidth() / width;
-//                    int new_width = Math.round(scale * width);
-//                    int new_height = Math.round(scale * height);
-//                    if( MyDebug.LOG )
-//                        Log.d(TAG, "    scale video thumbnail to " + new_width + " x " + new_height);
-//                    Bitmap scaled_thumbnail = Bitmap.createScaledBitmap(thumbnail, new_width, new_height, true);
-//                    // careful, as scaled_thumbnail is sometimes not a copy!
-//                    if( scaled_thumbnail != thumbnail ) {
-//                        thumbnail.recycle();
-//                        thumbnail = scaled_thumbnail;
-//                    }
-//                }
                 final Bitmap thumbnail_f = thumbnail;
                 main_activity.runOnUiThread(() -> updateThumbnail(thumbnail_f, true));
             }
-            if (MyDebug.LOG)
-                Log.d(TAG, "    time to create thumbnail: " + (System.currentTimeMillis() - debug_time));
         }
     }
 
@@ -2805,15 +2755,9 @@ public class MyApplicationInterface extends BasicApplicationInterface {
     public void hasPausedPreview(boolean paused) {
         if (MyDebug.LOG)
             Log.d(TAG, "hasPausedPreview: " + paused);
-        View shareButton = main_activity.findViewById(R.id.share);
-        View trashButton = main_activity.findViewById(R.id.trash);
         if (paused) {
-            shareButton.setVisibility(View.VISIBLE);
-            trashButton.setVisibility(View.VISIBLE);
             main_activity.enablePausePreviewOnBackPressedCallback(true); // so that pressing back button instead unpauses the preview
         } else {
-            shareButton.setVisibility(View.GONE);
-            trashButton.setVisibility(View.GONE);
             this.clearLastImages();
             main_activity.enablePausePreviewOnBackPressedCallback(false); // reenable standard back button behaviour
         }
@@ -2914,8 +2858,6 @@ public class MyApplicationInterface extends BasicApplicationInterface {
         if (MyDebug.LOG)
             Log.d(TAG, "cameraClosed");
         this.stopPanorama(true);
-        main_activity.getMainUI().closeExposureUI();
-        main_activity.getMainUI().destroyPopup(); // need to close popup - and when camera reopened, it may have different settings
         drawPreview.clearContinuousFocusMove();
     }
 

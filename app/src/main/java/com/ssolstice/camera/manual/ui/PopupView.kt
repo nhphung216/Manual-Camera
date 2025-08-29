@@ -118,8 +118,6 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         override fun onClick(option: String?) {
                             if (MyDebug.LOG) Log.d(TAG, "clicked flash: $option")
                             preview.updateFlash(option)
-                            main_activity.mainUI!!.setPopupIcon()
-                            main_activity.mainUI!!.destroyPopup() // need to recreate popup for new selection
                         }
                     })
             }
@@ -157,7 +155,6 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     override fun onClick(option: String?) {
                         if (MyDebug.LOG) Log.d(TAG, "clicked focus: $option")
                         preview.updateFocus(option, false, true)
-                        main_activity.mainUI!!.destroyPopup() // need to recreate popup for new selection
                     }
                 })
             if (MyDebug.LOG) Log.d(TAG, "PopupView time 4: " + (System.nanoTime() - debug_time))
@@ -636,7 +633,6 @@ class PopupView(context: Context?) : LinearLayout(context) {
                             } else {
                                 Log.e(TAG, "unknown aperture: " + option)
                             }
-                            main_activity.mainUI!!.destroyPopup() // need to recreate popup for new selection
                         }
                     })
             }
@@ -1479,7 +1475,6 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 false,
                 true
             ) // need to setup the camera again, as options may change (e.g., required burst mode, or whether RAW is allowed in this mode)
-            main_activity.mainUI!!.destroyPopup() // need to recreate popup for new selection
         }
     }
 

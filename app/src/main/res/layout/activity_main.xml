@@ -1,29 +1,24 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
-        android:foregroundGravity="center_vertical">
+        android:background="@color/black"
+        android:foregroundGravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- child view -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_margin="4dp"
             android:layout_height="wrap_content"
             android:foregroundGravity="center"
             android:gravity="center"
@@ -42,57 +37,42 @@
                 app:srcCompat="@drawable/settings" />
 
             <ImageButton
-                android:id="@+id/popup"
+                android:id="@+id/cycle_flash"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
                 android:background="@null"
                 android:backgroundTint="@null"
                 android:backgroundTintMode="src_in"
-                android:contentDescription="@string/action_popup"
-                android:padding="@dimen/onscreen_button_padding"
-                android:scaleType="fitCenter"
-                android:visibility="gone"
-                app:srcCompat="@drawable/popup" />
-
-            <ImageButton
-                android:id="@+id/exposure"
-                android:layout_width="@dimen/onscreen_button_size"
-                android:layout_height="@dimen/onscreen_button_size"
-                android:background="@null"
-                android:backgroundTint="@null"
-                android:backgroundTintMode="src_in"
-                android:contentDescription="@string/exposure"
+                android:contentDescription="@string/cycle_flash"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:srcCompat="@drawable/ic_exposure_white_48dp" />
+                app:srcCompat="@drawable/flash_off" />
 
             <ImageButton
-                android:id="@+id/exposure_lock"
+                android:id="@+id/face_detection"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
                 android:background="@null"
                 android:backgroundTint="@null"
                 android:backgroundTintMode="src_in"
-                android:contentDescription="@string/exposure_lock"
+                android:contentDescription="@string/face_detection_enable"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:srcCompat="@drawable/exposure_unlocked" />
-
+                app:srcCompat="@drawable/ic_face_white_48dp" />
 
             <ImageButton
-                android:id="@+id/white_balance_lock"
+                android:id="@+id/switch_multi_camera"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
                 android:background="@null"
                 android:backgroundTint="@null"
                 android:backgroundTintMode="src_in"
-                android:contentDescription="@string/white_balance_lock"
+                android:contentDescription="@string/action_settings"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="visible"
-                app:srcCompat="@drawable/white_balance_unlocked" />
+                app:srcCompat="@drawable/baseline_add_a_photo_white_48" />
 
             <ImageButton
                 android:id="@+id/cycle_raw"
@@ -173,32 +153,6 @@
                 app:srcCompat="@drawable/auto_stabilise_icon" />
 
             <ImageButton
-                android:id="@+id/cycle_flash"
-                android:layout_width="@dimen/onscreen_button_size"
-                android:layout_height="@dimen/onscreen_button_size"
-                android:background="@null"
-                android:backgroundTint="@null"
-                android:backgroundTintMode="src_in"
-                android:contentDescription="@string/cycle_flash"
-                android:padding="@dimen/onscreen_button_padding"
-                android:scaleType="fitCenter"
-                android:visibility="visible"
-                app:srcCompat="@drawable/flash_off" />
-
-            <ImageButton
-                android:id="@+id/face_detection"
-                android:layout_width="@dimen/onscreen_button_size"
-                android:layout_height="@dimen/onscreen_button_size"
-                android:background="@null"
-                android:backgroundTint="@null"
-                android:backgroundTintMode="src_in"
-                android:contentDescription="@string/face_detection_enable"
-                android:padding="@dimen/onscreen_button_padding"
-                android:scaleType="fitCenter"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_face_white_48dp" />
-
-            <ImageButton
                 android:id="@+id/audio_control"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
@@ -224,355 +178,244 @@
                 android:visibility="gone"
                 app:srcCompat="@drawable/baseline_bluetooth_white_48" />
 
-            <!-- should be at left-most -->
-            <ImageButton
-                android:id="@+id/trash"
-                android:layout_width="@dimen/onscreen_button_size"
-                android:layout_height="@dimen/onscreen_button_size"
-                android:background="@null"
-                android:backgroundTint="@null"
-                android:backgroundTintMode="src_in"
-                android:contentDescription="@string/trash"
-                android:padding="@dimen/onscreen_button_padding"
-                android:scaleType="fitCenter"
-                android:visibility="gone"
-                app:srcCompat="@drawable/baseline_delete_white_48" />
-
-            <ImageButton
-                android:id="@+id/share"
-                android:layout_width="@dimen/onscreen_button_size"
-                android:layout_height="@dimen/onscreen_button_size"
-                android:background="@null"
-                android:backgroundTint="@null"
-                android:backgroundTintMode="src_in"
-                android:contentDescription="@string/share"
-                android:padding="@dimen/onscreen_button_padding"
-                android:scaleType="fitCenter"
-                android:visibility="gone"
-                app:srcCompat="@drawable/share" />
-
         </LinearLayout>
     </HorizontalScrollView>
 
-    <ImageButton
-        android:id="@+id/take_photo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@null"
-        android:contentDescription="@string/take_photo"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        android:stateListAnimator="@animator/button_animation"
-        android:visibility="gone"
-        app:srcCompat="@drawable/take_photo_selector" />
-
-    <ImageButton
-        android:id="@+id/switch_camera"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/circle_background"
-        android:backgroundTint="@null"
-        android:backgroundTintMode="src_in"
-        android:contentDescription="@string/switch_to_front_camera"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        android:stateListAnimator="@animator/button_animation"
-        android:visibility="gone"
-        app:srcCompat="@drawable/switch_camera" />
-
-    <ImageButton
-        android:id="@+id/switch_multi_camera"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/circle_background"
-        android:backgroundTint="@null"
-        android:backgroundTintMode="src_in"
-        android:contentDescription="@string/switch_multi_camera"
-        android:paddingLeft="15dp"
-        android:paddingTop="12dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="18dp"
-        android:scaleType="fitCenter"
-        android:stateListAnimator="@animator/button_animation"
-        android:visibility="gone"
-        app:srcCompat="@drawable/baseline_add_a_photo_white_48" />
-
-    <ImageButton
-        android:id="@+id/pause_video"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@null"
-        android:contentDescription="@string/pause_video"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_pause_circle_outline_white_48dp" />
-
-    <ImageButton
-        android:id="@+id/cancel_panorama"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@null"
-        android:contentDescription="@string/cancel_panorama"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        android:stateListAnimator="@animator/button_animation"
-        android:visibility="gone"
-        app:srcCompat="@drawable/baseline_close_white_48" />
-
-    <!-- don't have alpha too low, as otherwise flags up Google Play prelaunch warning about contrast ratio too low (should be at least 3)-->
-    <ImageButton
-        android:id="@+id/switch_video"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:alpha="0.61"
-        android:background="@null"
-        android:contentDescription="@string/switch_to_video"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        android:stateListAnimator="@animator/button_animation"
-        android:visibility="gone"
-        app:srcCompat="@drawable/take_video" />
-
-    <!-- need large padding than pause_video, to reflect that pause_video icon has padding built into the png image -->
-    <ImageButton
-        android:id="@+id/take_photo_when_video_recording"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@null"
-        android:contentDescription="@string/take_photo"
-        android:padding="14dp"
-        android:scaleType="fitCenter"
-        android:stateListAnimator="@animator/button_animation"
-        android:visibility="gone"
-        app:srcCompat="@drawable/take_photo_selector" />
-
-    <ZoomControls
-        android:id="@+id/zoom"
-        android:layout_width="160dp"
-        android:layout_height="50dp"
-        android:alpha="0.5"
-        android:contentDescription="@string/zoom" />
-
-    <SeekBar
-        android:id="@+id/zoom_seekbar"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@color/seekbar_background"
-        android:contentDescription="@string/zoom"
-        android:visibility="gone" />
-
-    <!-- n.b., layout_marginLeft set programmatically in DrawPreview -->
-    <SeekBar
-        android:id="@+id/focus_seekbar"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginBottom="0dp"
-        android:background="@color/seekbar_background"
-        android:contentDescription="@string/focus_distance"
-        android:visibility="gone" />
-
-    <!-- n.b., layout_marginLeft set programmatically in DrawPreview -->
-    <SeekBar
-        android:id="@+id/focus_bracketing_target_seekbar"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginBottom="0dp"
-        android:background="@color/seekbar_background"
-        android:contentDescription="@string/focus_bracketing_target_distance"
-        android:visibility="gone" />
-
-    <View
-        android:id="@+id/gui_anchor"
-        android:layout_width="0dp"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="1dp"
-        android:scaleType="fitCenter"
-        android:visibility="invisible" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScrollView">
 
-    <!-- padding set to 0 to maximise the size of the thumbnail shown; background is transparent for
-        when the thumbnail aspect ratio doesn't match the button aspect ratio, to avoid showing a
-        shaded background
-        -->
-    <ImageButton
-        android:id="@+id/gallery2"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:background="#00000000"
-        android:backgroundTint="@null"
-        android:backgroundTintMode="src_in"
-        android:contentDescription="@string/gallery"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
-        android:visibility="gone"
-        app:srcCompat="@drawable/baseline_photo_library_white_48" />
-
-    <LinearLayout
-        android:id="@+id/sliders_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@color/seekbar_background"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <RelativeLayout
-            android:id="@+id/iso_container"
+        <FrameLayout
+            android:id="@+id/preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_centerInParent="true" />
+
+        <ImageButton
+            android:id="@+id/cancel_panorama"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@null"
+            android:contentDescription="@string/cancel_panorama"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:stateListAnimator="@animator/button_animation"
+            android:visibility="gone"
+            app:srcCompat="@drawable/baseline_close_white_48" />
+
+        <ZoomControls
+            android:id="@+id/zoom"
+            android:layout_width="160dp"
+            android:layout_height="50dp"
+            android:alpha="0.5"
+            android:contentDescription="@string/zoom" />
+
+        <SeekBar
+            android:id="@+id/zoom_seekbar"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:background="@color/seekbar_background"
+            android:contentDescription="@string/zoom"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/gui_anchor"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="1dp"
+            android:scaleType="fitCenter"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:id="@+id/sliders_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@color/seekbar_background"
+            android:orientation="vertical"
             android:visibility="gone">
 
             <RelativeLayout
-                android:id="@+id/iso_buttons"
+                android:id="@+id/iso_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:visibility="gone">
 
-        </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/iso_buttons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
 
-        <RelativeLayout
-            android:id="@+id/exposure_container"
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/exposure_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/exposure_seekbar_text"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="@string/exposure_compensation"
+                    app:srcCompat="@drawable/ic_exposure_white_48dp" />
+
+                <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
+                <SeekBar
+                    android:id="@+id/exposure_seekbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/exposure_seekbar_text"
+                    android:layout_alignBottom="@+id/exposure_seekbar_text"
+                    android:layout_toEndOf="@+id/exposure_seekbar_text"
+                    android:alpha="0.9"
+                    android:contentDescription="@string/exposure_compensation_seekbar" />
+
+                <ZoomControls
+                    android:id="@+id/exposure_seekbar_zoom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/exposure_seekbar"
+                    android:layout_alignStart="@+id/exposure_seekbar"
+                    android:layout_alignEnd="@+id/exposure_seekbar"
+                    android:contentDescription="@string/exposure_compensation_zoom"
+                    android:gravity="center" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/manual_exposure_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/iso_seekbar_text"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="@string/iso"
+                    app:srcCompat="@drawable/iso_icon" />
+
+                <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
+                <SeekBar
+                    android:id="@+id/iso_seekbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/iso_seekbar_text"
+                    android:layout_alignBottom="@+id/iso_seekbar_text"
+                    android:layout_toEndOf="@+id/iso_seekbar_text"
+                    android:alpha="0.9"
+                    android:contentDescription="@string/iso" />
+
+                <ImageView
+                    android:id="@+id/exposure_time_seekbar_text"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/iso_seekbar"
+                    android:contentDescription="@string/exposure_shutter_speed"
+                    app:srcCompat="@drawable/baseline_shutter_speed_white_48" />
+
+                <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
+                <SeekBar
+                    android:id="@+id/exposure_time_seekbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/exposure_time_seekbar_text"
+                    android:layout_alignBottom="@+id/exposure_time_seekbar_text"
+                    android:layout_toEndOf="@+id/exposure_time_seekbar_text"
+                    android:alpha="0.9"
+                    android:contentDescription="@string/exposure_shutter_speed" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/manual_white_balance_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/white_balance_seekbar_text"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="@string/white_balance"
+                    app:srcCompat="@drawable/ic_colorize_white_48dp" />
+
+                <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
+                <SeekBar
+                    android:id="@+id/white_balance_seekbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/white_balance_seekbar_text"
+                    android:layout_alignBottom="@+id/white_balance_seekbar_text"
+                    android:layout_toEndOf="@+id/white_balance_seekbar_text"
+                    android:alpha="0.9"
+                    android:contentDescription="@string/white_balance" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/locker"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <ScrollView
+            android:id="@+id/popup_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone">
+            android:fadeScrollbars="false" />
 
-            <ImageView
-                android:id="@+id/exposure_seekbar_text"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:contentDescription="@string/exposure_compensation"
-                app:srcCompat="@drawable/ic_exposure_white_48dp" />
+        <ScrollView
+            android:id="@+id/hide_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            android:importantForAccessibility="no"
+            android:visibility="gone" />
 
-            <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
-            <SeekBar
-                android:id="@+id/exposure_seekbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/exposure_seekbar_text"
-                android:layout_alignBottom="@+id/exposure_seekbar_text"
-                android:layout_toEndOf="@+id/exposure_seekbar_text"
-                android:alpha="0.9"
-                android:contentDescription="@string/exposure_compensation_seekbar" />
-
-            <ZoomControls
-                android:id="@+id/exposure_seekbar_zoom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/exposure_seekbar"
-                android:layout_alignStart="@+id/exposure_seekbar"
-                android:layout_alignEnd="@+id/exposure_seekbar"
-                android:contentDescription="@string/exposure_compensation_zoom"
-                android:gravity="center" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/manual_exposure_container"
-            android:layout_width="wrap_content"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone">
+            android:layout_alignParentBottom="true" />
 
-            <ImageView
-                android:id="@+id/iso_seekbar_text"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:contentDescription="@string/iso"
-                app:srcCompat="@drawable/iso_icon" />
+        <SeekBar
+            android:id="@+id/focus_seekbar"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/seekbar_background"
+            android:contentDescription="@string/focus_distance"
+            android:visibility="gone" />
 
-            <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
-            <SeekBar
-                android:id="@+id/iso_seekbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/iso_seekbar_text"
-                android:layout_alignBottom="@+id/iso_seekbar_text"
-                android:layout_toEndOf="@+id/iso_seekbar_text"
-                android:alpha="0.9"
-                android:contentDescription="@string/iso" />
+        <SeekBar
+            android:id="@+id/focus_bracketing_target_seekbar"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/seekbar_background"
+            android:contentDescription="@string/focus_bracketing_target_distance"
+            android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/exposure_time_seekbar_text"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_below="@+id/iso_seekbar"
-                android:contentDescription="@string/exposure_shutter_speed"
-                app:srcCompat="@drawable/baseline_shutter_speed_white_48" />
+    </RelativeLayout>
 
-            <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
-            <SeekBar
-                android:id="@+id/exposure_time_seekbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/exposure_time_seekbar_text"
-                android:layout_alignBottom="@+id/exposure_time_seekbar_text"
-                android:layout_toEndOf="@+id/exposure_time_seekbar_text"
-                android:alpha="0.9"
-                android:contentDescription="@string/exposure_shutter_speed" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/manual_white_balance_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/white_balance_seekbar_text"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:contentDescription="@string/white_balance"
-                app:srcCompat="@drawable/ic_colorize_white_48dp" />
-
-            <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
-            <SeekBar
-                android:id="@+id/white_balance_seekbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/white_balance_seekbar_text"
-                android:layout_alignBottom="@+id/white_balance_seekbar_text"
-                android:layout_toEndOf="@+id/white_balance_seekbar_text"
-                android:alpha="0.9"
-                android:contentDescription="@string/white_balance" />
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/locker"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <ScrollView
-        android:id="@+id/popup_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fadeScrollbars="false" />
-
-    <ScrollView
-        android:id="@+id/hide_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/black"
-        android:importantForAccessibility="no"
-        android:visibility="gone" />
-
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/compose_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

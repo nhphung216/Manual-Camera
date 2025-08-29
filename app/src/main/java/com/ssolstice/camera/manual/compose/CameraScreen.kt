@@ -56,7 +56,6 @@ fun CameraScreen(
     onTakePhotoVideoSnapshot: () -> Unit = {},
     onPauseVideo: () -> Unit = {},
     onSwitchCamera: () -> Unit = {},
-    onSwitchMultiCamera: () -> Unit = {},
     showCameraSettings: () -> Unit = {},
     showConfigTableSettings: () -> Unit = {},
 
