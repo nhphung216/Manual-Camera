@@ -1822,7 +1822,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         super.onStop()
 
         // we stop location listening in onPause, but done here again just to be certain!
-        applicationInterface!!.getLocationSupplier().freeLocationListeners()
+        applicationInterface!!.locationSupplier.freeLocationListeners()
     }
 
     override fun onDestroy() {
@@ -1883,7 +1883,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
 
         // we stop location listening in onPause, but done here again just to be certain!
-        applicationInterface!!.getLocationSupplier().freeLocationListeners()
+        applicationInterface!!.locationSupplier.freeLocationListeners()
 
         super.onDestroy()
         if (MyDebug.LOG) Log.d(TAG, "onDestroy done")
@@ -2082,9 +2082,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         // this is intentionally true, not false, as the uncovering happens in DrawPreview when we receive frames from the camera after it's opened
         // (this should already have been set from the call in onPause(), but we set it here again just in case)
-        applicationInterface!!.drawPreview.setCoverPreview(true)
+        applicationInterface!!.drawPreview?.setCoverPreview(true)
 
-        applicationInterface!!.drawPreview.clearDimPreview() // shouldn't be needed, but just in case the dim preview flag got set somewhere
+        applicationInterface!!.drawPreview?.clearDimPreview() // shouldn't be needed, but just in case the dim preview flag got set somewhere
 
         cancelImageSavingNotification()
 
@@ -2114,7 +2114,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         //speechControl.initSpeechRecognizer();
         initLocation()
         initGyroSensors()
-        applicationInterface!!.imageSaver.onResume()
+        applicationInterface!!.imageSaver?.onResume()
         soundPoolManager!!.initSound()
         soundPoolManager!!.loadSound(R.raw.mybeep)
         soundPoolManager!!.loadSound(R.raw.mybeep_hi)
@@ -2152,7 +2152,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 if (MyDebug.LOG) Log.d(TAG, "    most recent uri exists")
                 // also re-allow ghost image again in case that option is set (since we won't be
                 // doing this via updateGalleryIcon())
-                applicationInterface!!.drawPreview.allowGhostImage()
+                applicationInterface!!.drawPreview?.allowGhostImage()
             } else {
                 if (MyDebug.LOG) Log.d(TAG, "    most recent uri no longer valid")
                 updateGalleryIcon()
@@ -2244,14 +2244,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         applicationInterface!!.locationSupplier.freeLocationListeners()
         applicationInterface!!.stopPanorama(true) // in practice not needed as we should stop panorama when camera is closed, but good to do it explicitly here, before disabling the gyro sensors
         applicationInterface!!.gyroSensor.disableSensors()
-        applicationInterface!!.imageSaver.onPause()
+        applicationInterface!!.imageSaver?.onPause()
         soundPoolManager!!.releaseSound()
         applicationInterface!!.clearLastImages() // this should happen when pausing the preview, but call explicitly just to be safe
-        applicationInterface!!.drawPreview.clearGhostImage()
+        applicationInterface!!.drawPreview?.clearGhostImage()
         preview?.onPause()
-        applicationInterface!!.drawPreview.setCoverPreview(true) // must be after we've closed the preview (otherwise risk that further frames from preview will unset the cover_preview flag in DrawPreview)
+        applicationInterface!!.drawPreview?.setCoverPreview(true) // must be after we've closed the preview (otherwise risk that further frames from preview will unset the cover_preview flag in DrawPreview)
 
-        if (applicationInterface!!.imageSaver.nImagesToSave > 0) {
+        if ((applicationInterface!!.imageSaver?.nImagesToSave ?: 0) > 0) {
             createImageSavingNotification()
         }
 
@@ -2366,7 +2366,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     else if (start_rotation > 180) start_rotation -= 360
                     mainUI?.layoutUIWithRotation(start_rotation.toFloat())
                 }
-                applicationInterface!!.drawPreview.updateSettings()
+                applicationInterface!!.drawPreview?.updateSettings()
 
                 hasOldSystemOrientation = true
                 oldSystemOrientation = newSystemOrientation
@@ -2485,7 +2485,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun waitUntilImageQueueEmpty() {
         if (MyDebug.LOG) Log.d(TAG, "waitUntilImageQueueEmpty")
-        applicationInterface!!.imageSaver.waitUntilDone()
+        applicationInterface!!.imageSaver?.waitUntilDone()
     }
 
     /**
@@ -2501,7 +2501,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             // in case we're in Standard photo mode
             val current_size = preview?.getCurrentPictureSize()
             if (current_size != null && current_size.supports_burst) {
-                val photo_mode = applicationInterface!!.getPhotoMode()
+                val photo_mode = applicationInterface!!.photoMode
                 if (photo_mode == PhotoMode.Standard && applicationInterface!!.isRawOnly(photo_mode)) {
                     if (MyDebug.LOG) Log.d(TAG, "fast burst not supported in RAW-only mode")
                     // in JPEG+RAW mode, a continuous fast burst will only produce JPEGs which is fine; but in RAW only mode,
@@ -2568,7 +2568,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
 
             mainUI?.updateCycleRawIcon()
-            applicationInterface!!.drawPreview.updateSettings()
+            applicationInterface!!.drawPreview?.updateSettings()
             preview?.reopenCamera() // needed for RAW options to take effect
         }
     }
@@ -2584,7 +2584,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
 
         mainUI?.updateStoreLocationIcon()
-        applicationInterface!!.drawPreview.updateSettings() // because we cache the geotagging setting
+        applicationInterface!!.drawPreview?.updateSettings() // because we cache the geotagging setting
         initLocation() // required to enable or disable GPS, also requests permission if necessary
         this.closePopup()
 
@@ -2651,7 +2651,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
 
         mainUI?.updateStampIcon()
-        applicationInterface!!.drawPreview.updateSettings()
+        applicationInterface!!.drawPreview?.updateSettings()
         preview?.showToast(
             stamp_toast, if (value) R.string.stamp_enabled else R.string.stamp_disabled, true
         )
@@ -2659,7 +2659,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun clickedFocusPeaking() {
         if (MyDebug.LOG) Log.d(TAG, "clickedFocusPeaking")
-        var value = applicationInterface!!.getFocusPeakingPref()
+        var value = applicationInterface!!.focusPeakingPref
         value = !value
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -2671,12 +2671,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
 
         mainUI?.updateFocusPeakingIcon()
-        applicationInterface!!.drawPreview.updateSettings() // needed to update focus peaking
+        applicationInterface!!.drawPreview?.updateSettings() // needed to update focus peaking
     }
 
     fun clickedAutoLevel() {
         if (MyDebug.LOG) Log.d(TAG, "clickedAutoLevel")
-        var value = applicationInterface!!.getAutoStabilisePref()
+        var value = applicationInterface!!.autoStabilisePref
         value = !value
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -2707,7 +2707,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
 
         mainUI?.updateAutoLevelIcon()
-        applicationInterface!!.drawPreview.updateSettings() // because we cache the auto-stabilise setting
+        applicationInterface?.drawPreview?.updateSettings() // because we cache the auto-stabilise setting
         this.closePopup()
     }
 
@@ -2852,7 +2852,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 //        switchCameraButton.isEnabled = false
 //        switchMultiCameraButton.isEnabled = false
         applicationInterface!!.reset(true)
-        this.applicationInterface!!.drawPreview.setDimPreview(true)
+        this.applicationInterface!!.drawPreview?.setDimPreview(true)
         this.preview?.setCamera(cameraId, cameraIdSPhysical)
 //        switchCameraButton.isEnabled = true
 //        switchMultiCameraButton.isEnabled = true
@@ -3273,7 +3273,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             )
         }
         bundle.putString(
-            "photo_mode_string", getPhotoModeString(applicationInterface!!.getPhotoMode(), true)
+            "photo_mode_string", getPhotoModeString(applicationInterface!!.photoMode, true)
         )
         bundle.putBoolean("supports_auto_stabilise", this.supports_auto_stabilise)
         bundle.putBoolean("supports_flash", this.preview?.supportsFlash() == true)
@@ -3288,7 +3288,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         bundle.putBoolean("supports_hdr", this.supportsHDR())
         bundle.putBoolean("supports_nr", this.supportsNoiseReduction())
         bundle.putBoolean("supports_panorama", this.supportsPanorama())
-        bundle.putBoolean("has_gyro_sensors", applicationInterface!!.getGyroSensor().hasSensors())
+        bundle.putBoolean("has_gyro_sensors", applicationInterface!!.gyroSensor.hasSensors())
         bundle.putBoolean("supports_expo_bracketing", this.supportsExpoBracketing())
         bundle.putBoolean("supports_preview_bitmaps", this.supportsPreviewBitmaps())
         bundle.putInt("max_expo_bracketing_n_images", this.maxExpoBracketingNImages())
@@ -3733,7 +3733,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         if (!update_camera) {
             // don't try to update camera
         } else if (need_reopen || preview?.cameraController == null) { // if camera couldn't be opened before, might as well try again
-            if (allow_dim) applicationInterface!!.drawPreview.setDimPreview(true)
+            if (allow_dim) applicationInterface!!.drawPreview?.setDimPreview(true)
             preview?.reopenCamera()
             if (MyDebug.LOG) {
                 Log.d(
@@ -3749,7 +3749,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     "updateForSettings: time after set display orientation: " + (System.currentTimeMillis() - debug_time)
                 )
             }
-            if (allow_dim) applicationInterface!!.drawPreview.setDimPreview(true)
+            if (allow_dim) applicationInterface!!.drawPreview?.setDimPreview(true)
             preview?.pausePreview(true)
             if (MyDebug.LOG) {
                 Log.d(
@@ -3868,12 +3868,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // to mark settings that need us to update DrawPreview but not call updateForSettings().
         // However, DrawPreview.updateSettings() should be a quick function (the main point is
         // to avoid reading the preferences in every single frame).
-        applicationInterface!!.drawPreview.updateSettings()
+        applicationInterface!!.drawPreview?.updateSettings()
 
         // Set the flag to cover the preview until the camera is open and receiving frames again
         // (for Camera2 API) - avoids showing a flash of the preview from before the user went to
         // the settings.
-        applicationInterface!!.drawPreview.setCoverPreview(true)
+        applicationInterface!!.drawPreview?.setCoverPreview(true)
 
         if (preferencesListener.anyChange()) {
             mainUI?.updateOnScreenIcons()
@@ -4237,7 +4237,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                         }
                                         // needed for OnePlus Pad when rotating, to avoid delay in updating last_take_photo_top_time (affects placement of on-screen text e.g. zoom)
                                         // need to do this from handler for this to take effect (otherwise last_take_photo_top_time won't update to new value)
-                                        applicationInterface!!.drawPreview.onNavigationGapChanged()
+                                        applicationInterface!!.drawPreview?.onNavigationGapChanged()
 
                                         if (MyDebug.LOG) Log.d(
                                             TAG, "layout UI due to changing navigation_gap"
@@ -4393,7 +4393,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         // don't allow the kitkat-style immersive mode for panorama mode (problem that in "full" immersive mode, the gyro spot can't be seen - we could fix this, but simplest to just disallow)
         val enable_immersive =
-            on && usingKitKatImmersiveMode() && applicationInterface!!.getPhotoMode() != PhotoMode.Panorama
+            on && usingKitKatImmersiveMode() && applicationInterface!!.photoMode != PhotoMode.Panorama
         if (MyDebug.LOG) Log.d(TAG, "enable_immersive?: " + enable_immersive)
 
         if (edgeToEdgeMode) {
@@ -4584,7 +4584,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         this.isCameraInBackground = true
 
         // we disable location listening when showing settings or a dialog etc - saves battery life, also better for privacy
-        applicationInterface!!.getLocationSupplier().freeLocationListeners()
+        applicationInterface!!.locationSupplier.freeLocationListeners()
 
         // similarly we close the camera
         preview?.onPause(false)
@@ -4938,7 +4938,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 if (thumbnail != null) {
                     if (MyDebug.LOG) Log.d(TAG, "set gallery button to thumbnail")
                     updateGalleryIcon(thumbnail)
-                    applicationInterface!!.drawPreview.updateThumbnail(
+                    applicationInterface!!.drawPreview?.updateThumbnail(
                         thumbnail, is_video, false
                     ) // needed in case last ghost image is enabled
                 } else {
@@ -4996,7 +4996,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
      */
     fun imageQueueChanged() {
         if (MyDebug.LOG) Log.d(TAG, "imageQueueChanged")
-        applicationInterface!!.drawPreview.setImageQueueFull(!applicationInterface!!.canTakeNewPhoto())
+        applicationInterface!!.drawPreview?.setImageQueueFull(!applicationInterface!!.canTakeNewPhoto())
 
         /*if( applicationInterface.getImageSaver().getNImagesToSave() == 0) {
             cancelImageSavingNotification();
@@ -5046,16 +5046,16 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     private fun openGallery() {
         if (MyDebug.LOG) Log.d(TAG, "openGallery")
         //Intent intent = new Intent(Intent.ACTION_VIEW, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        var uri = applicationInterface!!.getStorageUtils().getLastMediaScanned()
+        var uri = applicationInterface!!.storageUtils.getLastMediaScanned()
         var is_raw =
-            uri != null && applicationInterface!!.getStorageUtils().getLastMediaScannedIsRaw()
+            uri != null && applicationInterface!!.storageUtils.getLastMediaScannedIsRaw()
         if (MyDebug.LOG && uri != null) {
             Log.d(TAG, "found cached most recent uri: " + uri)
             Log.d(TAG, "    is_raw: " + is_raw)
         }
         if (uri == null) {
             if (MyDebug.LOG) Log.d(TAG, "go to latest media")
-            val media = applicationInterface!!.getStorageUtils().getLatestMedia()
+            val media = applicationInterface!!.storageUtils.getLatestMedia()
             if (media != null) {
                 if (MyDebug.LOG) {
                     Log.d(TAG, "latest uri:" + media.uri)
@@ -5222,7 +5222,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         if (MyDebug.LOG) Log.d(TAG, "update folder history for saf")
                         updateFolderHistorySAF(treeUri.toString())
 
-                        val file = applicationInterface!!.getStorageUtils().getImageFolderPath()
+                        val file = applicationInterface!!.storageUtils.getImageFolderPath()
                         if (file != null) {
                             preview?.showToast(
                                 null,
@@ -5362,12 +5362,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         if (MyDebug.LOG) Log.d(TAG, "updateSaveFolder: " + new_save_location)
         if (new_save_location != null) {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-            val orig_save_location = this.applicationInterface!!.getStorageUtils().getSaveLocation()
+            val orig_save_location = this.applicationInterface!!.storageUtils.getSaveLocation()
 
             if (orig_save_location != new_save_location) {
                 if (MyDebug.LOG) Log.d(
                     TAG,
-                    "changed save_folder to: " + this.applicationInterface!!.getStorageUtils()
+                    "changed save_folder to: " + this.applicationInterface!!.storageUtils
                         .getSaveLocation()
                 )
                 val editor = sharedPreferences.edit()
@@ -5378,7 +5378,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     this.storageUtils!!.getSaveLocation(), true
                 )
                 val save_folder_name = getHumanReadableSaveFolder(
-                    this.applicationInterface!!.getStorageUtils().getSaveLocation()
+                    this.applicationInterface!!.storageUtils.getSaveLocation()
                 )
                 this.preview?.showToast(
                     null,
@@ -5501,9 +5501,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
      */
     private fun getHumanReadableSaveFolder(save_folder: String): String {
         var save_folder = save_folder
-        if (applicationInterface!!.getStorageUtils().isUsingSAF()) {
+        if (applicationInterface!!.storageUtils.isUsingSAF()) {
             // try to get human readable form if possible
-            val file_name = applicationInterface!!.getStorageUtils().getFilePathFromDocumentUriSAF(
+            val file_name = applicationInterface!!.storageUtils.getFilePathFromDocumentUriSAF(
                 Uri.parse(save_folder), true
             )
             if (file_name != null) {
@@ -5524,7 +5524,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
      */
     private fun longClickedGallery() {
         if (MyDebug.LOG) Log.d(TAG, "longClickedGallery")
-        if (applicationInterface!!.getStorageUtils().isUsingSAF()) {
+        if (applicationInterface!!.storageUtils.isUsingSAF()) {
             if (this.saveLocationHistorySAF == null || saveLocationHistorySAF!!.size() <= 1) {
                 if (MyDebug.LOG) Log.d(TAG, "go straight to choose folder dialog for SAF")
                 openFolderChooserDialogSAF(false)
@@ -5538,7 +5538,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
         }
 
-        val history = (if (applicationInterface?.getStorageUtils()
+        val history = (if (applicationInterface?.storageUtils
                 ?.isUsingSAF() == true
         ) this.saveLocationHistorySAF else save_location_history)!!
         showPreview(false)
@@ -5568,7 +5568,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             android.R.string.yes, object : DialogInterface.OnClickListener {
                                 override fun onClick(dialog: DialogInterface?, which: Int) {
                                     if (MyDebug.LOG) Log.d(TAG, "confirmed clear save history")
-                                    if (applicationInterface!!.getStorageUtils()
+                                    if (applicationInterface!!.storageUtils
                                             .isUsingSAF()
                                     ) clearFolderHistorySAF()
                                     else clearFolderHistory()
@@ -5591,7 +5591,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         }).show()
                 } else if (which == new_index) {
                     if (MyDebug.LOG) Log.d(TAG, "selected choose new folder")
-                    if (applicationInterface!!.getStorageUtils().isUsingSAF()) {
+                    if (applicationInterface!!.storageUtils.isUsingSAF()) {
                         openFolderChooserDialogSAF(false)
                     } else {
                         openFolderChooserDialog()
@@ -5611,7 +5611,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         val sharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
                         val editor = sharedPreferences.edit()
-                        if (applicationInterface!!.getStorageUtils().isUsingSAF()) editor.putString(
+                        if (applicationInterface!!.storageUtils.isUsingSAF()) editor.putString(
                             PreferenceKeys.SaveLocationSAFPreferenceKey, save_folder
                         )
                         else editor.putString(PreferenceKeys.SaveLocationPreferenceKey, save_folder)
@@ -5670,7 +5670,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
      */
     fun takePicture(photoSnapshot: Boolean) {
         if (MyDebug.LOG) Log.d(TAG, "takePicture")
-        if (applicationInterface?.getPhotoMode() == PhotoMode.Panorama) {
+        if (applicationInterface?.photoMode == PhotoMode.Panorama) {
             if (preview?.isTakingPhoto ?: false) {
                 if (MyDebug.LOG) Log.d(TAG, "ignore whilst taking panorama photo")
             } else if (applicationInterface?.gyroSensor?.isRecording == true) {
@@ -6188,7 +6188,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
         block_startup_toast = false
 
-        this.applicationInterface!!.drawPreview.setDimPreview(false)
+        this.applicationInterface!!.drawPreview?.setDimPreview(false)
     }
 
     fun setManualFocusSeekbarProgress(isTargetDistance: Boolean, focusDistance: Float) {
@@ -6242,7 +6242,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 if (MyDebug.LOG) Log.d(TAG, "manual focus seekbar: onStartTrackingTouch")
                 has_saved_zoom = false
                 if (preview?.supportsZoom() == true) {
-                    val focusAssist = applicationInterface!!.getFocusAssistPref()
+                    val focusAssist = applicationInterface!!.focusAssistPref
                     if (focusAssist > 0 && preview?.cameraController != null) {
                         has_saved_zoom = true
                         saved_zoom_factor = preview?.cameraController?.getZoom() ?: 0
@@ -6271,7 +6271,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     fun showManualFocusSeekbar(isTargetDistance: Boolean): Boolean {
-        if ((applicationInterface!!.getPhotoMode() == PhotoMode.FocusBracketing) && preview?.isVideo == false) {
+        if ((applicationInterface!!.photoMode == PhotoMode.FocusBracketing) && preview?.isVideo == false) {
             return true // both seekbars shown in focus bracketing mode
         }
         if (isTargetDistance) {
@@ -6289,7 +6289,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         val visibility = if (isVisible) View.VISIBLE else View.GONE
         focusSeekBar.visibility = visibility
         if (isVisible) {
-            applicationInterface!!.drawPreview.updateSettings() // needed so that we reset focus_seekbars_margin_left, as the focus seekbars can only be updated when visible
+            applicationInterface!!.drawPreview?.updateSettings() // needed so that we reset focus_seekbars_margin_left, as the focus seekbars can only be updated when visible
         }
     }
 
@@ -6335,9 +6335,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     fun supportsAutoStabilise(): Boolean {
-        if (applicationInterface!!.isRawOnly()) return false // if not saving JPEGs, no point having auto-stabilise mode, as it won't affect the RAW images
+        if (applicationInterface?.isRawOnly == true) return false // if not saving JPEGs, no point having auto-stabilise mode, as it won't affect the RAW images
 
-        if (applicationInterface!!.getPhotoMode() == PhotoMode.Panorama) return false // not supported in panorama mode
+        if (applicationInterface?.photoMode == PhotoMode.Panorama) return false // not supported in panorama mode
 
         return this.supports_auto_stabilise
     }
@@ -6363,13 +6363,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     fun supportsExpoBracketing(): Boolean {
-        if (applicationInterface!!.isImageCaptureIntent()) return false // don't support expo bracketing mode if called from image capture intent
+        if (applicationInterface!!.isImageCaptureIntent) return false // don't support expo bracketing mode if called from image capture intent
 
         return preview?.supportsExpoBracketing() == true
     }
 
     fun supportsFocusBracketing(): Boolean {
-        if (applicationInterface!!.isImageCaptureIntent()) return false // don't support focus bracketing mode if called from image capture intent
+        if (applicationInterface!!.isImageCaptureIntent) return false // don't support focus bracketing mode if called from image capture intent
 
         return preview?.supportsFocusBracketing() == true
     }
@@ -6385,7 +6385,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     fun supportsPanorama(): Boolean {
         // don't support panorama mode if called from image capture intent
         // in theory this works, but problem that currently we'd end up doing the processing on the UI thread, so risk ANR
-        if (applicationInterface!!.isImageCaptureIntent()) return false
+        if (applicationInterface!!.isImageCaptureIntent) return false
         // require 256MB just to be safe, due to the large number of images that may be created
         // also require at least Android 5, for Renderscript
         // remember to update the FAQ "Why isn't Panorama supported on my device?" if this changes
@@ -6394,7 +6394,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     fun supportsFastBurst(): Boolean {
-        if (applicationInterface!!.isImageCaptureIntent()) return false // don't support burst mode if called from image capture intent
+        if (applicationInterface!!.isImageCaptureIntent) return false // don't support burst mode if called from image capture intent
 
         // require 512MB just to be safe, due to the large number of images that may be created
         return (preview?.usingCamera2API() == true && large_heap_memory >= 512 && preview?.supportsBurst() == true)
@@ -6553,7 +6553,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         var simple = true
         val video_high_speed = preview?.isVideoHighSpeed()
-        val photo_mode = applicationInterface!!.getPhotoMode()
+        val photo_mode = applicationInterface!!.photoMode
 
         if (preview?.isVideo() == true) {
             val profile = preview?.getVideoProfile()
@@ -6658,7 +6658,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     simple = false
                 }
             }
-            val max_filesize = applicationInterface!!.getVideoMaxFileSizeUserPref()
+            val max_filesize = applicationInterface!!.videoMaxFileSizeUserPref
             if (max_filesize != 0L) {
                 toast_string += "\n" + getResources().getString(R.string.max_filesize) + ": "
                 if (max_filesize >= 1024 * 1024 * 1024) {
@@ -6705,7 +6705,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 }
             }
 
-            if (applicationInterface!!.getAutoStabilisePref()) {
+            if (applicationInterface!!.autoStabilisePref) {
                 // important as users are sometimes confused at the behaviour if they don't realise the option is on
                 toast_string += (if (toast_string.length == 0) "" else "\n") + getResources().getString(
                     R.string.preference_auto_stabilise
@@ -6910,7 +6910,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         } else if (this.isCameraInBackground) {
             if (MyDebug.LOG) Log.d(TAG, "initLocation: camera in background!")
             // we will end up here if app is pause/resumed when camera in background (settings, dialog, etc)
-        } else if (!applicationInterface!!.getLocationSupplier().setupLocationListener()) {
+        } else if (!applicationInterface!!.locationSupplier.setupLocationListener()) {
             if (MyDebug.LOG) Log.d(TAG, "location permission not available, so request permission")
             permissionHandler!!.requestLocationPermission()
         }
@@ -6918,10 +6918,10 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     private fun initGyroSensors() {
         if (MyDebug.LOG) Log.d(TAG, "initGyroSensors")
-        if (applicationInterface!!.getPhotoMode() == PhotoMode.Panorama) {
-            applicationInterface!!.getGyroSensor().enableSensors()
+        if (applicationInterface!!.photoMode == PhotoMode.Panorama) {
+            applicationInterface!!.gyroSensor.enableSensors()
         } else {
-            applicationInterface!!.getGyroSensor().disableSensors()
+            applicationInterface!!.gyroSensor.disableSensors()
         }
     }
 

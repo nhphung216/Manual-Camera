@@ -246,7 +246,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 if (MyDebug.LOG) {
                     Log.d(TAG, "set icon to video")
                 }
-            } else if (mainActivity.applicationInterface!!.getPhotoMode() == MyApplicationInterface.PhotoMode.Panorama &&
+            } else if (mainActivity.applicationInterface!!.photoMode == MyApplicationInterface.PhotoMode.Panorama &&
                 mainActivity.applicationInterface!!.gyroSensor.isRecording
             ) {
                 if (MyDebug.LOG) {
@@ -320,7 +320,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 view_rotate_animation = false
                 val handler = Handler()
                 handler.postDelayed({
-                    mainActivity.applicationInterface!!.drawPreview.updateSettings()
+                    mainActivity.applicationInterface!!.drawPreview?.updateSettings()
                 }, (view_rotate_animation_duration + 20).toLong())
             }
         }
@@ -348,7 +348,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
     fun showCycleRawIcon(): Boolean {
         if (!mainActivity.preview!!.supportsRaw()) return false
-        if (!mainActivity.applicationInterface!!.isRawAllowed(mainActivity.applicationInterface!!.getPhotoMode())) return false
+        if (!mainActivity.applicationInterface!!.isRawAllowed(mainActivity.applicationInterface!!.photoMode)) return false
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         return sharedPreferences.getBoolean(PreferenceKeys.ShowCycleRawPreferenceKey, false)
     }
@@ -485,7 +485,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         }
         mainActivity.runOnUiThread {
             val is_panorama_recording =
-                mainActivity.applicationInterface!!.getGyroSensor().isRecording()
+                mainActivity.applicationInterface!!.gyroSensor.isRecording()
             val visibility =
                 if (is_panorama_recording) View.GONE else if (show_gui_photo && show_gui_video) View.VISIBLE else View.GONE // for UI that is hidden while taking photo or video
             val cycleRawButton = mainActivity.binding.cycleRaw
@@ -540,7 +540,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         val raw_pref = mainActivity.applicationInterface!!.getRawPref()
         val view = mainActivity.findViewById<ImageButton>(R.id.cycle_raw)
         if (raw_pref == RawPref.RAWPREF_JPEG_DNG) {
-            if (mainActivity.applicationInterface!!.isRawOnly()) {
+            if (mainActivity.applicationInterface!!.isRawOnly) {
                 // actually RAW only
                 view.setImageResource(R.drawable.raw_only_icon)
             } else {
@@ -577,7 +577,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
     fun updateFocusPeakingIcon() {
         val view = mainActivity.binding.focusPeaking
-        val enabled = mainActivity.applicationInterface!!.getFocusPeakingPref()
+        val enabled = mainActivity.applicationInterface!!.focusPeakingPref
         view.setImageResource(if (enabled) R.drawable.key_visualizer_red else R.drawable.key_visualizer)
         view.contentDescription = mainActivity.getResources()
             .getString(if (enabled) R.string.focus_peaking_disable else R.string.focus_peaking_enable)
@@ -585,7 +585,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
     fun updateAutoLevelIcon() {
         val view = mainActivity.binding.autoLevel
-        val enabled = mainActivity.applicationInterface!!.getAutoStabilisePref()
+        val enabled = mainActivity.applicationInterface!!.autoStabilisePref
         view.setImageResource(if (enabled) R.drawable.auto_stabilise_icon_red else R.drawable.auto_stabilise_icon)
         view.contentDescription = mainActivity.getResources()
             .getString(if (enabled) R.string.auto_level_disable else R.string.auto_level_enable)
@@ -1683,7 +1683,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                                 message,
                                 true
                             )
-                            mainActivity.applicationInterface!!.drawPreview.updateSettings() // because we cache the auto-stabilise setting
+                            mainActivity.applicationInterface!!.drawPreview?.updateSettings() // because we cache the auto-stabilise setting
                         } else if (!mainActivity.deviceSupportsAutoStabilise()) {
                             // n.b., need to check deviceSupportsAutoStabilise() - if we're in e.g. Panorama mode, we shouldn't display a toast (as then supportsAutoStabilise() returns false even if auto-level is supported on the device)
                             mainActivity.preview!!.showToast(

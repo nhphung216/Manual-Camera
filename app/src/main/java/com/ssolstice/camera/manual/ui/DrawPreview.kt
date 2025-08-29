@@ -699,7 +699,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     fun updateSettings() {
         if (MyDebug.LOG) Log.d(TAG, "updateSettings")
 
-        photoMode = applicationInterface.getPhotoMode()
+        photoMode = applicationInterface.photoMode
         if (MyDebug.LOG) Log.d(TAG, "photoMode: " + photoMode)
 
         show_time_pref = sharedPreferences.getBoolean(PreferenceKeys.ShowTimePreferenceKey, true)
@@ -757,14 +757,14 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         this.storedHasStampPref = applicationInterface.stampPref == "preference_stamp_yes"
         is_raw_pref =
             applicationInterface.getRawPref() != ApplicationInterface.RawPref.RAWPREF_JPEG_ONLY
-        is_raw_only_pref = applicationInterface.isRawOnly()
+        is_raw_only_pref = applicationInterface.isRawOnly
         is_face_detection_pref = applicationInterface.getFaceDetectionPref()
         is_audio_enabled_pref = applicationInterface.recordAudioPref
 
         is_high_speed = applicationInterface.fpsIsHighSpeed()
         capture_rate_factor = applicationInterface.getVideoCaptureRateFactor()
 
-        this.storedAutoStabilisePref = applicationInterface.getAutoStabilisePref()
+        this.storedAutoStabilisePref = applicationInterface.autoStabilisePref
 
         preference_grid_pref = sharedPreferences.getString(
             PreferenceKeys.ShowGridPreferenceKey,
@@ -820,7 +820,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             }
             ghost_selected_image_pref = ""
         }
-        ghost_image_alpha = applicationInterface.getGhostImageAlpha()
+        ghost_image_alpha = applicationInterface.ghostImageAlpha
 
         val histogram_pref: String = sharedPreferences.getString(
             PreferenceKeys.HistogramPreferenceKey,
@@ -874,7 +874,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         )!!
         zebra_stripes_color_background = Color.parseColor(zebra_stripes_color_background_value)
 
-        want_focus_peaking = applicationInterface.getFocusPeakingPref()
+        want_focus_peaking = applicationInterface.focusPeakingPref
         val focus_peaking_color: String =
             sharedPreferences.getString(PreferenceKeys.FocusPeakingColorPreferenceKey, "#ffffff")!!
         focus_peaking_color_pref = Color.parseColor(focus_peaking_color)
@@ -1525,7 +1525,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             var height = applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
-                current_time_string,
+                current_time_string?:"",
                 Color.WHITE,
                 Color.BLACK,
                 location_x,
@@ -1562,7 +1562,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             var height = applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
-                camera_id_string,
+                camera_id_string?:"",
                 Color.WHITE,
                 Color.BLACK,
                 xpos,
@@ -1608,7 +1608,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 var height = applicationInterface.drawTextWithBackground(
                     canvas,
                     p,
-                    free_memory_gb_string,
+                    free_memory_gb_string?:"",
                     Color.WHITE,
                     Color.BLACK,
                     location_x,
@@ -1634,7 +1634,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
-                OSDLine1,
+                OSDLine1?:"",
                 Color.WHITE,
                 Color.BLACK,
                 location_x,
@@ -1648,7 +1648,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
-                OSDLine2,
+                OSDLine2?:"",
                 Color.WHITE,
                 Color.BLACK,
                 location_x,
@@ -1717,7 +1717,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 var height = applicationInterface.drawTextWithBackground(
                     canvas,
                     p,
-                    iso_exposure_string,
+                    iso_exposure_string?:"",
                     text_color,
                     Color.BLACK,
                     location_x,
@@ -2320,7 +2320,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 applicationInterface.drawTextWithBackground(
                     canvas,
                     p,
-                    angle_string,
+                    angle_string?:"",
                     color,
                     Color.BLACK,
                     canvas.width / 2 + pixels_offset_x,
@@ -2515,7 +2515,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     p.textSize = 14 * scale_font + 0.5f // convert dps to pixels
                     p.textAlign = Paint.Align.CENTER
                     var pixels_offset_y = 2 * text_y // avoid overwriting the zoom
-                    if (device_ui_rotation == 0 && applicationInterface.getPhotoMode() == PhotoMode.FocusBracketing) {
+                    if (device_ui_rotation == 0 && applicationInterface.photoMode == PhotoMode.FocusBracketing) {
                         // avoid clashing with the target focus bracketing seekbar in landscape orientation
                         pixels_offset_y = 5 * gap_y
                     }
@@ -2559,8 +2559,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     p.textSize = 14 * scale_font + 0.5f // convert dps to pixels
                     p.textAlign = Paint.Align.CENTER
                     val pixels_offset_y = 2 * text_y // avoid overwriting the zoom
-                    val n_images_to_save =
-                        applicationInterface.getImageSaver().getNRealImagesToSave()
+                    val n_images_to_save = applicationInterface.imageSaver?.nRealImagesToSave
                     val string = context.resources
                         .getString(R.string.processing) + " (" + n_images_to_save + " " + context.resources
                         .getString(R.string.remaining) + ")"
@@ -2848,7 +2847,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         if (photoMode == PhotoMode.Panorama) {
             // in panorama mode, we should the level iff we aren't taking the panorama photos
             actual_show_angle_line_pref =
-                !mainActivity.applicationInterface!!.getGyroSensor().isRecording()
+                !mainActivity.applicationInterface!!.gyroSensor.isRecording()
         } else actual_show_angle_line_pref = show_angle_line_pref
 
         val allow_angle_lines = camera_controller != null && !preview.isPreviewPaused()
@@ -3664,7 +3663,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         }
 
         if (enable_gyro_target_spot && camera_controller != null) {
-            val gyroSensor = mainActivity.applicationInterface!!.getGyroSensor()
+            val gyroSensor = mainActivity.applicationInterface!!.gyroSensor
             if (gyroSensor.isRecording()) {
                 val system_orientation = mainActivity.systemOrientation
                 val system_orientation_portrait = system_orientation == SystemOrientation.PORTRAIT

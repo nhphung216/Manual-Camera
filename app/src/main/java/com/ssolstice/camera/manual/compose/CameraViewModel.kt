@@ -408,7 +408,7 @@ class CameraViewModel @Inject constructor() : ViewModel() {
 
         // speed of video
         if (preview.isVideo) {
-            val captureRateValues = applicationInterface.getSupportedVideoCaptureRates()
+            val captureRateValues = applicationInterface.supportedVideoCaptureRates
             if (captureRateValues.size > 1) {
                 val captureRateValue = sharedPreferences.getFloat(
                     PreferenceKeys.getVideoCaptureRatePreferenceKey(
@@ -417,7 +417,7 @@ class CameraViewModel @Inject constructor() : ViewModel() {
                 )
                 val speeds: MutableList<SettingItemModel> =
                     captureRateValues.mapIndexed { index, value ->
-                        val text = if (abs(1.0f - value) < 1.0e-5) {
+                        val text = if (abs(1.0f - (value ?: 0f)) < 1.0e-5) {
                             activity.getString(R.string.preference_video_capture_rate_normal)
                         } else {
                             value.toString() + "x"
@@ -919,7 +919,7 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
     ) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
-        val captureRateValues = applicationInterface.getSupportedVideoCaptureRates()
+        val captureRateValues = applicationInterface.supportedVideoCaptureRates
         Log.e(TAG, "captureRateValues: $captureRateValues")
 
         val captureRateValue = sharedPreferences.getFloat(
@@ -937,10 +937,12 @@ class CameraViewModel @Inject constructor() : ViewModel() {
             VideoModeUiModel(VideoMode.Time_Lapse, activity.getString(R.string.time_lapse))
 
         captureRateValues.forEach {
-            if (it < 1f) {
-                slowMotion.captureRates.add(it)
-            } else if (it > 1f) {
-                timeLapse.captureRates.add(it)
+            if (it != null) {
+                if (it < 1f) {
+                    slowMotion.captureRates.add(it)
+                } else if (it > 1f) {
+                    timeLapse.captureRates.add(it)
+                }
             }
         }
 
@@ -949,7 +951,8 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         if (timeLapse.captureRates.isNotEmpty()) videoModes.add(timeLapse)
 
         if (captureRateValue < 1f && _currentVideoMode.value.mode != VideoMode.Slow_Motion
-            || captureRateValue > 1f && _currentVideoMode.value.mode != VideoMode.Video) {
+            || captureRateValue > 1f && _currentVideoMode.value.mode != VideoMode.Video
+        ) {
             setCaptureRate(1f)
             applySpeedSelectedPreview(activity, applicationInterface, preview, _captureRate.value)
             viewModelScope.launch {

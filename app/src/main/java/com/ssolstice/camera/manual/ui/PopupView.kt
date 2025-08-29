@@ -129,7 +129,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
         } else {
             // make a copy of getSupportedFocusValues() so we can modify it
             var supported_focus_values = preview.supportedFocusValues
-            val photo_mode = main_activity.applicationInterface!!.getPhotoMode()
+            val photo_mode = main_activity.applicationInterface!!.photoMode
             if (!preview.isVideo && photo_mode == PhotoMode.FocusBracketing) {
                 // don't show focus modes in focus bracketing mode (as we'll always run in manual focus mode)
                 supported_focus_values = null
@@ -303,7 +303,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 }
 
                 //String nr_mode_value = sharedPreferences.getString(PreferenceKeys.NRModePreferenceKey, "preference_nr_mode_normal");
-                val nr_mode_value = main_activity.applicationInterface!!.nrMode
+                val nr_mode_value = main_activity.applicationInterface!!.nRMode
                 nr_mode_index = Arrays.asList<String?>(*nr_mode_values).indexOf(nr_mode_value)
                 if (nr_mode_index == -1) {
                     if (MyDebug.LOG) Log.d(
@@ -328,7 +328,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                                 PreferenceManager.getDefaultSharedPreferences(main_activity)
                             val editor = sharedPreferences.edit()
                             //editor.putString(PreferenceKeys.NRModePreferenceKey, new_nr_mode_value);
-                            main_activity.applicationInterface!!.nrMode = new_nr_mode_value
+                            main_activity.applicationInterface!!.nRMode = new_nr_mode_value
                             editor.apply()
                             if (preview.cameraController != null) {
                                 preview.setupBurstMode()
@@ -655,7 +655,8 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     throw RuntimeException()
                 }
 
-                var max_burst_images = main_activity.applicationInterface!!.getImageSaver().getQueueSize() + 1
+                var max_burst_images =
+                    main_activity.applicationInterface!!.imageSaver?.queueSize ?: (0 + 1)
                 max_burst_images = max(2, max_burst_images) // make sure we at least allow the minimum of 2 burst images!
                 if (MyDebug.LOG) Log.d(TAG, "max_burst_images: " + max_burst_images)
 
@@ -875,7 +876,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
 
             if (preview.isVideo) {
                 val capture_rate_values =
-                    main_activity.applicationInterface!!.getSupportedVideoCaptureRates()
+                    main_activity.applicationInterface!!.supportedVideoCaptureRates
                 if (capture_rate_values.size > 1) {
                     if (MyDebug.LOG) Log.d(TAG, "add slow motion / timelapse video options")
                     val capture_rate_value = sharedPreferences.getFloat(
@@ -1165,8 +1166,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         val editor = sharedPreferences.edit()
                         editor.putString(PreferenceKeys.ShowGridPreferenceKey, new_grid_value)
                         editor.apply()
-                        main_activity.applicationInterface!!.getDrawPreview()
-                            .updateSettings() // because we cache the grid
+                        main_activity.applicationInterface!!.drawPreview?.updateSettings() // because we cache the grid
                     }
 
                     override fun onClickPrev(): Int {
@@ -1467,8 +1467,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 toast_message = null
             }
 
-            main_activity.applicationInterface!!.getDrawPreview()
-                .updateSettings() // because we cache the photomode
+            main_activity.applicationInterface!!.drawPreview?.updateSettings() // because we cache the photomode
             main_activity.updateForSettings(
                 true,
                 toast_message,

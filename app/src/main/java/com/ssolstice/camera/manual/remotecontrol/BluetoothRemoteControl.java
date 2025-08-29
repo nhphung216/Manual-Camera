@@ -107,7 +107,7 @@ public class BluetoothRemoteControl {
                 if( MyDebug.LOG )
                     Log.d(TAG, "Remote disconnected");
                 is_connected = false;
-                applicationInterface.getDrawPreview().onExtraOSDValuesChanged("-- \u00B0C", "-- m");
+                applicationInterface.drawPreview.onExtraOSDValuesChanged("-- \u00B0C", "-- m");
                 mainUI.updateRemoteConnectionIcon();
                 main_activity.setBrightnessToMinimumIfWanted();
                 if (mainUI.isExposureUIOpen())
@@ -131,7 +131,7 @@ public class BluetoothRemoteControl {
                 // Create two OSD lines
                 String line1 = temp + " \u00B0C";
                 String line2 = depth + " m";
-                applicationInterface.getDrawPreview().onExtraOSDValuesChanged(line1, line2);
+                applicationInterface.drawPreview.onExtraOSDValuesChanged(line1, line2);
             }
             else if( BluetoothLeService.ACTION_REMOTE_COMMAND.equals(action) ) {
                 int command = intent.getIntExtra(BluetoothLeService.EXTRA_DATA, -1);
