@@ -950,19 +950,31 @@ class CameraViewModel @Inject constructor() : ViewModel() {
         videoModes.add(normalMode)
         if (timeLapse.captureRates.isNotEmpty()) videoModes.add(timeLapse)
 
-        if (captureRateValue < 1f && _currentVideoMode.value.mode != VideoMode.Slow_Motion
-            || captureRateValue > 1f && _currentVideoMode.value.mode != VideoMode.Video
-        ) {
-            setCaptureRate(1f)
-            applySpeedSelectedPreview(activity, applicationInterface, preview, _captureRate.value)
-            viewModelScope.launch {
-                delay(1000)
-                _currentVideoMode.value = normalMode
-            }
+        if (captureRateValue < 1f) {
+            _currentVideoMode.value = slowMotion
+        } else if (captureRateValue > 1f) {
+            _currentVideoMode.value = timeLapse
+        } else {
+            _currentVideoMode.value = normalMode
         }
+        _captureRate.value = captureRateValue
 
         _videoModes.value = videoModes.map { model ->
             model.copy(selected = model.mode == _currentVideoMode.value.mode)
+        }
+
+        val getCameraId = preview.getCameraId()
+        val cameraIdSPhysicalPref = PreferenceKeys.getVideoCaptureRatePreferenceKey(
+            getCameraId,
+            applicationInterface.cameraIdSPhysicalPref
+        )
+        Log.e(TAG, "getCameraId: $getCameraId")
+        Log.e(TAG, "cameraIdSPhysicalPref: $cameraIdSPhysicalPref")
+
+        sharedPreferences.edit { putFloat(cameraIdSPhysicalPref, captureRateValue) }
+        viewModelScope.launch {
+            delay(100)
+            activity.updateForSettings(true, "", true, false)
         }
     }
 

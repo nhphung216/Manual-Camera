@@ -30,7 +30,7 @@ fun PhotoModeSelector(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 48.dp, bottom = 24.dp),
+            .padding(top = 32.dp, bottom = 1.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         items(modes) { item ->
@@ -62,7 +62,7 @@ fun VideoModeSelector(
     ) {
         LazyRow(
             modifier = Modifier
-                .padding(top = 48.dp, bottom = 24.dp)
+                .padding(top = 32.dp, bottom = 1.dp)
                 .align(Alignment.Center),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically
