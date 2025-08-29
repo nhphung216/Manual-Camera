@@ -733,10 +733,10 @@ class CameraViewModel @Inject constructor() : ViewModel() {
     private val _photoModes = MutableStateFlow<List<PhotoModeUiModel>>(emptyList())
     val photoModes: StateFlow<List<PhotoModeUiModel>> = _photoModes
 
-    var currentPhotoMode = MutableStateFlow(PhotoMode.Standard)
+    var currentPhotoModeUiModel = MutableStateFlow(PhotoMode.Standard)
 
     fun setCurrentPhotoMode(item: PhotoMode) {
-        currentPhotoMode.value = item
+        currentPhotoModeUiModel.value = item
     }
 
     fun loadPhotoModeViews(mainActivity: MainActivity) {
@@ -875,12 +875,12 @@ class CameraViewModel @Inject constructor() : ViewModel() {
 
         // Mark selected
         _photoModes.value = photoModes.map {
-            it.copy(selected = it.mode == currentPhotoMode.value)
+            it.copy(selected = it.mode == currentPhotoModeUiModel.value)
         }
     }
 
-    fun changePhotoMode(mode: PhotoModeUiModel) {
-        currentPhotoMode.value = mode.mode
+    fun changePhotoModeUiModel(mode: PhotoModeUiModel) {
+        currentPhotoModeUiModel.value = mode.mode
         _photoModes.value = _photoModes.value.map {
             it.copy(selected = it.mode == mode.mode)
         }

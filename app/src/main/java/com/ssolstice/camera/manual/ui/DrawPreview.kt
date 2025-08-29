@@ -26,6 +26,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Surface
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.ssolstice.camera.manual.ImageSaver
 import com.ssolstice.camera.manual.LocationSupplier
@@ -61,6 +62,7 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
 import androidx.core.view.isVisible
+import androidx.core.graphics.toColorInt
 
 class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicationInterface) {
 
@@ -700,7 +702,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         if (MyDebug.LOG) Log.d(TAG, "updateSettings")
 
         photoMode = applicationInterface.photoMode
-        if (MyDebug.LOG) Log.d(TAG, "photoMode: " + photoMode)
+        if (MyDebug.LOG) Log.d(TAG, "photoMode: $photoMode")
 
         show_time_pref = sharedPreferences.getBoolean(PreferenceKeys.ShowTimePreferenceKey, true)
         // reset in case user changes the preference:
@@ -728,7 +730,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             PreferenceKeys.ShowAngleHighlightColorPreferenceKey,
             "#14e715"
         )!!
-        angle_highlight_color_pref = Color.parseColor(angle_highlight_color)
+        angle_highlight_color_pref = angle_highlight_color.toColorInt()
         show_geo_direction_pref =
             sharedPreferences.getBoolean(PreferenceKeys.ShowGeoDirectionPreferenceKey, false)
 
@@ -2693,66 +2695,66 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             }
         }
 
-        run {
-            /*int focus_seekbars_margin_left_dp = 85;
-                       if( want_histogram )
-                           focus_seekbars_margin_left_dp += DrawPreview.histogram_height_dp;*/
-            // 135 needed to make room for on-screen info lines in DrawPreview.onDrawInfoLines(), including the histogram
-            // but we also need to take the top_icon_shift into account, for widescreen aspect ratios and "icons along top" UI placement
-            val focus_seekbars_margin_left_dp = 135
-            var new_focus_seekbars_margin_left =
-                (focus_seekbars_margin_left_dp * scale_dp + 0.5f).toInt() // convert dps to pixels
-            if (top_icon_shift > 0) {
-                new_focus_seekbars_margin_left += top_icon_shift
-            }
-            if (focus_seekbars_margin_left == -1 || new_focus_seekbars_margin_left != focus_seekbars_margin_left) {
-                // we check whether focus_seekbars_margin_left has changed, in case there is a performance cost for setting layoutparams
-                this.focus_seekbars_margin_left = new_focus_seekbars_margin_left
-                if (MyDebug.LOG) Log.d(
-                    TAG,
-                    "set focus_seekbars_margin_left to " + focus_seekbars_margin_left
-                )
-
-                // "left" and "right" here are written assuming we're in landscape system orientation
-                var view = mainActivity.findViewById<View>(R.id.focus_seekbar)
-                var layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-                preview.view.getLocationOnScreen(gui_location)
-                var preview_left = gui_location[if (system_orientation_portrait) 1 else 0]
-                if (system_orientation == SystemOrientation.REVERSE_LANDSCAPE) preview_left += preview.view
-                    .width // actually want preview-right for reverse landscape
-
-
-                view.getLocationOnScreen(gui_location)
-                var seekbar_right = gui_location[if (system_orientation_portrait) 1 else 0]
-                if (system_orientation == SystemOrientation.LANDSCAPE || system_orientation == SystemOrientation.PORTRAIT) {
-                    // n.b., we read view.width even if system_orientation is portrait, because the seekbar is rotated in portrait orientation
-                    seekbar_right += view.width
-                } else {
-                    // and for reversed landscape, the seekbar is rotated 180 degrees, and getLocationOnScreen() returns the location after the rotation
-                    seekbar_right -= view.width
-                }
-
-                val min_seekbar_width = (150 * scale_dp + 0.5f).toInt() // convert dps to pixels
-                var new_seekbar_width: Int
-                if (system_orientation == SystemOrientation.LANDSCAPE || system_orientation == SystemOrientation.PORTRAIT) {
-                    new_seekbar_width = seekbar_right - (preview_left + focus_seekbars_margin_left)
-                } else {
-                    // reversed landscape
-                    new_seekbar_width = preview_left - focus_seekbars_margin_left - seekbar_right
-                }
-                new_seekbar_width = max(new_seekbar_width, min_seekbar_width)
-                layoutParams.width = new_seekbar_width
-                view.layoutParams = layoutParams
-
-                view = mainActivity.findViewById<View>(R.id.focus_bracketing_target_seekbar)
-                layoutParams = view.layoutParams as RelativeLayout.LayoutParams
-                layoutParams.width = new_seekbar_width
-                view.layoutParams = layoutParams
-
-                // need to update due to changing width of focus seekbars
-                mainActivity.mainUI!!.setFocusSeekbarsRotation()
-            }
-        }
+//        run {
+//            /*int focus_seekbars_margin_left_dp = 85;
+//                       if( want_histogram )
+//                           focus_seekbars_margin_left_dp += DrawPreview.histogram_height_dp;*/
+//            // 135 needed to make room for on-screen info lines in DrawPreview.onDrawInfoLines(), including the histogram
+//            // but we also need to take the top_icon_shift into account, for widescreen aspect ratios and "icons along top" UI placement
+//            val focus_seekbars_margin_left_dp = 135
+//            var new_focus_seekbars_margin_left =
+//                (focus_seekbars_margin_left_dp * scale_dp + 0.5f).toInt() // convert dps to pixels
+//            if (top_icon_shift > 0) {
+//                new_focus_seekbars_margin_left += top_icon_shift
+//            }
+//            if (focus_seekbars_margin_left == -1 || new_focus_seekbars_margin_left != focus_seekbars_margin_left) {
+//                // we check whether focus_seekbars_margin_left has changed, in case there is a performance cost for setting layoutparams
+//                this.focus_seekbars_margin_left = new_focus_seekbars_margin_left
+//                if (MyDebug.LOG) Log.d(
+//                    TAG,
+//                    "set focus_seekbars_margin_left to " + focus_seekbars_margin_left
+//                )
+//
+//                // "left" and "right" here are written assuming we're in landscape system orientation
+//                var view = mainActivity.findViewById<View>(R.id.focus_seekbar)
+//                var layoutParams = view.layoutParams as LinearLayout.LayoutParams
+//                preview.view.getLocationOnScreen(gui_location)
+//                var preview_left = gui_location[if (system_orientation_portrait) 1 else 0]
+//                if (system_orientation == SystemOrientation.REVERSE_LANDSCAPE) preview_left += preview.view
+//                    .width // actually want preview-right for reverse landscape
+//
+//
+//                view.getLocationOnScreen(gui_location)
+//                var seekbar_right = gui_location[if (system_orientation_portrait) 1 else 0]
+//                if (system_orientation == SystemOrientation.LANDSCAPE || system_orientation == SystemOrientation.PORTRAIT) {
+//                    // n.b., we read view.width even if system_orientation is portrait, because the seekbar is rotated in portrait orientation
+//                    seekbar_right += view.width
+//                } else {
+//                    // and for reversed landscape, the seekbar is rotated 180 degrees, and getLocationOnScreen() returns the location after the rotation
+//                    seekbar_right -= view.width
+//                }
+//
+//                val min_seekbar_width = (150 * scale_dp + 0.5f).toInt() // convert dps to pixels
+//                var new_seekbar_width: Int
+//                if (system_orientation == SystemOrientation.LANDSCAPE || system_orientation == SystemOrientation.PORTRAIT) {
+//                    new_seekbar_width = seekbar_right - (preview_left + focus_seekbars_margin_left)
+//                } else {
+//                    // reversed landscape
+//                    new_seekbar_width = preview_left - focus_seekbars_margin_left - seekbar_right
+//                }
+//                new_seekbar_width = max(new_seekbar_width, min_seekbar_width)
+//                layoutParams.width = new_seekbar_width
+//                view.layoutParams = layoutParams
+//
+//                view = mainActivity.findViewById<View>(R.id.focus_bracketing_target_seekbar)
+//                layoutParams = view.layoutParams as LinearLayout.LayoutParams
+//                layoutParams.width = new_seekbar_width
+//                view.layoutParams = layoutParams
+//
+//                // need to update due to changing width of focus seekbars
+//                mainActivity.mainUI!!.setFocusSeekbarsRotation()
+//            }
+//        }
 
         var battery_x = top_x
         var battery_y = top_y + (5 * scale_dp + 0.5f).toInt()
@@ -3777,7 +3779,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 // not strictly related to drawing on the preview, but a convenient place to do this
                 // also need to wait some time after getSettingTargetFocusDistanceTime(), as when user stops changing target seekbar, it takes time to return to
                 // continuous focus
-                if (!mainActivity.preview!!.isSettingTargetFocusDistance() && time_ms > mainActivity.preview!!.getSettingTargetFocusDistanceTime() + 500 &&
+                if (!mainActivity.preview!!.isSettingTargetFocusDistance && time_ms > mainActivity.preview!!.settingTargetFocusDistanceTime + 500 &&
                     camera_controller.captureResultHasFocusDistance()
                 ) {
                     mainActivity.setManualFocusSeekbarProgress(

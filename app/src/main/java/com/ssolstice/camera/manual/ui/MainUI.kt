@@ -165,7 +165,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      * and if in portrait these are automatically rotated.
      */
     fun setMarginsForSystemUI(
-        layoutParams: RelativeLayout.LayoutParams,
+        layoutParams: LinearLayout.LayoutParams,
         left: Int,
         top: Int,
         right: Int,
@@ -198,7 +198,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         val rotation = (360 - getRotationFromSystemOrientation(system_orientation)) % 360
         view.rotation = rotation.toFloat()
         // set margins due to rotation
-        val layoutParams = view.layoutParams as RelativeLayout.LayoutParams
+        val layoutParams = view.layoutParams as LinearLayout.LayoutParams
         if (system_orientation == SystemOrientation.PORTRAIT) {
             val diff = (layoutParams.width - layoutParams.height) / 2
             if (MyDebug.LOG) Log.d(TAG, "diff: $diff")

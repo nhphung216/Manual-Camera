@@ -18,8 +18,8 @@
         <!-- child view -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_margin="4dp"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
             android:foregroundGravity="center"
             android:gravity="center"
             android:orientation="horizontal">
@@ -386,35 +386,49 @@
             android:importantForAccessibility="no"
             android:visibility="gone" />
 
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/compose_view"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
 
-        <SeekBar
-            android:id="@+id/focus_seekbar"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginBottom="0dp"
-            android:background="@color/seekbar_background"
-            android:contentDescription="@string/focus_distance"
-            android:visibility="gone" />
+            <SeekBar
+                android:id="@+id/focus_seekbar"
+                android:layout_width="300dp"
+                android:layout_height="46dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
+                android:background="@color/seekbar_background"
+                android:contentDescription="@string/focus_distance"
+                android:progressBackgroundTint="@color/color_selected"
+                android:progressTint="@color/color_selected"
+                android:thumbTint="@color/color_selected"
+                android:visibility="gone" />
 
-        <SeekBar
-            android:id="@+id/focus_bracketing_target_seekbar"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginBottom="0dp"
-            android:background="@color/seekbar_background"
-            android:contentDescription="@string/focus_bracketing_target_distance"
-            android:visibility="gone" />
+            <SeekBar
+                android:id="@+id/focus_bracketing_target_seekbar"
+                android:layout_width="300dp"
+                android:layout_height="46dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
+                android:background="@color/seekbar_background"
+                android:contentDescription="@string/focus_bracketing_target_distance"
+                android:progressBackgroundTint="@color/color_selected"
+                android:progressTint="@color/color_selected"
+                android:thumbTint="@color/color_selected"
+                android:visibility="gone" />
+
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/compose_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -555,14 +555,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // setContentView()!
         // To be safe, we also do so for take_photo and zoom_seekbar (we already know we've had no reported crashes for focus_seekbar,
         // however).
-//        val takePhotoButton = binding.takePhoto
-//        takePhotoButton.visibility = View.INVISIBLE
 
-        val zoomControls = binding.zoom
-        zoomControls.visibility = View.GONE
-
-        val zoomSeekbar = binding.zoomSeekbar
-        zoomSeekbar.visibility = View.INVISIBLE
+        binding.zoom.visibility = View.GONE
+        binding.zoomSeekbar.visibility = View.INVISIBLE
 
         // initialise state of on-screen icons
         mainUI?.updateOnScreenIcons()
@@ -811,7 +806,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 var valueFormated by remember { mutableStateOf("") }
 
                 val photoModes = viewModel.photoModes.collectAsState()
-                val currentPhotoMode = viewModel.currentPhotoMode.collectAsState()
+                val currentPhotoMode = viewModel.currentPhotoModeUiModel.collectAsState()
 
                 val videoModes = viewModel.videoModes.collectAsState()
                 val currentVideoMode = viewModel.currentVideoMode.collectAsState()
@@ -874,7 +869,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             Log.e(TAG, "changePhotoMode: $it")
                             if (currentPhotoMode.value != it.mode) {
                                 viewModel.setCurrentPhotoMode(it.mode)
-                                viewModel.changePhotoMode(it)
+                                viewModel.changePhotoModeUiModel(it)
                                 changePhotoMode(it.mode)
                             }
                         },
@@ -1305,9 +1300,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     private fun changePhotoMode(mode: PhotoMode) {
         Log.e(TAG, "photo mode: $mode")
-
-        var toastMessage: String? = mode.name
-        toastMessage = when (mode) {
+        var toastMessage = when (mode) {
             PhotoMode.Standard -> getResources().getString(R.string.photo_mode_standard_full)
             PhotoMode.ExpoBracketing -> getResources().getString(R.string.photo_mode_expo_bracketing_full)
             PhotoMode.FocusBracketing -> getResources().getString(R.string.photo_mode_focus_bracketing_full)
@@ -1319,53 +1312,65 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             PhotoMode.X_Night -> getResources().getString(R.string.photo_mode_x_night_full)
             PhotoMode.X_Bokeh -> getResources().getString(R.string.photo_mode_x_bokeh_full)
             PhotoMode.X_Beauty -> getResources().getString(R.string.photo_mode_x_beauty_full)
-            else -> toastMessage
+            else -> mode.name
         }
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = sharedPreferences.edit()
-        if (mode == PhotoMode.Standard) {
-            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_std")
-        } else if (mode == PhotoMode.DRO) {
-            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_dro")
-        } else if (mode == PhotoMode.HDR) {
-            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_hdr")
-        } else if (mode == PhotoMode.ExpoBracketing) {
-            editor.putString(
-                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_expo_bracketing"
-            )
-        } else if (mode == PhotoMode.FocusBracketing) {
-            editor.putString(
-                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_focus_bracketing"
-            )
-        } else if (mode == PhotoMode.FastBurst) {
-            editor.putString(
-                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_fast_burst"
-            )
-        } else if (mode == PhotoMode.NoiseReduction) {
-            editor.putString(
-                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_noise_reduction"
-            )
-        } else if (mode == PhotoMode.Panorama) {
-            editor.putString(
-                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_panorama"
-            )
-        } else if (mode == PhotoMode.X_Auto) {
-            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_auto")
-        } else if (mode == PhotoMode.X_HDR) {
-            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_hdr")
-        } else if (mode == PhotoMode.X_Night) {
-            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_night")
-        } else if (mode == PhotoMode.X_Bokeh) {
-            editor.putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_bokeh")
-        } else if (mode == PhotoMode.X_Beauty) {
-            editor.putString(
-                PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_beauty"
-            )
-        } else {
-            Log.e(TAG, "unknown new_photo_mode: $mode")
+        sharedPreferences.edit {
+            when (mode) {
+                PhotoMode.Standard -> {
+                    putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_std")
+                }
+                PhotoMode.DRO -> {
+                    putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_dro")
+                }
+                PhotoMode.HDR -> {
+                    putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_hdr")
+                }
+                PhotoMode.ExpoBracketing -> {
+                    putString(
+                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_expo_bracketing"
+                    )
+                }
+                PhotoMode.FocusBracketing -> {
+                    putString(
+                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_focus_bracketing"
+                    )
+                }
+                PhotoMode.FastBurst -> {
+                    putString(
+                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_fast_burst"
+                    )
+                }
+                PhotoMode.NoiseReduction -> {
+                    putString(
+                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_noise_reduction"
+                    )
+                }
+                PhotoMode.Panorama -> {
+                    putString(
+                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_panorama"
+                    )
+                }
+                PhotoMode.X_Auto -> {
+                    putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_auto")
+                }
+                PhotoMode.X_HDR -> {
+                    putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_hdr")
+                }
+                PhotoMode.X_Night -> {
+                    putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_night")
+                }
+                PhotoMode.X_Bokeh -> {
+                    putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_bokeh")
+                }
+                PhotoMode.X_Beauty -> {
+                    putString(
+                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_beauty"
+                    )
+                }
+            }
         }
-        editor.apply()
 
         var doneDialog = false
         if (mode == PhotoMode.HDR) {
@@ -1390,9 +1395,10 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 doneDialog = true
             }
         }
-        if (doneDialog) toastMessage = null
+        if (doneDialog) toastMessage = ""
 
         applicationInterface?.drawPreview?.updateSettings() // because we cache the photomode
+
         updateForSettings(
             true, toastMessage, false, true
         ) // need to setup the camera again, as options may change (e.g., required burst mode, or whether RAW is allowed in this mode)
