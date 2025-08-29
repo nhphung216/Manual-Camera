@@ -123,8 +123,6 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-/** The main Activity for ManualCamera.
- */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
@@ -503,12 +501,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // icon is used to iterate over all cameras.
         // If there are more than two cameras, but all cameras have the same "facing, we still stick
         // with using the switch camera icon to iterate over all cameras.
-        val n_cameras = preview?.cameraControllerManager?.getNumberOfCameras() ?: 0
-        if (n_cameras > 2) {
+        val nCameras = preview?.cameraControllerManager?.getNumberOfCameras() ?: 0
+        if (nCameras > 2) {
             this.back_camera_ids = ArrayList<Int?>()
             this.frontCameraIds = ArrayList<Int?>()
             this.otherCameraIds = ArrayList<Int?>()
-            for (i in 0..<n_cameras) {
+            for (i in 0..<nCameras) {
                 when (preview?.cameraControllerManager?.getFacing(i)) {
                     Facing.FACING_BACK -> back_camera_ids!!.add(i)
                     Facing.FACING_FRONT -> frontCameraIds!!.add(i)
