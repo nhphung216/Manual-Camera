@@ -110,9 +110,9 @@ class CameraViewModel @Inject constructor(
     // flash
     private val _flashList = MutableStateFlow(mutableListOf<SettingItemModel>())
     val flashList: StateFlow<MutableList<SettingItemModel>> = _flashList
-    fun setFlashList(resolution: MutableList<SettingItemModel>) {
+    fun setFlashList(list: MutableList<SettingItemModel>) {
         viewModelScope.launch {
-            _flashList.value = resolution
+            _flashList.value = list
         }
     }
 
@@ -445,11 +445,16 @@ class CameraViewModel @Inject constructor(
         // flash
         val supportedFlashValues = preview.supportedFlashValues.orEmpty()
         if (supportedFlashValues.isNotEmpty()) {
+            val flashEntries = activity.getResources().getStringArray(R.array.flash_entries)
+            val flashValues = activity.getResources().getStringArray(R.array.flash_values)
             val flashList = supportedFlashValues.map { flashValue ->
+                val flashIndex = flashValues.indexOf(flashValue).takeIf { it >= 0 } ?: 0
+                val flashEntry = flashEntries.getOrNull(flashIndex).orEmpty()
                 val model = SettingItemModel(
                     id = flashValue,
                     selected = flashValue == preview.currentFlashValue,
-                    icon = getFlashIcon(flashValue)
+                    icon = getFlashIcon(flashValue),
+                    text = flashEntry
                 )
                 if (model.selected) {
                     setFlashSelected(preview, model)
@@ -782,17 +787,9 @@ class CameraViewModel @Inject constructor(
     }
 
     fun loadPhotoModeViews(
-        act: MainActivity,
-        applicationInterface: MyApplicationInterface,
-        preview: Preview
+        act: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
     ) {
         val photoModes = ArrayList<PhotoModeUiModel>()
-        photoModes.add(
-            PhotoModeUiModel(
-                PhotoMode.Standard,
-                act.getString(R.string.photo_mode_standard_full),
-            )
-        )
         if (act.supportsPanorama()) {
             photoModes.add(
                 PhotoModeUiModel(
@@ -809,6 +806,12 @@ class CameraViewModel @Inject constructor(
                 )
             )
         }
+        photoModes.add(
+            PhotoModeUiModel(
+                PhotoMode.Standard,
+                act.getString(R.string.photo_mode_standard_full),
+            )
+        )
         if (act.supportsHDR()) {
             photoModes.add(
                 PhotoModeUiModel(
@@ -896,9 +899,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun loadPhotoModes(
-        activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
-        preview: Preview
+        activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
     ) {
         val list = getPhotoModesDb()
         if (list.isNotEmpty()) {
@@ -992,9 +993,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun loadVideoModes(
-        activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
-        preview: Preview
+        activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
     ) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         val captureRateValues = applicationInterface.supportedVideoCaptureRates

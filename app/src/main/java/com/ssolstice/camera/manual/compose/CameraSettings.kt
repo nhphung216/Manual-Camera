@@ -36,40 +36,22 @@ import com.ssolstice.camera.manual.models.SettingItemModel
 
 val resolutions = arrayListOf(
     SettingItemModel(
-        id = "1920x10801",
-        text = "1920x1080",
-        sub = "16:9 (1280x720)",
-        selected = true
+        id = "1920x10801", text = "1920x1080", sub = "16:9 (1280x720)", selected = true
     ),
     SettingItemModel(
-        id = "1920x1080",
-        text = "1920x1080",
-        sub = "16:9 (1280x720)",
-        selected = false
+        id = "1920x1080", text = "1920x1080", sub = "16:9 (1280x720)", selected = false
     ),
     SettingItemModel(
-        id = "1920x1080",
-        text = "1920x1080",
-        sub = "16:9 (1280x720)",
-        selected = false
+        id = "1920x1080", text = "1920x1080", sub = "16:9 (1280x720)", selected = false
     ),
     SettingItemModel(
-        id = "1920x1080",
-        text = "1920x1080",
-        sub = "16:9 (1280x720)",
-        selected = false
+        id = "1920x1080", text = "1920x1080", sub = "16:9 (1280x720)", selected = false
     ),
     SettingItemModel(
-        id = "1920x1080",
-        text = "1920x1080",
-        sub = "16:9 (1280x720)",
-        selected = false
+        id = "1920x1080", text = "1920x1080", sub = "16:9 (1280x720)", selected = false
     ),
     SettingItemModel(
-        id = "1920x1080",
-        text = "1920x1080",
-        sub = "16:9 (1280x720)",
-        selected = false
+        id = "1920x1080", text = "1920x1080", sub = "16:9 (1280x720)", selected = false
     ),
 )
 
@@ -84,22 +66,13 @@ fun CameraSettingsPreview() {
         speeds = arrayListOf(),
         flashList = mutableListOf(
             SettingItemModel(
-                id = "flash_off",
-                text = "Flash off",
-                selected = true,
-                icon = R.drawable.flash_off
+                id = "flash_off", text = "Flash off", selected = true, icon = R.drawable.flash_off
             ),
             SettingItemModel(
-                id = "flash_off",
-                text = "Flash off",
-                selected = false,
-                icon = R.drawable.flash_on
+                id = "flash_off", text = "Flash off", selected = false, icon = R.drawable.flash_on
             ),
             SettingItemModel(
-                id = "flash_off",
-                text = "Flash off",
-                selected = false,
-                icon = R.drawable.flash_auto
+                id = "flash_off", text = "Flash off", selected = false, icon = R.drawable.flash_auto
             ),
         )
     )
@@ -159,8 +132,7 @@ fun CameraSettings(
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable { onClose() }
-            )
+                    .clickable { onClose() })
         }
 
         // flash
@@ -171,7 +143,7 @@ fun CameraSettings(
         ) {
             Column {
                 TitleSettingRow(stringResource(R.string.more_light))
-                SubTitleSettingRow(stringResource(R.string.flash_on))
+                SubTitleSettingRow(flashSelected?.text ?: "")
             }
             LazyRow(modifier = Modifier.align(Alignment.CenterEnd)) {
                 items(flashList) { item ->
@@ -180,8 +152,7 @@ fun CameraSettings(
                         text = item.text,
                         isSelect = item.id == flashSelected?.id,
                         icon = item.icon,
-                        onClick = { onFlashChange(item) }
-                    )
+                        onClick = { onFlashChange(item) })
                 }
             }
         }
@@ -190,12 +161,11 @@ fun CameraSettings(
             if (currentPhotoMode?.mode != MyApplicationInterface.PhotoMode.Panorama) {
                 // raw jpeg
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Column {
                         TitleSettingRow(stringResource(R.string.raw_photos))
-                        SubTitleSettingRow(stringResource(R.string.only_raw))
+                        SubTitleSettingRow(rawSelected?.text ?: "")
                     }
                     LazyRow(modifier = Modifier.align(Alignment.CenterEnd)) {
                         items(rawList) { item ->
@@ -213,8 +183,7 @@ fun CameraSettings(
                 // resolution
                 TitleSettingRow(stringResource(R.string.resolution))
                 LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     items(resolutions) { item ->
                         ItemResolution(
@@ -230,8 +199,7 @@ fun CameraSettings(
                 if (timers.isNotEmpty()) {
                     TitleSettingRow(stringResource(R.string.preference_timer))
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         items(timers) { item ->
                             ItemResolution(
@@ -246,8 +214,7 @@ fun CameraSettings(
                 if (repeats.isNotEmpty()) {
                     TitleSettingRow(stringResource(R.string.repeat))
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         items(repeats) { item ->
                             ItemResolution(
@@ -262,8 +229,7 @@ fun CameraSettings(
             // speed (video mode)
             TitleSettingRow(stringResource(R.string.speed))
             LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
                 items(speeds) { item ->
                     ItemResolution(
@@ -275,8 +241,7 @@ fun CameraSettings(
 
             TitleSettingRow(stringResource(R.string.resolution))
             LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
                 items(resolutionsVideo) { item ->
                     ItemResolution(
@@ -291,19 +256,15 @@ fun CameraSettings(
             modifier = Modifier
                 .padding(top = 4.dp, end = 16.dp, bottom = 16.dp)
                 .border(
-                    width = 1.dp,
-                    color = colorMain(),
-                    shape = RoundedCornerShape(16.dp) // bo góc
+                    width = 1.dp, color = colorMain(), shape = RoundedCornerShape(16.dp) // bo góc
                 )
                 .align(Alignment.End)
-                .clickable { onOpenSettings() }
-        ) {
+                .clickable { onOpenSettings() }) {
             Text(
                 stringResource(R.string.more_settings),
                 style = MaterialTheme.typography.bodySmall,
                 color = colorMain(),
-                modifier = Modifier
-                    .padding(start = 12.dp, top = 8.dp, bottom = 8.dp, end = 12.dp)
+                modifier = Modifier.padding(start = 12.dp, top = 8.dp, bottom = 8.dp, end = 12.dp)
             )
         }
     }

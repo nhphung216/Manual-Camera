@@ -1305,15 +1305,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
                 PhotoMode.X_Night -> {
                     putString(
-                        PreferenceKeys.PhotoModePreferenceKey,
-                        "preference_photo_mode_x_night"
+                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_night"
                     )
                 }
 
                 PhotoMode.X_Bokeh -> {
                     putString(
-                        PreferenceKeys.PhotoModePreferenceKey,
-                        "preference_photo_mode_x_bokeh"
+                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_bokeh"
                     )
                 }
 
@@ -1330,9 +1328,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             val doneHdrInfo = sharedPreferences.contains(PreferenceKeys.HDRInfoPreferenceKey)
             if (!doneHdrInfo) {
                 mainUI?.showInfoDialog(
-                    R.string.photo_mode_hdr,
-                    R.string.hdr_info,
-                    PreferenceKeys.HDRInfoPreferenceKey
+                    R.string.photo_mode_hdr, R.string.hdr_info, PreferenceKeys.HDRInfoPreferenceKey
                 )
                 doneDialog = true
             }
@@ -4886,10 +4882,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         Log.d(TAG, "    is_raw?: $is_raw")
                     }
                     applicationInterface!!.storageUtils.setLastMediaScanned(
-                        uri,
-                        is_raw,
-                        false,
-                        null
+                        uri, is_raw, false, null
                     )
                 }
                 if (thumbnail != null) {
@@ -5004,8 +4997,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         if (MyDebug.LOG) Log.d(TAG, "openGallery")
         //Intent intent = new Intent(Intent.ACTION_VIEW, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         var uri = applicationInterface!!.storageUtils.getLastMediaScanned()
-        var is_raw =
-            uri != null && applicationInterface!!.storageUtils.getLastMediaScannedIsRaw()
+        var is_raw = uri != null && applicationInterface!!.storageUtils.getLastMediaScannedIsRaw()
         if (MyDebug.LOG && uri != null) {
             Log.d(TAG, "found cached most recent uri: " + uri)
             Log.d(TAG, "    is_raw: " + is_raw)
@@ -5324,8 +5316,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             if (orig_save_location != new_save_location) {
                 if (MyDebug.LOG) Log.d(
                     TAG,
-                    "changed save_folder to: " + this.applicationInterface!!.storageUtils
-                        .getSaveLocation()
+                    "changed save_folder to: " + this.applicationInterface!!.storageUtils.getSaveLocation()
                 )
                 val editor = sharedPreferences.edit()
                 editor.putString(PreferenceKeys.SaveLocationPreferenceKey, new_save_location)
@@ -5495,9 +5486,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
         }
 
-        val history = (if (applicationInterface?.storageUtils
-                ?.isUsingSAF() == true
-        ) this.saveLocationHistorySAF else save_location_history)!!
+        val history =
+            (if (applicationInterface?.storageUtils?.isUsingSAF() == true) this.saveLocationHistorySAF else save_location_history)!!
         showPreview(false)
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setTitle(R.string.choose_save_location)
@@ -5525,9 +5515,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             android.R.string.yes, object : DialogInterface.OnClickListener {
                                 override fun onClick(dialog: DialogInterface?, which: Int) {
                                     if (MyDebug.LOG) Log.d(TAG, "confirmed clear save history")
-                                    if (applicationInterface!!.storageUtils
-                                            .isUsingSAF()
-                                    ) clearFolderHistorySAF()
+                                    if (applicationInterface!!.storageUtils.isUsingSAF()) clearFolderHistorySAF()
                                     else clearFolderHistory()
                                     setWindowFlagsForCamera()
                                     showPreview(true)
