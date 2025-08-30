@@ -25,11 +25,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ssolstice.camera.manual.MyApplicationInterface
 import com.ssolstice.camera.manual.R
 import com.ssolstice.camera.manual.compose.ui.theme.colorMain
 import com.ssolstice.camera.manual.compose.widgets.ItemResolution
 import com.ssolstice.camera.manual.compose.widgets.SubTitleSettingRow
 import com.ssolstice.camera.manual.compose.widgets.TitleSettingRow
+import com.ssolstice.camera.manual.models.PhotoModeUiModel
 import com.ssolstice.camera.manual.models.SettingItemModel
 
 val resolutions = arrayListOf(
@@ -107,6 +109,7 @@ fun CameraSettingsPreview() {
 fun CameraSettings(
     modifier: Modifier = Modifier,
     isPhotoMode: Boolean = true,
+    currentPhotoMode: PhotoModeUiModel? = null,
     resolutionSelected: SettingItemModel? = null,
     resolutionOfVideoSelected: SettingItemModel? = null,
     timerSelected: SettingItemModel? = null,
@@ -184,72 +187,74 @@ fun CameraSettings(
         }
 
         if (isPhotoMode) {
-            // raw jpeg
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Column {
-                    TitleSettingRow(stringResource(R.string.raw_photos))
-                    SubTitleSettingRow(stringResource(R.string.only_raw))
+            if (currentPhotoMode?.mode != MyApplicationInterface.PhotoMode.Panorama) {
+                // raw jpeg
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Column {
+                        TitleSettingRow(stringResource(R.string.raw_photos))
+                        SubTitleSettingRow(stringResource(R.string.only_raw))
+                    }
+                    LazyRow(modifier = Modifier.align(Alignment.CenterEnd)) {
+                        items(rawList) { item ->
+                            ItemResolution(
+                                shape = CircleShape,
+                                text = item.text,
+                                icon = item.icon,
+                                isSelect = item.id == rawSelected?.id,
+                                onClick = { onRawChange(item) },
+                            )
+                        }
+                    }
                 }
-                LazyRow(modifier = Modifier.align(Alignment.CenterEnd)) {
-                    items(rawList) { item ->
+
+                // resolution
+                TitleSettingRow(stringResource(R.string.resolution))
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    items(resolutions) { item ->
                         ItemResolution(
-                            shape = CircleShape,
                             text = item.text,
-                            icon = item.icon,
-                            isSelect = item.id == rawSelected?.id,
-                            onClick = { onRawChange(item) },
+                            sub = item.sub,
+                            isSelect = item.id == resolutionSelected?.id,
+                            onClick = { onResolutionChange(item) },
                         )
                     }
                 }
-            }
 
-            // resolution
-            TitleSettingRow(stringResource(R.string.resolution))
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                items(resolutions) { item ->
-                    ItemResolution(
-                        text = item.text,
-                        sub = item.sub,
-                        isSelect = item.id == resolutionSelected?.id,
-                        onClick = { onResolutionChange(item) },
-                    )
-                }
-            }
-
-            // timer (photo mode)
-            if (timers.isNotEmpty()) {
-                TitleSettingRow(stringResource(R.string.preference_timer))
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    items(timers) { item ->
-                        ItemResolution(
-                            item.text, isSelect = item.id == timerSelected?.id,
-                            onClick = { onTimerChange(item) },
-                        )
+                // timer (photo mode)
+                if (timers.isNotEmpty()) {
+                    TitleSettingRow(stringResource(R.string.preference_timer))
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        items(timers) { item ->
+                            ItemResolution(
+                                item.text, isSelect = item.id == timerSelected?.id,
+                                onClick = { onTimerChange(item) },
+                            )
+                        }
                     }
                 }
-            }
 
-            // repeat (photo mode)
-            if (repeats.isNotEmpty()) {
-                TitleSettingRow(stringResource(R.string.repeat))
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    items(repeats) { item ->
-                        ItemResolution(
-                            item.text, isSelect = item.id == repeatSelected?.id,
-                            onClick = { onRepeatChange(item) },
-                        )
+                // repeat (photo mode)
+                if (repeats.isNotEmpty()) {
+                    TitleSettingRow(stringResource(R.string.repeat))
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        items(repeats) { item ->
+                            ItemResolution(
+                                item.text, isSelect = item.id == repeatSelected?.id,
+                                onClick = { onRepeatChange(item) },
+                            )
+                        }
                     }
                 }
             }

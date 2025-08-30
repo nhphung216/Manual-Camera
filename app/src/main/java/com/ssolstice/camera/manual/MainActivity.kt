@@ -814,9 +814,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 val captureRate = viewModel.captureRate.collectAsState()
 
                 LaunchedEffect(isPhotoMode) {
-                    delay(1000)
                     if (isPhotoMode) {
-                        viewModel.loadPhotoModeViews(activity, applicationInterface!!, preview!!)
+                        viewModel.loadPhotoModes(activity, applicationInterface!!, preview!!)
                     } else {
                         if (preview != null && applicationInterface != null) {
                             viewModel.loadVideoModes(activity, applicationInterface!!, preview!!)
@@ -912,6 +911,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     if (showCameraSettings.value) {
                         CameraSettings(
                             isPhotoMode = isPhotoMode,
+                            currentPhotoMode = currentPhotoMode.value,
                             resolutionSelected = resolutionSelected,
                             timerSelected = timerSelected,
                             repeatSelected = repeatSelected,
