@@ -807,6 +807,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
                 val photoModes = viewModel.photoModes.collectAsState()
                 val currentPhotoMode = viewModel.currentPhotoModeUiModel.collectAsState()
+                val selectedPhotoOption = viewModel.selectedPhotoOption.collectAsState()
 
                 val videoModes = viewModel.videoModes.collectAsState()
                 val currentVideoMode = viewModel.currentVideoMode.collectAsState()
@@ -815,7 +816,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 LaunchedEffect(isPhotoMode) {
                     delay(1000)
                     if (isPhotoMode) {
-                        viewModel.loadPhotoModeViews(activity)
+                        viewModel.loadPhotoModeViews(activity, applicationInterface!!, preview!!)
                     } else {
                         if (preview != null && applicationInterface != null) {
                             viewModel.loadVideoModes(activity, applicationInterface!!, preview!!)
@@ -830,13 +831,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         isPhotoMode = isPhotoMode,
                         galleryBitmap = galleryBitmap,
                         onOpenGallery = { clickedGallery() },
+                        onTogglePhotoVideoMode = { clickedSwitchVideo() },
+                        onTakePhoto = { clickedTakePhoto() },
+                        onTakePhotoVideoSnapshot = { clickedTakePhotoVideoSnapshot() },
+                        onPauseVideo = { clickedPauseVideo() },
                         onSwitchCamera = {
                             clickedSwitchCamera()
                         },
-                        onTogglePhotoVideoMode = { clickedSwitchVideo() },
-                        onPauseVideo = { clickedPauseVideo() },
-                        onTakePhoto = { clickedTakePhoto() },
-                        onTakePhotoVideoSnapshot = { clickedTakePhotoVideoSnapshot() },
 
                         showCameraSettings = {
                             showCameraSettings.value = !showCameraSettings.value
@@ -865,18 +866,21 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         },
 
                         photoModes = photoModes.value,
+                        currentPhotoMode = currentPhotoMode.value,
                         onChangePhotoMode = {
                             Log.e(TAG, "changePhotoMode: $it")
-                            if (currentPhotoMode.value != it.mode) {
-                                viewModel.setCurrentPhotoMode(it.mode)
+                            if (currentPhotoMode.value != it) {
+                                viewModel.setCurrentPhotoMode(it)
                                 viewModel.changePhotoModeUiModel(it)
                                 changePhotoMode(it.mode)
                             }
                         },
+                        onSelectedPhotoOption = {
+                            viewModel.setSelectedPhotoOption(this@MainActivity, preview!!, it)
+                        },
+                        selectedPhotoOption = selectedPhotoOption.value,
 
-                        currentVideoMode = currentVideoMode.value,
                         videoModes = videoModes.value,
-                        // video, slow motion, time lapse
                         onChangeVideoMode = { newMode ->
                             Log.e(TAG, "onChangeVideoMode: $newMode")
 
@@ -890,6 +894,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             }
                             viewModel.setVideoModeSelected(newMode)
                         },
+                        // video, slow motion, time lapse
+                        currentVideoMode = currentVideoMode.value,
 
                         captureRate = captureRate.value,
                         onCaptureRateSelected = {
@@ -1224,80 +1230,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         }
     }
 
-    fun setPhotoModeViews(isVideo: Boolean) {
-        val texts: MutableList<String?> = ArrayList<String?>()
-        val values: MutableList<PhotoMode?> = ArrayList<PhotoMode?>()
-
-        if (supportsPanorama()) {
-            texts.add(getResources().getString(R.string.photo_mode_panorama_full))
-            values.add(PhotoMode.Panorama)
-        }
-
-        if (supportsFocusBracketing()) {
-            texts.add(
-                getResources().getString(R.string.photo_mode_focus_bracketing_full)
-            )
-            values.add(PhotoMode.FocusBracketing)
-        }
-
-        if (supportsHDR()) {
-            texts.add(getResources().getString(R.string.photo_mode_hdr))
-            values.add(PhotoMode.HDR)
-        }
-
-        texts.add(getResources().getString(R.string.photo_mode_standard_full))
-        values.add(PhotoMode.Standard)
-
-        if (supportsDRO()) {
-            texts.add(getResources().getString(R.string.photo_mode_dro))
-            values.add(PhotoMode.DRO)
-        }
-
-        if (supportsNoiseReduction()) {
-            texts.add(
-                getResources().getString(R.string.photo_mode_noise_reduction_full)
-            )
-            values.add(PhotoMode.NoiseReduction)
-        }
-
-        if (supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_NIGHT)) {
-            texts.add(getResources().getString(R.string.Night))
-            values.add(PhotoMode.X_Night)
-        }
-
-        if (supportsFastBurst()) {
-            texts.add(getResources().getString(R.string.photo_mode_fast_burst_full))
-            values.add(PhotoMode.FastBurst)
-        }
-
-        if (supportsExpoBracketing()) {
-            texts.add(
-                getResources().getString(R.string.photo_mode_expo_bracketing_full)
-            )
-            values.add(PhotoMode.ExpoBracketing)
-        }
-
-        if (supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_AUTOMATIC)) {
-            texts.add(getResources().getString(R.string.photo_mode_x_auto))
-            values.add(PhotoMode.X_Auto)
-        }
-
-        if (supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_HDR)) {
-            texts.add(getResources().getString(R.string.photo_mode_x_hdr))
-            values.add(PhotoMode.X_HDR)
-        }
-
-        if (supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_BOKEH)) {
-            texts.add(getResources().getString(R.string.photo_mode_x_bokeh))
-            values.add(PhotoMode.X_Bokeh)
-        }
-
-        if (supportsCameraExtension(CameraExtensionCharacteristics.EXTENSION_BEAUTY)) {
-            texts.add(getResources().getString(R.string.photo_mode_x_beauty_full))
-            values.add(PhotoMode.X_Beauty)
-        }
-    }
-
     private fun changePhotoMode(mode: PhotoMode) {
         Log.e(TAG, "photo mode: $mode")
         var toastMessage = when (mode) {
@@ -1321,49 +1253,70 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 PhotoMode.Standard -> {
                     putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_std")
                 }
+
                 PhotoMode.DRO -> {
                     putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_dro")
                 }
+
                 PhotoMode.HDR -> {
                     putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_hdr")
                 }
+
                 PhotoMode.ExpoBracketing -> {
                     putString(
-                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_expo_bracketing"
+                        PreferenceKeys.PhotoModePreferenceKey,
+                        "preference_photo_mode_expo_bracketing"
                     )
                 }
+
                 PhotoMode.FocusBracketing -> {
                     putString(
-                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_focus_bracketing"
+                        PreferenceKeys.PhotoModePreferenceKey,
+                        "preference_photo_mode_focus_bracketing"
                     )
                 }
+
                 PhotoMode.FastBurst -> {
                     putString(
                         PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_fast_burst"
                     )
                 }
+
                 PhotoMode.NoiseReduction -> {
                     putString(
-                        PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_noise_reduction"
+                        PreferenceKeys.PhotoModePreferenceKey,
+                        "preference_photo_mode_noise_reduction"
                     )
                 }
+
                 PhotoMode.Panorama -> {
                     putString(
                         PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_panorama"
                     )
                 }
+
                 PhotoMode.X_Auto -> {
                     putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_auto")
                 }
+
                 PhotoMode.X_HDR -> {
                     putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_hdr")
                 }
+
                 PhotoMode.X_Night -> {
-                    putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_night")
+                    putString(
+                        PreferenceKeys.PhotoModePreferenceKey,
+                        "preference_photo_mode_x_night"
+                    )
                 }
+
                 PhotoMode.X_Bokeh -> {
-                    putString(PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_bokeh")
+                    putString(
+                        PreferenceKeys.PhotoModePreferenceKey,
+                        "preference_photo_mode_x_bokeh"
+                    )
                 }
+
                 PhotoMode.X_Beauty -> {
                     putString(
                         PreferenceKeys.PhotoModePreferenceKey, "preference_photo_mode_x_beauty"
@@ -6288,7 +6241,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun setManualFocusSeekBarVisibility(isTargetDistance: Boolean) {
         val isVisible = showManualFocusSeekbar(isTargetDistance)
-        val focusSeekBar = if (isTargetDistance) binding.layoutFocusBracketingTargetSeekbar else binding.layoutFocusSeekbar
+        val focusSeekBar =
+            if (isTargetDistance) binding.layoutFocusBracketingTargetSeekbar else binding.layoutFocusSeekbar
         val visibility = if (isVisible) View.VISIBLE else View.GONE
         focusSeekBar.visibility = visibility
 

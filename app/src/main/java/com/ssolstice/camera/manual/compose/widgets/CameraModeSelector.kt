@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssolstice.camera.manual.compose.ui.theme.colorMain
+import com.ssolstice.camera.manual.compose.ui.theme.colorSecondary
 import com.ssolstice.camera.manual.models.PhotoModeUiModel
 import com.ssolstice.camera.manual.models.VideoModeUiModel
 
@@ -39,7 +40,7 @@ fun PhotoModeSelector(
                 modifier = Modifier
                     .clip(RoundedCornerShape(24.dp))
                     .background(
-                        if (item.selected) colorMain()
+                        if (item.selected) colorSecondary()
                         else Color.Transparent
                     )
                     .clickable { onModeSelected(item) }
@@ -73,7 +74,7 @@ fun VideoModeSelector(
                     modifier = Modifier
                         .clip(RoundedCornerShape(24.dp))
                         .background(
-                            if (item.selected) colorMain()
+                            if (item.selected) colorSecondary()
                             else Color.Transparent
                         )
                         .clickable { onModeSelected(item) }
