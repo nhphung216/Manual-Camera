@@ -5,7 +5,7 @@
     <color name="black">#000000</color>
     <color name="gray">#C8C5C5</color>
     <color name="text_unselect">#D9D4D4</color>
-    <color name="seekbar_background">#20000000</color>
+    <color name="seekbar_background">#00000000</color>
     <color name="icons_background">#20000000</color>
     <color name="icons_background_tint">#ff000000</color>
     <color name="shutter_icon">#D9D4D4</color>

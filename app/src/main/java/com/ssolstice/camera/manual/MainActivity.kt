@@ -6288,10 +6288,10 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun setManualFocusSeekBarVisibility(isTargetDistance: Boolean) {
         val isVisible = showManualFocusSeekbar(isTargetDistance)
-        val focusSeekBar =
-            if (isTargetDistance) binding.focusBracketingTargetSeekbar else binding.focusSeekbar
+        val focusSeekBar = if (isTargetDistance) binding.layoutFocusBracketingTargetSeekbar else binding.layoutFocusSeekbar
         val visibility = if (isVisible) View.VISIBLE else View.GONE
         focusSeekBar.visibility = visibility
+
         if (isVisible) {
             applicationInterface!!.drawPreview?.updateSettings() // needed so that we reset focus_seekbars_margin_left, as the focus seekbars can only be updated when visible
         }

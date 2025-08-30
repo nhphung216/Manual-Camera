@@ -392,37 +392,92 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
-            <SeekBar
-                android:id="@+id/focus_seekbar"
-                android:layout_width="300dp"
-                android:layout_height="46dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginBottom="0dp"
-                android:background="@color/seekbar_background"
-                android:contentDescription="@string/focus_distance"
-                android:progressBackgroundTint="@color/color_selected"
-                android:progressTint="@color/color_selected"
-                android:thumbTint="@color/color_selected"
-                android:visibility="gone" />
+            <LinearLayout
+                android:id="@+id/layout_focus_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="horizontal">
 
-            <SeekBar
-                android:id="@+id/focus_bracketing_target_seekbar"
-                android:layout_width="300dp"
-                android:layout_height="46dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginBottom="0dp"
-                android:background="@color/seekbar_background"
-                android:contentDescription="@string/focus_bracketing_target_distance"
-                android:progressBackgroundTint="@color/color_selected"
-                android:progressTint="@color/color_selected"
-                android:thumbTint="@color/color_selected"
-                android:visibility="gone" />
+                <ImageButton
+                    android:id="@+id/focus_infinity"
+                    android:layout_width="@dimen/onscreen_button_size"
+                    android:layout_height="@dimen/onscreen_button_size"
+                    android:background="@null"
+                    android:backgroundTint="@null"
+                    android:backgroundTintMode="src_in"
+                    android:contentDescription="@string/face_detection_enable"
+                    android:padding="@dimen/onscreen_button_padding"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/focus_mode_infinity" />
+
+                <SeekBar
+                    android:id="@+id/focus_seekbar"
+                    android:layout_width="250dp"
+                    android:layout_height="46dp"
+                    android:background="@color/seekbar_background"
+                    android:contentDescription="@string/focus_distance"
+                    android:progressBackgroundTint="@color/color_selected"
+                    android:progressTint="@color/color_selected"
+                    android:thumbTint="@color/color_selected" />
+
+                <ImageButton
+                    android:id="@+id/focus_macro"
+                    android:layout_width="@dimen/onscreen_button_size"
+                    android:layout_height="@dimen/onscreen_button_size"
+                    android:background="@null"
+                    android:backgroundTint="@null"
+                    android:backgroundTintMode="src_in"
+                    android:contentDescription="@string/face_detection_enable"
+                    android:padding="@dimen/onscreen_button_padding"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_macro_focus" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_focus_bracketing_target_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginBottom="24dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/focus_bracketing_target_infinity"
+                    android:layout_width="@dimen/onscreen_button_size"
+                    android:layout_height="@dimen/onscreen_button_size"
+                    android:background="@null"
+                    android:backgroundTint="@null"
+                    android:backgroundTintMode="src_in"
+                    android:contentDescription="@string/face_detection_enable"
+                    android:padding="@dimen/onscreen_button_padding"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/focus_mode_infinity" />
+
+                <SeekBar
+                    android:id="@+id/focus_bracketing_target_seekbar"
+                    android:layout_width="250dp"
+                    android:layout_height="46dp"
+                    android:background="@color/seekbar_background"
+                    android:contentDescription="@string/focus_bracketing_target_distance"
+                    android:progressBackgroundTint="@color/color_selected"
+                    android:progressTint="@color/color_selected"
+                    android:thumbTint="@color/color_selected" />
+
+                <ImageButton
+                    android:id="@+id/focus_bracketing_target_macro"
+                    android:layout_width="@dimen/onscreen_button_size"
+                    android:layout_height="@dimen/onscreen_button_size"
+                    android:background="@null"
+                    android:backgroundTint="@null"
+                    android:backgroundTintMode="src_in"
+                    android:contentDescription="@string/face_detection_enable"
+                    android:padding="@dimen/onscreen_button_padding"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_macro_focus" />
+            </LinearLayout>
 
             <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/compose_view"
