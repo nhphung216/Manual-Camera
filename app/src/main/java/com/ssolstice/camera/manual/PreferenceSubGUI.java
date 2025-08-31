@@ -61,65 +61,65 @@ public class PreferenceSubGUI extends PreferenceSubScreen {
         if( MyDebug.LOG )
             Log.d(TAG, "has_physical_cameras: " + has_physical_cameras);
 
-        if( !supports_face_detection  && ( camera_open || sharedPreferences.getBoolean(PreferenceKeys.FaceDetectionPreferenceKey, false) == false ) ) {
-            // if camera not open, we'll think this setting isn't supported - but should only remove
-            // this preference if it's set to the default (otherwise if user sets to a non-default
-            // value that causes camera to not open, user won't be able to put it back to the
-            // default!)
-            Preference pref = findPreference("preference_show_face_detection");
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
-            pg.removePreference(pref);
-        }
-
-        if( !supports_flash ) {
-            Preference pref = findPreference("preference_show_cycle_flash");
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
-            pg.removePreference(pref);
-        }
-
-        if( !supports_preview_bitmaps ) {
-            Preference pref = findPreference("preference_show_focus_peaking");
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
-            pg.removePreference(pref);
-        }
-
-        if( !supports_auto_stabilise ) {
-            Preference pref = findPreference("preference_show_auto_level");
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
-            pg.removePreference(pref);
-        }
-
-        if( !supports_raw ) {
-            Preference pref = findPreference("preference_show_cycle_raw");
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
-            pg.removePreference(pref);
-        }
-
-        if( !supports_white_balance_lock ) {
-            Preference pref = findPreference("preference_show_white_balance_lock");
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
-            pg.removePreference(pref);
-        }
-
-        if( !supports_exposure_lock ) {
-            Preference pref = findPreference("preference_show_exposure_lock");
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
-            pg.removePreference(pref);
-        }
-
-        if( !is_multi_cam && !has_physical_cameras ) {
-            Preference pref = findPreference("preference_multi_cam_button");
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
-            pg.removePreference(pref);
-        }
+//        if( !supports_face_detection  && ( camera_open || sharedPreferences.getBoolean(PreferenceKeys.FaceDetectionPreferenceKey, false) == false ) ) {
+//            // if camera not open, we'll think this setting isn't supported - but should only remove
+//            // this preference if it's set to the default (otherwise if user sets to a non-default
+//            // value that causes camera to not open, user won't be able to put it back to the
+//            // default!)
+//            Preference pref = findPreference("preference_show_face_detection");
+//            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
+//            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+//            pg.removePreference(pref);
+//        }
+//
+//        if( !supports_flash ) {
+//            Preference pref = findPreference("preference_show_cycle_flash");
+//            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
+//            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+//            pg.removePreference(pref);
+//        }
+//
+//        if( !supports_preview_bitmaps ) {
+//            Preference pref = findPreference("preference_show_focus_peaking");
+//            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
+//            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+//            pg.removePreference(pref);
+//        }
+//
+//        if( !supports_auto_stabilise ) {
+//            Preference pref = findPreference("preference_show_auto_level");
+//            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
+//            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+//            pg.removePreference(pref);
+//        }
+//
+//        if( !supports_raw ) {
+//            Preference pref = findPreference("preference_show_cycle_raw");
+//            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
+//            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+//            pg.removePreference(pref);
+//        }
+//
+//        if( !supports_white_balance_lock ) {
+//            Preference pref = findPreference("preference_show_white_balance_lock");
+//            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
+//            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+//            pg.removePreference(pref);
+//        }
+//
+//        if( !supports_exposure_lock ) {
+//            Preference pref = findPreference("preference_show_exposure_lock");
+//            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
+//            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+//            pg.removePreference(pref);
+//        }
+//
+//        if( !is_multi_cam && !has_physical_cameras ) {
+//            Preference pref = findPreference("preference_multi_cam_button");
+//            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_gui");
+//            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+//            pg.removePreference(pref);
+//        }
 
         if( MyDebug.LOG )
             Log.d(TAG, "onCreate done");

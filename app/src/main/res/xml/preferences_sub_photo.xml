@@ -2,13 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="preferences_root">
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <ListPreference
-        android:key="preference_resolution"
-        android:title="@string/preference_resolution"
-        android:summary="%s"
-        android:icon="@drawable/ic_photo_size_select_large_white_48dp"
-        />
+<!--    &lt;!&ndash;  if we move this to another PreferenceGroup, we should update code to remove this Preference &ndash;&gt;-->
+<!--    <ListPreference-->
+<!--        android:key="preference_resolution"-->
+<!--        android:title="@string/preference_resolution"-->
+<!--        android:summary="%s"-->
+<!--        android:icon="@drawable/ic_photo_size_select_large_white_48dp"-->
+<!--        />-->
 
     <ListPreference
         android:key="preference_photo_optimise_focus"
@@ -28,31 +28,31 @@
         android:defaultValue="preference_save_preshots_off"
         />
 
-    <com.ssolstice.camera.manual.ui.ArraySeekBarPreference
-        android:key="preference_quality"
-        android:title="@string/preference_quality"
-        android:summary="@string/preference_quality_summary"
-        android:defaultValue="90"
-        />
+<!--    <com.ssolstice.camera.manual.ui.ArraySeekBarPreference-->
+<!--        android:key="preference_quality"-->
+<!--        android:title="@string/preference_quality"-->
+<!--        android:summary="@string/preference_quality_summary"-->
+<!--        android:defaultValue="90"-->
+<!--        />-->
 
-    <ListPreference
-        android:key="preference_image_format"
-        android:title="@string/preference_image_format"
-        android:summary="@string/preference_image_format_summary"
-        android:entries="@array/preference_image_format_entries"
-        android:entryValues="@array/preference_image_format_values"
-        android:defaultValue="preference_image_format_jpeg"
-        />
+<!--    <ListPreference-->
+<!--        android:key="preference_image_format"-->
+<!--        android:title="@string/preference_image_format"-->
+<!--        android:summary="@string/preference_image_format_summary"-->
+<!--        android:entries="@array/preference_image_format_entries"-->
+<!--        android:entryValues="@array/preference_image_format_values"-->
+<!--        android:defaultValue="preference_image_format_jpeg"-->
+<!--        />-->
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <ListPreference
-        android:key="preference_raw"
-        android:title="@string/preference_raw"
-        android:summary="%s"
-        android:entries="@array/preference_raw_entries"
-        android:entryValues="@array/preference_raw_values"
-        android:defaultValue="preference_raw_no"
-        />
+<!--    &lt;!&ndash;  if we move this to another PreferenceGroup, we should update code to remove this Preference &ndash;&gt;-->
+<!--    <ListPreference-->
+<!--        android:key="preference_raw"-->
+<!--        android:title="@string/preference_raw"-->
+<!--        android:summary="%s"-->
+<!--        android:entries="@array/preference_raw_entries"-->
+<!--        android:entryValues="@array/preference_raw_values"-->
+<!--        android:defaultValue="preference_raw_no"-->
+<!--        />-->
 
     <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
     <SwitchPreference
