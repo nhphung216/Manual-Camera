@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ssolstice.camera.manual.ui.FolderChooserDialog;
+import com.ssolstice.camera.manual.ui.MyEditTextPreference;
 
 import java.io.File;
 
@@ -25,84 +27,7 @@ public class PreferenceSubCameraControlsMore extends PreferenceSubScreen {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_sub_camera_controls_more);
 
-        final Bundle bundle = getArguments();
-        /*final int cameraId = bundle.getInt("cameraId");
-        if( MyDebug.LOG )
-            Log.d(TAG, "cameraId: " + cameraId);
-        final int nCameras = bundle.getInt("nCameras");
-        if( MyDebug.LOG )
-            Log.d(TAG, "nCameras: " + nCameras);*/
-
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-
-        final boolean can_disable_shutter_sound = bundle.getBoolean("can_disable_shutter_sound");
-        if( MyDebug.LOG )
-            Log.d(TAG, "can_disable_shutter_sound: " + can_disable_shutter_sound);
-        if( !can_disable_shutter_sound ) {
-            // Camera.enableShutterSound requires JELLY_BEAN_MR1 or greater
-            Preference pref = findPreference("preference_shutter_sound");
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_camera_controls_more");
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
-            pg.removePreference(pref);
-        }
-
-        /*{
-        	EditTextPreference edit = (EditTextPreference)findPreference("preference_save_location");
-        	InputFilter filter = new InputFilter() {
-        		// whilst Android seems to allow any characters on internal memory, SD cards are typically formatted with FAT32
-        		String disallowed = "|\\?*<\":>";
-                public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                    for(int i=start;i<end;i++) {
-                    	if( disallowed.indexOf( source.charAt(i) ) != -1 ) {
-                            return "";
-                    	}
-                    }
-                    return null;
-                }
-        	};
-        	edit.getEditText().setFilters(new InputFilter[]{filter});
-        }*/
-        {
-            Preference pref = findPreference("preference_save_location");
-            pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference arg0) {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "clicked save location");
-                    MainActivity main_activity = (MainActivity)PreferenceSubCameraControlsMore.this.getActivity();
-                    if( main_activity.getStorageUtils().isUsingSAF() ) {
-                        main_activity.openFolderChooserDialogSAF(true);
-                        return true;
-                    }
-                    else if( MainActivity.useScopedStorage() ) {
-                        // we can't use an EditTextPreference (or MyEditTextPreference) due to having to support non-scoped-storage, or when SAF is enabled...
-                        // anyhow, this means we can share code when called from gallery long-press anyway
-                        AlertDialog.Builder alertDialog = main_activity.createSaveFolderDialog();
-                        final AlertDialog alert = alertDialog.create();
-                        // AlertDialog.Builder.setOnDismissListener() requires API level 17, so do it this way instead
-                        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface arg0) {
-                                if( MyDebug.LOG )
-                                    Log.d(TAG, "save folder dialog dismissed");
-                                dialogs.remove(alert);
-                            }
-                        });
-                        alert.show();
-                        dialogs.add(alert);
-                        return true;
-                    }
-                    else {
-                        File start_folder = main_activity.getStorageUtils().getImageFolder();
-
-                        FolderChooserDialog fragment = new MyPreferenceFragment.SaveFolderChooserDialog();
-                        fragment.setStartFolder(start_folder);
-                        fragment.show(getFragmentManager(), "FOLDER_FRAGMENT");
-                        return true;
-                    }
-                }
-            });
-        }
 
         {
             final Preference pref = findPreference("preference_using_saf");
@@ -196,8 +121,47 @@ public class PreferenceSubCameraControlsMore extends PreferenceSubScreen {
 
         setupDependencies();
 
+        updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
+
         if( MyDebug.LOG )
             Log.d(TAG, "onCreate done");
+    }
+
+    private void updatePreferenceSummaries(PreferenceGroup group, SharedPreferences sharedPreferences) {
+        for (int i = 0; i < group.getPreferenceCount(); i++) {
+            Preference pref = group.getPreference(i);
+            if (pref instanceof PreferenceGroup) {
+                updatePreferenceSummaries((PreferenceGroup) pref, sharedPreferences); // đệ quy
+            } else {
+                updatePreferenceSummary(pref, sharedPreferences);
+            }
+        }
+    }
+
+    private void updatePreferenceSummary(Preference preference, SharedPreferences sharedPreferences) {
+        if (preference == null) return;
+
+        if (preference instanceof ListPreference) {
+            ListPreference listPref = (ListPreference) preference;
+            String value = sharedPreferences.getString(listPref.getKey(), "");
+            int index = listPref.findIndexOfValue(value);
+            if (index >= 0) listPref.setSummary(listPref.getEntries()[index]);
+        } else if (preference instanceof EditTextPreference) {
+            EditTextPreference editPref = (EditTextPreference) preference;
+            editPref.setSummary(editPref.getText());
+        } else if (preference instanceof MyEditTextPreference) {
+            MyEditTextPreference editPref = (MyEditTextPreference) preference;
+            editPref.setSummary(editPref.getText());
+        } else {
+            Object value = sharedPreferences.getAll().get(preference.getKey());
+            if (value instanceof String) {
+                preference.setSummary((String) value);
+            } else if (value instanceof Integer) {
+                preference.setSummary(String.valueOf(value));
+            } else if (value instanceof Boolean) {
+                // preference.setSummary(String.valueOf(value));
+            }
+        }
     }
 
     /** Programmatically set up dependencies for preference types (e.g., ListPreference) that don't

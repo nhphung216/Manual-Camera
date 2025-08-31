@@ -3,45 +3,120 @@
     android:key="preferences_root">
 
     <PreferenceCategory
+        android:key="@string/preference_category_camera_preview"
+        android:title="@string/preference_category_camera_preview">
+
+        <ListPreference
+            android:defaultValue="preference_grid_none"
+            android:entries="@array/preference_grid_entries"
+            android:entryValues="@array/preference_grid_values"
+            android:icon="@drawable/outline_grid_on_24"
+            android:key="preference_grid"
+            android:summary="%s"
+            android:title="@string/preference_grid" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/outline_zoom_in_24"
+            android:key="preference_show_zoom"
+            android:summary="@string/preference_show_zoom_summary"
+            android:title="@string/preference_show_zoom" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/outline_battery_android_5"
+            android:key="preference_show_battery"
+            android:summary="@string/preference_show_battery_summary"
+            android:title="@string/preference_show_battery" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/outline_timelapse_32"
+            android:key="preference_show_time"
+            android:summary="@string/preference_show_time_summary"
+            android:title="@string/preference_show_time" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/outline_camera_32"
+            android:key="preference_show_camera_id"
+            android:summary="@string/preference_show_camera_id_summary"
+            android:title="@string/preference_show_camera_id" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/outline_storage_32"
+            android:key="preference_free_memory"
+            android:summary="@string/preference_free_memory_summary"
+            android:title="@string/preference_free_memory" />
+
+        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/iso_icon"
+            android:key="preference_show_iso"
+            android:summary="@string/preference_show_iso_summary"
+            android:title="@string/preference_show_iso" />
+
+        <ListPreference
+            android:defaultValue="preference_histogram_off"
+            android:entries="@array/preference_histogram_entries"
+            android:entryValues="@array/preference_histogram_values"
+            android:icon="@drawable/outline_bar_chart_24"
+            android:key="preference_histogram"
+            android:summary="@string/preference_histogram_summary"
+            android:title="@string/preference_histogram" />
+
+        <PreferenceScreen
+            android:fragment="com.ssolstice.camera.manual.PreferenceSubPreview"
+            android:icon="@drawable/ic_more_horiz_white_48dp"
+            android:key="preference_preview"
+            android:persistent="false"
+            android:title="@string/more_camera_preview" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="preference_category_camera_controls"
         android:title="@string/preference_category_camera_controls">
 
+        <ListPreference
+            android:defaultValue="none"
+            android:entries="@array/preference_touch_capture_entries"
+            android:entryValues="@array/preference_touch_capture_values"
+            android:icon="@drawable/outline_touch_app_32"
+            android:key="preference_touch_capture"
+            android:summary="@string/preference_touch_capture_summary"
+            android:title="@string/preference_touch_capture" />    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/outline_shutter_speed_32"
+            android:key="preference_shutter_sound"
+            android:summary="@string/preference_shutter_sound_summary"
+            android:title="@string/preference_shutter_sound" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/outline_timer_32"
+            android:key="preference_timer_beep"
+            android:summary="@string/preference_timer_beep_summary"
+            android:title="@string/preference_timer_beep" />
+
         <SwitchPreference
             android:defaultValue="false"
-            android:key="preference_auto_stabilise"
-            android:summary="@string/preference_auto_stabilise_summary"
-            android:title="@string/preference_auto_stabilise" />
+            android:icon="@drawable/outline_record_voice_over"
+            android:key="preference_timer_speak"
+            android:summary="@string/preference_timer_speak_summary"
+            android:title="@string/preference_timer_speak" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="preference_face_detection"
-            android:summary="@string/preference_face_detection_summary"
-            android:title="@string/preference_face_detection" />
-
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/preference_timer_entries"
-            android:entryValues="@array/preference_timer_values"
-            android:icon="@drawable/ic_timer_white_48dp"
-            android:key="preference_timer"
-            android:summary="%s"
-            android:title="@string/preference_timer" />
-
-        <ListPreference
-            android:defaultValue="1"
-            android:entries="@array/preference_burst_mode_entries"
-            android:entryValues="@array/preference_burst_mode_values"
-            android:key="preference_burst_mode"
-            android:summary="%s"
-            android:title="@string/preference_burst_mode" />
-
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/preference_burst_interval_entries"
-            android:entryValues="@array/preference_burst_interval_values"
-            android:key="preference_burst_interval"
-            android:summary="%s"
-            android:title="@string/preference_burst_interval" />
+        <Preference
+            android:defaultValue="ManualCamera"
+            android:dialogMessage="@string/preference_save_location_summary"
+            android:dialogTitle="@string/preference_save_location"
+            android:icon="@drawable/outline_save_32"
+            android:inputType="text"
+            android:key="preference_save_location"
+            android:summary="@string/preference_save_location_summary"
+            android:title="@string/preference_save_location" />
 
         <PreferenceScreen
             android:fragment="com.ssolstice.camera.manual.PreferenceSubCameraControlsMore"
@@ -59,7 +134,7 @@
         <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
         <CheckBoxPreference
             android:defaultValue="false"
-            android:icon="@drawable/ic_face_white_48dp"
+            android:icon="@drawable/outline_face_32"
             android:key="preference_show_face_detection"
             android:summary="@string/preference_show_face_detection_summary"
             android:title="@string/preference_show_face_detection" />
@@ -67,7 +142,7 @@
         <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
         <CheckBoxPreference
             android:defaultValue="false"
-            android:icon="@drawable/flash_on"
+            android:icon="@drawable/outline_flash_on_32"
             android:key="preference_show_cycle_flash"
             android:summary="@string/preference_show_cycle_flash_summary"
             android:title="@string/preference_show_cycle_flash" />
@@ -75,7 +150,7 @@
         <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
         <CheckBoxPreference
             android:defaultValue="false"
-            android:icon="@drawable/key_visualizer"
+            android:icon="@drawable/outline_key_visualizer_32"
             android:key="preference_show_focus_peaking"
             android:summary="@string/preference_show_focus_peaking_summary"
             android:title="@string/preference_show_focus_peaking" />
@@ -97,14 +172,14 @@
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:icon="@drawable/baseline_text_fields_white_48"
+            android:icon="@drawable/outline_text_fields_32"
             android:key="preference_show_textstamp"
             android:summary="@string/preference_show_textstamp_summary"
             android:title="@string/preference_show_textstamp" />
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:icon="@drawable/ic_gps_fixed_white_48dp"
+            android:icon="@drawable/outline_my_location_32"
             android:key="preference_show_store_location"
             android:summary="@string/preference_show_store_location_summary"
             android:title="@string/preference_show_store_location" />
@@ -118,24 +193,25 @@
             android:title="@string/preference_show_cycle_raw" />
 
         <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:icon="@drawable/white_balance_unlocked"
-            android:key="preference_show_white_balance_lock"
-            android:summary="@string/preference_show_white_balance_lock_summary"
-            android:title="@string/preference_show_white_balance_lock" />
+        <!--        <CheckBoxPreference-->
+        <!--            android:defaultValue="false"-->
+        <!--            android:icon="@drawable/white_balance_unlocked"-->
+        <!--            android:key="preference_show_white_balance_lock"-->
+        <!--            android:summary="@string/preference_show_white_balance_lock_summary"-->
+        <!--            android:title="@string/preference_show_white_balance_lock" />-->
 
-        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:icon="@drawable/exposure_unlocked"
-            android:key="preference_show_exposure_lock"
-            android:summary="@string/preference_show_exposure_lock_summary"
-            android:title="@string/preference_show_exposure_lock" />
+        <!--        &lt;!&ndash;  if we move this to another PreferenceGroup, we should update code to remove this Preference &ndash;&gt;-->
+        <!--        <CheckBoxPreference-->
+        <!--            android:defaultValue="true"-->
+        <!--            android:icon="@drawable/exposure_unlocked"-->
+        <!--            android:key="preference_show_exposure_lock"-->
+        <!--            android:summary="@string/preference_show_exposure_lock_summary"-->
+        <!--            android:title="@string/preference_show_exposure_lock" />-->
 
         <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
         <SwitchPreference
             android:defaultValue="true"
+            android:icon="@drawable/outline_cameraswitch_32"
             android:key="preference_multi_cam_button"
             android:summary="@string/preference_multi_cam_button_summary"
             android:title="@string/preference_multi_cam_button" />
@@ -150,124 +226,17 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="@string/preference_category_camera_preview"
-        android:title="@string/preference_category_camera_preview">
-        <ListPreference
-            android:defaultValue="preference_grid_none"
-            android:entries="@array/preference_grid_entries"
-            android:entryValues="@array/preference_grid_values"
-            android:key="preference_grid"
-            android:summary="%s"
-            android:title="@string/preference_grid" />
-        <ListPreference
-            android:defaultValue="preference_histogram_off"
-            android:entries="@array/preference_histogram_entries"
-            android:entryValues="@array/preference_histogram_values"
-            android:key="preference_histogram"
-            android:summary="@string/preference_histogram_summary"
-            android:title="@string/preference_histogram" />
-
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/preference_zebra_stripes_entries"
-            android:entryValues="@array/preference_zebra_stripes_values"
-            android:key="preference_zebra_stripes"
-            android:summary="@string/preference_zebra_stripes_summary"
-            android:title="@string/preference_zebra_stripes" />
-
-        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-        <ListPreference
-            android:defaultValue="#ff000000"
-            android:entries="@array/preference_zebra_stripes_foreground_color_entries"
-            android:entryValues="@array/preference_zebra_stripes_foreground_color_values"
-            android:key="preference_zebra_stripes_foreground_color"
-            android:summary="@string/preference_zebra_stripes_foreground_color_summary"
-            android:title="@string/preference_zebra_stripes_foreground_color" />
-
-        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-        <ListPreference
-            android:defaultValue="#ffffffff"
-            android:entries="@array/preference_zebra_stripes_background_color_entries"
-            android:entryValues="@array/preference_zebra_stripes_background_color_values"
-            android:key="preference_zebra_stripes_background_color"
-            android:summary="@string/preference_zebra_stripes_background_color_summary"
-            android:title="@string/preference_zebra_stripes_background_color" />
-
-        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-        <ListPreference
-            android:defaultValue="preference_focus_peaking_off"
-            android:entries="@array/preference_focus_peaking_entries"
-            android:entryValues="@array/preference_focus_peaking_values"
-            android:key="preference_focus_peaking"
-            android:summary="@string/preference_focus_peaking_summary"
-            android:title="@string/preference_focus_peaking" />
-
-        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-        <!-- n.b., uses same entries/values as preference_angle_highlight_color -->
-        <ListPreference
-            android:defaultValue="#ffffff"
-            android:entries="@array/preference_angle_highlight_color_entries"
-            android:entryValues="@array/preference_angle_highlight_color_values"
-            android:key="preference_focus_peaking_color"
-            android:summary="@string/preference_focus_peaking_color_summary"
-            android:title="@string/preference_focus_peaking_color" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="preference_show_zoom"
-            android:summary="@string/preference_show_zoom_summary"
-            android:title="@string/preference_show_zoom" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="preference_show_battery"
-            android:summary="@string/preference_show_battery_summary"
-            android:title="@string/preference_show_battery" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="preference_show_time"
-            android:summary="@string/preference_show_time_summary"
-            android:title="@string/preference_show_time" />
-
-        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="preference_show_camera_id"
-            android:summary="@string/preference_show_camera_id_summary"
-            android:title="@string/preference_show_camera_id" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="preference_free_memory"
-            android:summary="@string/preference_free_memory_summary"
-            android:title="@string/preference_free_memory" />
-
-        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="preference_show_iso"
-            android:summary="@string/preference_show_iso_summary"
-            android:title="@string/preference_show_iso" />
-        <PreferenceScreen
-            android:fragment="com.ssolstice.camera.manual.PreferenceSubPreview"
-            android:icon="@drawable/ic_more_horiz_white_48dp"
-            android:key="preference_preview"
-            android:persistent="false"
-            android:title="@string/preference_preview" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
         android:key="preference_category_photo_settings"
         android:title="@string/preference_category_photo_settings">
-        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+
         <ListPreference
-            android:icon="@drawable/ic_photo_size_select_large_white_48dp"
+            android:icon="@drawable/outline_photo_size_select_small_32"
             android:key="preference_resolution"
             android:summary="%s"
             android:title="@string/preference_resolution" />
         <com.ssolstice.camera.manual.ui.ArraySeekBarPreference
             android:defaultValue="90"
+            android:icon="@drawable/outline_percent_32"
             android:key="preference_quality"
             android:summary="@string/preference_quality_summary"
             android:title="@string/preference_quality" />
@@ -276,24 +245,26 @@
             android:defaultValue="preference_image_format_jpeg"
             android:entries="@array/preference_image_format_entries"
             android:entryValues="@array/preference_image_format_values"
+            android:icon="@drawable/outline_image_32"
             android:key="preference_image_format"
             android:summary="@string/preference_image_format_summary"
             android:title="@string/preference_image_format" />
 
-        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
         <ListPreference
             android:defaultValue="preference_raw_no"
             android:entries="@array/preference_raw_entries"
             android:entryValues="@array/preference_raw_values"
+            android:icon="@drawable/outline_raw_on_32"
             android:key="preference_raw"
             android:summary="%s"
             android:title="@string/preference_raw" />
         <PreferenceScreen
             android:fragment="com.ssolstice.camera.manual.PreferenceSubPhoto"
-            android:icon="@drawable/take_photo_pref"
+            android:icon="@drawable/ic_more_horiz_white_48dp"
             android:key="preference_screen_photo_settings"
             android:persistent="false"
             android:title="@string/preference_screen_photo_settings" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -466,12 +437,12 @@
         <!--            android:persistent="false"-->
         <!--            android:title="@string/preference_screen_licences" />-->
 
-        <PreferenceScreen
-            android:fragment="com.ssolstice.camera.manual.PreferenceSubSettingsManager"
-            android:icon="@drawable/settings"
-            android:key="preference_screen_settings_manager"
-            android:persistent="false"
-            android:title="@string/preference_screen_settings_manager" />
+<!--        <PreferenceScreen-->
+<!--            android:fragment="com.ssolstice.camera.manual.PreferenceSubSettingsManager"-->
+<!--            android:icon="@drawable/settings"-->
+<!--            android:key="preference_screen_settings_manager"-->
+<!--            android:persistent="false"-->
+<!--            android:title="@string/preference_screen_settings_manager" />-->
 
     </PreferenceCategory>
 

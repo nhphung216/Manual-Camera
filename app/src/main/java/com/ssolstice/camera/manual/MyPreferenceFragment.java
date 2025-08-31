@@ -1,6 +1,8 @@
 package com.ssolstice.camera.manual;
 
 import com.ssolstice.camera.manual.cameracontroller.CameraController;
+import com.ssolstice.camera.manual.preview.Preview;
+import com.ssolstice.camera.manual.ui.ArraySeekBarPreference;
 import com.ssolstice.camera.manual.ui.FolderChooserDialog;
 import com.ssolstice.camera.manual.ui.MyEditTextPreference;
 
@@ -48,6 +50,7 @@ import android.widget.TextView;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -72,12 +75,148 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
 
         preferenceMain(bundle, sharedPreferences);
+        preferenceSubPhoto(bundle, sharedPreferences);
         preferenceSubVideo(bundle, sharedPreferences);
         preferenceSubPreview(bundle, sharedPreferences);
         preferenceSubGUI(bundle, sharedPreferences);
         preferenceSubProcessing(bundle, sharedPreferences);
+        preferenceSubCameraControlsMore(bundle, sharedPreferences);
 
         setupDependencies();
+
+        updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
+    }
+
+    private void updatePreferenceSummaries(PreferenceGroup group, SharedPreferences sharedPreferences) {
+        for (int i = 0; i < group.getPreferenceCount(); i++) {
+            Preference pref = group.getPreference(i);
+            if (pref instanceof PreferenceGroup) {
+                updatePreferenceSummaries((PreferenceGroup) pref, sharedPreferences); // đệ quy
+            } else {
+                updatePreferenceSummary(pref, sharedPreferences);
+            }
+        }
+    }
+
+    private void updatePreferenceSummary(Preference preference, SharedPreferences sharedPreferences) {
+        if (preference == null) return;
+
+        if (preference instanceof ListPreference) {
+            ListPreference listPref = (ListPreference) preference;
+            String value = sharedPreferences.getString(listPref.getKey(), "");
+            int index = listPref.findIndexOfValue(value);
+            if (index >= 0) listPref.setSummary(listPref.getEntries()[index]);
+        } else if (preference instanceof EditTextPreference) {
+            EditTextPreference editPref = (EditTextPreference) preference;
+            editPref.setSummary(editPref.getText());
+        } else if (preference instanceof MyEditTextPreference) {
+            MyEditTextPreference editPref = (MyEditTextPreference) preference;
+            editPref.setSummary(editPref.getText());
+        } else {
+            Object value = sharedPreferences.getAll().get(preference.getKey());
+            if (value instanceof String) {
+                preference.setSummary((String) value);
+            } else if (value instanceof Integer) {
+                preference.setSummary(String.valueOf(value));
+            } else if (value instanceof Boolean) {
+                // preference.setSummary(String.valueOf(value));
+            }
+        }
+    }
+
+
+    private void preferenceSubCameraControlsMore(Bundle bundle, SharedPreferences sharedPreferences) {
+        final boolean can_disable_shutter_sound = bundle.getBoolean("can_disable_shutter_sound");
+        if (MyDebug.LOG)
+            Log.d(TAG, "can_disable_shutter_sound: " + can_disable_shutter_sound);
+        if (!can_disable_shutter_sound) {
+            Preference pref = findPreference("preference_shutter_sound");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            pg.removePreference(pref);
+        }
+
+        {
+            Preference pref = findPreference("preference_save_location");
+            pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference arg0) {
+                    if (MyDebug.LOG)
+                        Log.d(TAG, "clicked save location");
+                    MainActivity main_activity = (MainActivity) getActivity();
+                    if (main_activity.getStorageUtils().isUsingSAF()) {
+                        main_activity.openFolderChooserDialogSAF(true);
+                        return true;
+                    } else if (MainActivity.useScopedStorage()) {
+                        // we can't use an EditTextPreference (or MyEditTextPreference) due to having to support non-scoped-storage, or when SAF is enabled...
+                        // anyhow, this means we can share code when called from gallery long-press anyway
+                        AlertDialog.Builder alertDialog = main_activity.createSaveFolderDialog();
+                        final AlertDialog alert = alertDialog.create();
+                        // AlertDialog.Builder.setOnDismissListener() requires API level 17, so do it this way instead
+                        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface arg0) {
+                                if (MyDebug.LOG)
+                                    Log.d(TAG, "save folder dialog dismissed");
+                                dialogs.remove(alert);
+                            }
+                        });
+                        alert.show();
+                        dialogs.add(alert);
+                        return true;
+                    } else {
+                        File start_folder = main_activity.getStorageUtils().getImageFolder();
+
+                        FolderChooserDialog fragment = new MyPreferenceFragment.SaveFolderChooserDialog();
+                        fragment.setStartFolder(start_folder);
+                        fragment.show(getFragmentManager(), "FOLDER_FRAGMENT");
+                        return true;
+                    }
+                }
+            });
+        }
+    }
+
+    private void preferenceSubPhoto(Bundle bundle, SharedPreferences sharedPreferences) {
+        final int[] widths = bundle.getIntArray("resolution_widths");
+        final int[] heights = bundle.getIntArray("resolution_heights");
+        final String cameraIdSPhysical = bundle.getString("cameraIdSPhysical");
+        final boolean[] supports_burst = bundle.getBooleanArray("resolution_supports_burst");
+        if (widths != null && heights != null && supports_burst != null) {
+            CharSequence[] entries = new CharSequence[widths.length];
+            CharSequence[] values = new CharSequence[widths.length];
+            for (int i = 0; i < widths.length; i++) {
+                entries[i] = widths[i] + " x " + heights[i] + " " + Preview.getAspectRatioMPString(getResources(), widths[i], heights[i], supports_burst[i]);
+                values[i] = widths[i] + " " + heights[i];
+            }
+            ListPreference lp = (ListPreference) findPreference("preference_resolution");
+            lp.setEntries(entries);
+            lp.setEntryValues(values);
+            String resolution_preference_key = PreferenceKeys.getResolutionPreferenceKey(cameraId, cameraIdSPhysical);
+            String resolution_value = sharedPreferences.getString(resolution_preference_key, "");
+            if (MyDebug.LOG)
+                Log.d(TAG, "resolution_value: " + resolution_value);
+            lp.setValue(resolution_value);
+            // now set the key, so we save for the correct cameraId
+            lp.setKey(resolution_preference_key);
+        } else {
+            Preference pref = findPreference("preference_resolution");
+            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_photo_settings");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            pg.removePreference(pref);
+        }
+
+        {
+            final int n_quality = 100;
+            CharSequence[] entries = new CharSequence[n_quality];
+            CharSequence[] values = new CharSequence[n_quality];
+            for (int i = 0; i < n_quality; i++) {
+                entries[i] = (i + 1) + "%";
+                values[i] = String.valueOf(i + 1);
+            }
+            ArraySeekBarPreference sp = (ArraySeekBarPreference) findPreference("preference_quality");
+            sp.setEntries(entries);
+            sp.setEntryValues(values);
+        }
     }
 
     private void preferenceMain(Bundle bundle, SharedPreferences sharedPreferences) {

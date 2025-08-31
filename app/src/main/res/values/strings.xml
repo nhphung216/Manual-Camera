@@ -1183,4 +1183,6 @@
     <string name="yes">Yes</string>
     <string name="slow_motion">Slow Motion</string>
     <string name="time_lapse">Time Lapse</string>
+    <string name="preference_languages">Languages</string>
+    <string name="more_camera_preview">More camera preview</string>
 </resources>

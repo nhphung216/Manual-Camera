@@ -1065,4 +1065,58 @@
         <item>preference_save_preshots_off</item>
         <item>preference_save_preshots_on</item>
     </string-array>
+    <string-array name="preference_languages_entries">
+        <item>Auto</item>
+        <item>English</item>
+        <item>Azerbaijani</item>
+        <item>Belarusian</item>
+        <item>Czech</item>
+        <item>German</item>
+        <item>Greek</item>
+        <item>Spanish</item>
+        <item>French</item>
+        <item>Hindi</item>
+        <item>Hungarian</item>
+        <item>Italian</item>
+        <item>Japanese</item>
+        <item>Korean</item>
+        <item>Norwegian Bokmål</item>
+        <item>Polish</item>
+        <item>Portuguese (Brazil)</item>
+        <item>Portuguese (Portugal)</item>
+        <item>Russian</item>
+        <item>Slovenian</item>
+        <item>Turkish</item>
+        <item>Ukrainian</item>
+        <item>Vietnamese</item>
+        <item>Chinese (Simplified)</item>
+        <item>Chinese (Traditional)</item>
+    </string-array>
+    <string-array name="preference_languages_values">
+        <item>auto</item>
+        <item>en</item>
+        <item>az</item>
+        <item>be</item>
+        <item>cs</item>
+        <item>de</item>
+        <item>el</item>
+        <item>es</item>
+        <item>fr</item>
+        <item>hi</item>
+        <item>hu</item>
+        <item>it</item>
+        <item>ja</item>
+        <item>ko</item>
+        <item>nb</item>
+        <item>pl</item>
+        <item>pt-rBR</item>
+        <item>pt-rPT</item>
+        <item>ru</item>
+        <item>sl</item>
+        <item>tr</item>
+        <item>uk</item>
+        <item>vi</item>
+        <item>zh-rCN</item>
+        <item>zh-rTW</item>
+    </string-array>
 </resources>

@@ -24,7 +24,6 @@
         android:summary="@string/preference_ghost_image_alpha_summary"
         android:title="@string/preference_ghost_image_alpha" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
     <ListPreference
         android:defaultValue="0"
         android:entries="@array/preference_focus_assist_entries"
@@ -32,6 +31,46 @@
         android:key="preference_focus_assist"
         android:summary="@string/preference_focus_assist_summary"
         android:title="@string/preference_focus_assist" />
+
+    <ListPreference
+        android:defaultValue="preference_focus_peaking_off"
+        android:entries="@array/preference_focus_peaking_entries"
+        android:entryValues="@array/preference_focus_peaking_values"
+        android:key="preference_focus_peaking"
+        android:summary="@string/preference_focus_peaking_summary"
+        android:title="@string/preference_focus_peaking" />
+
+    <ListPreference
+        android:defaultValue="#ffffff"
+        android:entries="@array/preference_angle_highlight_color_entries"
+        android:entryValues="@array/preference_angle_highlight_color_values"
+        android:key="preference_focus_peaking_color"
+        android:summary="@string/preference_focus_peaking_color_summary"
+        android:title="@string/preference_focus_peaking_color" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/preference_zebra_stripes_entries"
+        android:entryValues="@array/preference_zebra_stripes_values"
+        android:key="preference_zebra_stripes"
+        android:summary="@string/preference_zebra_stripes_summary"
+        android:title="@string/preference_zebra_stripes" />
+
+    <ListPreference
+        android:defaultValue="#ff000000"
+        android:entries="@array/preference_zebra_stripes_foreground_color_entries"
+        android:entryValues="@array/preference_zebra_stripes_foreground_color_values"
+        android:key="preference_zebra_stripes_foreground_color"
+        android:summary="@string/preference_zebra_stripes_foreground_color_summary"
+        android:title="@string/preference_zebra_stripes_foreground_color" />
+
+    <ListPreference
+        android:defaultValue="#ffffffff"
+        android:entries="@array/preference_zebra_stripes_background_color_entries"
+        android:entryValues="@array/preference_zebra_stripes_background_color_values"
+        android:key="preference_zebra_stripes_background_color"
+        android:summary="@string/preference_zebra_stripes_background_color_summary"
+        android:title="@string/preference_zebra_stripes_background_color" />
 
     <CheckBoxPreference
         android:defaultValue="false"
