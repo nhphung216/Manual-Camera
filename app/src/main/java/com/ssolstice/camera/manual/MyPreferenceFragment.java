@@ -177,6 +177,14 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
     }
 
     private void preferenceSubPhoto(Bundle bundle, SharedPreferences sharedPreferences) {
+        final boolean supports_expo_bracketing = bundle.getBoolean("supports_expo_bracketing");
+        Log.d(TAG, "supports_expo_bracketing: " + supports_expo_bracketing);
+
+        final int max_expo_bracketing_n_images = bundle.getInt("max_expo_bracketing_n_images");
+        if (MyDebug.LOG)
+            Log.d(TAG, "max_expo_bracketing_n_images: " + max_expo_bracketing_n_images);
+
+
         final int[] widths = bundle.getIntArray("resolution_widths");
         final int[] heights = bundle.getIntArray("resolution_heights");
         final String cameraIdSPhysical = bundle.getString("cameraIdSPhysical");
@@ -216,6 +224,17 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             ArraySeekBarPreference sp = (ArraySeekBarPreference) findPreference("preference_quality");
             sp.setEntries(entries);
             sp.setEntryValues(values);
+        }
+
+        if (!supports_expo_bracketing || max_expo_bracketing_n_images <= 3) {
+            Preference pref = findPreference("preference_expo_bracketing_n_images");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            pg.removePreference(pref);
+        }
+        if (!supports_expo_bracketing) {
+            Preference pref = findPreference("preference_expo_bracketing_stops");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            pg.removePreference(pref);
         }
     }
 

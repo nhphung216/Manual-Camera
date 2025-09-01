@@ -55,13 +55,6 @@ public class PreferenceSubPhoto extends PreferenceSubScreen {
         final boolean supports_hdr = bundle.getBoolean("supports_hdr");
         if (MyDebug.LOG) Log.d(TAG, "supports_hdr: " + supports_hdr);
 
-        final boolean supports_expo_bracketing = bundle.getBoolean("supports_expo_bracketing");
-        if (MyDebug.LOG) Log.d(TAG, "supports_expo_bracketing: " + supports_expo_bracketing);
-
-        final int max_expo_bracketing_n_images = bundle.getInt("max_expo_bracketing_n_images");
-        if (MyDebug.LOG)
-            Log.d(TAG, "max_expo_bracketing_n_images: " + max_expo_bracketing_n_images);
-
         final boolean supports_panorama = bundle.getBoolean("supports_panorama");
         if (MyDebug.LOG) Log.d(TAG, "supports_panorama: " + supports_panorama);
 
@@ -105,17 +98,6 @@ public class PreferenceSubPhoto extends PreferenceSubScreen {
             pg.removePreference(pref);
 
             pref = findPreference("preference_hdr_contrast_enhancement");
-            pg.removePreference(pref);
-        }
-
-        if (!supports_expo_bracketing || max_expo_bracketing_n_images <= 3) {
-            Preference pref = findPreference("preference_expo_bracketing_n_images");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
-            pg.removePreference(pref);
-        }
-        if (!supports_expo_bracketing) {
-            Preference pref = findPreference("preference_expo_bracketing_stops");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
             pg.removePreference(pref);
         }
 
