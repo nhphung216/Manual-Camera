@@ -1,692 +1,521 @@
-package com.ssolstice.camera.manual.preview;
+package com.ssolstice.camera.manual.preview
 
-import java.util.Date;
-import java.util.List;
-
-import android.app.Activity;
-import android.graphics.Canvas;
-import android.location.Location;
-import android.net.Uri;
-import android.os.Build;
-import android.util.Pair;
-import android.view.MotionEvent;
-
-import androidx.annotation.RequiresApi;
-
-import com.ssolstice.camera.manual.cameracontroller.CameraController;
-import com.ssolstice.camera.manual.cameracontroller.RawImage;
+import android.app.Activity
+import android.graphics.Canvas
+import android.location.Location
+import android.net.Uri
+import android.os.Build
+import android.util.Pair
+import android.view.MotionEvent
+import androidx.annotation.RequiresApi
+import com.ssolstice.camera.manual.cameracontroller.CameraController
+import com.ssolstice.camera.manual.cameracontroller.CameraController.TonemapProfile
+import com.ssolstice.camera.manual.cameracontroller.RawImage
+import com.ssolstice.camera.manual.preview.ApplicationInterface.CameraResolutionConstraints
+import com.ssolstice.camera.manual.preview.ApplicationInterface.NRModePref
+import com.ssolstice.camera.manual.preview.ApplicationInterface.NoFreeStorageException
+import com.ssolstice.camera.manual.preview.ApplicationInterface.RawPref
+import com.ssolstice.camera.manual.preview.ApplicationInterface.VideoMaxFileSize
+import com.ssolstice.camera.manual.preview.ApplicationInterface.VideoMethod
+import java.util.Date
 
 /** A partial implementation of ApplicationInterface that provides "default" implementations. So
- *  sub-classing this is easier than implementing ApplicationInterface directly - you only have to
- *  provide the unimplemented methods to get started, and can later override
- *  BasicApplicationInterface's methods as required.
- *  Note there is no need for your subclass of BasicApplicationInterface to call "super" methods -
- *  these are just default implementations that should be overridden as required.
+ * sub-classing this is easier than implementing ApplicationInterface directly - you only have to
+ * provide the unimplemented methods to get started, and can later override
+ * BasicApplicationInterface's methods as required.
+ * Note there is no need for your subclass of BasicApplicationInterface to call "super" methods -
+ * these are just default implementations that should be overridden as required.
  */
-public abstract class BasicApplicationInterface implements ApplicationInterface {
-    @Override
-    public Location getLocation() {
-        return null;
+abstract class BasicApplicationInterface : ApplicationInterface {
+    override fun getLocation(): Location? {
+        return null
     }
 
-    @Override
-    public int getCameraIdPref() {
-        return 0;
+    override fun getCameraIdPref(): Int {
+        return 0
     }
 
-    @Override
-    public String getCameraIdSPhysicalPref() {
-        return null;
+    override fun getCameraIdSPhysicalPref(): String? {
+        return null
     }
 
-    @Override
-    public String getFlashPref() {
-        return "flash_off";
+    override fun getFlashPref(): String {
+        return "flash_off"
     }
 
-    @Override
-    public String getFocusPref(boolean is_video) {
-        return "focus_mode_continuous_picture";
+    override fun getFocusPref(is_video: Boolean): String {
+        return "focus_mode_continuous_picture"
     }
 
-    @Override
-    public boolean isVideoPref() {
-        return false;
+    override fun isVideoPref(): Boolean {
+        return false
     }
 
-    @Override
-    public String getSceneModePref() {
-        return CameraController.SCENE_MODE_DEFAULT;
+    override fun getSceneModePref(): String {
+        return CameraController.SCENE_MODE_DEFAULT
     }
 
-    @Override
-    public String getColorEffectPref() {
-        return CameraController.COLOR_EFFECT_DEFAULT;
+    override fun getColorEffectPref(): String {
+        return CameraController.COLOR_EFFECT_DEFAULT
     }
 
-    @Override
-    public String getWhiteBalancePref() {
-        return CameraController.WHITE_BALANCE_DEFAULT;
+    override fun getWhiteBalancePref(): String {
+        return CameraController.WHITE_BALANCE_DEFAULT
     }
 
-    @Override
-    public int getWhiteBalanceTemperaturePref() {
-        return 0;
+    override fun getWhiteBalanceTemperaturePref(): Int {
+        return 0
     }
 
-    @Override
-    public String getAntiBandingPref() {
-        return CameraController.ANTIBANDING_DEFAULT;
+    override fun getAntiBandingPref(): String {
+        return CameraController.ANTIBANDING_DEFAULT
     }
 
-    @Override
-    public String getEdgeModePref() {
-        return CameraController.EDGE_MODE_DEFAULT;
+    override fun getEdgeModePref(): String {
+        return CameraController.EDGE_MODE_DEFAULT
     }
 
-    @Override
-    public String getCameraNoiseReductionModePref() {
-        return CameraController.NOISE_REDUCTION_MODE_DEFAULT;
+    override fun getCameraNoiseReductionModePref(): String {
+        return CameraController.NOISE_REDUCTION_MODE_DEFAULT
     }
 
-    @Override
-    public String getISOPref() {
-        return CameraController.ISO_DEFAULT;
+    override fun getISOPref(): String {
+        return CameraController.ISO_DEFAULT
     }
 
-    @Override
-    public int getExposureCompensationPref() {
-        return 0;
+    override fun getExposureCompensationPref(): Int {
+        return 0
     }
 
-    @Override
-    public Pair<Integer, Integer> getCameraResolutionPref(CameraResolutionConstraints constraints) {
-        return null;
+    override fun getCameraResolutionPref(constraints: CameraResolutionConstraints?): Pair<Int?, Int?>? {
+        return null
     }
 
-    @Override
-    public int getImageQualityPref() {
-        return 90;
+    override fun getImageQualityPref(): Int {
+        return 90
     }
 
-    @Override
-    public boolean getFaceDetectionPref() {
-        return false;
+    override fun getFaceDetectionPref(): Boolean {
+        return false
     }
 
-    @Override
-    public String getVideoQualityPref() {
-        return "";
+    override fun getVideoQualityPref(): String? {
+        return ""
     }
 
-    @Override
-    public boolean getVideoStabilizationPref() {
-        return false;
+    override fun getVideoStabilizationPref(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean getForce4KPref() {
-        return false;
+    override fun getForce4KPref(): Boolean {
+        return false
     }
 
-    @Override
-    public String getRecordVideoOutputFormatPref() {
-        return "preference_video_output_format_default";
+    override fun getRecordVideoOutputFormatPref(): String {
+        return "preference_video_output_format_default"
     }
 
-    @Override
-    public String getVideoBitratePref() {
-        return "default";
+    override fun getVideoBitratePref(): String {
+        return "default"
     }
 
-    @Override
-    public String getVideoFPSPref() {
-        return "default";
+    override fun getVideoFPSPref(): String {
+        return "default"
     }
 
-    @Override
-    public float getVideoCaptureRateFactor() {
-        return 1.0f;
+    override fun getVideoCaptureRateFactor(): Float {
+        return 1.0f
     }
 
-    @Override
-    public CameraController.TonemapProfile getVideoTonemapProfile() {
-        return CameraController.TonemapProfile.TONEMAPPROFILE_OFF;
+    override fun getVideoTonemapProfile(): TonemapProfile {
+        return TonemapProfile.TONEMAPPROFILE_OFF
     }
 
-    @Override
-    public float getVideoLogProfileStrength() {
-        return 0;
+    override fun getVideoLogProfileStrength(): Float {
+        return 0f
     }
 
-    @Override
-    public float getVideoProfileGamma() {
-        return 0;
+    override fun getVideoProfileGamma(): Float {
+        return 0f
     }
 
-    @Override
-    public long getVideoMaxDurationPref() {
-        return 0;
+    override fun getVideoMaxDurationPref(): Long {
+        return 0
     }
 
-    @Override
-    public int getVideoRestartTimesPref() {
-        return 0;
+    override fun getVideoRestartTimesPref(): Int {
+        return 0
     }
 
-    @Override
-    public VideoMaxFileSize getVideoMaxFileSizePref() throws NoFreeStorageException {
-        VideoMaxFileSize video_max_filesize = new VideoMaxFileSize();
-        video_max_filesize.max_filesize = 0;
-        video_max_filesize.auto_restart = true;
-        return video_max_filesize;
+    @Throws(NoFreeStorageException::class)
+    override fun getVideoMaxFileSizePref(): VideoMaxFileSize {
+        val video_max_filesize = VideoMaxFileSize()
+        video_max_filesize.max_filesize = 0
+        video_max_filesize.auto_restart = true
+        return video_max_filesize
     }
 
-    @Override
-    public boolean getVideoFlashPref() {
-        return false;
+    override fun getVideoFlashPref(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean getVideoLowPowerCheckPref() {
-        return true;
+    override fun getVideoLowPowerCheckPref(): Boolean {
+        return true
     }
 
-    @Override
-    public String getPreviewSizePref() {
-        return "preference_preview_size_wysiwyg";
+    override fun getPreviewSizePref(): String {
+        return "preference_preview_size_wysiwyg"
     }
 
-    @Override
-    public String getLockOrientationPref() {
-        return "none";
+    override fun getLockOrientationPref(): String {
+        return "none"
     }
 
-    @Override
-    public boolean getTouchCapturePref() {
-        return false;
+    override fun getTouchCapturePref(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean getDoubleTapCapturePref() {
-        return false;
+    override fun getDoubleTapCapturePref(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean getPausePreviewPref() {
-        return false;
+    override fun getPausePreviewPref(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean getShowToastsPref() {
-        return true;
+    override fun getShowToastsPref(): Boolean {
+        return true
     }
 
-    @Override
-    public boolean getShutterSoundPref() {
-        return true;
+    override fun getShutterSoundPref(): Boolean {
+        return true
     }
 
-    @Override
-    public boolean getStartupFocusPref() {
-        return true;
+    override fun getStartupFocusPref(): Boolean {
+        return true
     }
 
-    @Override
-    public long getTimerPref() {
-        return 0;
+    override fun getTimerPref(): Long {
+        return 0
     }
 
-    @Override
-    public String getRepeatPref() {
-        return "1";
+    override fun getRepeatPref(): String {
+        return "1"
     }
 
-    @Override
-    public long getRepeatIntervalPref() {
-        return 0;
+    override fun getRepeatIntervalPref(): Long {
+        return 0
     }
 
-    @Override
-    public boolean getGeotaggingPref() {
-        return false;
+    override fun getGeotaggingPref(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean getRequireLocationPref() {
-        return false;
+    override fun getRequireLocationPref(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean getRecordAudioPref() {
-        return true;
+    override fun getRecordAudioPref(): Boolean {
+        return true
     }
 
-    @Override
-    public String getRecordAudioChannelsPref() {
-        return "audio_default";
+    override fun getRecordAudioChannelsPref(): String {
+        return "audio_default"
     }
 
-    @Override
-    public String getRecordAudioSourcePref() {
-        return "audio_src_camcorder";
+    override fun getRecordAudioSourcePref(): String {
+        return "audio_src_camcorder"
     }
 
-    @Override
-    public int getZoomPref() {
-        return -1;
+    override fun getZoomPref(): Int {
+        return -1
     }
 
-    @Override
-    public double getCalibratedLevelAngle() {
-        return 0;
+    override fun getCalibratedLevelAngle(): Double {
+        return 0.0
     }
 
-    @Override
-    public boolean canTakeNewPhoto() {
-        return true;
+    override fun canTakeNewPhoto(): Boolean {
+        return true
     }
 
-    @Override
-    public boolean imageQueueWouldBlock(int n_raw, int n_jpegs) {
-        return false;
+    override fun imageQueueWouldBlock(n_raw: Int, n_jpegs: Int): Boolean {
+        return false
     }
 
-    @Override
-    public int getDisplayRotation(boolean prefer_later) {
-        Activity activity = (Activity)this.getContext();
-        return activity.getWindowManager().getDefaultDisplay().getRotation();
+    override fun getDisplayRotation(prefer_later: Boolean): Int {
+        val activity = this.getContext() as Activity
+        return activity.getWindowManager().getDefaultDisplay().getRotation()
     }
 
-    @Override
-    public long getExposureTimePref() {
-        return CameraController.EXPOSURE_TIME_DEFAULT;
+    override fun getExposureTimePref(): Long {
+        return CameraController.EXPOSURE_TIME_DEFAULT
     }
 
-    @Override
-    public float getFocusDistancePref(boolean is_target_distance) {
-        return 0;
+    override fun getFocusDistancePref(is_target_distance: Boolean): Float {
+        return 0f
     }
 
-    @Override
-    public boolean isExpoBracketingPref() {
-        return false;
+    override fun isExpoBracketingPref(): Boolean {
+        return false
     }
 
-    @Override
-    public int getExpoBracketingNImagesPref() {
-        return 3;
+    override fun getExpoBracketingNImagesPref(): Int {
+        return 3
     }
 
-    @Override
-    public double getExpoBracketingStopsPref() {
-        return 2.0;
+    override fun getExpoBracketingStopsPref(): Double {
+        return 2.0
     }
 
-    @Override
-    public int getFocusBracketingNImagesPref() {
-        return 3;
+    override fun getFocusBracketingNImagesPref(): Int {
+        return 3
     }
 
-    @Override
-    public boolean getFocusBracketingAddInfinityPref() {
-        return false;
+    override fun getFocusBracketingAddInfinityPref(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean isFocusBracketingPref() {
-        return false;
+    override fun isFocusBracketingPref(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean isCameraBurstPref() {
-        return false;
+    override fun isCameraBurstPref(): Boolean {
+        return false
     }
 
-    @Override
-    public int getBurstNImages() {
-        return 5;
+    override fun getBurstNImages(): Int {
+        return 5
     }
 
-    @Override
-    public boolean getBurstForNoiseReduction() {
-        return false;
+    override fun getBurstForNoiseReduction(): Boolean {
+        return false
     }
 
-    @Override
-    public NRModePref getNRModePref() {
-        return NRModePref.NRMODE_NORMAL;
+    override fun getNRModePref(): NRModePref {
+        return NRModePref.NRMODE_NORMAL
     }
 
-    @Override
-    public boolean isCameraExtensionPref() {
-        return false;
+    override fun isCameraExtensionPref(): Boolean {
+        return false
     }
 
-    @Override
     @RequiresApi(api = Build.VERSION_CODES.S)
-    public int getCameraExtensionPref() {
-        return 0;
+    override fun getCameraExtensionPref(): Int {
+        return 0
     }
 
-    @Override
-    public float getAperturePref() {
-        return -1.0f;
+    override fun getAperturePref(): Float {
+        return -1.0f
     }
 
-    @Override
-    public boolean getJpegRPref() {
-        return false;
+    override fun getJpegRPref(): Boolean {
+        return false
     }
 
-    @Override
-    public RawPref getRawPref() {
-        return RawPref.RAWPREF_JPEG_ONLY;
+    override fun getRawPref(): RawPref {
+        return RawPref.RAWPREF_JPEG_ONLY
     }
 
-    @Override
-    public int getMaxRawImages() {
-        return 2;
+    override fun getMaxRawImages(): Int {
+        return 2
     }
 
-    @Override
-    public boolean useCamera2DummyCaptureHack() {
-        return false;
+    override fun useCamera2DummyCaptureHack(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean useCamera2FakeFlash() {
-        return false;
+    override fun useCamera2FakeFlash(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean useCamera2FastBurst() {
-        return true;
+    override fun useCamera2FastBurst(): Boolean {
+        return true
     }
 
-    @Override
-    public boolean usePhotoVideoRecording() {
-        return true;
+    override fun usePhotoVideoRecording(): Boolean {
+        return true
     }
 
-    @Override
-    public boolean isPreviewInBackground() {
-        return false;
+    override fun isPreviewInBackground(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean allowZoom() {
-        return true;
+    override fun allowZoom(): Boolean {
+        return true
     }
 
-    @Override
-    public boolean optimiseFocusForLatency() {
-        return true;
+    override fun optimiseFocusForLatency(): Boolean {
+        return true
     }
 
-    @Override
-    public boolean isTestAlwaysFocus() {
-        return false;
+    override fun isTestAlwaysFocus(): Boolean {
+        return false
     }
 
-    @Override
-    public void cameraSetup() {
-
+    override fun cameraSetup() {
     }
-
-    @Override
-    public void touchEvent(MotionEvent event) {
 
+    override fun touchEvent(event: MotionEvent?) {
     }
 
-    @Override
-    public void startingVideo() {
-
+    override fun startingVideo() {
     }
 
-    @Override
-    public void startedVideo() {
-
+    override fun startedVideo() {
     }
-
-    @Override
-    public void stoppingVideo() {
 
+    override fun stoppingVideo() {
     }
 
-    @Override
-    public void stoppedVideo(VideoMethod video_method, Uri uri, String filename) {
-
+    override fun stoppedVideo(video_method: VideoMethod?, uri: Uri?, filename: String?) {
     }
 
-    @Override
-    public void restartedVideo(final VideoMethod video_method, final Uri uri, final String filename) {
+    override fun restartedVideo(video_method: VideoMethod?, uri: Uri?, filename: String?) {
     }
 
-    @Override
-    public void deleteUnusedVideo(final VideoMethod video_method, final Uri uri, final String filename) {
+    override fun deleteUnusedVideo(video_method: VideoMethod?, uri: Uri?, filename: String?) {
     }
 
-    @Override
-    public void onFailedStartPreview() {
-
+    override fun onFailedStartPreview() {
     }
-
-    @Override
-    public void onCameraError() {
 
+    override fun onCameraError() {
     }
 
-    @Override
-    public void onPhotoError() {
-
+    override fun onPhotoError() {
     }
 
-    @Override
-    public void onVideoInfo(int what, int extra) {
-
+    override fun onVideoInfo(what: Int, extra: Int) {
     }
-
-    @Override
-    public void onVideoError(int what, int extra) {
 
+    override fun onVideoError(what: Int, extra: Int) {
     }
 
-    @Override
-    public void onVideoRecordStartError(VideoProfile profile) {
-
+    override fun onVideoRecordStartError(profile: VideoProfile?) {
     }
 
-    @Override
-    public void onVideoRecordStopError(VideoProfile profile) {
-
+    override fun onVideoRecordStopError(profile: VideoProfile?) {
     }
-
-    @Override
-    public void onFailedReconnectError() {
 
+    override fun onFailedReconnectError() {
     }
 
-    @Override
-    public void onFailedCreateVideoFileError() {
-
+    override fun onFailedCreateVideoFileError() {
     }
 
-    @Override
-    public void hasPausedPreview(boolean paused) {
-
+    override fun hasPausedPreview(paused: Boolean) {
     }
-
-    @Override
-    public void cameraInOperation(boolean in_operation, boolean is_video) {
 
+    override fun cameraInOperation(in_operation: Boolean, is_video: Boolean) {
     }
 
-    @Override
-    public void turnFrontScreenFlashOn() {
-
+    override fun turnFrontScreenFlashOn() {
     }
 
-    @Override
-    public void cameraClosed() {
-
+    override fun cameraClosed() {
     }
-
-    @Override
-    public void timerBeep(long remaining_time) {
 
+    override fun timerBeep(remaining_time: Long) {
     }
 
-    @Override
-    public void multitouchZoom(int new_zoom) {
-
+    override fun multitouchZoom(new_zoom: Int) {
     }
 
-    @Override
-    public void requestTakePhoto() {
+    override fun requestTakePhoto() {
     }
 
-    @Override
-    public void setCameraIdPref(int cameraId, String cameraIdSPhysical) {
-
+    override fun setCameraIdPref(cameraId: Int, cameraIdSPhysical: String?) {
     }
-
-    @Override
-    public void setFlashPref(String flash_value) {
 
+    override fun setFlashPref(flash_value: String?) {
     }
 
-    @Override
-    public void setFocusPref(String focus_value, boolean is_video) {
-
+    override fun setFocusPref(focus_value: String?, is_video: Boolean) {
     }
-
-    @Override
-    public void setVideoPref(boolean is_video) {
 
+    override fun setVideoPref(is_video: Boolean) {
     }
 
-    @Override
-    public void setSceneModePref(String scene_mode) {
-
+    override fun setSceneModePref(scene_mode: String?) {
     }
 
-    @Override
-    public void clearSceneModePref() {
-
+    override fun clearSceneModePref() {
     }
-
-    @Override
-    public void setColorEffectPref(String color_effect) {
 
+    override fun setColorEffectPref(color_effect: String?) {
     }
 
-    @Override
-    public void clearColorEffectPref() {
-
+    override fun clearColorEffectPref() {
     }
 
-    @Override
-    public void setWhiteBalancePref(String white_balance) {
-
+    override fun setWhiteBalancePref(white_balance: String?) {
     }
-
-    @Override
-    public void clearWhiteBalancePref() {
 
+    override fun clearWhiteBalancePref() {
     }
 
-    @Override
-    public void setWhiteBalanceTemperaturePref(int white_balance_temperature) {
-
+    override fun setWhiteBalanceTemperaturePref(white_balance_temperature: Int) {
     }
 
-    @Override
-    public void setISOPref(String iso) {
-
+    override fun setISOPref(iso: String?) {
     }
-
-    @Override
-    public void clearISOPref() {
 
+    override fun clearISOPref() {
     }
 
-    @Override
-    public void setExposureCompensationPref(int exposure) {
-
+    override fun setExposureCompensationPref(exposure: Int) {
     }
 
-    @Override
-    public void clearExposureCompensationPref() {
-
+    override fun clearExposureCompensationPref() {
     }
-
-    @Override
-    public void setCameraResolutionPref(int width, int height) {
 
+    override fun setCameraResolutionPref(width: Int, height: Int) {
     }
 
-    @Override
-    public void setVideoQualityPref(String video_quality) {
-
+    override fun setVideoQualityPref(video_quality: String?) {
     }
 
-    @Override
-    public void setZoomPref(int zoom) {
-
+    override fun setZoomPref(zoom: Int) {
     }
-
-    @Override
-    public void setExposureTimePref(long exposure_time) {
 
+    override fun setExposureTimePref(exposure_time: Long) {
     }
 
-    @Override
-    public void clearExposureTimePref() {
-
+    override fun clearExposureTimePref() {
     }
 
-    @Override
-    public void setFocusDistancePref(float focus_distance, boolean is_target_distance) {
-
+    override fun setFocusDistancePref(focus_distance: Float, is_target_distance: Boolean) {
     }
-
-    @Override
-    public void onDrawPreview(Canvas canvas) {
 
+    override fun onDrawPreview(canvas: Canvas?) {
     }
 
-    @Override
-    public boolean onBurstPictureTaken(List<byte[]> images, Date current_date) {
-        return false;
+    override fun onBurstPictureTaken(
+        images: MutableList<ByteArray>?, current_date: Date?
+    ): Boolean {
+        return false
     }
 
-    @Override
-    public boolean onRawPictureTaken(RawImage raw_image, Date current_date) {
-        return false;
+    override fun onRawPictureTaken(raw_image: RawImage?, current_date: Date?): Boolean {
+        return false
     }
 
-    @Override
-    public boolean onRawBurstPictureTaken(List<RawImage> raw_images, Date current_date) {
-        return false;
+    override fun onRawBurstPictureTaken(
+        raw_images: MutableList<RawImage>?, current_date: Date?
+    ): Boolean {
+        return false
     }
 
-    @Override
-    public void onCaptureStarted() {
-
+    override fun onCaptureStarted() {
     }
 
-    @Override
-    public void onPictureCompleted() {
-
+    override fun onPictureCompleted() {
     }
 
-    @Override
-    public void onExtensionProgress(int progress) {
+    override fun onExtensionProgress(progress: Int) {
     }
-
-    @Override
-    public void onContinuousFocusMove(boolean start) {
 
+    override fun onContinuousFocusMove(start: Boolean) {
     }
 }
