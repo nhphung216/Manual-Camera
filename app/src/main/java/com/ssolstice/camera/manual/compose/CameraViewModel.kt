@@ -1,6 +1,7 @@
 package com.ssolstice.camera.manual.compose
 
 import android.annotation.SuppressLint
+import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.hardware.camera2.CameraExtensionCharacteristics
 import android.preference.PreferenceManager
@@ -16,6 +17,7 @@ import com.ssolstice.camera.manual.MyApplicationInterface.PhotoMode
 import com.ssolstice.camera.manual.MyApplicationInterface.VideoMode
 import com.ssolstice.camera.manual.PreferenceKeys
 import com.ssolstice.camera.manual.R
+import com.ssolstice.camera.manual.billing.BillingManager
 import com.ssolstice.camera.manual.models.CameraControlModel
 import com.ssolstice.camera.manual.models.ControlOptionModel
 import com.ssolstice.camera.manual.models.OptionRes
@@ -302,6 +304,14 @@ class CameraViewModel @Inject constructor(
         }
     }
 
+    fun isPremiumUser(activity: MainActivity): Boolean {
+        return activity.getSharedPreferences(BillingManager.PREF_BILLING_NAME, MODE_PRIVATE)
+            .getBoolean(
+                BillingManager.PREF_PREMIUM_KEY,
+                false
+            )
+    }
+
     fun setupCameraData(
         activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
     ) {
@@ -310,6 +320,9 @@ class CameraViewModel @Inject constructor(
         val photoMode = applicationInterface.photoMode
         Log.e(TAG, "setupCameraData")
         Log.e(TAG, "photoMode: $photoMode")
+
+        val isPremiumUser = isPremiumUser(activity)
+        Log.e(TAG, "isPremiumUser: $isPremiumUser")
 
         // collect photo resolutions
         if (!preview.isVideo && photoMode != PhotoMode.Panorama) {
@@ -397,13 +410,20 @@ class CameraViewModel @Inject constructor(
             videoSizes = ArrayList<String>(videoSizes)
             videoSizes.reverse()
 
+            val resolutionsPremium =
+                arrayListOf("2560x1920", "3264x1836", "4000x2000", "3840x2160", "3840x2160 4K")
+
             val resolutionOfVideo: MutableList<SettingItemModel> =
                 videoSizes.mapIndexed { index, value ->
+                    val text = preview.getCamcorderProfileDescriptionShort(value)
+                    val requirePremium = !isPremiumUser && resolutionsPremium.contains(text)
                     val model = SettingItemModel(
                         id = value,
-                        text = preview.getCamcorderProfileDescriptionShort(value),
-                        selected = value == preview.videoQualityHander.getCurrentVideoQuality()
+                        text = text + (if (requirePremium) " (PRO)" else ""),
+                        selected = value == preview.videoQualityHander.getCurrentVideoQuality(),
+                        isPremium = requirePremium
                     )
+                    Log.e("resolutionOfVideo ", "${model.id} ${model.text}")
                     if (model.selected) setResolutionOfVideoSelected(
                         activity, applicationInterface, preview, model
                     )
@@ -424,13 +444,18 @@ class CameraViewModel @Inject constructor(
                 )
                 val speeds: MutableList<SettingItemModel> =
                     captureRateValues.mapIndexed { index, value ->
+                        Log.e("speeds ", "$index $value")
                         val text = if (abs(1.0f - (value ?: 0f)) < 1.0e-5) {
                             activity.getString(R.string.preference_video_capture_rate_normal)
                         } else {
                             value.toString() + "x"
                         }
+                        val requirePremium = !isPremiumUser && (value?.toInt() ?: 0) >= 120
                         val model = SettingItemModel(
-                            id = "$value", text = text, selected = value == captureRateValue
+                            id = "$value",
+                            text = text + (if (requirePremium) " (PRO)" else ""),
+                            selected = value == captureRateValue,
+                            isPremium = requirePremium
                         )
                         if (model.selected) setSpeedSelected(
                             activity, applicationInterface, preview, model

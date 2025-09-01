@@ -99,6 +99,7 @@ fun CameraSettings(
     onFlashChange: (SettingItemModel) -> Unit = {},
     onRawChange: (SettingItemModel) -> Unit = {},
     onClose: () -> Unit = {},
+    onUpgrade: () -> Unit = {},
     flashList: MutableList<SettingItemModel> = mutableListOf(),
     rawList: MutableList<SettingItemModel> = mutableListOf(),
     resolutions: MutableList<SettingItemModel> = mutableListOf(),
@@ -189,6 +190,7 @@ fun CameraSettings(
                         ItemResolution(
                             text = item.text,
                             sub = item.sub,
+                            isPremium = item.isPremium,
                             isSelect = item.id == resolutionSelected?.id,
                             onClick = { onResolutionChange(item) },
                         )
@@ -233,8 +235,16 @@ fun CameraSettings(
             ) {
                 items(speeds) { item ->
                     ItemResolution(
-                        item.text, isSelect = item.id == speedSelected?.id,
-                        onClick = { onSpeedChange(item) },
+                        text = item.text,
+                        isSelect = item.id == speedSelected?.id,
+                        isPremium = item.isPremium,
+                        onClick = {
+                            if (item.isPremium) {
+                                onUpgrade()
+                            } else {
+                                onSpeedChange(item)
+                            }
+                        },
                     )
                 }
             }
@@ -245,8 +255,16 @@ fun CameraSettings(
             ) {
                 items(resolutionsVideo) { item ->
                     ItemResolution(
-                        item.text, isSelect = item.id == resolutionOfVideoSelected?.id,
-                        onClick = { onResolutionOfVideoChange(item) },
+                        text = item.text,
+                        isSelect = item.id == resolutionOfVideoSelected?.id,
+                        isPremium = item.isPremium,
+                        onClick = {
+                            if (item.isPremium) {
+                                onUpgrade()
+                            } else {
+                                onResolutionOfVideoChange(item)
+                            }
+                        },
                     )
                 }
             }

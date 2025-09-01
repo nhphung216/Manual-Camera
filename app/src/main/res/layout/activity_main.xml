@@ -25,6 +25,19 @@
             android:orientation="horizontal">
 
             <ImageButton
+                android:id="@+id/upgrade"
+                android:layout_width="@dimen/onscreen_button_size"
+                android:layout_height="@dimen/onscreen_button_size"
+                android:background="@null"
+                android:backgroundTint="@null"
+                android:backgroundTintMode="src_in"
+                android:contentDescription="@string/action_settings"
+                android:padding="@dimen/onscreen_button_padding"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/outline_crown"
+                app:tint="@color/color_selected" />
+
+            <ImageButton
                 android:id="@+id/settings"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
@@ -214,14 +227,6 @@
             android:alpha="0.5"
             android:contentDescription="@string/zoom" />
 
-        <SeekBar
-            android:id="@+id/zoom_seekbar"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:background="@color/seekbar_background"
-            android:contentDescription="@string/zoom"
-            android:visibility="gone" />
-
         <View
             android:id="@+id/gui_anchor"
             android:layout_width="0dp"
@@ -397,8 +402,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageButton
                     android:id="@+id/focus_infinity"
@@ -439,10 +444,10 @@
                 android:id="@+id/layout_focus_bracketing_target_seekbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:visibility="gone"
                 android:layout_marginBottom="24dp"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageButton
                     android:id="@+id/focus_bracketing_target_infinity"
@@ -478,6 +483,18 @@
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_macro_focus" />
             </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/zoom_seekbar"
+                android:layout_width="250dp"
+                android:layout_height="46dp"
+                android:layout_gravity="center"
+                android:background="@color/seekbar_background"
+                android:contentDescription="@string/zoom"
+                android:progressBackgroundTint="@color/color_selected"
+                android:progressTint="@color/color_selected"
+                android:thumbTint="@color/color_selected"
+                android:visibility="gone" />
 
             <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/compose_view"

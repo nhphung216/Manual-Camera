@@ -5,5 +5,6 @@ data class SettingItemModel(
     val text: String = "",
     val sub: String = "",
     val icon: Int = 0,
-    val selected: Boolean = false
+    val selected: Boolean = false,
+    val isPremium: Boolean = false,
 )

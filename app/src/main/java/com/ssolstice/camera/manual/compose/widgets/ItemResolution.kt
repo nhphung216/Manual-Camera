@@ -25,6 +25,7 @@ fun ItemResolution(
     text: String,
     sub: String? = "",
     isSelect: Boolean = false,
+    isPremium: Boolean = false,
     shape: Shape = RoundedCornerShape(16.dp),
     onClick: () -> Unit = {},
     icon: Int = 0
@@ -54,13 +55,18 @@ fun ItemResolution(
                 contentDescription = null,
                 tint = Color.White
             )
-        } else
+        } else {
             Text(
                 text = text,
                 style = MaterialTheme.typography.titleSmall,
                 fontSize = 16.sp,
-                color = if (isSelect) Color.Black else Color.White
+                color = if (isPremium) {
+                    Color.Yellow
+                } else {
+                    if (isSelect) Color.Black else Color.White
+                }
             )
+        }
         if (sub != "") {
             Text(
                 text = sub ?: "",

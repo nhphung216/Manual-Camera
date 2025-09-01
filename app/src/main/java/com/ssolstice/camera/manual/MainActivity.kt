@@ -25,7 +25,6 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.hardware.camera2.CameraExtensionCharacteristics
 import android.hardware.display.DisplayManager
 import android.hardware.display.DisplayManager.DisplayListener
 import android.media.MediaMetadataRetriever
@@ -85,10 +84,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.exifinterface.media.ExifInterface
 import com.ssolstice.camera.manual.MyApplicationInterface.PhotoMode
+import com.ssolstice.camera.manual.billing.BillingManager
+import com.ssolstice.camera.manual.billing.BillingManager.ActiveSubscription
+import com.ssolstice.camera.manual.billing.BillingManager.BillingProduct
 import com.ssolstice.camera.manual.cameracontroller.CameraController
 import com.ssolstice.camera.manual.cameracontroller.CameraController.EXPOSURE_TIME_DEFAULT
 import com.ssolstice.camera.manual.cameracontroller.CameraController.Facing
@@ -108,7 +111,6 @@ import com.ssolstice.camera.manual.ui.FolderChooserDialog
 import com.ssolstice.camera.manual.ui.MainUI
 import com.ssolstice.camera.manual.ui.ManualSeekbars
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -315,6 +317,20 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     var exposureSeekbarProgressZero: Int = 0
         private set
 
+    var billingManager: BillingManager? = null
+
+    fun doUpgrade() {
+        billingManager?.doUpgrade(this)
+    }
+
+    fun isPremiumUser(): Boolean {
+        return getSharedPreferences(BillingManager.PREF_BILLING_NAME, MODE_PRIVATE)
+            .getBoolean(
+                BillingManager.PREF_PREMIUM_KEY,
+                false
+            )
+    }
+
     @SuppressLint("ClickableViewAccessibility", "UseKtx")
     override fun onCreate(savedInstanceState: Bundle?) {
         var debug_time: Long = 0
@@ -331,6 +347,28 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // 2. Gán binding trong onCreate
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.getRoot())
+
+        billingManager = BillingManager(this, {
+
+        }, {
+            billingManager?.queryProducts { products: MutableList<BillingProduct?>? ->
+                Log.e(MainActivity.TAG, "products " + products!!.size)
+            }
+        }, Runnable {
+
+        })
+
+        billingManager!!.queryAllPurchases { active: ActiveSubscription? ->
+            if (active != null) {
+                Log.e(MainActivity.TAG, "User is Premium")
+                //binding.upgrade.setVisibility(View.GONE)
+            } else {
+                Log.e(MainActivity.TAG, "User is Freemium")
+                //binding.upgrade.setVisibility(View.VISIBLE)
+            }
+        }
+        //binding.upgrade.setVisibility(if (isPremiumUser()) View.GONE else View.VISIBLE)
+
 
         PreferenceManager.setDefaultValues(
             this, R.xml.preferences, false
@@ -745,6 +783,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         this.hasOldSystemOrientation = true
         this.oldSystemOrientation = this.systemOrientation
 
+        binding.upgrade.setOnClickListener { doUpgrade() }
         binding.settings.setOnClickListener { clickedSettings() }
         binding.cancelPanorama.setOnClickListener { clickedCancelPanorama() }
         binding.cycleRaw.setOnClickListener { clickedCycleRaw() }
@@ -762,6 +801,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             OpenCameraTheme {
 
                 val activity = this@MainActivity
+
+                val isPremiumUser = rememberSaveable { mutableStateOf(isPremiumUser()) }
 
                 val showCameraSettings = rememberSaveable { mutableStateOf(false) }
                 val showCameraControls = rememberSaveable { mutableStateOf(false) }
@@ -978,6 +1019,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             onOpenSettings = {
                                 clickedSettings()
                             },
+                            onUpgrade = {
+                                doUpgrade()
+                            }
                         )
                     }
 
@@ -1784,8 +1828,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             Log.d(TAG, "size of preloaded_bitmap_resources: " + preloaded_bitmap_resources.size)
         }
         activity_count--
-        if (MyDebug.LOG) Log.d(TAG, "activity_count: " + activity_count)
+        if (MyDebug.LOG) Log.d(TAG, "activity_count: $activity_count")
 
+        billingManager?.endConnection()
         // should do asap before waiting for images to be saved - as risk the application will be killed whilst waiting for that to happen,
         // and we want to avoid notifications hanging around
         cancelImageSavingNotification()
@@ -1844,22 +1889,22 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
     private fun setFirstTimeFlag() {
         if (MyDebug.LOG) Log.d(TAG, "setFirstTimeFlag")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = sharedPreferences.edit()
-        editor.putBoolean(PreferenceKeys.FirstTimePreferenceKey, true)
-        editor.apply()
+        sharedPreferences.edit {
+            putBoolean(PreferenceKeys.FirstTimePreferenceKey, true)
+        }
     }
 
     fun launchOnlineHelp() {
         if (MyDebug.LOG) Log.d(TAG, "launchOnlineHelp")
         // if we change this, remember that any page linked to must abide by Google Play developer policies!
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getOnlineHelpUrl("")))
+        val browserIntent = Intent(Intent.ACTION_VIEW, getOnlineHelpUrl("").toUri())
         startActivity(browserIntent)
     }
 
@@ -1867,15 +1912,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         if (MyDebug.LOG) Log.d(TAG, "launchOnlinePrivacyPolicy")
         // if we change this, remember that any page linked to must abide by Google Play developer policies!
         //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getOnlineHelpUrl("index.html#privacy")));
-        val browserIntent =
-            Intent(Intent.ACTION_VIEW, Uri.parse(getOnlineHelpUrl("privacy_oc.html")))
+        val browserIntent = Intent(Intent.ACTION_VIEW, getOnlineHelpUrl("privacy_oc.html").toUri())
         startActivity(browserIntent)
     }
 
     fun launchOnlineLicences() {
         if (MyDebug.LOG) Log.d(TAG, "launchOnlineLicences")
         // if we change this, remember that any page linked to must abide by Google Play developer policies!
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getOnlineHelpUrl("#licence")))
+        val browserIntent = Intent(Intent.ACTION_VIEW, getOnlineHelpUrl("#licence").toUri())
         startActivity(browserIntent)
     }
 
