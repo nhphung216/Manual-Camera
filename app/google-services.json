@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "557439494826",
+    "project_id": "manual-camera-216",
+    "storage_bucket": "manual-camera-216.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557439494826:android:2c7de28cbabd34701b3ed3",
+        "android_client_info": {
+          "package_name": "com.ssolstice.camera.manual"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGzBQLioiynBdIDQ5YZa25X24ZkClC9XM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557439494826:android:bd2da0409d69998d1b3ed3",
+        "android_client_info": {
+          "package_name": "com.ssolstice.camera.manual.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGzBQLioiynBdIDQ5YZa25X24ZkClC9XM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

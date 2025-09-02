@@ -76,82 +76,74 @@ fun CustomValueSlider(
     inactiveColor: Color = Color.Gray,
     onReset: () -> Unit = {}
 ) {
-    Column {
-        Text(
-            text = formated,
-            style = MaterialTheme.typography.titleMedium,
-            color = colorMain(),
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-        Box(
-            modifier = modifier
+    Box(
+        modifier = modifier
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp, top = 12.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp, top = 12.dp)
+                    .weight(1f)
+                    .padding(start = 24.dp, end = 24.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 24.dp, end = 24.dp)
-                ) {
-                    Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-                    // Slider với custom thumb
-                    Box {
-                        if (showBackgroundColor) {
-                            Canvas(modifier = Modifier.matchParentSize()) {
-                                // Gradient từ xanh -> trắng -> đỏ
-                                drawRoundRect(
-                                    brush = Brush.horizontalGradient(
-                                        colors = listOf(
-                                            Color(0xFF0091EA), // xanh dương (cool ~ 2000K)
-                                            Color.Gray,       // neutral
-                                            Color(0xFFFF6D00)  // đỏ cam (warm ~ 8000K)
-                                        )
-                                    ),
-                                    cornerRadius = CornerRadius(30f, 30f)
-                                )
-                            }
-                        }
-
-                        Slider(
-                            value = value,
-                            onValueChange = {
-                                onValueChange(it, mapDisplayValue(name, value))
-                            },
-                            valueRange = valueRange,
-                            //steps = 55,
-                            modifier = Modifier
-                                .height(24.dp)
-                                .fillMaxWidth()
-                                .padding(horizontal = 1.dp),
-                            colors = SliderDefaults.colors(
-                                thumbColor = thumbColor,              // màu nút
-                                activeTrackColor = Color.White,        // track bên trái
-                                inactiveTrackColor = Color.White, // track bên phải
-                                activeTickColor = activeColor,            // dot bên trái
-                                inactiveTickColor = inactiveColor          // dot bên phải
+                // Slider với custom thumb
+                Box {
+                    if (showBackgroundColor) {
+                        Canvas(modifier = Modifier.matchParentSize()) {
+                            // Gradient từ xanh -> trắng -> đỏ
+                            drawRoundRect(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFF0091EA), // xanh dương (cool ~ 2000K)
+                                        Color.Gray,       // neutral
+                                        Color(0xFFFF6D00)  // đỏ cam (warm ~ 8000K)
+                                    )
+                                ),
+                                cornerRadius = CornerRadius(30f, 30f)
                             )
-                        )
+                        }
                     }
-                }
-                if (showReset) {
-                    Icon(
-                        imageVector = Icons.Default.Autorenew,
-                        contentDescription = null,
-                        tint = Color.White,
+
+                    Slider(
+                        value = value,
+                        onValueChange = {
+                            onValueChange(it, mapDisplayValue(name, value))
+                        },
+                        valueRange = valueRange,
+                        //steps = 55,
                         modifier = Modifier
-                            .padding(end = 24.dp)
-                            .size(24.dp)
-                            .clickable { onReset() }
-                            .align(Alignment.Bottom)
+                            .height(24.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 1.dp),
+                        colors = SliderDefaults.colors(
+                            thumbColor = thumbColor,              // màu nút
+                            activeTrackColor = Color.White,        // track bên trái
+                            inactiveTrackColor = Color.White, // track bên phải
+                            activeTickColor = activeColor,            // dot bên trái
+                            inactiveTickColor = inactiveColor          // dot bên phải
+                        )
                     )
                 }
+            }
+            if (showReset) {
+                Icon(
+                    imageVector = Icons.Default.Autorenew,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .padding(end = 24.dp)
+                        .size(24.dp)
+                        .clickable { onReset() }
+                        .align(Alignment.Bottom)
+                )
             }
         }
     }

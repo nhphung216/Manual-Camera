@@ -3,6 +3,8 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'com.google.dagger.hilt.android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdk 35
@@ -30,7 +32,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -68,8 +72,16 @@ android {
 }
 
 dependencies {
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:33.16.0')
+
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation("com.google.firebase:firebase-crashlytics-ndk")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-config")
+
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.android.billingclient:billing:7.1.1' // hoặc bản mới nhất
+    implementation 'com.android.billingclient:billing:7.1.1'
     implementation("com.google.code.gson:gson:2.13.1")
 
     implementation("io.coil-kt:coil-compose:2.7.0")
@@ -93,8 +105,6 @@ dependencies {
     implementation 'androidx.compose.material:material-icons-extended:1.7.8'
     implementation 'androidx.compose.material:material-icons-extended-android:1.7.8'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-
-    //implementation 'androidx.activity:activity:1.9.3' // needed for EdgeToEdge.enable(this)
 
     // appcompat version must be 1.4.0 or later to satisfy emoji policy!
     implementation 'androidx.appcompat:appcompat:1.7.0'

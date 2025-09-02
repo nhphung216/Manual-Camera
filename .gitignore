@@ -2,3 +2,4 @@
 /app/build/*
 /.idea/*
 /.kotlin/*
+/app/pro/release/app-pro-release.aab
