@@ -1061,4 +1061,6 @@
     <string name="yes">是</string>
     <string name="slow_motion">慢动作</string>
     <string name="time_lapse">延时摄影</string>
+    <string name="are_you_sure">您确定吗？</string>
+    <string name="preference_screen_see_more">查看更多</string>
 </resources>

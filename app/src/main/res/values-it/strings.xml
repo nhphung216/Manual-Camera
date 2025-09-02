@@ -1085,4 +1085,6 @@
     <string name="yes">Sì</string>
     <string name="slow_motion">Rallentatore</string>
     <string name="time_lapse">Time Lapse</string>
+    <string name="are_you_sure">Sei sicuro?</string>
+    <string name="preference_screen_see_more">Mostra altro</string>
 </resources>

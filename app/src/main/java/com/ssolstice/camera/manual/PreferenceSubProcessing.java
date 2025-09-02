@@ -1,5 +1,7 @@
 package com.ssolstice.camera.manual;
 
+import static com.ssolstice.camera.manual.PreferenceKeys.PreferenceKey_Root;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -32,7 +34,7 @@ public class PreferenceSubProcessing extends PreferenceSubScreen {
         if( antibanding_values != null && antibanding_values.length > 0 ) {
             String [] antibanding_entries = bundle.getStringArray("antibanding_entries");
             if( antibanding_entries != null && antibanding_entries.length == antibanding_values.length ) { // should always be true here, but just in case
-                MyPreferenceFragment.readFromBundle(this, antibanding_values, antibanding_entries, PreferenceKeys.AntiBandingPreferenceKey, CameraController.ANTIBANDING_DEFAULT, "preferences_root");
+                MyPreferenceFragment.readFromBundle(this, antibanding_values, antibanding_entries, PreferenceKeys.AntiBandingPreferenceKey, CameraController.ANTIBANDING_DEFAULT, PreferenceKey_Root);
                 has_antibanding = true;
             }
         }
@@ -44,7 +46,7 @@ public class PreferenceSubProcessing extends PreferenceSubScreen {
             // value that causes camera to not open, user won't be able to put it back to the
             // default!)
             Preference pref = findPreference(PreferenceKeys.AntiBandingPreferenceKey);
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+            PreferenceGroup pg = (PreferenceGroup)this.findPreference(PreferenceKey_Root);
             pg.removePreference(pref);
         }
 
@@ -53,7 +55,7 @@ public class PreferenceSubProcessing extends PreferenceSubScreen {
         if( edge_mode_values != null && edge_mode_values.length > 0 ) {
             String [] edge_mode_entries = bundle.getStringArray("edge_modes_entries");
             if( edge_mode_entries != null && edge_mode_entries.length == edge_mode_values.length ) { // should always be true here, but just in case
-                MyPreferenceFragment.readFromBundle(this, edge_mode_values, edge_mode_entries, PreferenceKeys.EdgeModePreferenceKey, CameraController.EDGE_MODE_DEFAULT, "preferences_root");
+                MyPreferenceFragment.readFromBundle(this, edge_mode_values, edge_mode_entries, PreferenceKeys.EdgeModePreferenceKey, CameraController.EDGE_MODE_DEFAULT, PreferenceKey_Root);
                 has_edge_mode = true;
             }
         }
@@ -65,7 +67,7 @@ public class PreferenceSubProcessing extends PreferenceSubScreen {
             // value that causes camera to not open, user won't be able to put it back to the
             // default!)
             Preference pref = findPreference(PreferenceKeys.EdgeModePreferenceKey);
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+            PreferenceGroup pg = (PreferenceGroup)this.findPreference(PreferenceKey_Root);
             pg.removePreference(pref);
         }
 
@@ -74,7 +76,7 @@ public class PreferenceSubProcessing extends PreferenceSubScreen {
         if( noise_reduction_mode_values != null && noise_reduction_mode_values.length > 0 ) {
             String [] noise_reduction_mode_entries = bundle.getStringArray("noise_reduction_modes_entries");
             if( noise_reduction_mode_entries != null && noise_reduction_mode_entries.length == noise_reduction_mode_values.length ) { // should always be true here, but just in case
-                MyPreferenceFragment.readFromBundle(this, noise_reduction_mode_values, noise_reduction_mode_entries, PreferenceKeys.CameraNoiseReductionModePreferenceKey, CameraController.NOISE_REDUCTION_MODE_DEFAULT, "preferences_root");
+                MyPreferenceFragment.readFromBundle(this, noise_reduction_mode_values, noise_reduction_mode_entries, PreferenceKeys.CameraNoiseReductionModePreferenceKey, CameraController.NOISE_REDUCTION_MODE_DEFAULT, PreferenceKey_Root);
                 has_noise_reduction_mode = true;
             }
         }
@@ -86,7 +88,7 @@ public class PreferenceSubProcessing extends PreferenceSubScreen {
             // value that causes camera to not open, user won't be able to put it back to the
             // default!)
             Preference pref = findPreference(PreferenceKeys.CameraNoiseReductionModePreferenceKey);
-            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preferences_root");
+            PreferenceGroup pg = (PreferenceGroup)this.findPreference(PreferenceKey_Root);
             pg.removePreference(pref);
         }
 

@@ -887,4 +887,6 @@
     <string name="yes">Sim</string>
     <string name="slow_motion">Câmera Lenta</string>
     <string name="time_lapse">Lapso de Tempo</string>
+    <string name="are_you_sure">Tem a certeza?</string>
+    <string name="preference_screen_see_more">Ver mais</string>
 </resources>

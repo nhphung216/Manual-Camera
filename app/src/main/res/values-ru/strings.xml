@@ -1085,5 +1085,7 @@
     <string name="yes">Да</string>
     <string name="slow_motion">Замедленная съемка</string>
     <string name="time_lapse">Интервальная съемка</string>
+    <string name="are_you_sure">Вы уверены?</string>
+    <string name="preference_screen_see_more">Показать больше</string>
 
 </resources>

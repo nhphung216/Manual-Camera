@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="Are you sure?"
+        android:text="@string/are_you_sure"
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/black"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:textAllCaps="false"
             android:textColor="@color/white" />
 
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:backgroundTint="@color/color_selected"
-            android:text="Yes"
+            android:text="@string/yes"
             android:textAllCaps="false"
             android:textColor="@color/white" />
     </LinearLayout>

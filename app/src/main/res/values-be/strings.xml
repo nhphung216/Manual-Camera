@@ -909,5 +909,7 @@
     <string name="yes">Так</string>
     <string name="slow_motion">Запаволеная здымка</string>
     <string name="time_lapse">Прамежак часу</string>
+    <string name="are_you_sure">Вы ўпэўнены?</string>
+    <string name="preference_screen_see_more">Паказаць больш</string>
 
 </resources>

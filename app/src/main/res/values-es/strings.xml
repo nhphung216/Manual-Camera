@@ -964,4 +964,6 @@
     <string name="yes">Sí</string>
     <string name="slow_motion">Cámara Lenta</string>
     <string name="time_lapse">Time Lapse</string>
+    <string name="are_you_sure">¿Estás seguro?</string>
+    <string name="preference_screen_see_more">Ver más</string>
 </resources>

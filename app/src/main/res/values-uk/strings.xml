@@ -950,4 +950,6 @@
     <string name="slow_motion">Уповільнена зйомка</string>
     <string name="time_lapse">Інтервальна зйомка</string>
     <string name="cancel">Скасувати</string>
+    <string name="are_you_sure">Ви впевнені?</string>
+    <string name="preference_screen_see_more">Показати більше</string>
 </resources>

@@ -1044,5 +1044,7 @@
     <string name="yes">はい</string>
     <string name="slow_motion">スローモーション</string>
     <string name="time_lapse">タイムラプス</string>
+    <string name="are_you_sure">よろしいですか？</string>
+    <string name="preference_screen_see_more">詳細を見る</string>
 
 </resources>

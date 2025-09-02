@@ -1,163 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="preferences_root">
+    <PreferenceCategory android:title="@string/preference_category_video_settings">
+        <!--  if we move this to another PreferenceGroup, we should update code for the findPreference() call -->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="preference_video_stabilization"
+            android:summary="@string/preference_video_stabilization_summary"
+            android:title="@string/preference_video_stabilization" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <!-- title set programmatically -->
-    <!--    <ListPreference-->
-    <!--        android:key="preference_video_quality"-->
-    <!--        android:summary="%s"-->
-    <!--        />-->
+        <!--  if we move this to another PreferenceGroup, we should update code for the findPreference() call -->
+        <com.ssolstice.camera.manual.ui.ArraySeekBarPreference
+            android:defaultValue="2.2"
+            android:entries="@array/preference_video_profile_gamma_entries"
+            android:entryValues="@array/preference_video_profile_gamma_values"
+            android:key="preference_video_profile_gamma"
+            android:summary="@string/preference_video_profile_gamma_summary"
+            android:title="@string/preference_video_profile_gamma" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code for the findPreference() call -->
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="preference_video_stabilization"
-        android:summary="@string/preference_video_stabilization_summary"
-        android:title="@string/preference_video_stabilization" />
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/preference_video_max_duration_entries"
+            android:entryValues="@array/preference_video_max_duration_values"
+            android:key="preference_video_max_duration"
+            android:summary="@string/preference_video_max_duration_summary"
+            android:title="@string/preference_video_max_duration" />
 
-    <!--    <ListPreference-->
-    <!--        android:key="preference_video_output_format"-->
-    <!--        android:title="@string/preference_video_output_format"-->
-    <!--        android:summary="@string/preference_video_output_format_summary"-->
-    <!--        android:entries="@array/preference_video_output_format_entries"-->
-    <!--        android:entryValues="@array/preference_video_output_format_values"-->
-    <!--        android:defaultValue="preference_video_output_format_default"-->
-    <!--        />-->
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/preference_video_restart_entries"
+            android:entryValues="@array/preference_video_restart_values"
+            android:key="preference_video_restart"
+            android:summary="@string/preference_video_restart_summary"
+            android:title="@string/preference_video_restart" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code for the findPreference() call -->
-    <!--    <ListPreference-->
-    <!--        android:key="preference_video_log"-->
-    <!--        android:title="@string/preference_video_log"-->
-    <!--        android:summary="@string/preference_video_log_summary"-->
-    <!--        android:entries="@array/preference_video_log_entries"-->
-    <!--        android:entryValues="@array/preference_video_log_values"-->
-    <!--        android:defaultValue="off"-->
-    <!--        />-->
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/preference_video_max_filesize_entries"
+            android:entryValues="@array/preference_video_max_filesize_values"
+            android:key="preference_video_max_filesize"
+            android:summary="@string/preference_video_max_filesize_summary"
+            android:title="@string/preference_video_max_filesize" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code for the findPreference() call -->
-    <com.ssolstice.camera.manual.ui.ArraySeekBarPreference
-        android:defaultValue="2.2"
-        android:entries="@array/preference_video_profile_gamma_entries"
-        android:entryValues="@array/preference_video_profile_gamma_values"
-        android:key="preference_video_profile_gamma"
-        android:summary="@string/preference_video_profile_gamma_summary"
-        android:title="@string/preference_video_profile_gamma" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="preference_video_restart_max_filesize"
+            android:summary="@string/preference_video_restart_max_filesize_summary"
+            android:title="@string/preference_video_restart_max_filesize" />
 
-    <ListPreference
-        android:defaultValue="0"
-        android:entries="@array/preference_video_max_duration_entries"
-        android:entryValues="@array/preference_video_max_duration_values"
-        android:key="preference_video_max_duration"
-        android:summary="@string/preference_video_max_duration_summary"
-        android:title="@string/preference_video_max_duration" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="preference_lock_video"
+            android:summary="@string/preference_lock_video_summary"
+            android:title="@string/preference_lock_video" />
 
-    <ListPreference
-        android:defaultValue="0"
-        android:entries="@array/preference_video_restart_entries"
-        android:entryValues="@array/preference_video_restart_values"
-        android:key="preference_video_restart"
-        android:summary="@string/preference_video_restart_summary"
-        android:title="@string/preference_video_restart" />
-
-    <ListPreference
-        android:defaultValue="0"
-        android:entries="@array/preference_video_max_filesize_entries"
-        android:entryValues="@array/preference_video_max_filesize_values"
-        android:key="preference_video_max_filesize"
-        android:summary="@string/preference_video_max_filesize_summary"
-        android:title="@string/preference_video_max_filesize" />
-
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="preference_video_restart_max_filesize"
-        android:summary="@string/preference_video_restart_max_filesize_summary"
-        android:title="@string/preference_video_restart_max_filesize" />
-
-    <!--    <SwitchPreference-->
-    <!--        android:key="preference_record_audio"-->
-    <!--        android:title="@string/preference_record_audio"-->
-    <!--        android:summary="@string/preference_record_audio_summary"-->
-    <!--        android:defaultValue="true"-->
-    <!--        />-->
-
-    <!--    <ListPreference-->
-    <!--        android:key="preference_record_audio_src"-->
-    <!--        android:title="@string/preference_record_audio_src"-->
-    <!--        android:summary="@string/preference_record_audio_src_summary"-->
-    <!--        android:entries="@array/preference_record_audio_src_entries"-->
-    <!--        android:entryValues="@array/preference_record_audio_src_values"-->
-    <!--        android:defaultValue="audio_src_camcorder"-->
-    <!--        android:dependency="preference_record_audio"-->
-    <!--        />-->
-
-    <!--    <ListPreference-->
-    <!--        android:key="preference_record_audio_channels"-->
-    <!--        android:title="@string/preference_record_audio_channels"-->
-    <!--        android:summary="@string/preference_record_audio_channels_summary"-->
-    <!--        android:entries="@array/preference_record_audio_channels_entries"-->
-    <!--        android:entryValues="@array/preference_record_audio_channels_values"-->
-    <!--        android:defaultValue="audio_default"-->
-    <!--        android:dependency="preference_record_audio"-->
-    <!--        />-->
-
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="preference_lock_video"
-        android:summary="@string/preference_lock_video_summary"
-        android:title="@string/preference_lock_video" />
-
-    <ListPreference
-        android:defaultValue="preference_video_subtitle_no"
-        android:entries="@array/preference_video_subtitle_entries"
-        android:entryValues="@array/preference_video_subtitle_values"
-        android:key="preference_video_subtitle"
-        android:summary="@string/preference_video_subtitle_summary"
-        android:title="@string/preference_video_subtitle" />
-
-    <!--    <PreferenceCategory-->
-    <!--        android:key="preference_category_video_debugging"-->
-    <!--        android:title="@string/preference_category_video_debugging"-->
-    <!--        >-->
-
-    <!--        <ListPreference-->
-    <!--            android:key="preference_video_bitrate"-->
-    <!--            android:title="@string/preference_video_bitrate"-->
-    <!--            android:summary="@string/preference_video_bitrate_summary"-->
-    <!--            android:entries="@array/preference_video_bitrate_entries"-->
-    <!--            android:entryValues="@array/preference_video_bitrate_values"-->
-    <!--            android:defaultValue="default"-->
-    <!--            />-->
-
-    <!--        <ListPreference-->
-    <!--            android:key="preference_video_fps"-->
-    <!--            android:title="@string/preference_video_fps"-->
-    <!--            android:summary="@string/preference_video_fps_summary"-->
-    <!--            android:defaultValue="default"-->
-    <!--            />-->
-
-    <!--        &lt;!&ndash;  if we move this to another PreferenceGroup, we should update code for the findPreference() call &ndash;&gt;-->
-    <!--        <SwitchPreference-->
-    <!--            android:key="preference_force_video_4k"-->
-    <!--            android:title="@string/preference_force_video_4k"-->
-    <!--            android:summary="@string/preference_force_video_4k_summary"-->
-    <!--            android:defaultValue="false"-->
-    <!--            />-->
-
-    <!--        <SwitchPreference-->
-    <!--            android:key="preference_video_low_power_check"-->
-    <!--            android:title="@string/preference_video_low_power_check"-->
-    <!--            android:summary="@string/preference_video_low_power_check_summary"-->
-    <!--            android:defaultValue="true"-->
-    <!--            />-->
-
-    <!--        <SwitchPreference-->
-    <!--            android:key="preference_video_flash"-->
-    <!--            android:title="@string/preference_video_flash"-->
-    <!--            android:summary="@string/preference_video_flash_summary"-->
-    <!--            android:defaultValue="false"-->
-    <!--            />-->
-
-    <!--    </PreferenceCategory>-->
-
+        <ListPreference
+            android:defaultValue="preference_video_subtitle_no"
+            android:entries="@array/preference_video_subtitle_entries"
+            android:entryValues="@array/preference_video_subtitle_values"
+            android:key="preference_video_subtitle"
+            android:summary="@string/preference_video_subtitle_summary"
+            android:title="@string/preference_video_subtitle" />
+    </PreferenceCategory>
 </PreferenceScreen>

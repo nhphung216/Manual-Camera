@@ -1307,4 +1307,6 @@
     <string name="yes">हाँ</string>
     <string name="slow_motion">धीमी गति</string>
     <string name="time_lapse">समय चूक</string>
+    <string name="are_you_sure">क्या आप निश्चित हैं?</string>
+    <string name="preference_screen_see_more">और देखें</string>
 </resources>

@@ -1030,4 +1030,6 @@
     <string name="yes">Có</string>
     <string name="slow_motion">Chuyển động chậm</string>
     <string name="time_lapse">Tua nhanh thời gian</string>
+    <string name="are_you_sure">Bạn có chắc không?</string>
+    <string name="preference_screen_see_more">Xem thêm</string>
 </resources>

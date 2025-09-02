@@ -912,5 +912,7 @@
     <string name="yes">Ano</string>
     <string name="slow_motion">Zpomalený pohyb</string>
     <string name="time_lapse">Časosběr</string>
+    <string name="are_you_sure">Jste si jistý?</string>
+    <string name="preference_screen_see_more">Zobrazit více</string>
 
 </resources>

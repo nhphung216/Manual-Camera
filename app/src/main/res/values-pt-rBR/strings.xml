@@ -843,5 +843,7 @@
     <string name="preference_zebra_stripes_color_transparent">Transparente</string>
     <string name="preference_zebra_stripes_color_white">Branco</string>
     <string name="reset_all">Redefinir tudo</string>
+    <string name="are_you_sure">Você tem certeza?</string>
+    <string name="preference_screen_see_more">Ver mais</string>
 
 </resources>

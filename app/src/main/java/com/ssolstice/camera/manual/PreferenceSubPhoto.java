@@ -1,5 +1,7 @@
 package com.ssolstice.camera.manual;
 
+import static com.ssolstice.camera.manual.PreferenceKeys.PreferenceKey_Root;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -11,59 +13,31 @@ import android.util.Log;
 
 import com.ssolstice.camera.manual.ui.MyEditTextPreference;
 
+import java.util.Locale;
+
 public class PreferenceSubPhoto extends PreferenceSubScreen {
 
     private static final String TAG = "PreferenceSubPhoto";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onCreate");
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_sub_photo);
 
         final Bundle bundle = getArguments();
-
-        final int cameraId = bundle.getInt("cameraId");
-        if (MyDebug.LOG) Log.d(TAG, "cameraId: " + cameraId);
-
-        final String cameraIdSPhysical = bundle.getString("cameraIdSPhysical");
-        if (MyDebug.LOG) Log.d(TAG, "cameraIdSPhysical: " + cameraIdSPhysical);
-
         final boolean using_android_l = bundle.getBoolean("using_android_l");
-        if (MyDebug.LOG) Log.d(TAG, "using_android_l: " + using_android_l);
-
-        final boolean supports_jpeg_r = bundle.getBoolean("supports_jpeg_r");
-        if (MyDebug.LOG) Log.d(TAG, "supports_jpeg_r: " + supports_jpeg_r);
-
         final boolean supports_raw = bundle.getBoolean("supports_raw");
-        if (MyDebug.LOG) Log.d(TAG, "supports_raw: " + supports_raw);
-
         final boolean supports_burst_raw = bundle.getBoolean("supports_burst_raw");
-        if (MyDebug.LOG) Log.d(TAG, "supports_burst_raw: " + supports_burst_raw);
-
         final boolean supports_optimise_focus_latency = bundle.getBoolean("supports_optimise_focus_latency");
-        if (MyDebug.LOG)
-            Log.d(TAG, "supports_optimise_focus_latency: " + supports_optimise_focus_latency);
-
         final boolean supports_preshots = bundle.getBoolean("supports_preshots");
-        if (MyDebug.LOG) Log.d(TAG, "supports_preshots: " + supports_preshots);
-
         final boolean supports_nr = bundle.getBoolean("supports_nr");
-        if (MyDebug.LOG) Log.d(TAG, "supports_nr: " + supports_nr);
-
         final boolean supports_hdr = bundle.getBoolean("supports_hdr");
-        if (MyDebug.LOG) Log.d(TAG, "supports_hdr: " + supports_hdr);
-
         final boolean supports_panorama = bundle.getBoolean("supports_panorama");
-        if (MyDebug.LOG) Log.d(TAG, "supports_panorama: " + supports_panorama);
-
         final boolean supports_photo_video_recording = bundle.getBoolean("supports_photo_video_recording");
-        if (MyDebug.LOG)
-            Log.d(TAG, "supports_photo_video_recording: " + supports_photo_video_recording);
 
         if (!(supports_raw && supports_burst_raw)) {
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
             Preference pref = findPreference("preference_raw_expo_bracketing");
             pg.removePreference(pref);
             pref = findPreference("preference_raw_focus_bracketing");
@@ -71,25 +45,25 @@ public class PreferenceSubPhoto extends PreferenceSubScreen {
         }
 
         if (!supports_optimise_focus_latency) {
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
             Preference pref = findPreference("preference_photo_optimise_focus");
             pg.removePreference(pref);
         }
 
         if (!supports_preshots) {
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
             Preference pref = findPreference("preference_save_preshots");
             pg.removePreference(pref);
         }
 
         if (!supports_nr) {
             Preference pref = findPreference("preference_nr_save");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
             pg.removePreference(pref);
         }
 
         if (!supports_hdr) {
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
 
             Preference pref = findPreference("preference_hdr_save_expo");
             pg.removePreference(pref);
@@ -102,7 +76,7 @@ public class PreferenceSubPhoto extends PreferenceSubScreen {
         }
 
         if (!supports_panorama) {
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
 
             Preference pref = findPreference("preference_panorama_crop");
             pg.removePreference(pref);
@@ -139,7 +113,7 @@ public class PreferenceSubPhoto extends PreferenceSubScreen {
             if (MyDebug.LOG)
                 Log.d(TAG, "preference_category_photo_debugging children: " + pg.getPreferenceCount());
             if (pg.getPreferenceCount() == 0) {
-                PreferenceGroup parent = (PreferenceGroup) this.findPreference("preferences_root");
+                PreferenceGroup parent = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
                 parent.removePreference(pg);
             }
         }
@@ -150,8 +124,15 @@ public class PreferenceSubPhoto extends PreferenceSubScreen {
 
         updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
 
-        if (MyDebug.LOG)
-            Log.d(TAG, "onCreate done");
+        PreferenceGroup preferenceGroup = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+        for (int i = 0; i < preferenceGroup.getPreferenceCount(); i++) {
+            Preference pref = preferenceGroup.getPreference(i);
+            if (pref instanceof PreferenceGroup) {
+                pref.setTitle(pref.getTitle().toString().toUpperCase(Locale.ROOT));
+            }
+        }
+
+        Log.d(TAG, "onCreate done");
     }
 
     private void updatePreferenceSummaries(PreferenceGroup group, SharedPreferences sharedPreferences) {

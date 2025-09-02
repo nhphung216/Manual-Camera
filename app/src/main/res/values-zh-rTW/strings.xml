@@ -1076,4 +1076,6 @@
     <string name="photo_mode_x_beauty_full">美肌 / 臉部修飾</string>
     <string name="reset_all">全部重設</string>
     <string name="cancel">取消</string>
+    <string name="are_you_sure">您確定嗎？</string>
+    <string name="preference_screen_see_more">查看更多</string>
 </resources>

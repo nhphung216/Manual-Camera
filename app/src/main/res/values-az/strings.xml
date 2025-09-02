@@ -892,5 +892,8 @@
     <string name="yes">Bəli</string>
     <string name="slow_motion">Yavaş Hərəkət</string>
     <string name="time_lapse">Zaman Aşımı</string>
+    <string name="are_you_sure">Əminsiniz?</string>
+    <string name="preference_screen_see_more">Daha çox göstər</string>
+
 
 </resources>

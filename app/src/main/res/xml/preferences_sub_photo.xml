@@ -2,103 +2,106 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="preferences_root">
 
-    <ListPreference
-        android:defaultValue="preference_photo_optimise_focus_latency"
-        android:entries="@array/preference_photo_optimise_focus_entries"
-        android:entryValues="@array/preference_photo_optimise_focus_values"
-        android:key="preference_photo_optimise_focus"
-        android:summary="@string/preference_photo_optimise_focus_summary"
-        android:title="@string/preference_photo_optimise_focus" />
+    <PreferenceCategory android:title="@string/preference_category_photo_settings">
+        <ListPreference
+            android:defaultValue="preference_photo_optimise_focus_latency"
+            android:entries="@array/preference_photo_optimise_focus_entries"
+            android:entryValues="@array/preference_photo_optimise_focus_values"
+            android:key="preference_photo_optimise_focus"
+            android:summary="@string/preference_photo_optimise_focus_summary"
+            android:title="@string/preference_photo_optimise_focus" />
 
-    <ListPreference
-        android:defaultValue="preference_save_preshots_off"
-        android:entries="@array/preference_save_preshots_entries"
-        android:entryValues="@array/preference_save_preshots_values"
-        android:key="preference_save_preshots"
-        android:summary="@string/preference_save_preshots_summary"
-        android:title="@string/preference_save_preshots" />
+        <ListPreference
+            android:defaultValue="preference_save_preshots_off"
+            android:entries="@array/preference_save_preshots_entries"
+            android:entryValues="@array/preference_save_preshots_values"
+            android:key="preference_save_preshots"
+            android:summary="@string/preference_save_preshots_summary"
+            android:title="@string/preference_save_preshots" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="preference_raw_expo_bracketing"
-        android:summary="@string/preference_raw_expo_bracketing_summary"
-        android:title="@string/preference_raw_expo_bracketing" />
+        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="preference_raw_expo_bracketing"
+            android:summary="@string/preference_raw_expo_bracketing_summary"
+            android:title="@string/preference_raw_expo_bracketing" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="preference_raw_focus_bracketing"
-        android:summary="@string/preference_raw_focus_bracketing_summary"
-        android:title="@string/preference_raw_focus_bracketing" />
+        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="preference_raw_focus_bracketing"
+            android:summary="@string/preference_raw_focus_bracketing_summary"
+            android:title="@string/preference_raw_focus_bracketing" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <ListPreference
-        android:defaultValue="preference_nr_save_no"
-        android:entries="@array/preference_nr_save_entries"
-        android:entryValues="@array/preference_nr_save_values"
-        android:key="preference_nr_save"
-        android:summary="@string/preference_nr_save_summary"
-        android:title="@string/preference_nr_save" />
+        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+        <ListPreference
+            android:defaultValue="preference_nr_save_no"
+            android:entries="@array/preference_nr_save_entries"
+            android:entryValues="@array/preference_nr_save_values"
+            android:key="preference_nr_save"
+            android:summary="@string/preference_nr_save_summary"
+            android:title="@string/preference_nr_save" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="preference_hdr_save_expo"
-        android:summary="@string/preference_hdr_save_expo_summary"
-        android:title="@string/preference_hdr_save_expo" />
+        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="preference_hdr_save_expo"
+            android:summary="@string/preference_hdr_save_expo_summary"
+            android:title="@string/preference_hdr_save_expo" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <ListPreference
-        android:defaultValue="preference_hdr_tonemapping_default"
-        android:entries="@array/preference_hdr_tonemapping_entries"
-        android:entryValues="@array/preference_hdr_tonemapping_values"
-        android:key="preference_hdr_tonemapping"
-        android:summary="@string/preference_hdr_tonemapping_summary"
-        android:title="@string/preference_hdr_tonemapping" />
+        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+        <ListPreference
+            android:defaultValue="preference_hdr_tonemapping_default"
+            android:entries="@array/preference_hdr_tonemapping_entries"
+            android:entryValues="@array/preference_hdr_tonemapping_values"
+            android:key="preference_hdr_tonemapping"
+            android:summary="@string/preference_hdr_tonemapping_summary"
+            android:title="@string/preference_hdr_tonemapping" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <ListPreference
-        android:defaultValue="preference_hdr_contrast_enhancement_smart"
-        android:entries="@array/preference_hdr_contrast_enhancement_entries"
-        android:entryValues="@array/preference_hdr_contrast_enhancement_values"
-        android:key="preference_hdr_contrast_enhancement"
-        android:summary="@string/preference_hdr_contrast_enhancement_summary"
-        android:title="@string/preference_hdr_contrast_enhancement" />
+        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+        <ListPreference
+            android:defaultValue="preference_hdr_contrast_enhancement_smart"
+            android:entries="@array/preference_hdr_contrast_enhancement_entries"
+            android:entryValues="@array/preference_hdr_contrast_enhancement_values"
+            android:key="preference_hdr_contrast_enhancement"
+            android:summary="@string/preference_hdr_contrast_enhancement_summary"
+            android:title="@string/preference_hdr_contrast_enhancement" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <ListPreference
-        android:defaultValue="preference_panorama_crop_on"
-        android:entries="@array/preference_panorama_crop_entries"
-        android:entryValues="@array/preference_panorama_crop_values"
-        android:key="preference_panorama_crop"
-        android:summary="@string/preference_panorama_crop_summary"
-        android:title="@string/preference_panorama_crop" />
+        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+        <ListPreference
+            android:defaultValue="preference_panorama_crop_on"
+            android:entries="@array/preference_panorama_crop_entries"
+            android:entryValues="@array/preference_panorama_crop_values"
+            android:key="preference_panorama_crop"
+            android:summary="@string/preference_panorama_crop_summary"
+            android:title="@string/preference_panorama_crop" />
 
-    <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
-    <ListPreference
-        android:defaultValue="preference_panorama_save_no"
-        android:entries="@array/preference_panorama_save_entries"
-        android:entryValues="@array/preference_panorama_save_values"
-        android:key="preference_panorama_save"
-        android:summary="@string/preference_panorama_save_summary"
-        android:title="@string/preference_panorama_save" />
+        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
+        <ListPreference
+            android:defaultValue="preference_panorama_save_no"
+            android:entries="@array/preference_panorama_save_entries"
+            android:entryValues="@array/preference_panorama_save_values"
+            android:key="preference_panorama_save"
+            android:summary="@string/preference_panorama_save_summary"
+            android:title="@string/preference_panorama_save" />
 
-    <ListPreference
-        android:defaultValue="preference_front_camera_mirror_no"
-        android:entries="@array/preference_front_camera_mirror_entries"
-        android:entryValues="@array/preference_front_camera_mirror_values"
-        android:key="preference_front_camera_mirror"
-        android:summary="@string/preference_front_camera_mirror_summary"
-        android:title="@string/preference_front_camera_mirror" />
+        <ListPreference
+            android:defaultValue="preference_front_camera_mirror_no"
+            android:entries="@array/preference_front_camera_mirror_entries"
+            android:entryValues="@array/preference_front_camera_mirror_values"
+            android:key="preference_front_camera_mirror"
+            android:summary="@string/preference_front_camera_mirror_summary"
+            android:title="@string/preference_front_camera_mirror" />
 
-    <ListPreference
-        android:defaultValue="preference_remove_device_exif_off"
-        android:entries="@array/preference_remove_device_exif_entries"
-        android:entryValues="@array/preference_remove_device_exif_values"
-        android:key="preference_remove_device_exif"
-        android:summary="@string/preference_remove_device_exif_summary"
-        android:title="@string/preference_remove_device_exif" />
+        <ListPreference
+            android:defaultValue="preference_remove_device_exif_off"
+            android:entries="@array/preference_remove_device_exif_entries"
+            android:entryValues="@array/preference_remove_device_exif_values"
+            android:key="preference_remove_device_exif"
+            android:summary="@string/preference_remove_device_exif_summary"
+            android:title="@string/preference_remove_device_exif" />
+
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:key="preference_category_exif_tags"

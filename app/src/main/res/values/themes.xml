@@ -19,6 +19,7 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
+        <item name="colorAccent">#FF9800</item>
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>

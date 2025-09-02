@@ -1,5 +1,7 @@
 package com.ssolstice.camera.manual;
 
+import static com.ssolstice.camera.manual.PreferenceKeys.PreferenceKey_Root;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -12,13 +14,14 @@ import android.util.Log;
 import com.ssolstice.camera.manual.ui.ArraySeekBarPreference;
 import com.ssolstice.camera.manual.ui.MyEditTextPreference;
 
+import java.util.Locale;
+
 public class PreferenceSubPreview extends PreferenceSubScreen {
     private static final String TAG = "PreferenceSubPreview";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onCreate");
+        if (MyDebug.LOG) Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_sub_preview);
 
@@ -30,8 +33,7 @@ public class PreferenceSubPreview extends PreferenceSubScreen {
         {
             ListPreference pref = (ListPreference) findPreference("preference_ghost_image");
             pref.setOnPreferenceChangeListener((arg0, newValue) -> {
-                if (MyDebug.LOG)
-                    Log.d(TAG, "clicked ghost image: " + newValue);
+                if (MyDebug.LOG) Log.d(TAG, "clicked ghost image: " + newValue);
                 if (newValue.equals("preference_ghost_image_selected")) {
                     MainActivity main_activity = (MainActivity) PreferenceSubPreview.this.getActivity();
                     main_activity.openGhostImageChooserDialogSAF(true);
@@ -58,11 +60,19 @@ public class PreferenceSubPreview extends PreferenceSubScreen {
 
         if (!using_android_l) {
             Preference pref = findPreference("preference_focus_assist");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preferences_root");
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
             pg.removePreference(pref);
         }
 
         updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
+
+        PreferenceGroup preferenceGroup = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+        for (int i = 0; i < preferenceGroup.getPreferenceCount(); i++) {
+            Preference pref = preferenceGroup.getPreference(i);
+            if (pref instanceof PreferenceGroup) {
+                pref.setTitle(pref.getTitle().toString().toUpperCase(Locale.ROOT));
+            }
+        }
 
         if (MyDebug.LOG) Log.d(TAG, "onCreate done");
     }

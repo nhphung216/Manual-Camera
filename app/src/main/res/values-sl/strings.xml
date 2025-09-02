@@ -1086,5 +1086,7 @@
     <string name="yes">Da</string>
     <string name="slow_motion">Počasni posnetek</string>
     <string name="time_lapse">Časovni zamik</string>
+    <string name="are_you_sure">Ste prepričani?</string>
+    <string name="preference_screen_see_more">Prikaži več</string>
 
 </resources>

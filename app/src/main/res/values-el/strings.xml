@@ -898,4 +898,6 @@
     <string name="yes">Ναι</string>
     <string name="slow_motion">Αργή Κίνηση</string>
     <string name="time_lapse">Time Lapse</string>
+    <string name="are_you_sure">Είστε σίγουροι;</string>
+    <string name="preference_screen_see_more">Δείτε περισσότερα</string>
 </resources>

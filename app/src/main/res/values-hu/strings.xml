@@ -944,4 +944,6 @@
     <string name="yes">Igen</string>
     <string name="slow_motion">Lassított felvétel</string>
     <string name="time_lapse">Gyorsított felvétel</string>
+    <string name="are_you_sure">Biztos vagy benne?</string>
+    <string name="preference_screen_see_more">Továbbiak megtekintése</string>
 </resources>

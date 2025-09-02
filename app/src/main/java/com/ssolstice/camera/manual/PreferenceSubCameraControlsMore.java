@@ -1,5 +1,7 @@
 package com.ssolstice.camera.manual;
 
+import static com.ssolstice.camera.manual.PreferenceKeys.PreferenceKey_Root;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -12,18 +14,16 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.ssolstice.camera.manual.ui.FolderChooserDialog;
 import com.ssolstice.camera.manual.ui.MyEditTextPreference;
 
-import java.io.File;
+import java.util.Locale;
 
 public class PreferenceSubCameraControlsMore extends PreferenceSubScreen {
     private static final String TAG = "PfSubCameraControlsMore";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onCreate");
+        if (MyDebug.LOG) Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_sub_camera_controls_more);
 
@@ -34,24 +34,20 @@ public class PreferenceSubCameraControlsMore extends PreferenceSubScreen {
             pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
-                    if( pref.getKey().equals("preference_using_saf") ) {
-                        if( MyDebug.LOG )
-                            Log.d(TAG, "user clicked saf");
-                        if( sharedPreferences.getBoolean(PreferenceKeys.UsingSAFPreferenceKey, false) ) {
-                            if( MyDebug.LOG )
-                                Log.d(TAG, "saf is now enabled");
+                    if (pref.getKey().equals("preference_using_saf")) {
+                        if (MyDebug.LOG) Log.d(TAG, "user clicked saf");
+                        if (sharedPreferences.getBoolean(PreferenceKeys.UsingSAFPreferenceKey, false)) {
+                            if (MyDebug.LOG) Log.d(TAG, "saf is now enabled");
                             // seems better to alway re-show the dialog when the user selects, to make it clear where files will be saved (as the SAF location in general will be different to the non-SAF one)
                             //String uri = sharedPreferences.getString(PreferenceKeys.getSaveLocationSAFPreferenceKey(), "");
                             //if( uri.length() == 0 )
                             {
-                                MainActivity main_activity = (MainActivity)PreferenceSubCameraControlsMore.this.getActivity();
+                                MainActivity main_activity = (MainActivity) PreferenceSubCameraControlsMore.this.getActivity();
                                 Toast.makeText(main_activity, R.string.saf_select_save_location, Toast.LENGTH_SHORT).show();
                                 main_activity.openFolderChooserDialogSAF(true);
                             }
-                        }
-                        else {
-                            if( MyDebug.LOG )
-                                Log.d(TAG, "saf is now disabled");
+                        } else {
+                            if (MyDebug.LOG) Log.d(TAG, "saf is now disabled");
                         }
                     }
                     return false;
@@ -64,21 +60,19 @@ public class PreferenceSubCameraControlsMore extends PreferenceSubScreen {
             pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
-                    if( pref.getKey().equals("preference_calibrate_level") ) {
-                        if( MyDebug.LOG )
-                            Log.d(TAG, "user clicked calibrate level option");
+                    if (pref.getKey().equals("preference_calibrate_level")) {
+                        if (MyDebug.LOG) Log.d(TAG, "user clicked calibrate level option");
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(PreferenceSubCameraControlsMore.this.getActivity());
                         alertDialog.setTitle(getActivity().getResources().getString(R.string.preference_calibrate_level));
                         alertDialog.setMessage(R.string.preference_calibrate_level_dialog);
                         alertDialog.setPositiveButton(R.string.preference_calibrate_level_calibrate, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                if( MyDebug.LOG )
-                                    Log.d(TAG, "user clicked calibrate level");
-                                MainActivity main_activity = (MainActivity)PreferenceSubCameraControlsMore.this.getActivity();
-                                if( main_activity.getPreview().hasLevelAngleStable() ) {
+                                if (MyDebug.LOG) Log.d(TAG, "user clicked calibrate level");
+                                MainActivity main_activity = (MainActivity) PreferenceSubCameraControlsMore.this.getActivity();
+                                if (main_activity.getPreview().hasLevelAngleStable()) {
                                     double current_level_angle = main_activity.getPreview().getLevelAngleUncalibrated();
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    editor.putFloat(PreferenceKeys.CalibratedLevelAnglePreferenceKey, (float)current_level_angle);
+                                    editor.putFloat(PreferenceKeys.CalibratedLevelAnglePreferenceKey, (float) current_level_angle);
                                     editor.apply();
                                     main_activity.getPreview().updateLevelAngles();
                                     Toast.makeText(main_activity, R.string.preference_calibrate_level_calibrated, Toast.LENGTH_SHORT).show();
@@ -87,9 +81,8 @@ public class PreferenceSubCameraControlsMore extends PreferenceSubScreen {
                         });
                         alertDialog.setNegativeButton(R.string.preference_calibrate_level_reset, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                if( MyDebug.LOG )
-                                    Log.d(TAG, "user clicked reset calibration level");
-                                MainActivity main_activity = (MainActivity)PreferenceSubCameraControlsMore.this.getActivity();
+                                if (MyDebug.LOG) Log.d(TAG, "user clicked reset calibration level");
+                                MainActivity main_activity = (MainActivity) PreferenceSubCameraControlsMore.this.getActivity();
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putFloat(PreferenceKeys.CalibratedLevelAnglePreferenceKey, 0.0f);
                                 editor.apply();
@@ -102,8 +95,7 @@ public class PreferenceSubCameraControlsMore extends PreferenceSubScreen {
                         alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
                             @Override
                             public void onDismiss(DialogInterface arg0) {
-                                if( MyDebug.LOG )
-                                    Log.d(TAG, "calibration dialog dismissed");
+                                if (MyDebug.LOG) Log.d(TAG, "calibration dialog dismissed");
                                 dialogs.remove(alert);
                             }
                         });
@@ -123,8 +115,15 @@ public class PreferenceSubCameraControlsMore extends PreferenceSubScreen {
 
         updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
 
-        if( MyDebug.LOG )
-            Log.d(TAG, "onCreate done");
+        PreferenceGroup preferenceGroup = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+        for (int i = 0; i < preferenceGroup.getPreferenceCount(); i++) {
+            Preference pref = preferenceGroup.getPreference(i);
+            if (pref instanceof PreferenceGroup) {
+                pref.setTitle(pref.getTitle().toString().toUpperCase(Locale.ROOT));
+            }
+        }
+
+        if (MyDebug.LOG) Log.d(TAG, "onCreate done");
     }
 
     private void updatePreferenceSummaries(PreferenceGroup group, SharedPreferences sharedPreferences) {
@@ -170,8 +169,8 @@ public class PreferenceSubCameraControlsMore extends PreferenceSubScreen {
      */
     private void setupDependencies() {
         // set up dependency for preference_audio_noise_control_sensitivity on preference_audio_control
-        ListPreference pref = (ListPreference)findPreference("preference_audio_control");
-        if( pref != null ) { // may be null if preference not supported
+        ListPreference pref = (ListPreference) findPreference("preference_audio_control");
+        if (pref != null) { // may be null if preference not supported
             pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference arg0, Object newValue) {
@@ -186,9 +185,9 @@ public class PreferenceSubCameraControlsMore extends PreferenceSubScreen {
 
     private void setAudioNoiseControlSensitivityDependency(String newValue) {
         Preference dependent = findPreference("preference_audio_noise_control_sensitivity");
-        if( dependent != null ) { // just in case
+        if (dependent != null) { // just in case
             boolean enable_dependent = "noise".equals(newValue);
-            if( MyDebug.LOG )
+            if (MyDebug.LOG)
                 Log.d(TAG, "clicked audio control: " + newValue + " enable_dependent: " + enable_dependent);
             dependent.setEnabled(enable_dependent);
         }

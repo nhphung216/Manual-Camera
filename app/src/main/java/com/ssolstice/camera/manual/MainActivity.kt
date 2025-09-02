@@ -327,10 +327,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     fun isPremiumUser(): Boolean {
-        return getSharedPreferences(BillingManager.PREF_BILLING_NAME, MODE_PRIVATE)
-            .getBoolean(
-                BillingManager.PREF_PREMIUM_KEY,
-                false
+        return getSharedPreferences(BillingManager.PREF_BILLING_NAME, MODE_PRIVATE).getBoolean(
+                BillingManager.PREF_PREMIUM_KEY, false
             )
     }
 
@@ -1028,9 +1026,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 clickedSettings()
                             },
                             onUpgrade = {
-                                doUpgrade()
-                            }
-                        )
+                                showUpgradeDialog()
+                            })
                     }
 
                     if (showCameraControls.value) {
@@ -5961,8 +5958,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 })
 
                 if (sharedPreferences.getBoolean(
-                        PreferenceKeys.ShowZoomSliderControlsPreferenceKey,
-                        true
+                        PreferenceKeys.ShowZoomSliderControlsPreferenceKey, true
                     )
                 ) {
                     if (mainUI?.inImmersiveMode() == false) {
@@ -7182,19 +7178,30 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             {})
     }
 
+    fun showUpgradeDialog() {
+        mainUI?.showConfirmDialog(
+            this,
+            getString(R.string.dialog_pro_version_title),
+            getString(R.string.dialog_pro_version_msg),
+            getString(R.string.unlock_pro),
+            getString(R.string.later),
+            { this.doUpgrade() },
+            {})
+    }
+
     fun resetOnScreenGUI() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = sharedPreferences.edit()
-        editor.remove(PreferenceKeys.ShowCycleRawPreferenceKey)
-        editor.remove(PreferenceKeys.ShowStoreLocationPreferenceKey)
-        editor.remove(PreferenceKeys.ShowTextStampPreferenceKey)
-        editor.remove(PreferenceKeys.ShowStampPreferenceKey)
-        editor.remove(PreferenceKeys.ShowFocusPeakingPreferenceKey)
-        editor.remove(PreferenceKeys.ShowAutoLevelPreferenceKey)
-        editor.remove(PreferenceKeys.ShowCycleFlashPreferenceKey)
-        editor.remove(PreferenceKeys.ShowFaceDetectionPreferenceKey)
-        editor.remove(PreferenceKeys.MultiCamButtonPreferenceKey)
-        editor.remove(PreferenceKeys.ShowGridPreferenceKey)
-        editor.apply()
+        sharedPreferences.edit {
+            remove(PreferenceKeys.ShowCycleRawPreferenceKey)
+            remove(PreferenceKeys.ShowStoreLocationPreferenceKey)
+            remove(PreferenceKeys.ShowTextStampPreferenceKey)
+            remove(PreferenceKeys.ShowStampPreferenceKey)
+            remove(PreferenceKeys.ShowFocusPeakingPreferenceKey)
+            remove(PreferenceKeys.ShowAutoLevelPreferenceKey)
+            remove(PreferenceKeys.ShowCycleFlashPreferenceKey)
+            remove(PreferenceKeys.ShowFaceDetectionPreferenceKey)
+            remove(PreferenceKeys.MultiCamButtonPreferenceKey)
+            remove(PreferenceKeys.ShowGridPreferenceKey)
+        }
     }
 }

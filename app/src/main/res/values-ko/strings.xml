@@ -903,4 +903,6 @@
     <string name="yes">예</string>
     <string name="slow_motion">슬로우 모션</string>
     <string name="time_lapse">타임랩스</string>
+    <string name="are_you_sure">확실하십니까?</string>
+    <string name="preference_screen_see_more">더 보기</string>
 </resources>

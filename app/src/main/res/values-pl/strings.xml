@@ -1097,5 +1097,7 @@
     <string name="yes">Tak</string>
     <string name="slow_motion">Zwolnione tempo</string>
     <string name="time_lapse">Film poklatkowy</string>
+    <string name="are_you_sure">Czy na pewno?</string>
+    <string name="preference_screen_see_more">Zobacz więcej</string>
 
 </resources>

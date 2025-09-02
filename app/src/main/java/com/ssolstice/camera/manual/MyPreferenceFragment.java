@@ -1,11 +1,14 @@
 package com.ssolstice.camera.manual;
 
+import static com.ssolstice.camera.manual.PreferenceKeys.ForceVideo4KPreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.PreferenceKey_Root;
+import static com.ssolstice.camera.manual.PreferenceKeys.RecordAudioSourcePreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.ShowAutoLevelPreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.ShowCameraIDPreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.ShowCycleRawPreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.ShowISOPreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.ShowWhiteBalanceLockPreferenceKey;
+import static com.ssolstice.camera.manual.PreferenceKeys.VideoStabilizationPreferenceKey;
 
 import com.ssolstice.camera.manual.cameracontroller.CameraController;
 import com.ssolstice.camera.manual.preview.Preview;
@@ -63,6 +66,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class MyPreferenceFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
     private static final String TAG = "MyPreferenceFragment";
@@ -93,6 +98,14 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         setupDependencies();
 
         updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
+
+        PreferenceGroup preferenceGroup = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+        for (int i = 0; i < preferenceGroup.getPreferenceCount(); i++) {
+            Preference pref = preferenceGroup.getPreference(i);
+            if (pref instanceof PreferenceGroup) {
+                pref.setTitle(pref.getTitle().toString().toUpperCase(Locale.ROOT));
+            }
+        }
     }
 
     private void updatePreferenceSummaries(PreferenceGroup group, SharedPreferences sharedPreferences) {
@@ -286,21 +299,18 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
 
             if (camera_api_values.size() >= 2) {
                 final Preference pref = findPreference("preference_camera_api");
-                pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-                    @Override
-                    public boolean onPreferenceChange(Preference arg0, Object newValue) {
-                        if (pref.getKey().equals("preference_camera_api")) {
-                            ListPreference list_pref = (ListPreference) pref;
-                            if (list_pref.getValue().equals(newValue)) {
-                                Log.d(TAG, "user selected same camera API");
-                            } else {
-                                Log.d(TAG, "user changed camera API - need to restart");
-                                MainActivity main_activity = (MainActivity) MyPreferenceFragment.this.getActivity();
-                                main_activity.restartOpenCamera();
-                            }
+                pref.setOnPreferenceChangeListener((arg0, newValue) -> {
+                    if (pref.getKey().equals("preference_camera_api")) {
+                        ListPreference list_pref = (ListPreference) pref;
+                        if (list_pref.getValue().equals(newValue)) {
+                            Log.d(TAG, "user selected same camera API");
+                        } else {
+                            Log.d(TAG, "user changed camera API - need to restart");
+                            MainActivity main_activity = (MainActivity) MyPreferenceFragment.this.getActivity();
+                            main_activity.restartOpenCamera();
                         }
-                        return true;
                     }
+                    return true;
                 });
             }
         }
@@ -943,37 +953,41 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
 		   MainActivity.onCreate()->super.onCreate() before the preview is created! So we still need to
 		   read the info via a bundle, and only update when fps changes if the preview is non-null.
 		 */
-        if (video_quality != null && video_quality_string != null) {
-            CharSequence[] entries = new CharSequence[video_quality.length];
-            CharSequence[] values = new CharSequence[video_quality.length];
-            for (int i = 0; i < video_quality.length; i++) {
-                entries[i] = video_quality_string[i];
-                values[i] = video_quality[i];
-            }
-            ListPreference lp = (ListPreference) findPreference("preference_video_quality");
-            lp.setEntries(entries);
-            lp.setEntryValues(values);
-            String video_quality_preference_key = bundle.getString("video_quality_preference_key");
-            if (MyDebug.LOG)
-                Log.d(TAG, "video_quality_preference_key: " + video_quality_preference_key);
-            String video_quality_value = sharedPreferences.getString(video_quality_preference_key, "");
-            if (MyDebug.LOG) Log.d(TAG, "video_quality_value: " + video_quality_value);
-            // set the key, so we save for the correct cameraId and high-speed setting
-            // this must be done before setting the value (otherwise the video resolutions preference won't be
-            // updated correctly when this is called from the callback when the user switches between
-            // normal and high speed frame rates
-            lp.setKey(video_quality_preference_key);
-            lp.setValue(video_quality_value);
+        // TODO: add later
+//        if (video_quality != null && video_quality_string != null) {
+//            CharSequence[] entries = new CharSequence[video_quality.length];
+//            CharSequence[] values = new CharSequence[video_quality.length];
+//            for (int i = 0; i < video_quality.length; i++) {
+//                entries[i] = video_quality_string[i];
+//                values[i] = video_quality[i];
+//            }
+//            ListPreference lp = (ListPreference) findPreference("preference_video_quality");
+//            lp.setEntries(entries);
+//            lp.setEntryValues(values);
+//            String video_quality_preference_key = bundle.getString("video_quality_preference_key");
+//            if (MyDebug.LOG)
+//                Log.d(TAG, "video_quality_preference_key: " + video_quality_preference_key);
+//            String video_quality_value = sharedPreferences.getString(video_quality_preference_key, "");
+//            if (MyDebug.LOG) Log.d(TAG, "video_quality_value: " + video_quality_value);
+//            // set the key, so we save for the correct cameraId and high-speed setting
+//            // this must be done before setting the value (otherwise the video resolutions preference won't be
+//            // updated correctly when this is called from the callback when the user switches between
+//            // normal and high speed frame rates
+//            lp.setKey(video_quality_preference_key);
+//            lp.setValue(video_quality_value);
+//
+//            boolean is_high_speed = bundle.getBoolean("video_is_high_speed");
+//            String title = is_high_speed ? getResources().getString(R.string.video_quality) + " [" + getResources().getString(R.string.high_speed) + "]" : getResources().getString(R.string.video_quality);
+//            lp.setTitle(title);
+//            lp.setDialogTitle(title);
+//        } else {
+//            Preference pref = findPreference("preference_video_quality");
+//            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+//            pg.removePreference(pref);
+//        }
 
-            boolean is_high_speed = bundle.getBoolean("video_is_high_speed");
-            String title = is_high_speed ? getResources().getString(R.string.video_quality) + " [" + getResources().getString(R.string.high_speed) + "]" : getResources().getString(R.string.video_quality);
-            lp.setTitle(title);
-            lp.setDialogTitle(title);
-        } else {
-            Preference pref = findPreference("preference_video_quality");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
-        }
+        MainActivity activity = (MainActivity) this.getActivity();
+        String proPrefix = !activity.isPremiumUser() ? " " + getResources().getString(R.string.pro_version) : "";
 
         if (video_fps != null) {
             // build video fps settings
@@ -984,11 +998,11 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             entries[i] = getResources().getString(R.string.preference_video_fps_default);
             values[i] = "default";
             i++;
-            final String high_speed_append = " [" + getResources().getString(R.string.high_speed) + "]";
+            final String highSpeedAppend = " [" + getResources().getString(R.string.high_speed) + "]" + proPrefix;
             for (int k = 0; k < video_fps.length; k++) {
                 int fps = video_fps[k];
                 if (video_fps_high_speed != null && video_fps_high_speed[k]) {
-                    entries[i] = fps + high_speed_append;
+                    entries[i] = fps + highSpeedAppend;
                 } else {
                     entries[i] = String.valueOf(fps);
                 }
@@ -996,12 +1010,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
                 i++;
             }
 
-            ListPreference lp = (ListPreference) findPreference("preference_video_fps");
-            lp.setEntries(entries);
-            lp.setEntryValues(values);
-            lp.setValue(fps_value);
-            // now set the key, so we save for the correct cameraId
-            lp.setKey(fps_preference_key);
+            setPrefVideoFps(entries, values, fps_value, fps_preference_key);
         }
 
         if (!supports_tonemap_curve && (camera_open || sharedPreferences.getString(PreferenceKeys.VideoLogPreferenceKey, "off").equals("off"))) {
@@ -1011,34 +1020,41 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             // default!)
             // (needed for Pixel 6 Pro where setting to sRGB causes camera to fail to open when in video mode)
             Preference pref = findPreference(PreferenceKeys.VideoLogPreferenceKey);
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_video_settings");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
             pg.removePreference(pref);
 
             pref = findPreference(PreferenceKeys.VideoProfileGammaPreferenceKey);
-            //pg = (PreferenceGroup)this.findPreference("preference_screen_video_settings");
             pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
             pg.removePreference(pref);
         }
 
         if (!supports_video_stabilization) {
-            Preference pref = findPreference("preference_video_stabilization");
+            Preference pref = findPreference(VideoStabilizationPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
             pg.removePreference(pref);
         }
 
-//        if( !supports_force_video_4k || video_quality == null ) {
-//            Preference pref = findPreference("preference_force_video_4k");
-//            PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_category_video_debugging");
-//            pg.removePreference(pref);
-//        }
+        {
+            Preference pref = findPreference(ForceVideo4KPreferenceKey);
+            pref.setOnPreferenceChangeListener((arg0, newValue) -> {
+                if (Objects.equals(newValue, true)) {
+                    if (activity.isPremiumUser()) {
+                        return true;
+                    } else {
+                        activity.showUpgradeDialog();
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             MyPreferenceFragment.filterArrayEntry((ListPreference) findPreference("preference_video_output_format"), "preference_video_output_format_mpeg4_hevc");
         }
 
         {
-            ListPreference pref = (ListPreference) findPreference("preference_record_audio_src");
+            ListPreference pref = (ListPreference) findPreference(RecordAudioSourcePreferenceKey);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                 // some values require at least Android 7
@@ -1046,6 +1062,31 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
                 pref.setEntryValues(R.array.preference_record_audio_src_values_preandroid7);
             }
         }
+    }
+
+    public void setPrefVideoFps(CharSequence[] entries, CharSequence[] values, String fpsValue, String fpsPreferenceKey) {
+        ListPreference lp = (ListPreference) findPreference("preference_video_fps");
+        lp.setEntries(entries);
+        lp.setEntryValues(values);
+        lp.setValue(fpsValue);
+        // now set the key, so we save for the correct cameraId
+        lp.setKey(fpsPreferenceKey);
+
+        MainActivity activity = (MainActivity) this.getActivity();
+        lp.setOnPreferenceChangeListener((preference, newValue) -> {
+            String selectedValue = (String) newValue;
+            Log.e(TAG, "onPreferenceChange: " + selectedValue);
+            if (Objects.equals(selectedValue, "120") || Objects.equals(selectedValue, "240")) {
+                if (activity.isPremiumUser()) {
+                    return true;
+                } else {
+                    activity.showUpgradeDialog();
+                    return false;
+                }
+            } else {
+                return true; // return true để chấp nhận thay đổi giá trị
+            }
+        });
     }
 
     @Override

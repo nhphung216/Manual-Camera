@@ -30,6 +30,7 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.ZoomControls
+import androidx.core.graphics.drawable.toDrawable
 import com.ssolstice.camera.manual.MainActivity
 import com.ssolstice.camera.manual.MainActivity.Companion.getRotationFromSystemOrientation
 import com.ssolstice.camera.manual.MainActivity.SystemOrientation
@@ -45,7 +46,6 @@ import java.util.Hashtable
 import kotlin.concurrent.Volatile
 import kotlin.math.abs
 import kotlin.math.min
-import androidx.core.graphics.drawable.toDrawable
 
 /** This contains functionality related to the main UI.
  */
@@ -651,7 +651,8 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
     fun audioControlStarted() {
         mainActivity.binding.audioControl.setImageResource(R.drawable.ic_mic_red_48dp)
-        mainActivity.binding.audioControl.contentDescription = mainActivity.getResources().getString(R.string.audio_control_stop)
+        mainActivity.binding.audioControl.contentDescription =
+            mainActivity.getResources().getString(R.string.audio_control_stop)
     }
 
     fun audioControlStopped() {
@@ -709,7 +710,8 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         if (!this.isExposureUIOpen) { // Safety check
             return
         }
-        val iso_buttons_container = mainActivity.findViewById<ViewGroup>(R.id.iso_buttons) // Shown when Camera API2 enabled
+        val iso_buttons_container =
+            mainActivity.findViewById<ViewGroup>(R.id.iso_buttons) // Shown when Camera API2 enabled
         val exposure_seek_bar = mainActivity.binding.exposureContainer
         val shutter_seekbar = mainActivity.binding.exposureTimeSeekbar
         val iso_seekbar = mainActivity.binding.isoSeekbar
@@ -2084,30 +2086,56 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         return entry
     }
 
-    // for testing
-    fun getUIButton(key: String?): View? {
-        if (MyDebug.LOG) {
-            Log.d(TAG, "getPopupButton(" + key + "): " + testUIButtonsMap[key])
-            Log.d(TAG, "this: $this")
-            Log.d(TAG, "popup_buttons: " + this.testUIButtonsMap)
+    fun showConfirmDialog(
+        context: Context,
+        title: String?,
+        message: String?,
+        confirm: String?,
+        cancel: String?,
+        onConfirm: Runnable?,
+        onCancel: Runnable?
+    ) {
+        val dialogView: View = LayoutInflater.from(context).inflate(R.layout.dialog_confirm2, null)
+
+        val dialog = AlertDialog.Builder(context)
+            .setView(dialogView)
+            .setCancelable(true)
+            .create()
+
+        val textTitle = dialogView.findViewById<TextView?>(R.id.textTitle)
+        val textMessage = dialogView.findViewById<TextView?>(R.id.textMessage)
+        val btnCancel = dialogView.findViewById<TextView?>(R.id.btnCancel)
+        val btnConfirm = dialogView.findViewById<Button?>(R.id.btnConfirm)
+
+        textTitle?.text = title
+        textMessage?.text = message
+        btnConfirm?.text = confirm
+        btnCancel?.text = cancel
+
+        btnCancel?.setOnClickListener { v: View? ->
+            onCancel?.run()
+            dialog.dismiss()
         }
-        return testUIButtonsMap[key]
-    }
 
-    fun testGetRemoteControlMode(): Boolean {
-        return remote_control_mode
-    }
+        btnConfirm?.setOnClickListener { v: View? ->
+            onConfirm?.run()
+            dialog.dismiss()
+        }
 
-    fun testGetPopupLine(): Int {
-        return mPopupLine
-    }
+        dialog.show()
 
-    fun testGetPopupIcon(): Int {
-        return mPopupIcon
-    }
-
-    fun testGetExposureLine(): Int {
-        return mExposureLine
+        val window = dialog.window
+        if (window != null) {
+            window.setLayout(
+                TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    350f,
+                    context.resources.displayMetrics
+                ).toInt(),
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            window.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        }
     }
 
     fun showConfirmDialog(

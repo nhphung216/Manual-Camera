@@ -909,4 +909,6 @@
     <string name="yes">Evet</string>
     <string name="slow_motion">Yavaş Çekim</string>
     <string name="time_lapse">Hızlandırılmış Çekim</string>
+    <string name="are_you_sure">Emin misiniz?</string>
+    <string name="preference_screen_see_more">Daha fazlasını gör</string>
 </resources>

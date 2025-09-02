@@ -59,17 +59,17 @@
             android:icon="@drawable/ic_more_horiz_white_48dp"
             android:key="preference_screen_photo_settings"
             android:persistent="false"
-            android:title="@string/preference_screen_photo_settings" />
+            android:title="@string/preference_screen_see_more" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
         android:key="preference_category_video_settings"
         android:title="@string/preference_category_video_settings">
-        <ListPreference
-            android:icon="@drawable/outline_featured_video_32"
-            android:key="preference_video_quality"
-            android:summary="%s" />
+<!--        <ListPreference-->
+<!--            android:icon="@drawable/outline_featured_video_32"-->
+<!--            android:key="preference_video_quality"-->
+<!--            android:summary="%s" />-->
         <ListPreference
             android:defaultValue="preference_video_output_format_default"
             android:entries="@array/preference_video_output_format_entries"
@@ -155,7 +155,7 @@
             android:icon="@drawable/ic_more_horiz_white_48dp"
             android:key="preference_screen_video_settings"
             android:persistent="false"
-            android:title="@string/preference_screen_video_settings" />
+            android:title="@string/preference_screen_see_more" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -206,7 +206,7 @@
             android:icon="@drawable/ic_more_horiz_white_48dp"
             android:key="preference_screen_camera_controls_more"
             android:persistent="false"
-            android:title="@string/preference_screen_camera_controls_more" />
+            android:title="@string/preference_screen_see_more" />
 
     </PreferenceCategory>
 
@@ -280,7 +280,7 @@
             android:icon="@drawable/ic_more_horiz_white_48dp"
             android:key="preference_preview"
             android:persistent="false"
-            android:title="@string/preference_preview" />
+            android:title="@string/preference_screen_see_more" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -377,7 +377,7 @@
             android:icon="@drawable/ic_more_horiz_white_48dp"
             android:key="preference_screen_gui"
             android:persistent="false"
-            android:title="@string/preference_screen_gui" />
+            android:title="@string/preference_screen_see_more" />
 
     </PreferenceCategory>
 
