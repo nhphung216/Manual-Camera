@@ -8,6 +8,7 @@ import android.app.AlertDialog
 import android.app.Fragment
 import android.app.KeyguardManager
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -110,6 +111,7 @@ import com.ssolstice.camera.manual.ui.DrawPreview
 import com.ssolstice.camera.manual.ui.FolderChooserDialog
 import com.ssolstice.camera.manual.ui.MainUI
 import com.ssolstice.camera.manual.ui.ManualSeekbars
+import com.ssolstice.camera.manual.utils.LocaleHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.IOException
@@ -329,6 +331,10 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 BillingManager.PREF_PREMIUM_KEY,
                 false
             )
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase))
     }
 
     @SuppressLint("ClickableViewAccessibility", "UseKtx")
@@ -5921,7 +5927,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
                 zoomSeekBar.setOnSeekBarChangeListener(null) // clear an existing listener - don't want to call the listener when setting up the progress bar to match the existing state
                 zoomSeekBar.max = preview?.maxZoom ?: 1
-                zoomSeekBar.progress = (preview?.maxZoom ?: 1) - (preview?.cameraController?.getZoom() ?: 1)
+                zoomSeekBar.progress =
+                    (preview?.maxZoom ?: 1) - (preview?.cameraController?.getZoom() ?: 1)
                 zoomSeekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                     private var last_haptic_time: Long = 0
 

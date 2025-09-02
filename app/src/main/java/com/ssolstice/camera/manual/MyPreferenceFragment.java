@@ -12,6 +12,7 @@ import com.ssolstice.camera.manual.preview.Preview;
 import com.ssolstice.camera.manual.ui.ArraySeekBarPreference;
 import com.ssolstice.camera.manual.ui.FolderChooserDialog;
 import com.ssolstice.camera.manual.ui.MyEditTextPreference;
+import com.ssolstice.camera.manual.utils.LocaleHelper;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -1097,6 +1098,22 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             }
             return false;
         });
+
+        {
+            ListPreference languagePref = (ListPreference) findPreference("pref_app_language");
+            if (languagePref != null) {
+                languagePref.setOnPreferenceChangeListener((preference, newValue) -> {
+                    String lang = newValue.toString();
+                    if (lang.equals("auto")) {
+                        LocaleHelper.clearOverride(getActivity());
+                    } else {
+                        LocaleHelper.setLocale(getActivity(), lang);
+                    }
+                    getActivity().recreate();
+                    return true;
+                });
+            }
+        }
     }
 
     /* The user clicked the privacy policy preference.
