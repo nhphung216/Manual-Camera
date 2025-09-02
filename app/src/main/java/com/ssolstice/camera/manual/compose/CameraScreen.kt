@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.SettingsApplications
 import androidx.compose.material.icons.filled.SlowMotionVideo
 import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.filled.VideoSettings
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -215,7 +216,7 @@ fun CameraScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.SettingsApplications,
+                imageVector = if(!isPhotoMode) Icons.Default.VideoSettings else Icons.Default.SettingsApplications,
                 contentDescription = null,
                 tint = WhiteColor,
                 modifier = Modifier

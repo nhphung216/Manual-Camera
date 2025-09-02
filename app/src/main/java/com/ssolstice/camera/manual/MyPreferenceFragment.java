@@ -135,8 +135,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
 
     private void preferenceSubCameraControlsMore(Bundle bundle, SharedPreferences sharedPreferences) {
         final boolean can_disable_shutter_sound = bundle.getBoolean("can_disable_shutter_sound");
-        if (MyDebug.LOG)
-            Log.d(TAG, "can_disable_shutter_sound: " + can_disable_shutter_sound);
+        if (MyDebug.LOG) Log.d(TAG, "can_disable_shutter_sound: " + can_disable_shutter_sound);
         if (!can_disable_shutter_sound) {
             Preference pref = findPreference("preference_shutter_sound");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
@@ -148,8 +147,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference arg0) {
-                    if (MyDebug.LOG)
-                        Log.d(TAG, "clicked save location");
+                    if (MyDebug.LOG) Log.d(TAG, "clicked save location");
                     MainActivity main_activity = (MainActivity) getActivity();
                     if (main_activity.getStorageUtils().isUsingSAF()) {
                         main_activity.openFolderChooserDialogSAF(true);
@@ -163,8 +161,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
                         alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
                             @Override
                             public void onDismiss(DialogInterface arg0) {
-                                if (MyDebug.LOG)
-                                    Log.d(TAG, "save folder dialog dismissed");
+                                if (MyDebug.LOG) Log.d(TAG, "save folder dialog dismissed");
                                 dialogs.remove(alert);
                             }
                         });
@@ -209,8 +206,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             lp.setEntryValues(values);
             String resolution_preference_key = PreferenceKeys.getResolutionPreferenceKey(cameraId, cameraIdSPhysical);
             String resolution_value = sharedPreferences.getString(resolution_preference_key, "");
-            if (MyDebug.LOG)
-                Log.d(TAG, "resolution_value: " + resolution_value);
+            if (MyDebug.LOG) Log.d(TAG, "resolution_value: " + resolution_value);
             lp.setValue(resolution_value);
             // now set the key, so we save for the correct cameraId
             lp.setKey(resolution_preference_key);

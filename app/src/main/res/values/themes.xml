@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<!--    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar" />-->
+    <!--    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar" />-->
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -24,7 +24,7 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
-<!--        <item name="android:fontFamily">@font/vcr_osd_mono</item>-->
+        <!--        <item name="android:fontFamily">@font/vcr_osd_mono</item>-->
     </style>
 
     <style name="DialogAnimation">
@@ -33,6 +33,8 @@
     </style>
 
     <style name="image_button" parent="@android:style/Widget.Material.ImageButton">
-        <item name="android:backgroundTint">#d05a595b</item> <!-- standard material design backgroundTint is #ff5a595b, but we want transparent image buttons -->
+        <item name="android:backgroundTint">#d05a595b
+        </item> <!-- standard material design backgroundTint is #ff5a595b, but we want transparent image buttons -->
     </style>
+
 </resources>
