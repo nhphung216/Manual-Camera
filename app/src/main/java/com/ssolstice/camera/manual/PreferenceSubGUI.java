@@ -24,7 +24,7 @@ public class PreferenceSubGUI extends PreferenceSubScreen {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_sub_gui);
 
-        updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
+        //updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
 
         PreferenceGroup preferenceGroup = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
         for (int i = 0; i < preferenceGroup.getPreferenceCount(); i++) {

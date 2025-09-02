@@ -40,14 +40,11 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.TwoStatePreference;
-import android.text.Html;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Display;
@@ -90,14 +87,14 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         preferenceMain(bundle, sharedPreferences);
         preferenceSubPhoto(bundle, sharedPreferences);
         preferenceSubVideo(bundle, sharedPreferences);
-        preferenceSubPreview(bundle, sharedPreferences);
+        preferenceSubPreview(bundle);
         preferenceSubGUI(bundle, sharedPreferences);
         preferenceSubProcessing(bundle, sharedPreferences);
-        preferenceSubCameraControlsMore(bundle, sharedPreferences);
+        preferenceSubCameraControlsMore(bundle);
 
         setupDependencies();
 
-        updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
+        //updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
 
         PreferenceGroup preferenceGroup = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
         for (int i = 0; i < preferenceGroup.getPreferenceCount(); i++) {
@@ -122,16 +119,13 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
     private void updatePreferenceSummary(Preference preference, SharedPreferences sharedPreferences) {
         if (preference == null) return;
 
-        if (preference instanceof ListPreference) {
-            ListPreference listPref = (ListPreference) preference;
+        if (preference instanceof ListPreference listPref) {
             String value = sharedPreferences.getString(listPref.getKey(), "");
             int index = listPref.findIndexOfValue(value);
             if (index >= 0) listPref.setSummary(listPref.getEntries()[index]);
-        } else if (preference instanceof EditTextPreference) {
-            EditTextPreference editPref = (EditTextPreference) preference;
+        } else if (preference instanceof EditTextPreference editPref) {
             editPref.setSummary(editPref.getText());
-        } else if (preference instanceof MyEditTextPreference) {
-            MyEditTextPreference editPref = (MyEditTextPreference) preference;
+        } else if (preference instanceof MyEditTextPreference editPref) {
             editPref.setSummary(editPref.getText());
         } else {
             Object value = sharedPreferences.getAll().get(preference.getKey());
@@ -146,7 +140,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
     }
 
 
-    private void preferenceSubCameraControlsMore(Bundle bundle, SharedPreferences sharedPreferences) {
+    private void preferenceSubCameraControlsMore(Bundle bundle) {
         final boolean can_disable_shutter_sound = bundle.getBoolean("can_disable_shutter_sound");
         if (MyDebug.LOG) Log.d(TAG, "can_disable_shutter_sound: " + can_disable_shutter_sound);
         if (!can_disable_shutter_sound) {
@@ -171,12 +165,9 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
                         AlertDialog.Builder alertDialog = main_activity.createSaveFolderDialog();
                         final AlertDialog alert = alertDialog.create();
                         // AlertDialog.Builder.setOnDismissListener() requires API level 17, so do it this way instead
-                        alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface arg0) {
-                                if (MyDebug.LOG) Log.d(TAG, "save folder dialog dismissed");
-                                dialogs.remove(alert);
-                            }
+                        alert.setOnDismissListener(arg1 -> {
+                            if (MyDebug.LOG) Log.d(TAG, "save folder dialog dismissed");
+                            dialogs.remove(alert);
                         });
                         alert.show();
                         dialogs.add(alert);
@@ -225,7 +216,6 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             lp.setKey(resolution_preference_key);
         } else {
             Preference pref = findPreference("preference_resolution");
-            //PreferenceGroup pg = (PreferenceGroup)this.findPreference("preference_screen_photo_settings");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
             pg.removePreference(pref);
         }
@@ -892,7 +882,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         }
     }
 
-    private void preferenceSubPreview(Bundle bundle, SharedPreferences sharedPreferences) {
+    private void preferenceSubPreview(Bundle bundle) {
         final boolean using_android_l = bundle.getBoolean("using_android_l");
         if (MyDebug.LOG) Log.d(TAG, "using_android_l: " + using_android_l);
 
@@ -1153,41 +1143,6 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         }
     }
 
-    /* The user clicked the privacy policy preference.
-     */
-    public void clickedPrivacyPolicy() {
-        if (MyDebug.LOG) Log.d(TAG, "clickedPrivacyPolicy()");
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MyPreferenceFragment.this.getActivity());
-        alertDialog.setTitle(R.string.preference_privacy_policy);
-
-        String privacy_policy_text = getActivity().getResources().getString(R.string.preference_privacy_policy_text);
-        Spanned span = Html.fromHtml(privacy_policy_text);
-        // clickable text is only supported if we call setMovementMethod on the TextView - which means we need to create
-        // our own for the AlertDialog!
-        @SuppressLint("InflateParams")
-        // we add the view to the alert dialog in addTextViewForAlertDialog()
-        final View dialog_view = LayoutInflater.from(getActivity()).inflate(R.layout.alertdialog_textview, null);
-        final TextView textView = dialog_view.findViewById(R.id.text_view);
-        textView.setText(span);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setTextAppearance(getActivity(), android.R.style.TextAppearance_Medium);
-        addTextViewForAlertDialog(alertDialog, textView);
-
-        alertDialog.setPositiveButton(android.R.string.ok, null);
-        alertDialog.setNegativeButton(R.string.preference_privacy_policy_online, (dialog, which) -> {
-            if (MyDebug.LOG) Log.d(TAG, "online privacy policy");
-            MainActivity main_activity = (MainActivity) MyPreferenceFragment.this.getActivity();
-            main_activity.launchOnlinePrivacyPolicy();
-        });
-        final AlertDialog alert = alertDialog.create();
-        alert.setOnDismissListener(arg0 -> {
-            if (MyDebug.LOG) Log.d(TAG, "reset dialog dismissed");
-            dialogs.remove(alert);
-        });
-        alert.show();
-        dialogs.add(alert);
-    }
-
     /** Removes an entry and value pair from a ListPreference, if it exists.
      * @param pref The ListPreference to remove the supplied entry/value.
      * @param filter_value The value to remove from the list.
@@ -1233,31 +1188,30 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         readFromBundle(this, values, entries, preference_key, default_value, preference_category_key);
     }
 
-    static void readFromBundle(PreferenceFragment preference_fragment, String[] values, String[] entries, String preference_key, String default_value, String preference_category_key) {
-        if (MyDebug.LOG) {
-            Log.d(TAG, "readFromBundle");
-        }
-        if (values != null && values.length > 0) {
-            if (MyDebug.LOG) {
-                Log.d(TAG, "values:");
-                for (String value : values) {
-                    Log.d(TAG, value);
+    static void readFromBundle(PreferenceFragment preferenceFragment, String[] values, String[] entries, String preference_key, String default_value, String preferenceCategoryKey) {
+        Log.d(TAG, "readFromBundle");
+        if (preferenceFragment != null && preferenceFragment.getActivity() != null) {
+            if (values != null && values.length > 0) {
+                Log.e(TAG, "preference_key: " + preference_key);
+                ListPreference lp = (ListPreference) preferenceFragment.findPreference(preference_key);
+                if (lp != null) {
+                    lp.setEntries(entries);
+                    lp.setEntryValues(values);
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(preferenceFragment.getActivity());
+                    String value = sharedPreferences.getString(preference_key, default_value);
+                    Log.d(TAG, "    value: " + Arrays.toString(values));
+                    lp.setValue(value);
+                }
+            } else {
+                Log.d(TAG, "remove preference " + preference_key + " from category " + preferenceCategoryKey);
+                Preference pref = preferenceFragment.findPreference(preference_key);
+                if (pref != null) {
+                    PreferenceGroup pg = (PreferenceGroup) preferenceFragment.findPreference(preferenceCategoryKey);
+                    pg.removePreference(pref);
                 }
             }
-            Log.e(TAG, "preference_key: " + preference_key);
-            ListPreference lp = (ListPreference) preference_fragment.findPreference(preference_key);
-            lp.setEntries(entries);
-            lp.setEntryValues(values);
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(preference_fragment.getActivity());
-            String value = sharedPreferences.getString(preference_key, default_value);
-            Log.d(TAG, "    value: " + Arrays.toString(values));
-            lp.setValue(value);
-        } else {
-            Log.d(TAG, "remove preference " + preference_key + " from category " + preference_category_key);
-            Preference pref = preference_fragment.findPreference(preference_key);
-            PreferenceGroup pg = (PreferenceGroup) preference_fragment.findPreference(preference_category_key);
-            pg.removePreference(pref);
         }
+
     }
 
     static void setBackground(Fragment fragment) {
@@ -1343,11 +1297,9 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             return;
         }
 
-        if (pref instanceof TwoStatePreference) {
-            TwoStatePreference twoStatePref = (TwoStatePreference) pref;
+        if (pref instanceof TwoStatePreference twoStatePref) {
             twoStatePref.setChecked(prefs.getBoolean(key, true));
-        } else if (pref instanceof ListPreference) {
-            ListPreference listPref = (ListPreference) pref;
+        } else if (pref instanceof ListPreference listPref) {
             listPref.setValue(prefs.getString(key, ""));
         }
         setSummary(pref);

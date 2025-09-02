@@ -7172,7 +7172,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             getString(R.string.preference_reset_question),
             {
                 setDeviceDefaults()
-                resetOnScreenGUI()
                 restartOpenCamera()
             },
             {})

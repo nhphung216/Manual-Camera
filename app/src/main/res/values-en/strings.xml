@@ -921,35 +921,6 @@
     <string name="preference_using_saf">Storage Access Framework</string>
     <string name="preference_languages">Languages</string>
 
-    <string name="preference_privacy_policy">Privacy policy</string>
-    <string name="preference_privacy_policy_summary">Tap to display privacy policy</string>
-    <string name="preference_privacy_policy_online">Online privacy policy</string>
-    <string name="preference_privacy_policy_text"> <!-- if changing this, remember to consider if the online privacy policy needs updating -->
-        <!-- now interpreted as HTML so that we can have the mailto link, for the contact that's needed for Google Play policies! -->
-        <!-- be careful of rewording/removing bits, as some things here may be required for Google Play policies -->
-        ManualCamera is developed by Mark Harman.
-        &lt;br/&gt;ManualCamera accesses camera sensor and microphone data to fulfil its purpose as a camera.
-        Microphone is also used for the optional \"Audio control\".
-        &lt;br/&gt;Access to files is needed (at least for Android 9 and earlier) to save resultant files such as photos and videos to your device.
-        &lt;br/&gt;Location permission is requested in order to deliver the optional geotagging features (for photos and videos,
-        including stamp and subtitles options).
-        When relevant option(s) are enabled, your device location will be stored in photo/video/subtitle files.
-        &lt;br/&gt;Bluetooth permissions are used to allow the optional feature to discover and connect to Bluetooth LE remote control devices;
-        the Bluetooth remote control feature also requires location permission (on Android 11 or earlier) or
-        Nearby Devices permission (on Android 12 or later).
-        &lt;br/&gt;Resultant data such as photos or videos can be shared with
-        other apps if you use the share option in ManualCamera, or when ManualCamera is called by
-        another app on your device, or when you use the Storage Access Framework option to save
-        to another app or service.
-        &lt;br/&gt;Data handling procedures, data retention and deletion policies: ManualCamera
-        does not transmit personal or sensitive information to me.
-        &lt;br/&gt;Since ManualCamera also uses operating system APIs, you should review relevant privacy policies
-        such as for your device, manufacturer, operating system and/or Google accounts. For example:
-        &lt;br/&gt;*Apps/services such as cloud services on your device may auto-upload photos and videos that are saved on your device.
-        &lt;br/&gt;If you have inquiries about my privacy policy, please contact me by email at
-        &lt;a href=\"mailto:mark.harman.apps@gmail.com?subject=Open%20Camera%20privacy%20policy\"&gt;mark.harman.apps@gmail.com&lt;/a&gt;.
-    </string>
-
     <string name="preference_screen_licences">Open Source licences</string>
     <string name="preference_licence_open_camera">ManualCamera</string>
     <string name="preference_licence_open_camera_text">ManualCamera is © 2013–2025 Mark Harman, released under the GPL v3 or later. Tap here for full licence text and terms of service.</string>

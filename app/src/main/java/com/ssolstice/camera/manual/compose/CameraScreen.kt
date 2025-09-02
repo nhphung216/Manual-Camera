@@ -129,7 +129,7 @@ fun CameraPreview() {
 }
 
 val RecordColor = Color(0xFFDD2C00)
-val WhiteColor = Color(0xFFD9D4D4)
+val WhiteColor = Color(0xFFFFFFFF)
 
 @Composable
 fun CameraScreen(

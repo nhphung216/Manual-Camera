@@ -64,7 +64,7 @@ public class PreferenceSubPreview extends PreferenceSubScreen {
             pg.removePreference(pref);
         }
 
-        updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
+        //updatePreferenceSummaries(getPreferenceScreen(), PreferenceManager.getDefaultSharedPreferences(getActivity()));
 
         PreferenceGroup preferenceGroup = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
         for (int i = 0; i < preferenceGroup.getPreferenceCount(); i++) {

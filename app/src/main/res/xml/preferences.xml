@@ -66,10 +66,10 @@
     <PreferenceCategory
         android:key="preference_category_video_settings"
         android:title="@string/preference_category_video_settings">
-<!--        <ListPreference-->
-<!--            android:icon="@drawable/outline_featured_video_32"-->
-<!--            android:key="preference_video_quality"-->
-<!--            android:summary="%s" />-->
+        <!--        <ListPreference-->
+        <!--            android:icon="@drawable/outline_featured_video_32"-->
+        <!--            android:key="preference_video_quality"-->
+        <!--            android:summary="%s" />-->
         <ListPreference
             android:defaultValue="preference_video_output_format_default"
             android:entries="@array/preference_video_output_format_entries"
@@ -297,7 +297,7 @@
 
         <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:icon="@drawable/outline_flash_on_32"
             android:key="preference_show_cycle_flash"
             android:summary="@string/preference_show_cycle_flash_summary"
@@ -305,7 +305,7 @@
 
         <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:icon="@drawable/outline_key_visualizer_32"
             android:key="preference_show_focus_peaking"
             android:summary="@string/preference_show_focus_peaking_summary"
