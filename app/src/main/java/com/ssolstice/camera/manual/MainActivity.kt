@@ -328,8 +328,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun isPremiumUser(): Boolean {
         return getSharedPreferences(BillingManager.PREF_BILLING_NAME, MODE_PRIVATE).getBoolean(
-                BillingManager.PREF_PREMIUM_KEY, false
-            )
+            BillingManager.PREF_PREMIUM_KEY, false
+        )
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -359,21 +359,18 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             billingManager?.queryProducts { products: MutableList<BillingProduct?>? ->
                 Log.e(MainActivity.TAG, "products " + products!!.size)
             }
-        }, Runnable {
-
-        })
+        }, {})
 
         billingManager!!.queryAllPurchases { active: ActiveSubscription? ->
             if (active != null) {
                 Log.e(MainActivity.TAG, "User is Premium")
-                //binding.upgrade.setVisibility(View.GONE)
+                binding.upgrade.visibility = View.GONE
             } else {
                 Log.e(MainActivity.TAG, "User is Freemium")
-                //binding.upgrade.setVisibility(View.VISIBLE)
+                binding.upgrade.visibility = View.VISIBLE
             }
         }
-        //binding.upgrade.setVisibility(if (isPremiumUser()) View.GONE else View.VISIBLE)
-
+        binding.upgrade.visibility = if (isPremiumUser()) View.GONE else View.VISIBLE
 
         PreferenceManager.setDefaultValues(
             this, R.xml.preferences, false
