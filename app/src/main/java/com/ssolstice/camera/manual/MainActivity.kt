@@ -658,22 +658,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             "onCreate: time after setting system ui visibility listener: " + (System.currentTimeMillis() - debug_time)
         )
 
-        // show "about" dialog for first time use
         if (!has_done_first_time) {
-            if (!is_test) {
-                val alertDialog = AlertDialog.Builder(this)
-                alertDialog.setTitle(R.string.app_name)
-                alertDialog.setMessage(R.string.intro_text)
-                alertDialog.setPositiveButton(android.R.string.ok, null)
-                alertDialog.setNegativeButton(
-                    R.string.preference_online_help
-                ) { dialog, which ->
-                    if (MyDebug.LOG) Log.d(TAG, "online help")
-                    launchOnlineHelp()
-                }
-                alertDialog.show()
-            }
-
             setFirstTimeFlag()
         }
 
@@ -695,44 +680,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 if (MyDebug.LOG) {
                     Log.d(TAG, "version_code: $versionCode")
                     Log.d(TAG, "latest_version: $latestVersion")
-                }
-                //final boolean whats_new_enabled = false;
-                val whats_new_enabled = true
-                if (whats_new_enabled) {
-                    // whats_new_version is the version code that the What's New text is written for. Normally it will equal the
-                    // current release (version_code), but it some cases we may want to leave it unchanged.
-                    // E.g., we have a "What's New" for 1.44 (64), but then push out a quick fix for 1.44.1 (65). We don't want to
-                    // show the dialog again to people who already received 1.44 (64), but we still want to show the dialog to people
-                    // upgrading from earlier versions.
-                    var whatsNewVersion = 91 // 1.54
-                    whatsNewVersion = min(
-                        whatsNewVersion, versionCode
-                    ) // whats_new_version should always be <= version_code, but just in case!
-                    if (MyDebug.LOG) {
-                        Log.d(TAG, "whats_new_version: $whatsNewVersion")
-                    }
-                    val forceWhatsNew = false
-                    //final boolean force_whats_new = true; // for testing
-                    val allow_show_whats_new =
-                        sharedPreferences.getBoolean(PreferenceKeys.ShowWhatsNewPreferenceKey, true)
-                    if (MyDebug.LOG) Log.d(TAG, "allow_show_whats_new: $allow_show_whats_new")
-                    // don't show What's New if this is the first time the user has run
-                    if (has_done_first_time && allow_show_whats_new && (forceWhatsNew || whatsNewVersion > latestVersion)) {
-                        val alertDialog = AlertDialog.Builder(this)
-                        alertDialog.setTitle(R.string.whats_new)
-                        alertDialog.setMessage(R.string.whats_new_text)
-                        alertDialog.setPositiveButton(android.R.string.ok, null)/*alertDialog.setNegativeButton(R.string.donate, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if( MyDebug.LOG )
-                                    Log.d(TAG, "donate");
-                                // if we change this, remember that any page linked to must abide by Google Play developer policies!
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(MainActivity.DonateLink));
-                                startActivity(browserIntent);
-                            }
-                        });*/
-                        alertDialog.show()
-                    }
                 }
                 // We set the latest_version whether or not the dialog is shown - if we showed the first time dialog, we don't
                 // want to then show the What's New dialog next time we run! Similarly if the user had disabled showing the dialog,

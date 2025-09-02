@@ -122,9 +122,9 @@
     <string name="preference_save_include_milliseconds">Use milliseconds in filename</string>
     <string name="preference_save_include_milliseconds_summary">If enabled, filenames will include milliseconds</string>
     <string name="preference_show_when_locked">Show camera when locked</string>
-    <string name="preference_show_when_locked_summary">If enabled, ManualCamera will still show above any lockscreen (you\'ll still have to unlock to access Settings, Gallery etc)</string>
+    <string name="preference_show_when_locked_summary">If enabled, Manual Camera will still show above any lockscreen (you\'ll still have to unlock to access Settings, Gallery etc)</string>
     <string name="preference_startup_focus">Perform auto-focus on startup</string>
-    <string name="preference_startup_focus_summary">Whether to auto-focus when ManualCamera is started. If you have the problem of flash turning on when starting, disable this option</string>
+    <string name="preference_startup_focus_summary">Whether to auto-focus when Manual Camera is started. If you have the problem of flash turning on when starting, disable this option</string>
     <string name="preference_lock_video">Lock screen when recording video</string>
     <string name="preference_lock_video_summary">When recording video, the GUI will be locked to prevent accidentally stopping recording. Swipe the screen to unlock. Note that video recording will always stop if the app goes into background or the screen is blanked.</string>
     <string name="preference_rotate_preview">Rotate preview</string>
@@ -166,7 +166,7 @@
     <string name="preference_take_photo_border">Show border when taking photo</string>
     <string name="preference_take_photo_border_summary">Display a border on the display to indicate taking a photo</string>
     <string name="preference_keep_display_on">Keep display on</string>
-    <string name="preference_keep_display_on_summary">If enabled, the screen won\'t switch off while the main ManualCamera UI is active</string>
+    <string name="preference_keep_display_on_summary">If enabled, the screen won\'t switch off while the main Manual Camera UI is active</string>
     <string name="preference_max_brightness">Force maximum brightness</string>
     <string name="preference_max_brightness_summary">Force screen display to be at maximum brightness, rather than device default</string>
 
@@ -227,7 +227,7 @@
 
     <string name="preference_category_online">Misc</string>
     <string name="preference_online_help">Online help</string>
-    <string name="preference_online_help_summary">Launch the ManualCamera website in your browser</string>
+    <string name="preference_online_help_summary">Launch the Manual Camera website in your browser</string>
     <string name="preference_donate">Donate to support development</string>
     <string name="preference_donate_summary">If you like this app, please consider making a donation to support development. You can do this by purchasing my "donation app" - click this option to open up the page for my donation app. Thanks!</string>
     <string name="preference_use_camera2">Use Camera2 API</string>
@@ -800,7 +800,7 @@
     <string name="bluetooth_not_supported">Bluetooth not supported.</string>
     <string name="unknown_device">Unknown device</string>
     <string name="preference_remote_disconnect_screen_dim">Dim screen if remote disconnects</string>
-    <string name="preference_remote_disconnect_screen_dim_summary">Hint: set default brightness to minimum level before starting ManualCamera.</string>
+    <string name="preference_remote_disconnect_screen_dim_summary">Hint: set default brightness to minimum level before starting Manual Camera.</string>
     <string name="preference_water_type">Use Saltwater for depth calculations</string>
     <string name="preference_water_type_summary">For underwater housings, improves accuracy if correct water type is selected.</string>
     <string name="remote_connected">Remote connected</string>
@@ -1038,27 +1038,8 @@
     <string name="preference_allow_haptic_feedback_summary">Whether to allow haptic vibration feedback, for example when adjusting some controls. Note this also requires touch interactions to be enabled in your device\'s settings.</string>
 
     <!-- The following strings should not be translated (and shouldn't be included in language-specific strings.xml), in case they need updating -->
-
-    <string name="preference_screen_licences" translatable="false">Open Source licences</string>
-    <string name="preference_licence_open_camera" translatable="false">ManualCamera</string>
-    <string name="preference_licence_open_camera_text" translatable="false">ManualCamera is © 2013–2025 Mark Harman, released under the GPL v3 or later. Tap here for full licence text and terms of service.</string>
-    <string name="preference_licence_androidx" translatable="false">AndroidX libraries</string>
-    <string name="preference_licence_androidx_text" translatable="false">ManualCamera uses the AndroidX/Jetpack libraries
-        under the Apache license version 2.0. Tap here for full licence text.</string>
-    <string name="preference_licence_google_icons" translatable="false">Google\'s Material Design icons</string>
-    <string name="preference_licence_google_icons_text" translatable="false">ManualCamera uses icons from Google\'s Material Design icons
-        (https://developer.android.com/design/downloads/index.html ,
-        https://design.google.com/icons/ ,
-        https://github.com/google/material-design-icons/ ,
-        https://google.github.io/material-design-icons/ ,
-        https://fonts.google.com/icons)
-        under the Apache license version 2.0. Some icons include modifications. Tap here for full licence text.</string>
-    <string name="preference_licence_online" translatable="false">Online licences</string>
-    <string name="preference_licence_online_text" translatable="false">Please tap here for full online licensing information (opens in your browser).</string>
-
-    <!-- There's no point translating the What's New text (and shouldn't be included in language-specific strings.xml) - it'll be updated constantly, and change each version -->
     <string name="whats_new_text" translatable="false">
-        <small>[This dialog is shown when ManualCamera is updated. You can disable it under
+        <small>[This dialog is shown when Manual Camera is updated. You can disable it under
             Settings/On screen GUI/Show What\'s New dialog.]</small>
         \n\n<b>v1.54:</b>\n
         <ul>

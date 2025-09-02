@@ -921,23 +921,6 @@
     <string name="preference_using_saf">Storage Access Framework</string>
     <string name="preference_languages">Languages</string>
 
-    <string name="preference_screen_licences">Open Source licences</string>
-    <string name="preference_licence_open_camera">ManualCamera</string>
-    <string name="preference_licence_open_camera_text">ManualCamera is © 2013–2025 Mark Harman, released under the GPL v3 or later. Tap here for full licence text and terms of service.</string>
-    <string name="preference_licence_androidx">AndroidX libraries</string>
-    <string name="preference_licence_androidx_text">ManualCamera uses the AndroidX/Jetpack libraries
-        under the Apache license version 2.0. Tap here for full licence text.</string>
-    <string name="preference_licence_google_icons">Google\'s Material Design icons</string>
-    <string name="preference_licence_google_icons_text">ManualCamera uses icons from Google\'s Material Design icons
-        (https://developer.android.com/design/downloads/index.html ,
-        https://design.google.com/icons/ ,
-        https://github.com/google/material-design-icons/ ,
-        https://google.github.io/material-design-icons/ ,
-        https://fonts.google.com/icons)
-        under the Apache license version 2.0. Some icons include modifications. Tap here for full licence text.</string>
-    <string name="preference_licence_online">Online licences</string>
-    <string name="preference_licence_online_text">Please tap here for full online licensing information (opens in your browser).</string>
-
     <!-- There's no point translating the What's New text (and shouldn't be included in language-specific strings.xml) - it'll be updated constantly, and change each version -->
     <string name="whats_new_text">
         <small>[This dialog is shown when ManualCamera is updated. You can disable it under
