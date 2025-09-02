@@ -15,9 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -25,6 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ssolstice.camera.manual.compose.ui.theme.colorMain
 
 @Preview
 @Composable
@@ -67,82 +71,87 @@ fun CustomValueSlider(
     showBackgroundColor: Boolean = false,
     onValueChange: (Float, String) -> Unit,
     valueRange: ClosedFloatingPointRange<Float> = -1f..1f,
-    labels: List<String> = listOf("-1", "-0.5", "-0.25", "0", "0.25", "0.5", "1+"),
-    steps: Int = 16,
-    valueColor: Color = Color.Yellow,
     thumbColor: Color = Color.Yellow,
     activeColor: Color = Color.Yellow,
     inactiveColor: Color = Color.Gray,
     onReset: () -> Unit = {}
 ) {
-    Box(
-        modifier = modifier
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp, top = 12.dp)
+    Column {
+        Text(
+            text = formated,
+            style = MaterialTheme.typography.titleMedium,
+            color = colorMain(),
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Box(
+            modifier = modifier
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 24.dp, end = 24.dp)
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp, top = 12.dp)
             ) {
-                Spacer(modifier = Modifier.height(4.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 24.dp, end = 24.dp)
+                ) {
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                // Slider với custom thumb
-                Box {
-                    if (showBackgroundColor) {
-                        Canvas(modifier = Modifier.matchParentSize()) {
-                            // Gradient từ xanh -> trắng -> đỏ
-                            drawRoundRect(
-                                brush = Brush.horizontalGradient(
-                                    colors = listOf(
-                                        Color(0xFF0091EA), // xanh dương (cool ~ 2000K)
-                                        Color.Gray,       // neutral
-                                        Color(0xFFFF6D00)  // đỏ cam (warm ~ 8000K)
-                                    )
-                                ),
-                                cornerRadius = CornerRadius(30f, 30f)
-                            )
+                    // Slider với custom thumb
+                    Box {
+                        if (showBackgroundColor) {
+                            Canvas(modifier = Modifier.matchParentSize()) {
+                                // Gradient từ xanh -> trắng -> đỏ
+                                drawRoundRect(
+                                    brush = Brush.horizontalGradient(
+                                        colors = listOf(
+                                            Color(0xFF0091EA), // xanh dương (cool ~ 2000K)
+                                            Color.Gray,       // neutral
+                                            Color(0xFFFF6D00)  // đỏ cam (warm ~ 8000K)
+                                        )
+                                    ),
+                                    cornerRadius = CornerRadius(30f, 30f)
+                                )
+                            }
                         }
-                    }
 
-                    Slider(
-                        value = value,
-                        onValueChange = {
-                            onValueChange(it, mapDisplayValue(name, value))
-                        },
-                        valueRange = valueRange,
-                        //steps = 55,
-                        modifier = Modifier
-                            .height(24.dp)
-                            .fillMaxWidth()
-                            .padding(horizontal = 1.dp),
-                        colors = SliderDefaults.colors(
-                            thumbColor = thumbColor,              // màu nút
-                            activeTrackColor = Color.White,        // track bên trái
-                            inactiveTrackColor = Color.White, // track bên phải
-                            activeTickColor = activeColor,            // dot bên trái
-                            inactiveTickColor = inactiveColor          // dot bên phải
+                        Slider(
+                            value = value,
+                            onValueChange = {
+                                onValueChange(it, mapDisplayValue(name, value))
+                            },
+                            valueRange = valueRange,
+                            //steps = 55,
+                            modifier = Modifier
+                                .height(24.dp)
+                                .fillMaxWidth()
+                                .padding(horizontal = 1.dp),
+                            colors = SliderDefaults.colors(
+                                thumbColor = thumbColor,              // màu nút
+                                activeTrackColor = Color.White,        // track bên trái
+                                inactiveTrackColor = Color.White, // track bên phải
+                                activeTickColor = activeColor,            // dot bên trái
+                                inactiveTickColor = inactiveColor          // dot bên phải
+                            )
                         )
+                    }
+                }
+                if (showReset) {
+                    Icon(
+                        imageVector = Icons.Default.Autorenew,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .padding(end = 24.dp)
+                            .size(24.dp)
+                            .clickable { onReset() }
+                            .align(Alignment.Bottom)
                     )
                 }
-            }
-            if (showReset) {
-                Icon(
-                    imageVector = Icons.Default.Autorenew,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier
-                        .padding(end = 24.dp)
-                        .size(24.dp)
-                        .clickable { onReset() }
-                        .align(Alignment.Bottom)
-                )
             }
         }
     }

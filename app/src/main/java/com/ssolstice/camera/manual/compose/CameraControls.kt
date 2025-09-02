@@ -32,7 +32,17 @@ import com.ssolstice.camera.manual.models.ControlOptionModel
 @Preview
 @Composable
 fun CameraControlsPreview() {
-    //CameraControls()
+    CameraControls(
+        modifier = Modifier,
+        onClose = {},
+        onResetAllSettings = {},
+        valueFormated = "",
+        controlOptionModel = ControlOptionModel(
+            id = "white_balance",
+            text = "White Balance",
+            icon = R.drawable.ic_white_balance
+        )
+    )
 }
 
 @Composable
@@ -110,9 +120,7 @@ fun CameraControls(
                             formated = valueFormated,
                             onValueChange = { value, formatDisplay -> onExposureChanged(value) },
                             onReset = { onExposureReset() },
-                            valueRange = controlModel.valueRange,
-                            labels = controlModel.labels,
-                            steps = controlModel.steps
+                            valueRange = controlModel.valueRange
                         )
                     }
 
@@ -124,9 +132,7 @@ fun CameraControls(
                             formated = valueFormated,
                             onValueChange = { value, formatDisplay -> onIsoChanged(value) },
                             onReset = { onIsoReset() },
-                            valueRange = controlModel.valueRange,
-                            labels = controlModel.labels,
-                            steps = controlModel.steps
+                            valueRange = controlModel.valueRange
                         )
                     }
 
@@ -138,9 +144,7 @@ fun CameraControls(
                             formated = valueFormated,
                             onValueChange = { value, formatDisplay -> onShutterChanged(value) },
                             onReset = { onShutterReset() },
-                            valueRange = controlModel.valueRange,
-                            labels = controlModel.labels,
-                            steps = controlModel.steps
+                            valueRange = controlModel.valueRange
                         )
                     }
 
@@ -156,9 +160,7 @@ fun CameraControls(
                                 },
                                 showReset = false,
                                 showBackgroundColor = true,
-                                valueRange = controlOptionModel.valueRange,
-                                labels = controlOptionModel.labels,
-                                steps = controlOptionModel.steps
+                                valueRange = controlOptionModel.valueRange
                             )
                         }
 
@@ -201,9 +203,7 @@ fun CameraControls(
                                         onFocusManualChanged(value)
                                     },
                                     showReset = false,
-                                    valueRange = 0f..100f,
-                                    labels = controlOptionModel.labels,
-                                    steps = controlOptionModel.steps
+                                    valueRange = 0f..100f
                                 )
                                 Icon(
                                     painter = painterResource(R.drawable.ic_macro_focus),
@@ -298,12 +298,25 @@ fun CameraControls(
                 }
                 controls.forEach {
                     val control = cameraControls[it] ?: return@forEach
+                    var isChanged = false
+                    when (it) {
+                        "exposure" -> {
+                            isChanged = exposureValue != 0f
+                        }
+                        "iso" -> { // auto
+                            isChanged = isoValue != 0f
+                        }
+                        "shutter" -> { // auto
+                            isChanged = shutterValue != 0f
+                        }
+                    }
                     item {
                         MenuItem(
                             icon = painterResource(control.icon),
                             label = control.text,
                             onClick = { onControlIdSelected(control.id) },
                             selected = controlIdSelected == control.id,
+                            isChanged = isChanged
                         )
                     }
                 }

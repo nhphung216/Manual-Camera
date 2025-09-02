@@ -108,31 +108,6 @@ fun CameraPreview() {
         isPhotoMode = true,
         galleryBitmap = null,
 
-//        onOpenGallery = {
-//            Log.d("CameraPreview", "onOpenGallery")
-//        },
-//        onTogglePhotoVideoMode = {
-//            Log.d("CameraPreview", "onTogglePhotoVideoMode")
-//        },
-//        onTakePhoto = {
-//            Log.d("CameraPreview", "onTakePhoto")
-//        },
-//        onTakePhotoVideoSnapshot = {
-//            Log.d("CameraPreview", "onTakePhotoVideoSnapshot")
-//        },
-//        onPauseVideo = {
-//            Log.d("CameraPreview", "onPauseVideo")
-//        },
-//        onSwitchCamera = {
-//            Log.d("CameraPreview", "onSwitchCamera")
-//        },
-//        showCameraSettings = {
-//            Log.d("CameraPreview", "showCameraSettings")
-//        },
-//        showConfigTableSettings = {
-//            Log.d("CameraPreview", "showConfigTableSettings")
-//        },
-
         photoModes = photoModes,
         onChangePhotoMode = {
             Log.d("CameraPreview", "onChangePhotoMode: $it")
@@ -188,7 +163,6 @@ fun CameraScreen(
             .fillMaxWidth()
             .background(Color(0x00101010))
     ) {
-
         if (isPhotoMode && currentPhotoMode != null && currentPhotoMode.options.isNotEmpty()) {
             OptionSelector(
                 icon = Icons.Default.PhotoLibrary,

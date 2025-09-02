@@ -854,6 +854,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 val currentVideoMode = viewModel.currentVideoMode.collectAsState()
                 val captureRate = viewModel.captureRate.collectAsState()
 
+                var isoMode by remember { mutableStateOf(getIsoMode()) }
+
                 LaunchedEffect(isPhotoMode) {
                     if (isPhotoMode) {
                         viewModel.loadPhotoModes(activity, applicationInterface!!, preview!!)
@@ -1177,13 +1179,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             },
 
                             // ISO
-                            onIsoChanged = {
-                                isoValue = it
+                            onIsoChanged = { iso ->
+                                isoValue = iso
                                 if (getIsoMode() == CameraController.ISO_DEFAULT) {
                                     setIsoManual()
                                 }
-                                preview?.setISO(it.toInt())
-                                valueFormated = preview?.getISOString(it.toInt()) ?: ""
+                                preview?.setISO(iso.toInt())
+                                valueFormated = preview?.getISOString(iso.toInt()) ?: ""
                             },
                             onIsoReset = {
                                 setIsoAuto()
@@ -1405,30 +1407,29 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     private fun setIsoManual() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-
-        val editor = sharedPreferences.edit()
-        editor.putString(PreferenceKeys.ISOModePreferenceKey, "m")
-        if (preview!!.cameraController != null && preview!!.cameraController.captureResultHasIso()) {
-            val iso = preview!!.cameraController.captureResultIso()
-            editor.putString(PreferenceKeys.ISOPreferenceKey, iso.toString())
-        } else {
-            val iso = 800
-            editor.putString(PreferenceKeys.ISOPreferenceKey, "" + iso)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        preferences.edit {
+            putString(PreferenceKeys.ISOModePreferenceKey, "m")
+            if (preview?.cameraController != null && preview?.cameraController?.captureResultHasIso() == true) {
+                val iso = preview!!.cameraController.captureResultIso()
+                putString(PreferenceKeys.ISOPreferenceKey, iso.toString())
+            } else {
+                val iso = 800
+                putString(PreferenceKeys.ISOPreferenceKey, "" + iso)
+            }
         }
-        editor.apply()
         updateForSettings(true, "")
     }
 
     private fun setIsoAuto() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = sharedPreferences.edit()
-        editor.putString(PreferenceKeys.ISOModePreferenceKey, CameraController.ISO_DEFAULT)
-        editor.putString(PreferenceKeys.ISOPreferenceKey, CameraController.ISO_DEFAULT)
-        editor.putLong(
-            PreferenceKeys.ExposureTimePreferenceKey, CameraController.EXPOSURE_TIME_DEFAULT
-        )
-        editor.apply()
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        preferences.edit {
+            putString(PreferenceKeys.ISOModePreferenceKey, CameraController.ISO_DEFAULT)
+            putString(PreferenceKeys.ISOPreferenceKey, CameraController.ISO_DEFAULT)
+            putLong(
+                PreferenceKeys.ExposureTimePreferenceKey, EXPOSURE_TIME_DEFAULT
+            )
+        }
         updateForSettings(true, "")
     }
 
@@ -5920,8 +5921,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
                 zoomSeekBar.setOnSeekBarChangeListener(null) // clear an existing listener - don't want to call the listener when setting up the progress bar to match the existing state
                 zoomSeekBar.max = preview?.maxZoom ?: 1
-                zoomSeekBar.progress =
-                    (preview?.maxZoom ?: 1) - (preview?.cameraController?.getZoom() ?: 1)
+                zoomSeekBar.progress = (preview?.maxZoom ?: 1) - (preview?.cameraController?.getZoom() ?: 1)
                 zoomSeekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                     private var last_haptic_time: Long = 0
 
@@ -5933,7 +5933,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         // indirectly set zoom via this method, from setting the zoom slider
                         // if hasSmoothZoom()==true, then the preview already handled zooming to the current value
                         if (preview?.hasSmoothZoom() == false) {
-                            val new_zoom_factor = (preview?.getMaxZoom() ?: 1) - progress
+                            val new_zoom_factor = (preview?.maxZoom ?: 1) - progress
                             if (fromUser && preview?.cameraController != null) {
                                 val old_zoom_ratio = preview?.getZoomRatio()
                                 val new_zoom_ratio = preview?.getZoomRatio(new_zoom_factor)
@@ -5954,7 +5954,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 })
 
                 if (sharedPreferences.getBoolean(
-                        PreferenceKeys.ShowZoomSliderControlsPreferenceKey, true
+                        PreferenceKeys.ShowZoomSliderControlsPreferenceKey,
+                        true
                     )
                 ) {
                     if (mainUI?.inImmersiveMode() == false) {
@@ -5973,15 +5974,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 TAG,
                 "cameraSetup: time after setting up zoom: " + (System.currentTimeMillis() - debugTime)
             )
-
-//            val takePhotoButton = binding.takePhoto
-//            if (sharedPreferences.getBoolean(PreferenceKeys.ShowTakePhotoPreferenceKey, true)) {
-//                if (mainUI?.inImmersiveMode() == false) {
-//                    takePhotoButton.visibility = View.VISIBLE
-//                }
-//            } else {
-//                takePhotoButton.visibility = View.INVISIBLE
-//            }
         }
         run {
             if (MyDebug.LOG) Log.d(TAG, "set up manual focus")
@@ -7168,5 +7160,34 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             }
             return last_haptic_time
         }
+    }
+
+    fun showResetSettingsDialog() {
+        mainUI?.showConfirmDialog(
+            this,
+            getString(R.string.preference_reset),
+            getString(R.string.preference_reset_question),
+            {
+                setDeviceDefaults()
+                resetOnScreenGUI()
+                restartOpenCamera()
+            },
+            {})
+    }
+
+    fun resetOnScreenGUI() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = sharedPreferences.edit()
+        editor.remove(PreferenceKeys.ShowCycleRawPreferenceKey)
+        editor.remove(PreferenceKeys.ShowStoreLocationPreferenceKey)
+        editor.remove(PreferenceKeys.ShowTextStampPreferenceKey)
+        editor.remove(PreferenceKeys.ShowStampPreferenceKey)
+        editor.remove(PreferenceKeys.ShowFocusPeakingPreferenceKey)
+        editor.remove(PreferenceKeys.ShowAutoLevelPreferenceKey)
+        editor.remove(PreferenceKeys.ShowCycleFlashPreferenceKey)
+        editor.remove(PreferenceKeys.ShowFaceDetectionPreferenceKey)
+        editor.remove(PreferenceKeys.MultiCamButtonPreferenceKey)
+        editor.remove(PreferenceKeys.ShowGridPreferenceKey)
+        editor.apply()
     }
 }

@@ -1,15 +1,19 @@
 package com.ssolstice.camera.manual.ui
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.Log
+import android.util.TypedValue
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +27,8 @@ import android.widget.Button
 import android.widget.HorizontalScrollView
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.ZoomControls
 import com.ssolstice.camera.manual.MainActivity
 import com.ssolstice.camera.manual.MainActivity.Companion.getRotationFromSystemOrientation
@@ -41,6 +45,7 @@ import java.util.Hashtable
 import kotlin.concurrent.Volatile
 import kotlin.math.abs
 import kotlin.math.min
+import androidx.core.graphics.drawable.toDrawable
 
 /** This contains functionality related to the main UI.
  */
@@ -2105,6 +2110,51 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         return mExposureLine
     }
 
+    fun showConfirmDialog(
+        context: Context, title: String?, message: String?,
+        onConfirm: Runnable?, onCancel: Runnable?
+    ) {
+        val dialogView: View = LayoutInflater.from(context).inflate(R.layout.dialog_confirm, null)
+
+        val dialog = AlertDialog.Builder(context)
+            .setView(dialogView)
+            .setCancelable(true)
+            .create()
+
+        val textTitle = dialogView.findViewById<TextView?>(R.id.textTitle)
+        val textMessage = dialogView.findViewById<TextView?>(R.id.textMessage)
+        val btnCancel = dialogView.findViewById<Button?>(R.id.btnCancel)
+        val btnConfirm = dialogView.findViewById<Button?>(R.id.btnConfirm)
+
+        textTitle?.text = title
+        textMessage?.text = message
+
+        btnCancel?.setOnClickListener { v: View? ->
+            onCancel?.run()
+            dialog.dismiss()
+        }
+
+        btnConfirm?.setOnClickListener { v: View? ->
+            onConfirm?.run()
+            dialog.dismiss()
+        }
+
+        dialog.show()
+
+        val window = dialog.window
+        if (window != null) {
+            window.setLayout(
+                TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    264f,
+                    context.resources.displayMetrics
+                ).toInt(),
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            window.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        }
+    }
+
     companion object {
         private const val TAG = "MainUI"
 
@@ -2139,4 +2189,5 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             return iso.toString()
         }
     }
+
 }

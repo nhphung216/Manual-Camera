@@ -16,10 +16,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ssolstice.camera.manual.R
 import com.ssolstice.camera.manual.compose.ui.theme.colorMain
 
+@Preview
+@Composable
+fun MenuItemPreview() {
+    MenuItem(
+        icon = painterResource(R.drawable.ic_white_balance),
+        label = "White Balance",
+        onClick = {},
+        isChanged = true
+    )
+}
 
 @Composable
 fun MenuItem(

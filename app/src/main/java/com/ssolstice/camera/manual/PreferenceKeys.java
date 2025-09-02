@@ -3,6 +3,9 @@ package com.ssolstice.camera.manual;
 /** Stores all of the string keys used for SharedPreferences.
  */
 public class PreferenceKeys {
+
+    public static final String PreferenceKey_Root = "preferences_root";
+
     // must be static, to safely call from other Activities
 
     /** If this preference is set, no longer show the intro dialog.
