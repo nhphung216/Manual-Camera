@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
-    android:versionCode="13"
-    android:versionName="1.0.13"
+    android:versionCode="14"
+    android:versionName="1.0.14"
     tools:ignore="GoogleAppIndexingWarning">
     <!-- ignore GoogleAppIndexingWarning as we don't want to implement that -->
     <supports-screens

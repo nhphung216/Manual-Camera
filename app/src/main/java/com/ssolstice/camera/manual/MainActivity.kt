@@ -69,6 +69,7 @@ import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
@@ -751,8 +752,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
                 val activity = this@MainActivity
 
-                val isPremiumUser = rememberSaveable { mutableStateOf(isPremiumUser()) }
-
                 val showCameraSettings = rememberSaveable { mutableStateOf(false) }
                 val showCameraControls = rememberSaveable { mutableStateOf(false) }
 
@@ -811,6 +810,16 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             delay(1000)
                             viewModel.loadVideoModes(activity, applicationInterface!!, preview!!)
                         }
+                    }
+                }
+
+                BackHandler {
+                    if (showCameraSettings.value) {
+                        showCameraSettings.value = false
+                    } else if (showCameraControls.value) {
+                        showCameraControls.value = false
+                    } else {
+                        activity.finish()
                     }
                 }
 

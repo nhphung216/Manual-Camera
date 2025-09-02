@@ -111,6 +111,7 @@ fun CameraSettings(
 ) {
     Column(
         modifier = modifier
+            .clickable{}
             .fillMaxWidth()
             .background(Color(0xF0000000))
             .padding(top = 16.dp)

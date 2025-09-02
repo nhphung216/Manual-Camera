@@ -90,6 +90,7 @@ fun CameraControls(
 ) {
     Column(
         modifier = modifier
+            .clickable {}
             .background(Color(0xF0000000))
             .fillMaxWidth()
             .padding(vertical = 16.dp),
