@@ -1,0 +1,1306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Manual Camera</string> <!-- shouldn't be translated, unless deemed appropriate e.g. alternative alphabets -->
+    <string name="action_settings">सेटिंग्स</string>
+    <string name="action_popup">पॉपअप सेटिंग्स</string>
+    <string name="intro_ok">ठीक है (यह संदेश दोबारा नहीं दिखाया जाएगा)</string>
+
+    <string name="on">चालू</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
+    <string name="off">बंद</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
+
+    <string name="choose_save_location">सहेजने का स्थान चुनें:</string>
+    <string name="clear_folder_history">फ़ोल्डर इतिहास साफ़ करें</string>
+    <string name="clear_folder_history_question">फ़ोल्डर इतिहास साफ़ करें?</string>
+    <string name="choose_another_folder">दूसरा फ़ोल्डर चुनें</string>
+    <string name="changed_save_location">सहेजने का स्थान इसमें बदल दिया गया है:</string>
+    <string name="stopped_recording_video">वीडियो रिकॉर्डिंग रोक दी गई</string>
+    <string name="repeats_to_go">दोहराव बाकी हैं</string> <!--  intentionally starts lower case -->
+    <string name="failed_to_reconnect_camera">कैमरे से दोबारा कनेक्ट करने में विफल</string>
+    <string name="video_may_be_corrupted">त्रुटि, वीडियो फ़ाइल दूषित हो सकती है</string>
+    <string name="not_supported">आपके डिवाइस पर समर्थित नहीं है</string> <!--  intentionally starts lower case -->
+    <string name="video_error_unknown">अज्ञात त्रुटि, वीडियो रुका</string>
+    <string name="video_error_server_died">सर्वर बंद हो गया, वीडियो रुका</string>
+    <string name="video_max_duration">वीडियो अधिकतम अवधि तक पहुँच गया</string>
+    <string name="video_max_filesize">वीडियो अधिकतम फ़ाइल आकार तक पहुँच गया</string>
+    <string name="exposure_compensation">एक्सपोज़र मुआवजा</string>
+    <string name="fps">FPS</string>
+    <string name="focus_distance">फोकस दूरी</string>
+    <string name="infinite">अनंत</string>
+    <string name="front_camera">सामने का कैमरा</string>
+    <string name="back_camera">पीछे का कैमरा</string>
+    <string name="photo">फ़ोटो</string>
+    <string name="video">वीडियो</string>
+    <string name="exposure_locked">एक्सपोज़र लॉक किया गया</string>
+    <string name="exposure_unlocked">एक्सपोज़र अनलॉक किया गया</string>
+    <string name="cancelled_timer">टाइमर रद्द किया गया</string>
+    <string name="cancelled_repeat_mode">दोहराव मोड रद्द किया गया</string>
+    <string name="started_timer">टाइमर शुरू किया गया</string>
+    <string name="failed_to_save_video">वीडियो फ़ाइल सहेजने में विफल</string>
+    <string name="failed_to_record_video">वीडियो रिकॉर्ड करने में विफल</string>
+    <string name="started_recording_video">वीडियो रिकॉर्डिंग शुरू की गई</string>
+    <string name="sorry">क्षमा करें</string>
+    <string name="failed_to_save_photo">फ़ोटो सहेजने में विफल</string>
+    <string name="failed_to_auto_stabilise">ऑटो-लेवल करने में विफल</string>
+    <string name="failed_to_start_camera_preview">कैमरा पूर्वावलोकन शुरू करने में विफल</string>
+    <string name="taking_photo">फ़ोटो ले रहा है</string>
+    <string name="failed_to_take_picture">चित्र लेने में विफल</string>
+    <string name="location_not_available">GPS स्थान उपलब्ध नहीं है</string>
+    <string name="photo_deleted">फ़ोटो हटा दी गई</string>
+    <string name="no_gallery_app">कोई गैलरी ऐप उपलब्ध नहीं है</string>
+    <string name="screen_is_locked">स्क्रीन लॉक है\nअनलॉक करने के लिए स्क्रीन स्वाइप करें</string>
+    <string name="unlocked">अनलॉक किया गया</string>
+    <string name="auto_stabilise_not_supported">क्षमा करें, इस डिवाइस पर ऑटो-लेवल समर्थित नहीं है
+    </string>
+    <string name="audio_disabled">ऑडियो अक्षम है</string>
+    <string name="max_duration">अधिकतम अवधि</string>
+    <string name="color_effect">रंग प्रभाव</string>
+    <string name="scene_mode">सीन मोड</string>
+    <string name="white_balance">व्हाइट बैलेंस</string>
+
+    <string name="angle">कोण</string>
+    <string name="direction">दिशा</string>
+    <string name="failed_to_open_camera_1">कैमरा खोलने में विफल।</string>
+    <string name="failed_to_open_camera_2">कैमरा उपयोग में हो सकता है</string>
+    <string name="failed_to_open_camera_3">किसी अन्य एप्लिकेशन द्वारा?</string>
+    <string name="iso">ISO</string>
+    <string name="zoom">ज़ूम</string>
+    <string name="free_memory">खाली</string>
+    <string name="screen_lock_message_1">[लॉक किया गया:</string>
+    <string name="screen_lock_message_2">अनलॉक करने के लिए स्वाइप करें]</string>
+
+    <string name="failed_to_stamp">फ़ोटो पर जानकारी स्टाम्प करने में विफल</string>
+    <string name="metres_abbreviation">मी</string>
+
+    <string name="preference_category_camera_effects">कैमरा प्रभाव</string>
+    <string name="preference_auto_stabilise">ऑटो-लेवल</string>
+    <string name="preference_auto_stabilise_summary">छवियां घुमाई जाएंगी ताकि वे स्वचालित रूप से
+        समतल हों (केवल फ़ोटो) (फ़ोटो लेने में धीमा, और कम मेमोरी वाले डिवाइस पर विफल हो सकता है)
+    </string>
+    <string name="preference_color_effect">एक रंग प्रभाव लागू करें</string>
+    <string name="preference_color_effect_summary">चयनित रंग प्रभाव को फ़ोटो पर लागू करता है
+    </string>
+    <string name="preference_scene_mode">एक सीन मोड लागू करें</string>
+    <string name="preference_scene_mode_summary">विभिन्न दृश्यों के लिए फ़ोटो को अनुकूलित करें
+    </string>
+    <string name="preference_white_balance">व्हाइट बैलेंस सेट करें</string>
+    <string name="preference_white_balance_summary">व्हाइट बैलेंस को समायोजित करने के लिए एक सेटिंग
+        चुनें
+    </string>
+    <string name="preference_iso">ISO सेट करें</string>
+    <string name="preference_iso_summary">एक उच्च मान का अर्थ है प्रकाश के प्रति अधिक संवेदनशील (कुछ
+        डिवाइस पर काम नहीं कर सकता है)
+    </string>
+    <string name="preference_exposure">एक्सपोज़र मुआवजा सेट करें</string>
+    <string name="preference_exposure_summary">डिफ़ॉल्ट एक्सपोज़र मुआवजे के लिए 0 पर सेट करें
+    </string>
+    <string name="preference_lock_orientation">फ़ोटो/वीडियो अभिविन्यास लॉक करें</string>
+    <string name="preference_lock_orientation_summary">यदि सेट किया गया है, तो डिवाइस के अभिविन्यास
+        को अनदेखा कर दिया जाएगा, और फ़ोटो/वीडियो का अभिविन्यास निर्दिष्ट अभिविन्यास के संबंध में
+        होगा\n%s
+    </string>
+    <string name="preference_face_detection">चेहरा पहचान</string>
+    <string name="preference_face_detection_summary">फोकस क्षेत्रों के बजाय चेहरा पहचान का उपयोग
+        करें
+    </string>
+
+    <string name="preference_category_camera_controls">कैमरा नियंत्रण</string>
+    <string name="preference_timer">टाइमर</string>
+    <string name="preference_timer_beep">टाइमर बीप</string>
+    <string name="preference_timer_beep_summary">जब टाइमर गिन रहा हो या दोहराव मोड में देरी के लिए
+        बीप करें
+    </string>
+    <string name="preference_timer_speak">आवाज टाइमर उलटी गिनती</string>
+    <string name="preference_timer_speak_summary">टाइमर या दोहराव मोड में देरी के लिए उलटी गिनती
+        बोलें (60 सेकंड से)
+    </string>
+    <string name="preference_burst_mode">दोहराएँ</string>
+    <string name="preference_burst_interval">दोहराव मोड अंतराल</string>
+    <string name="preference_screen_camera_controls_more">अधिक कैमरा नियंत्रण…</string>
+    <string name="preference_touch_capture">कैप्चर करने के लिए स्पर्श करें</string>
+    <string name="preference_touch_capture_summary">पूर्वावलोकन को स्पर्श या डबल-टैप करके फ़ोटो लें
+        या वीडियो रिकॉर्ड करें\n%s
+    </string>
+    <string name="preference_pause_preview">फ़ोटो लेने के बाद रोकें</string>
+    <string name="preference_pause_preview_summary">फ़ोटो लेने के बाद स्क्रीन को रोकें, फ़ोटो साझा
+        करने या हटाने के विकल्प के साथ
+    </string>
+    <string name="preference_shutter_sound">शटर ध्वनि</string>
+    <string name="preference_shutter_sound_summary">फ़ोटो लेते समय एक ध्वनि चलाएं</string>
+    <string name="preference_volume_keys">वॉल्यूम कुंजियाँ</string>
+    <string name="preference_save_location">सहेजने का स्थान</string>
+    <string name="preference_save_location_summary">फ़ोटो/वीडियो फ़ाइलों को सहेजने के लिए फ़ोल्डर
+    </string>
+    <string name="preference_using_saf_summary">फ़ोटो और वीडियो सहेजने के लिए स्टोरेज एक्सेस
+        फ्रेमवर्क का उपयोग करना है या नहीं। बाहरी एसडी कार्ड में सहेजने की अनुमति देने के लिए इसे
+        सक्षम किया जाना चाहिए। एंड्रॉइड 10+ पर यदि आप DCIM के बाहर किसी फ़ोल्डर में सहेजना चाहते हैं
+        तो यह विकल्प सक्षम होना चाहिए।
+    </string>
+    <string name="preference_save_photo_prefix">फ़ोटो उपसर्ग सहेजें</string>
+    <string name="preference_save_photo_prefix_summary">फ़ोटो के लिए सहेजें फ़ाइल नामों के लिए उपयोग
+        करने के लिए उपसर्ग
+    </string>
+    <string name="preference_save_video_prefix">वीडियो उपसर्ग सहेजें</string>
+    <string name="preference_save_video_prefix_summary">वीडियो के लिए सहेजें फ़ाइल नामों के लिए
+        उपयोग करने के लिए उपसर्ग
+    </string>
+    <string name="preference_show_when_locked">लॉक होने पर कैमरा दिखाएं</string>
+    <string name="preference_show_when_locked_summary">यदि सक्षम किया गया है, तो ManualCamera किसी
+        भी लॉकस्क्रीन के ऊपर दिखाई देगा (आपको अभी भी सेटिंग्स, गैलरी आदि तक पहुंचने के लिए अनलॉक
+        करना होगा)
+    </string>
+    <string name="preference_lock_video">वीडियो रिकॉर्ड करते समय स्क्रीन लॉक करें</string>
+    <string name="preference_lock_video_summary">वीडियो रिकॉर्ड करते समय, GUI को गलती से रिकॉर्डिंग
+        रोकने से रोकने के लिए लॉक कर दिया जाएगा। अनलॉक करने के लिए स्क्रीन स्वाइप करें। ध्यान दें कि
+        यदि ऐप पृष्ठभूमि में जाता है या स्क्रीन खाली हो जाती है तो वीडियो रिकॉर्डिंग हमेशा बंद हो
+        जाएगी।
+    </string>
+    <string name="preference_rotate_preview">पूर्वावलोकन घुमाएँ</string>
+    <string name="preference_rotate_preview_summary">पूर्वावलोकन को घुमाने का विकल्प (परिणामी
+        फ़ोटो/वीडियो को प्रभावित नहीं करेगा)\n%s
+    </string>
+    <string name="preference_screen_gui">स्क्रीन पर GUI…</string>
+    <string name="preference_preview_size">पूर्वावलोकन आकार</string>
+    <string name="preference_ui_placement">UI प्लेसमेंट</string>
+    <string name="preference_immersive_mode">इमर्सिव मोड</string>
+    <string name="preference_show_zoom">ज़ूम दिखाएं</string>
+    <string name="preference_show_zoom_summary">स्क्रीन पर वर्तमान कैमरा ज़ूम स्तर प्रदर्शित करें
+        (जब ज़ूम इन किया गया हो)
+    </string>
+    <string name="preference_show_zoom_controls">ज़ूम -/+ नियंत्रण दिखाएं</string>
+    <string name="preference_show_zoom_controls_summary">ज़ूम नियंत्रण के लिए -/+ बटन दिखाएं
+    </string>
+    <string name="preference_show_zoom_slider_controls">ज़ूम स्लाइडर नियंत्रण दिखाएं</string>
+    <string name="preference_show_zoom_slider_controls_summary">ज़ूम नियंत्रण के लिए स्लाइडर
+        दिखाएं
+    </string>
+    <string name="preference_show_iso">ISO दिखाएं</string>
+    <string name="preference_show_iso_summary">वर्तमान ISO स्तर प्रदर्शित करें। (Camera2 API की
+        आवश्यकता है।)
+    </string>
+    <string name="preference_free_memory">खाली मेमोरी दिखाएं</string>
+    <string name="preference_free_memory_summary">स्क्रीन पर शेष डिवाइस स्टोरेज स्थान प्रदर्शित
+        करें
+    </string>
+    <string name="preference_show_angle">कोण दिखाएं</string>
+    <string name="preference_show_angle_summary">स्क्रीन पर वर्तमान डिवाइस अभिविन्यास कोण प्रदर्शित
+        करें
+    </string>
+    <string name="preference_show_angle_line">कोण रेखा दिखाएं</string>
+    <string name="preference_show_angle_line_summary">क्षैतिज स्तर रेखा प्रदर्शित करें</string>
+    <string name="preference_angle_highlight_color">कोण/ऊंचाई हाइलाइट रंग</string>
+    <string name="preference_angle_highlight_color_summary">जब कैमरा लगभग समतल हो तो हाइलाइट रंग
+    </string>
+    <string name="preference_show_geo_direction">कम्पास दिशा दिखाएं</string>
+    <string name="preference_show_geo_direction_summary">स्क्रीन पर डिवाइस की कम्पास दिशा प्रदर्शित
+        करें
+    </string>
+    <string name="preference_show_time">समय दिखाएं</string>
+    <string name="preference_show_time_summary">स्क्रीन पर वर्तमान समय प्रदर्शित करें</string>
+    <string name="preference_show_battery">बैटरी दिखाएं</string>
+    <string name="preference_show_battery_summary">स्क्रीन पर वर्तमान बैटरी स्तर प्रदर्शित करें
+    </string>
+    <string name="preference_grid">एक ग्रिड दिखाएं</string>
+    <string name="preference_crop_guide">एक क्रॉप गाइड दिखाएं</string>
+    <string name="preference_crop_guide_summary">एक क्रॉप गाइड एक आयत प्रदर्शित करता है जो दिखाता है
+        कि निर्दिष्ट पहलू अनुपात कैसा दिखता है - यदि आप बाद में फ़ोटो/वीडियो को एक अलग पहलू अनुपात
+        में क्रॉप करने की योजना बनाते हैं तो उपयोगी है। WYSIWYG फ़ोटो मोड, या वीडियो मोड में होने की
+        आवश्यकता है।\n%s
+    </string>
+    <string name="preference_thumbnail_animation">थंबनेल एनीमेशन दिखाएं</string>
+    <string name="preference_thumbnail_animation_summary">फ़ोटो लेते समय चलती थंबनेल एनीमेशन
+        प्रदर्शित करें
+    </string>
+    <string name="preference_keep_display_on">प्रदर्शन चालू रखें</string>
+    <string name="preference_keep_display_on_summary">यदि सक्षम किया गया है, तो मुख्य ManualCamera
+        UI सक्रिय होने पर स्क्रीन बंद नहीं होगी
+    </string>
+    <string name="preference_max_brightness">अधिकतम चमक बल दें</string>
+    <string name="preference_max_brightness_summary">डिवाइस डिफ़ॉल्ट के बजाय स्क्रीन डिस्प्ले को
+        अधिकतम चमक पर बल दें
+    </string>
+
+    <string name="preference_category_camera_quality">फ़ोटो और वीडियो सेटिंग्स</string>
+    <string name="preference_screen_photo_settings">फ़ोटो सेटिंग्स…</string>
+    <string name="preference_screen_video_settings">वीडियो सेटिंग्स…</string>
+    <string name="preference_screen_location_settings">स्थान सेटिंग्स…</string>
+    <string name="preference_resolution">कैमरा रिज़ॉल्यूशन</string>
+    <string name="preference_quality">छवि गुणवत्ता</string>
+    <string name="preference_quality_summary">सहेजे गए JPEG या WebP फ़ोटो छवियों की छवि गुणवत्ता सेट
+        करें (डिफ़ॉल्ट मान 90%% है)। PNG छवि प्रारूप पर कोई प्रभाव नहीं पड़ता है।\n%s
+    </string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
+    <string name="preference_location">स्थान डेटा स्टोर करें (जियोटैगिंग)</string>
+    <string name="preference_location_summary">फ़ोटो/वीडियो में GPS स्थान डेटा स्टोर करें</string>
+    <string name="preference_gps_direction">कम्पास दिशा स्टोर करें</string>
+    <string name="preference_gps_direction_summary">फ़ोटो में GPS कम्पास दिशा स्टोर करें (केवल JPEG
+        प्रारूप)
+    </string>
+    <string name="preference_require_location">स्थान डेटा की आवश्यकता है</string>
+    <string name="preference_require_location_summary">यदि स्थान डेटा सक्षम है, तो केवल तभी
+        फ़ोटो/वीडियो लें जब स्थान डेटा उपलब्ध हो
+    </string>
+    <string name="preference_stamp">फ़ोटो स्टाम्प करें</string>
+    <string name="preference_stamp_summary">दिनांक और समय के साथ फ़ोटो स्टाम्प करें; और यदि
+        स्थान/दिशा डेटा सक्षम है तो GPS जानकारी भी\n%s
+    </string>
+    <string name="preference_textstamp">कस्टम टेक्स्ट</string>
+    <string name="preference_textstamp_summary">एक कस्टम टेक्स्ट के साथ फ़ोटो स्टाम्प करें</string>
+    <string name="preference_stamp_fontsize">फ़ॉन्ट आकार</string>
+    <string name="preference_stamp_fontsize_summary">फ़ोटो पर टेक्स्ट स्टाम्प करते समय उपयोग करने के
+        लिए फ़ॉन्ट आकार\n%s
+    </string>
+
+    <string name="grid">ग्रिड</string> <!-- short form of Show a grid -->
+    <string name="preference_show_toasts">स्क्रीन पर संदेश दिखाएं</string>
+    <string name="preference_show_toasts_summary">अस्थायी ऑन-स्क्रीन जानकारी संदेश प्रदर्शित करना है
+        या नहीं
+    </string>
+    <string name="preference_take_photo_border">फ़ोटो लेते समय बॉर्डर दिखाएं</string>
+    <string name="preference_take_photo_border_summary">फ़ोटो लेने का संकेत देने के लिए डिस्प्ले पर
+        एक बॉर्डर प्रदर्शित करें
+    </string>
+    <string name="preference_raw">RAW</string>
+    <string name="preference_stamp_dateformat">दिनांक स्टाम्प प्रारूप</string>
+    <string name="preference_stamp_timeformat">समय स्टाम्प प्रारूप</string>
+    <string name="preference_stamp_gpsformat">GPS स्टाम्प प्रारूप</string>
+    <string name="preference_stamp_font_color">फ़ॉन्ट रंग</string>
+    <string name="preference_stamp_font_color_summary">फ़ोटो पर टेक्स्ट स्टाम्प करते समय उपयोग करने
+        के लिए फ़ॉन्ट रंग\n%s
+    </string>
+    <string name="preference_stamp_style">टेक्स्ट शैली</string>
+    <string name="preference_stamp_style_summary">फ़ोटो पर टेक्स्ट स्टाम्प करते समय उपयोग करने के
+        लिए शैली\n%s
+    </string>
+    <string name="preference_video_max_filesize">वीडियो का अधिकतम फ़ाइल आकार</string>
+    <string name="preference_video_max_filesize_summary">वीडियो रिकॉर्डिंग (लगभग) अधिकतम फ़ाइल आकार
+        तक पहुंचने पर बंद हो जाएगी और/या पुनः आरंभ होगी (नीचे विकल्प देखें)। ध्यान दें कि कई Android
+        डिवाइस में वीडियो के लिए अधिकतम फ़ाइल आकार होता है (आमतौर पर लगभग 2GB या 4GB), लेकिन यह
+        विकल्प एक विशिष्ट मान सेट करने की अनुमति देता है। ध्यान दें कि इस विकल्प का उपयोग डिवाइस के
+        अंतर्निहित अधिकतम को बढ़ाने के लिए नहीं किया जा सकता है।\n%s
+    </string>
+    <string name="preference_video_restart_max_filesize">अधिकतम फ़ाइल आकार पर पुनः आरंभ करें
+    </string>
+    <string name="preference_video_restart_max_filesize_summary">अधिकतम फ़ाइल आकार तक पहुंचने पर
+        स्वचालित रूप से पुनः आरंभ करना है या नहीं (चाहे डिवाइस डिफ़ॉल्ट अधिकतम फ़ाइल आकार हो, या
+        उपयोगकर्ता द्वारा निर्दिष्ट)
+    </string>
+    <string name="preference_record_audio_channels">ऑडियो चैनल</string>
+    <string name="preference_record_audio_channels_summary">ऑडियो रिकॉर्डिंग के लिए मोनो या स्टीरियो
+        निर्दिष्ट करें (स्टीरियो केवल कुछ डिवाइस पर समर्थित है)\n%s
+    </string>
+    <string name="preference_online_help_summary">अपने ब्राउज़र में ManualCamera वेबसाइट लॉन्च
+        करें
+    </string>
+
+    <string name="video_quality">वीडियो रिज़ॉल्यूशन</string>
+    <string name="preference_force_video_4k">4K UHD वीडियो बल दें (केवल कुछ डिवाइस पर काम करता है)
+    </string>
+    <string name="preference_force_video_4k_summary">बैक कैमरे पर वीडियो रिकॉर्डिंग के लिए 3840x2160
+        रिज़ॉल्यूशन सक्षम करें - यह विकल्प एक हैक है जो 4K डिवाइस पर 4K कैमरों को अनुमति दे सकता है
+        जो तीसरे पक्ष के कैमरा ऐप के लिए विकल्प को उजागर नहीं करते हैं। यह काम करने की गारंटी नहीं
+        है, कृपया काम करने से पहले परीक्षण करें।
+    </string>
+    <string name="preference_video_stabilization">डिजिटल वीडियो स्थिरीकरण सक्षम करें</string>
+    <string name="preference_video_stabilization_summary">वीडियो स्थिरीकरण पूर्वावलोकन और रिकॉर्ड
+        किए गए वीडियो दोनों में कैमरे की गति के कारण होने वाले कंपन को कम करता है। यदि आपका डिवाइस
+        ऑप्टिकल छवि स्थिरीकरण (OIS) का समर्थन करता है तो यह अनावश्यक हो सकता है।
+    </string>
+    <string name="preference_video_bitrate">वीडियो बिटरेट (लगभग)</string>
+    <string name="preference_video_bitrate_summary">वीडियो का अनुमानित बिटरेट सेट करें (उच्च का अर्थ
+        है बेहतर गुणवत्ता, लेकिन अधिक डिस्क स्थान लेता है; यदि बिटरेट समर्थित नहीं है तो वीडियो
+        रिकॉर्डिंग विफल हो सकती है)\n%s
+    </string>
+    <string name="preference_video_fps">वीडियो फ्रेम दर (लगभग)</string>
+    <string name="preference_video_fps_summary">वीडियो की फ्रेम दर (FPS) सेट करें (लगभग हो सकती है,
+        प्राप्त होने की गारंटी नहीं है, और यदि फ्रेम दर समर्थित नहीं है तो वीडियो रिकॉर्डिंग विफल हो
+        सकती है)। वास्तविक फ्रेम दर का पता लगाने के लिए परिणामी वीडियो देखें। ध्यान दें कि धीमी गति
+        वाले वीडियो के लिए यह सेटिंग अनदेखा कर दी जाती है।\n%s
+    </string>
+    <string name="preference_video_max_duration">वीडियो की अधिकतम अवधि</string>
+    <string name="preference_video_max_duration_summary">निर्दिष्ट अवधि के बाद वीडियो रिकॉर्डिंग बंद
+        हो जाएगी\n%s
+    </string>
+    <string name="preference_video_restart">अधिकतम अवधि के बाद वीडियो पुनः आरंभ करें</string>
+    <string name="preference_video_restart_summary">यदि अधिकतम अवधि (यदि सेट किया गया है) तक पहुंचने
+        के बाद वीडियो बंद हो गया है, तो यह विकल्प वीडियो को निर्दिष्ट संख्या तक पुनः आरंभ कर
+        देगा\n%s
+    </string>
+    <string name="preference_record_audio">ऑडियो रिकॉर्ड करें</string>
+    <string name="preference_record_audio_summary">वीडियो रिकॉर्ड करते समय ऑडियो रिकॉर्ड करें
+    </string>
+    <string name="preference_record_audio_src">ऑडियो स्रोत</string>
+    <string name="preference_record_audio_src_summary">ऑडियो रिकॉर्ड करने के लिए उपयोग करने के लिए
+        माइक्रोफ़ोन। ध्यान दें कि विकल्पों का सटीक व्यवहार इस बात पर निर्भर करता है कि आपके डिवाइस
+        पर विकल्प कैसे लागू किया गया है।\n%s
+    </string>
+    <string name="preference_video_flash">वीडियो रिकॉर्ड करते समय फ्लैश</string>
+    <string name="preference_video_flash_summary">यदि सक्षम किया गया है, तो वीडियो रिकॉर्ड करते समय
+        फ्लैश चालू/बंद हो जाएगा (इसका उपयोग यह बताने के लिए किया जा सकता है कि कैमरा अभी भी दूर से
+        रिकॉर्ड कर रहा है)
+    </string>
+
+    <string name="preference_category_online">विविध</string>
+    <string name="preference_online_help">ऑनलाइन सहायता</string>
+    <string name="preference_donate">विकास का समर्थन करने के लिए दान करें</string>
+    <string name="preference_donate_summary">यदि आपको यह ऐप पसंद है, तो कृपया विकास का समर्थन करने
+        के लिए दान करने पर विचार करें। आप मेरा "दान ऐप" खरीदकर ऐसा कर सकते हैं - मेरे दान ऐप के लिए
+        पेज खोलने के लिए इस विकल्प पर क्लिक करें। धन्यवाद!
+    </string>
+    <string name="preference_use_camera2">Camera2 API का उपयोग करें</string>
+    <string name="preference_use_camera2_summary">एक्सपोज़र, फोकस, व्हाइट बैलेंस के लिए मैनुअल मोड
+        जैसी अतिरिक्त सुविधाओं को सक्षम करता है, साथ ही RAW (यदि डिवाइस द्वारा समर्थित है), लेकिन
+        सभी डिवाइस पर ठीक से काम नहीं कर सकता है (पुनरारंभ का कारण बनेगा)
+    </string>
+    <string name="preference_about">के बारे में</string>
+    <string name="preference_about_summary">ऐप और डिबग जानकारी</string>
+    <string name="preference_reset">सेटिंग्स रीसेट करें</string>
+    <string name="preference_reset_summary">सभी ManualCamera सेटिंग्स को डिफ़ॉल्ट पर रीसेट करें
+    </string>
+    <string name="preference_reset_question">क्या आप वाकई सभी ManualCamera सेटिंग्स को डिफ़ॉल्ट पर
+        रीसेट करना चाहते हैं?
+    </string>
+
+    <string name="about_available">उपलब्ध</string>
+    <string name="about_not_available">उपलब्ध नहीं है</string>
+    <string name="about_copy_to_clipboard">क्लिपबोर्ड पर कॉपी करें</string>
+
+    <string name="take_photo">फ़ोटो लें</string>
+    <string name="gallery">गैलरी</string>
+    <string name="exposure">एक्सपोज़र</string>
+    <string name="exposure_lock">एक्सपोज़र लॉक करें</string>
+    <string name="focus_mode">फोकस मोड</string>
+    <string name="flash_mode">फ्लैश मोड</string>
+    <string name="trash">अंतिम चित्र हटाएं</string>
+    <string name="share">फ़ोटो साझा करें</string>
+
+    <string name="parent_folder">पैरेंट फ़ोल्डर</string>
+    <string name="new_folder">नया फ़ोल्डर</string>
+    <string name="cant_write_folder">इस फ़ोल्डर में नहीं लिख सकते</string>
+    <string name="cant_access_folder">इस फ़ोल्डर तक नहीं पहुँच सकते</string>
+    <string name="enter_new_folder">नया फ़ोल्डर नाम दर्ज करें</string>
+    <string name="failed_create_folder">फ़ोल्डर बनाने में विफल</string>
+    <string name="folder_exists">फ़ोल्डर पहले से मौजूद है</string>
+
+    <string name="saf_select_save_location">एक सहेजने का स्थान चुनें</string>
+    <string name="saf_cancelled">स्टोरेज एक्सेस फ्रेमवर्क रद्द किया गया</string>
+    <string name="saf_permission_failed">इस फ़ोल्डर में सहेजने में असमर्थ</string>
+
+    <!-- the permission names such as Microphone should match what Android calls them in the App permission settings -->
+    <string name="permission_record_audio_not_available">माइक्रोफ़ोन अनुमति उपलब्ध नहीं है</string>
+    <string name="permission_location_not_available">स्थान अनुमति उपलब्ध नहीं है</string>
+
+    <string name="start_video">वीडियो रिकॉर्डिंग शुरू करें</string>
+    <string name="stop_video">वीडियो रिकॉर्डिंग रोकें</string>
+
+    <string name="max_filesize">अधिकतम फ़ाइल आकार</string>
+    <string name="mb_abbreviation">MB</string>
+    <string name="gb_abbreviation">GB</string>
+
+    <string name="audio_control_start">ऑडियो सुनना शुरू करें</string>
+    <string name="audio_control_stop">ऑडियो सुनना बंद करें</string>
+    <string name="speech_recognizer_started">"cheese" कहें</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+    <string name="audio_listener_started">जोर से शोर करें</string>
+
+    <string name="auto_stabilise_info">ऑटो-लेवल स्वचालित रूप से फ़ोटो को घुमाएगा ताकि वे समतल दिखाई
+        दें।\n\nध्यान दें कि इसका मतलब है कि छवियां थोड़ी कम रिज़ॉल्यूशन में आएंगी (रोटेशन और
+        क्रॉपिंग के कारण जो आवश्यक है)।
+    </string>
+    <string name="raw_info">DNG फ़ाइलों में आपके कैमरे से पूरी असम्पीडित और असंसाधित जानकारी होती
+        है।\n\nध्यान दें कि कुछ गैलरी ऐप DNG फ़ाइलों को नहीं पहचानते हैं। DNG छवियों का उपयोग विशेष
+        छवि संपादकों के साथ किया जा सकता है।\n\nध्यान दें कि विभिन्न प्रसंस्करण विकल्प जैसे "फ़ोटो
+        स्टाम्प करें" और "ऑटो-लेवल" केवल गैर-DNG (JPEG/आदि) छवियों पर लागू होंगे, न कि DNG छवियों
+        पर।
+    </string>
+
+    <string name="dont_show_again">दोबारा न दिखाएं</string>
+
+    <string name="photo_mode">फ़ोटो मोड</string>
+    <string name="photo_mode_standard">मानक</string>
+    <string name="photo_mode_standard_full">मानक</string>
+    <string name="photo_mode_hdr">HDR</string>
+    <string name="photo_mode_expo_bracketing">एक्सपो {}</string>
+    <string name="photo_mode_expo_bracketing_full">एक्सपोज़र ब्रैकेटिंग</string>
+    <string name="photo_mode_fast_burst" translatable="false">[]]]</string> <!-- keep short, as this shows in the popup menu; shouldn't be translated -->
+    <string name="photo_mode_fast_burst_full">तेज बर्स्ट</string>
+    <string name="photo_mode_noise_reduction">NR</string> <!-- keep short, as this shows in the popup menu; probably shouldn't be translated? -->
+    <string name="photo_mode_noise_reduction_full">शोर में कमी</string>
+    <string name="preference_category_stamp">फ़ोटो स्टाम्प</string>
+    <string name="preference_hdr_save_expo">HDR मोड के लिए सभी छवियां सहेजें</string>
+    <string name="preference_hdr_save_expo_summary">यदि सक्षम किया गया है, तो HDR फ़ोटो मोड का उपयोग
+        करते समय, तीन आधार एक्सपोज़र छवियों को अंतिम HDR फ़ोटो के साथ-साथ सहेजा जाएगा। ध्यान दें कि
+        इससे बचत धीमी हो जाएगी, खासकर यदि "फ़ोटो स्टाम्प करें" या ऑटो-लेवल जैसे विकल्प भी उपयोग किए
+        जाते हैं।
+    </string>
+
+    <string name="no_permission">अनुमतियां उपलब्ध नहीं हैं</string>
+    <string name="permission_rationale_title">अनुमति आवश्यक है</string>
+    <string name="permission_rationale_camera">कैमरे को सक्षम करने के लिए कैमरा अनुमति आवश्यक है
+    </string>
+    <string name="permission_rationale_storage">फ़ोटो या वीडियो जैसी परिणामी फ़ाइलों को सहेजने के
+        लिए स्टोरेज रीड/राइट अनुमति आवश्यक है
+    </string>
+    <string name="permission_rationale_record_audio">ऑडियो के साथ वीडियो रिकॉर्ड करने के साथ-साथ
+        "ऑडियो नियंत्रण" विकल्पों का उपयोग करने के लिए माइक्रोफ़ोन अनुमति आवश्यक है
+    </string>
+    <string name="permission_rationale_location">जियोटैगिंग (स्थान डेटा को फ़ोटो और वीडियो में
+        संग्रहीत करना, जिसमें स्टाम्प और उपशीर्षक विकल्प शामिल हैं) के लिए स्थान अनुमति आवश्यक है।
+        ब्लूटूथ LE रिमोट कंट्रोल डिवाइस से कनेक्ट करने के लिए भी स्थान अनुमति आवश्यक है (कम से कम
+        Android 11 और उससे पहले के संस्करणों के लिए)।
+    </string>
+
+    <string name="preference_category_photo_debugging">डीबगिंग विकल्प</string>
+    <string name="preference_category_video_debugging">डीबगिंग विकल्प</string>
+    <string name="preference_camera2_fake_flash">वैकल्पिक फ्लैश विधि का उपयोग करें</string>
+    <string name="preference_camera2_fake_flash_summary">यदि आपके डिवाइस में Camera2 API के साथ
+        फ्लैश व्यवहार में गड़बड़ी है तो इसे सक्षम करें
+    </string>
+
+    <string name="preference_expo_bracketing_n_images">एक्सपोज़र ब्रैकेटिंग</string>
+    <string name="preference_expo_bracketing_n_images_summary">एक्सपोज़र ब्रैकेटिंग मोड के लिए
+        छवियों की संख्या\n%s
+    </string>
+    <string name="preference_expo_bracketing_stops">एक्सपोज़र ब्रैकेटिंग स्टॉप</string>
+    <string name="preference_expo_bracketing_stops_summary">सबसे अंधेरी/सबसे चमकीली छवि के लिए कितने
+        स्टॉप घटाने/जोड़ने हैं\n%s
+    </string>
+    <string name="preference_nr_save">शोर में कमी मूल छवियां</string>
+    <string name="preference_nr_save_summary">शोर में कमी मोड में मूल छवियों को सहेजना है या नहीं।
+        ध्यान दें कि इससे फ़ोटो सहेजना बहुत धीमा हो सकता है।\n%s
+    </string>
+    <string name="preference_nr_save_no">मूल छवियां न सहेजें</string>
+    <string name="preference_nr_save_single">एकल मूल छवि सहेजें</string>
+    <string name="preference_nr_save_all">सभी मूल छवियां सहेजें (धीमा)</string>
+    <string name="seconds_abbreviation">से</string> <!-- short for seconds -->
+    <string name="video_no_free_space">वीडियो रिकॉर्ड करने के लिए पर्याप्त खाली स्थान नहीं है
+    </string>
+    <string name="video_power_critical">वीडियो रुका\nबैटरी स्तर गंभीर रूप से कम है</string>
+    <string name="preference_video_low_power_check">गंभीर बैटरी जांच</string>
+    <string name="preference_video_low_power_check_summary">यदि बैटरी स्तर गंभीर रूप से कम है तो
+        वीडियो रिकॉर्डिंग रोकें। यह आपके डिवाइस के बिजली खत्म होने के कारण अचानक बंद हो जाने पर
+        वीडियो के दूषित होने के जोखिम को कम करने में मदद करता है।
+    </string>
+    <string name="dark">अंधेरा</string> <!-- exposure compensation dark -->
+    <string name="bright">उज्ज्वल</string> <!-- exposure compensation bright -->
+    <string name="exposure_shutter_speed">शटर गति</string>
+    <string name="camera_error">गंभीर कैमरा त्रुटि</string>
+    <string name="preference_camera2_fast_burst">तेज HDR/एक्सपो बर्स्ट सक्षम करें</string>
+    <string name="preference_camera2_fast_burst_summary">HDR/एक्स</string>
+    <string name="camera">कैमरा</string>
+    <string name="record_video">वीडियो रिकॉर्ड करें</string>
+    <string name="selfie">सेल्फी</string>
+
+    <string name="preference_front_camera_mirror">फ्रंट कैमरा मिरर</string>
+    <string name="preference_front_camera_mirror_summary">फ्रंट कैमरे का उपयोग करते समय परिणामी तस्वीरों को मिरर करना है या नहीं\n%s</string>
+    <string name="preference_calibrate_level">लेवल एंगल कैलिब्रेट करें</string>
+    <string name="preference_calibrate_level_summary">यह विकल्प आपके डिवाइस के एक्सेलेरोमीटर को कैलिब्रेट करता है, ताकि ऑटो-लेवल और ऑन-स्क्रीन लेवल/एंगल विकल्प सही तरीके से काम करें</string>
+    <string name="preference_calibrate_level_dialog">कृपया अपने डिवाइस को एक सपाट क्षैतिज सतह पर रखें ताकि यह समतल हो (या तो पोर्ट्रेट या लैंडस्केप ओरिएंटेशन में), और फिर कैलिब्रेट चुनें।\n\nअपने डिवाइस से कैलिब्रेशन हटाने के लिए रीसेट दबाएं।\n\nरद्द करने के लिए बैक बटन दबाएं।</string>
+    <string name="preference_calibrate_level_calibrate">कैलिब्रेट करें</string>
+    <string name="preference_calibrate_level_reset">रीसेट</string>
+    <string name="preference_calibrate_level_calibrated">लेवल कैलिब्रेटेड</string>
+    <string name="preference_calibrate_level_calibration_reset">लेवल कैलिब्रेशन रीसेट</string>
+    <string name="photo_mode_dro">डीआरओ</string>
+    <string name="preference_show_pitch_lines">पिच लाइनें दिखाएं</string>
+    <string name="preference_show_pitch_lines_summary">क्षैतिज पिच लाइनें प्रदर्शित करें</string>
+    <string name="preference_show_geo_direction_lines">कम्पास दिशा लाइनें दिखाएं</string>
+    <string name="preference_show_geo_direction_lines_summary">कम्पास दिशा लाइनें प्रदर्शित करें</string>
+    <string name="preference_video_subtitle">वीडियो उपशीर्षक</string>
+    <string name="preference_video_subtitle_summary">दिनांक और समय संग्रहीत करने वाली एक उपशीर्षक (.SRT) फ़ाइल बनाएं; और यदि स्थान/दिशा डेटा सक्षम है तो जीपीएस जानकारी भी। (एंड्रॉइड 11+ पर, इस विकल्प के लिए अधिक कैमरा नियंत्रण/स्टोरेज एक्सेस फ्रेमवर्क सक्षम होना आवश्यक है।)\n%s</string>
+
+    <string name="duration_unlimited">असीमित</string>
+    <string name="duration_3s">3 सेकंड</string>
+    <string name="duration_5s">5 सेकंड</string>
+    <string name="duration_10s">10 सेकंड</string>
+    <string name="duration_15s">15 सेकंड</string>
+    <string name="duration_30s">30 सेकंड</string>
+    <string name="duration_1m">1 मिनट</string>
+    <string name="duration_2m">2 मिनट</string>
+    <string name="duration_3m">3 मिनट</string>
+    <string name="duration_4m">4 मिनट</string>
+    <string name="duration_5m">5 मिनट</string>
+    <string name="duration_6m">6 मिनट</string>
+    <string name="duration_7m">7 मिनट</string>
+    <string name="duration_8m">8 मिनट</string>
+    <string name="duration_9m">9 मिनट</string>
+    <string name="duration_10m">10 मिनट</string>
+    <string name="duration_11m">11 मिनट</string>
+    <string name="duration_12m">12 मिनट</string>
+    <string name="duration_15m">15 मिनट</string>
+    <string name="duration_20m">20 मिनट</string>
+    <string name="duration_25m">25 मिनट</string>
+    <string name="duration_30m">30 मिनट</string>
+    <string name="duration_45m">45 मिनट</string>
+    <string name="duration_1h">1 घंटा</string>
+
+    <string name="preference_show_take_photo">\"फ़ोटो लें\" आइकन दिखाएं</string>
+    <string name="preference_show_take_photo_summary">फ़ोटो लेने और वीडियो रिकॉर्ड करने के लिए आइकन दिखाएं। यदि आप अन्य तरीकों से फ़ोटो लेना पसंद करते हैं (जैसे, यदि आपके डिवाइस में हार्डवेयर शटर बटन है, या वॉल्यूम कुंजियों का उपयोग कर रहे हैं) तो अनचेक करें।</string>
+    <string name="video_pause">वीडियो रोका गया</string>
+    <string name="video_resume">वीडियो फिर से शुरू किया गया</string>
+    <string name="pause_video">वीडियो रिकॉर्डिंग रोकें</string>
+    <string name="resume_video">वीडियो रिकॉर्डिंग फिर से शुरू करें</string>
+    <string name="capturing">कैप्चर कर रहा है...</string>
+    <string name="audio_listener_failed">ऑडियो सुनने को प्रारंभ करने में विफल</string>
+
+    <string name="white_balance_auto">ऑटो</string>
+    <string name="white_balance_cloudy">बादल</string>
+    <string name="white_balance_daylight">दिन का प्रकाश</string>
+    <string name="white_balance_fluorescent">फ्लोरोसेंट</string>
+    <string name="white_balance_incandescent">गरमागरम</string>
+    <string name="white_balance_shade">छाया</string>
+    <string name="white_balance_twilight">गोधूलि</string>
+    <string name="white_balance_warm">गरम</string>
+    <string name="white_balance_manual">मैनुअल</string>
+    <string name="scene_mode_action">एक्शन</string>
+    <string name="scene_mode_barcode">बारकोड</string>
+    <string name="scene_mode_beach">समुद्र तट</string>
+    <string name="scene_mode_candlelight">मोमबत्ती की रोशनी</string>
+    <string name="scene_mode_auto">ऑटो</string>
+    <string name="scene_mode_fireworks">आतिशबाजी</string>
+    <string name="scene_mode_landscape">लैंडस्केप</string>
+    <string name="scene_mode_night">रात</string>
+    <string name="scene_mode_night_portrait">रात का पोर्ट्रेट</string>
+    <string name="scene_mode_party">पार्टी</string>
+    <string name="scene_mode_portrait">पोर्ट्रेट</string>
+    <string name="scene_mode_snow">बर्फ़</string>
+    <string name="scene_mode_sports">खेल</string>
+    <string name="scene_mode_steady_photo">स्थिर फोटो</string>
+    <string name="scene_mode_sunset">सूर्यास्त</string>
+    <string name="scene_mode_theatre">थिएटर</string>
+    <string name="color_effect_aqua">एक्वा</string>
+    <string name="color_effect_blackboard">ब्लैकबोर्ड</string>
+    <string name="color_effect_mono">मोनो</string>
+    <string name="color_effect_negative">नकारात्मक</string>
+    <string name="color_effect_none">कोई नहीं</string>
+    <string name="color_effect_posterize">पोस्टर बनाना</string>
+    <string name="color_effect_sepia">सेपिया</string>
+    <string name="color_effect_solarize">सोलराइज</string>
+    <string name="color_effect_whiteboard">व्हाइटबोर्ड</string>
+
+    <string name="preference_background_photo_saving">पृष्ठभूमि थ्रेड का उपयोग करें</string>
+    <string name="preference_background_photo_saving_summary">पृष्ठभूमि थ्रेड पर फ़ोटो सहेजना है या नहीं (तेज़ संचालन के लिए)</string>
+    <string name="whats_new">नया क्या है:</string>
+    <string name="donate">दान करें</string>
+    <string name="face_detected">चेहरा</string>
+    <string name="faces_detected">चेहरे</string>
+    <string name="left_of_screen">स्क्रीन के बाईं ओर</string>
+    <string name="right_of_screen">स्क्रीन के दाईं ओर</string>
+    <string name="top_of_screen">स्क्रीन के शीर्ष पर</string>
+    <string name="bottom_of_screen">स्क्रीन के नीचे</string>
+    <string name="centre_of_screen">केंद्र में</string>
+    <string name="high_speed">उच्च गति</string>
+    <string name="preference_video_fps_default">डिफ़ॉल्ट</string>
+    <string name="preference_category_exif_tags">कस्टम EXIF टैग</string>
+    <string name="preference_exif_artist">कलाकार</string>
+    <string name="preference_exif_artist_summary">"कलाकार" टैग के लिए छवि मेटाडेटा में संग्रहीत करने के लिए पाठ (केवल JPEG प्रारूप)। (कोई नहीं के लिए खाली छोड़ दें।)</string>
+    <string name="preference_exif_copyright">कॉपीराइट</string>
+    <string name="preference_exif_copyright_summary">"कॉपीराइट" टैग के लिए छवि मेटाडेटा में संग्रहीत करने के लिए पाठ (केवल JPEG प्रारूप)। (कोई नहीं के लिए खाली छोड़ दें।)</string>
+    <string name="processing">संसाधित हो रहा है...</string>
+    <string name="preference_raw_no">नहीं</string>
+    <string name="preference_raw_yes">मानक और डीएनजी (रॉ)</string>
+    <string name="preference_raw_only">केवल डीएनजी (रॉ)</string>
+    <string name="preference_stamp_dateformat_default">डिफ़ॉल्ट</string>
+    <string name="preference_stamp_dateformat_yyyymmdd">yyyy-mm-dd (ISO 8601)</string>
+    <string name="preference_stamp_dateformat_ddmmyyyy">dd/mm/yyyy</string>
+    <string name="preference_stamp_dateformat_mmddyyyy">mm/dd/yyyy</string>
+    <string name="preference_stamp_dateformat_none">कोई नहीं</string>
+    <string name="failed_to_save_photo_raw">रॉ फोटो सहेजने में विफल</string>
+    <string name="preference_save_zulu_time">फ़ाइल नाम के लिए समय प्रारूप</string>
+    <string name="preference_startup_focus">स्टार्टअप पर ऑटो-फोकस करें</string>
+    <string name="preference_audio_control">ऑडियो नियंत्रण विकल्प</string>
+    <string name="preference_audio_noise_control_sensitivity">ऑडियो नियंत्रण संवेदनशीलता</string>
+
+    <string name="preference_save_include_milliseconds">फ़ाइल नाम में मिलीसेकंड का उपयोग करें</string>
+    <string name="preference_save_include_milliseconds_summary">यदि सक्षम किया गया है, तो फ़ाइल नामों में मिलीसेकंड शामिल होंगे</string>
+    <string name="preference_startup_focus_summary">मैनुअल कैमरा शुरू होने पर ऑटो-फोकस करना है या नहीं। यदि आपको शुरू होने पर फ्लैश चालू होने की समस्या है, तो इस विकल्प को अक्षम करें</string>
+    <string name="preference_audio_noise_control_sensitivity_summary">ऑडियो (जोर शोर) विकल्प के लिए शोर स्तर संवेदनशीलता</string>
+    <string name="failed_to_process_hdr">एचडीआर छवि बनाने में विफल</string>
+    <string name="hdr_info">एचडीआर मोड उन शॉट्स के लिए उपयोगी है जिनमें चमक में बड़ा बदलाव होता है। यह अलग-अलग एक्सपोज़र पर कई शॉट लेकर और अंतिम छवि बनाने के लिए उन्हें मिलाकर काम करता है।\n\nध्यान दें कि एचडीआर तेजी से चलने वाले दृश्यों के लिए उपयुक्त नहीं है, और इसके परिणामस्वरूप कम सटीक रंग प्रजनन हो सकता है।\n\nएचडीआर मोड में फोटो लेना धीमा होगा।</string>
+    <string name="switch_to_front_camera">फ्रंट कैमरे पर स्विच करें</string>
+    <string name="switch_to_back_camera">बैक कैमरे पर स्विच करें</string>
+    <string name="switch_to_video">वीडियो मोड पर स्विच करें</string>
+    <string name="switch_to_photo">फोटो मोड पर स्विच करें</string>
+    <string name="preference_fast_burst_n_images">तस्वीरों की संख्या</string>
+
+    <string name="preference_fast_burst_n_images_entries_2">2</string>
+    <string name="preference_fast_burst_n_images_entries_3">3</string>
+    <string name="preference_fast_burst_n_images_entries_4">4</string>
+    <string name="preference_fast_burst_n_images_entries_5">5</string>
+    <string name="preference_fast_burst_n_images_entries_6">6</string>
+    <string name="preference_fast_burst_n_images_entries_8">8</string>
+    <string name="preference_fast_burst_n_images_entries_10">10</string>
+    <string name="preference_fast_burst_n_images_entries_12">12</string>
+    <string name="preference_fast_burst_n_images_entries_15">15</string>
+    <string name="preference_fast_burst_n_images_entries_20">20</string>
+    <string name="preference_focus_bracketing_n_images">तस्वीरों की संख्या</string>
+    <string name="preference_focus_bracketing_n_images_entries_2">2</string>
+    <string name="preference_focus_bracketing_n_images_entries_3">3</string>
+    <string name="preference_focus_bracketing_n_images_entries_4">4</string>
+    <string name="preference_focus_bracketing_n_images_entries_5">5</string>
+    <string name="preference_focus_bracketing_n_images_entries_6">6</string>
+    <string name="preference_focus_bracketing_n_images_entries_8">8</string>
+    <string name="preference_focus_bracketing_n_images_entries_10">10</string>
+    <string name="preference_focus_bracketing_n_images_entries_12">12</string>
+    <string name="preference_focus_bracketing_n_images_entries_15">15</string>
+    <string name="preference_focus_bracketing_n_images_entries_20">20</string>
+    <string name="preference_focus_bracketing_n_images_entries_25">25</string>
+    <string name="preference_focus_bracketing_n_images_entries_30">30</string>
+    <string name="preference_focus_bracketing_n_images_entries_40">40</string>
+    <string name="preference_focus_bracketing_n_images_entries_50">50</string>
+    <string name="preference_focus_bracketing_n_images_entries_100">100</string>
+    <string name="preference_focus_bracketing_n_images_entries_150">150</string>
+    <string name="preference_focus_bracketing_n_images_entries_200">200</string>
+
+    <string name="preference_video_capture_rate">गति</string>
+    <string name="preference_video_capture_rate_normal">सामान्य</string>
+    <string name="slow_motion_enabled">धीमी गति सक्षम</string>
+    <string name="slow_motion_disabled">धीमी गति अक्षम</string>
+    <string name="flash_frontscreen_auto">स्क्रीन फ्लैश ऑटो</string>
+    <string name="flash_frontscreen_on">स्क्रीन फ्लैश ऑन</string>
+    <string name="flash_frontscreen_torch">स्क्रीन टॉर्च</string>
+    <string name="preference_antibanding">एंटी-बैंडिंग</string>
+    <string name="preference_antibanding_summary">प्रकाश टिमटिमाहट में मदद करने के लिए एल्गोरिदम।\n%s</string>
+    <string name="anti_banding_auto">ऑटो</string>
+    <string name="anti_banding_50hz">50 हर्ट्ज</string>
+    <string name="anti_banding_60hz">60 हर्ट्ज</string>
+    <string name="anti_banding_off">बंद</string>
+    <string name="preference_ghost_image">घोस्ट इमेज</string>
+    <string name="preference_ghost_image_summary">संरेखण में मदद करने के लिए पूर्वावलोकन पर एक छवि प्रदर्शित करें।\n%s</string>
+    <string name="preference_ghost_image_off">बंद</string>
+    <string name="preference_ghost_image_last">अंतिम ली गई तस्वीर</string>
+    <string name="preference_ghost_image_selected">चयनित छवि</string>
+
+    <string name="flash_off">फ्लैश बंद</string>
+    <string name="flash_auto">फ्लैश ऑटो</string>
+    <string name="flash_on">फ्लैश ऑन</string>
+    <string name="flash_torch">टॉर्च</string>
+    <string name="flash_red_eye">रेड आई</string>
+
+    <string name="open_files_saf_exception_ghost">इस डिवाइस पर कोई फ़ाइल संवाद नहीं मिला, घोस्ट इमेज विकल्प समर्थित नहीं है</string>
+    <string name="saf_permission_failed_open_image">इस छवि को खोलने में असमर्थ</string>
+    <string name="preference_camera2_photo_video_recording">वीडियो रिकॉर्ड करते समय फ़ोटो की अनुमति दें</string>
+    <string name="preference_camera2_photo_video_recording_summary">वीडियो रिकॉर्ड करते समय फ़ोटो लेने की अनुमति देता है। यदि आपके डिवाइस पर Camera2 API सक्षम होने पर वीडियो रिकॉर्डिंग में समस्याएँ हैं तो इसे अक्षम करें।</string>
+    <string name="preference_video_log">वीडियो चित्र प्रोफाइल</string>
+    <string name="preference_video_log_summary">वीडियो मोड के लिए मानक या फ्लैट चित्र प्रोफ़ाइल सेट करें\n%s</string>
+    <string name="preference_video_log_off">डिफ़ॉल्ट</string>
+    <string name="preference_video_log_fine">लॉग (ठीक)</string>
+    <string name="preference_video_log_low">लॉग (कम)</string>
+    <string name="preference_video_log_medium">लॉग (मध्यम)</string>
+    <string name="preference_video_log_strong">लॉग (मजबूत)</string>
+    <string name="preference_video_log_extra_strong">लॉग (अतिरिक्त मजबूत)</string>
+    <string name="video_log">लॉग प्रोफ़ाइल</string>
+    <string name="preference_record_audio_src_camcorder">कैमकॉर्डर</string>
+    <string name="preference_record_audio_src_mic">बाहरी माइक (यदि मौजूद हो)</string>
+    <string name="preference_record_audio_src_default">डिफ़ॉल्ट ऑडियो स्रोत</string>
+    <string name="preference_record_audio_src_voice_communication">वॉयस कॉल के लिए अनुकूलित</string>
+    <string name="preference_record_audio_src_voice_recognition">आवाज पहचान के लिए अनुकूलित</string>
+    <string name="preference_record_audio_src_unprocessed">असंसाधित</string>
+
+    <string name="preference_video_bitrate_default">डिफ़ॉल्ट</string>
+    <string name="preference_video_bitrate_100000">100kbps</string>
+    <string name="preference_video_bitrate_200000">200kbps</string>
+    <string name="preference_video_bitrate_500000">500kbps</string>
+    <string name="preference_video_bitrate_1000000">1Mbps</string>
+    <string name="preference_video_bitrate_2000000">2Mbps</string>
+    <string name="preference_video_bitrate_3000000">3Mbps</string>
+    <string name="preference_video_bitrate_4000000">4Mbps</string>
+    <string name="preference_video_bitrate_5000000">5Mbps</string>
+    <string name="preference_video_bitrate_6000000">6Mbps</string>
+    <string name="preference_video_bitrate_7000000">7Mbps</string>
+    <string name="preference_video_bitrate_8000000">8Mbps</string>
+    <string name="preference_video_bitrate_9000000">9Mbps</string>
+    <string name="preference_video_bitrate_10000000">10Mbps</string>
+    <string name="preference_video_bitrate_15000000">15Mbps</string>
+    <string name="preference_video_bitrate_20000000">20Mbps</string>
+    <string name="preference_video_bitrate_30000000">30Mbps</string>
+    <string name="preference_video_bitrate_40000000">40Mbps</string>
+    <string name="preference_video_bitrate_50000000">50Mbps</string>
+    <string name="preference_video_bitrate_60000000">60Mbps</string>
+    <string name="preference_video_bitrate_70000000">70Mbps</string>
+    <string name="preference_video_bitrate_80000000">80Mbps</string>
+    <string name="preference_video_bitrate_90000000">90Mbps</string>
+    <string name="preference_video_bitrate_100000000">100Mbps</string>
+    <string name="preference_video_bitrate_150000000">150Mbps</string>
+    <string name="preference_video_bitrate_200000000">200Mbps</string>
+
+    <string name="no_burst">कोई बर्स्ट नहीं</string>
+    <string name="preference_show_video_max_amp">ऑडियो लेवल मीटर दिखाएं</string>
+    <string name="preference_show_video_max_amp_summary">वीडियो रिकॉर्ड करते समय ऑन-स्क्रीन ऑडियो लेवल दिखाना है या नहीं</string>
+    <string name="photo_mode_focus_bracketing">फोकस {}</string>
+    <string name="photo_mode_focus_bracketing_full">फोकस ब्रैकेटिंग</string>
+    <string name="focus_bracketing_source_distance">फोकस ब्रैकेटिंग स्रोत दूरी</string>
+    <string name="focus_bracketing_target_distance">फोकस ब्रैकेटिंग लक्ष्य दूरी</string>
+    <string name="focus_bracketing_add_infinity">अनंत दूरी जोड़ें</string>
+    <string name="magnetic_accuracy_title">कम्पास दिशा</string>
+    <string name="magnetic_accuracy_info">आपके डिवाइस के कम्पास को इसकी सटीकता में सुधार के लिए कैलिब्रेट करने की आवश्यकता है। यह आपके डिवाइस को 8 के आकार में घुमाकर किया जा सकता है।\n\nवर्तमान सटीकता:</string>
+    <string name="accuracy_unreliable">अविश्वसनीय</string>
+    <string name="accuracy_low">कम</string>
+    <string name="accuracy_medium">मध्यम</string>
+    <string name="accuracy_high">उच्च</string>
+    <string name="accuracy_unknown">अज्ञात</string>
+
+    <string name="preference_units_distance">दूरी इकाई</string>
+    <string name="preference_units_distance_summary">फोटो स्टाम्प और वीडियो उपशीर्षक के लिए जीपीएस ऊंचाई के लिए उपयोग किया जाता है\n%s</string>
+    <string name="preference_units_distance_m">मीटर</string>
+    <string name="preference_units_distance_ft">फीट</string>
+    <string name="feet_abbreviation">फीट</string> <!-- symbol short for feet -->
+    <string name="preference_show_whats_new">नया क्या है संवाद दिखाता है</string>
+    <string name="preference_show_whats_new_summary">एप्लिकेशन अपडेट होने पर नई सुविधाओं और सुधारों पर जानकारी प्रदर्शित करना है या नहीं</string>
+    <string name="preference_edge_mode">एज मोड एल्गोरिदम</string>
+    <string name="preference_edge_mode_summary">एल्गोरिदम जिसका उपयोग कैमरा ड्राइवर को एज एन्हांसमेंट लागू करने के लिए करना चाहिए। एज एन्हांसमेंट कैप्चर की गई छवि में तीखेपन और विवरण में सुधार करता है। (यह सेटिंग NR फोटो मोड में अनदेखा कर दी जाती है।)\n%s</string>
+    <string name="preference_screen_processing_settings">प्रसंस्करण सेटिंग्स...</string>
+    <string name="preference_noise_reduction_mode">शोर में कमी एल्गोरिदम</string>
+    <string name="preference_noise_reduction_mode_summary">एल्गोरिदम जिसका उपयोग कैमरा ड्राइवर को शोर में कमी लागू करने के लिए करना चाहिए। शोर में कमी एल्गोरिदम कैप्चर प्रक्रिया द्वारा जोड़े गए अत्यधिक शोर को हटाकर छवि गुणवत्ता में सुधार करने का प्रयास करता है, खासकर अंधेरे परिस्थितियों में। (ध्यान दें कि यह शोर में कमी फोटो मोड से संबंधित नहीं है, और वास्तव में यह सेटिंग NR फोटो मोड में अनदेखा कर दी जाती है।)\n%s</string>
+    <string name="noise_reduction_mode_default">डिफ़ॉल्ट</string>
+    <string name="noise_reduction_mode_off">बंद</string>
+    <string name="noise_reduction_mode_minimal">न्यूनतम</string>
+    <string name="noise_reduction_mode_fast">तेज</string>
+    <string name="noise_reduction_mode_high_quality">उच्च गुणवत्ता</string>
+    <string name="preference_focus_assist">फोकस असिस्ट</string>
+    <string name="preference_focus_assist_summary">मैनुअल फोकस दूरी समायोजित करते समय ज़ूम इन करना है या नहीं\n%s</string>
+    <string name="preference_focus_assist_off">बंद</string>
+    <string name="preference_focus_assist_2x">2x</string>
+    <string name="preference_focus_assist_4x">4x</string>
+    <string name="exposure_compensation_zoom">एक्सपोज़र मुआवजा बढ़ाएं या घटाएं</string>
+    <string name="previous">पिछला</string>
+    <string name="next">अगला</string>
+
+    <string name="preference_burst_mode_off">बंद</string>
+    <string name="preference_burst_mode_2x">2x</string>
+    <string name="preference_burst_mode_3x">3x</string>
+    <string name="preference_burst_mode_4x">4x</string>
+    <string name="preference_burst_mode_5x">5x</string>
+    <string name="preference_burst_mode_10x">10x</string>
+    <string name="preference_burst_mode_20x">20x</string>
+    <string name="preference_burst_mode_30x">30x</string>
+    <string name="preference_burst_mode_40x">40x</string>
+    <string name="preference_burst_mode_50x">50x</string>
+    <string name="preference_burst_mode_100x">100x</string>
+    <string name="preference_burst_mode_200x">200x</string>
+    <string name="preference_burst_mode_500x">500x</string>
+    <string name="preference_burst_mode_unlimited">असीमित</string>
+    <string name="preference_burst_interval_no_delay">कोई देरी नहीं</string>
+    <string name="preference_burst_interval_0_5s">0.5 सेकंड</string>
+    <string name="preference_burst_interval_1s">1 सेकंड</string>
+    <string name="preference_burst_interval_2s">2 सेकंड</string>
+    <string name="preference_burst_interval_3s">3 सेकंड</string>
+    <string name="preference_burst_interval_5s">5 सेकंड</string>
+    <string name="preference_burst_interval_10s">10 सेकंड</string>
+    <string name="preference_burst_interval_15s">15 सेकंड</string>
+    <string name="preference_burst_interval_20s">20 सेकंड</string>
+    <string name="preference_burst_interval_30s">30 सेकंड</string>
+    <string name="preference_burst_interval_1m">1 मिनट</string>
+    <string name="preference_burst_interval_2m">2 मिनट</string>
+    <string name="preference_burst_interval_5m">5 मिनट</string>
+    <string name="preference_burst_interval_10m">10 मिनट</string>
+    <string name="preference_burst_interval_20m">20 मिनट</string>
+    <string name="preference_burst_interval_30m">30 मिनट</string>
+    <string name="preference_burst_interval_1h">1 घंटा</string>
+    <string name="preference_burst_interval_2h">2 घंटे</string>
+
+    <string name="preference_video_max_filesize_default">डिवाइस डिफ़ॉल्ट</string>
+    <string name="preference_video_max_filesize_100mb">100MB</string>
+    <string name="preference_video_max_filesize_200mb">200MB</string>
+    <string name="preference_video_max_filesize_300mb">300MB</string>
+    <string name="preference_video_max_filesize_500mb">500MB</string>
+    <string name="preference_video_max_filesize_1gb">1GB</string>
+    <string name="preference_video_max_filesize_2gb">2GB</string>
+    <string name="preference_video_max_filesize_5gb">5GB</string>
+    <string name="preference_video_max_filesize_9gb">9GB</string>
+    <string name="cancelled_focus_bracketing">फोकस ब्रैकेटिंग रद्द किया गया</string>
+
+    <string name="preference_crop_guide_none">कोई नहीं</string>
+    <string name="preference_crop_guide_1">1 (1:1)</string>
+    <string name="preference_crop_guide_1_25">1.25 (5:4)</string>
+    <string name="preference_crop_guide_1_33">1.33 (4:3)</string>
+    <string name="preference_crop_guide_1_4">1.4 (7:4)</string>
+    <string name="preference_crop_guide_1_5">1.5 (3:2)</string>
+    <string name="preference_crop_guide_1_78">1.78 (16:9)</string>
+    <string name="preference_crop_guide_1_85">1.85 (37:20)</string>
+    <string name="preference_crop_guide_2">2 (2:1)</string>
+    <string name="preference_crop_guide_2_33">2.33 (21:9)</string>
+    <string name="preference_crop_guide_2_35">2.35 (47:20)</string>
+    <string name="preference_crop_guide_2_4">2.4 (12:5)</string>
+
+    <string name="preference_audio_noise_control_sensitivity_3">+3 (उच्च संवेदनशीलता)</string>
+    <string name="preference_audio_noise_control_sensitivity_2">+2</string>
+    <string name="preference_audio_noise_control_sensitivity_1">+1</string>
+    <string name="preference_audio_noise_control_sensitivity_0">0 (डिफ़ॉल्ट)</string>
+    <string name="preference_audio_noise_control_sensitivity_m1">-1</string>
+    <string name="preference_audio_noise_control_sensitivity_m2">-2</string>
+    <string name="preference_audio_noise_control_sensitivity_m3">-3 (कम संवेदनशीलता)</string>
+    <string name="gcm_defaultSenderId" translatable="false">557439494826</string>
+    <string name="google_api_key" translatable="false">AIzaSyCGzBQLioiynBdIDQ5YZa25X24ZkClC9XM</string>
+    <string name="google_app_id" translatable="false">1:557439494826:android:bd2da0409d69998d1b3ed3</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCGzBQLioiynBdIDQ5YZa25X24ZkClC9XM</string>
+    <string name="google_storage_bucket" translatable="false">manual-camera-216.firebasestorage.app</string>
+    <string name="project_id" translatable="false">manual-camera-216</string>
+    <string name="preference_hdr_contrast_enhancement">एचडीआर कंट्रास्ट एन्हांसमेंट</string>
+    <string name="preference_hdr_contrast_enhancement_summary">एचडीआर के लिए कंट्रास्ट एन्हांसमेंट
+        एल्गोरिदम का उपयोग कब करें। यह उन मामलों में उपस्थिति में सुधार कर सकता है जहां दृश्य में
+        बहुत अधिक गतिशील रेंज है, और परिणामों को "एचडीआर लुक" भी देता है।\n%s
+    </string>
+    <string name="preference_hdr_contrast_enhancement_off">बंद</string>
+    <string name="preference_hdr_contrast_enhancement_smart">स्मार्ट</string>
+    <string name="preference_hdr_contrast_enhancement_always">हमेशा</string>
+    <string name="preference_video_output_format">वीडियो प्रारूप</string>
+    <string name="preference_video_output_format_summary">वीडियो और ऑडियो फ़ाइल प्रारूप और
+        कोडेक्स\n%s
+    </string>
+    <string name="preference_video_output_format_default">डिफ़ॉल्ट</string>
+    <string name="preference_video_output_format_mpeg4_h264">MPEG4 H264</string>
+    <string name="preference_video_output_format_mpeg4_hevc">MPEG4 HEVC</string>
+    <string name="preference_video_output_format_3gpp">3GPP</string>
+    <string name="preference_video_output_format_webm">WebM (ऑडियो समर्थित नहीं है)</string>
+    <string name="preference_screen_settings_manager">सेटिंग्स प्रबंधक</string>
+    <string name="preference_save_settings">सेटिंग्स सहेजें</string>
+    <string name="preference_save_settings_summary">ManualCamera की सभी सेटिंग्स को एक फ़ाइल में
+        सहेजता है
+    </string>
+    <string name="preference_save_settings_filename">सहेजी गई सेटिंग्स का नाम</string>
+    <string name="preference_restore_settings">सेटिंग्स पुनर्स्थापित करें</string>
+    <string name="preference_restore_settings_summary">पहले से सहेजी गई सेटिंग्स को पुनर्स्थापित
+        करता है। यह सभी वर्तमान सेटिंग्स को सहेजी गई सेटिंग्स के साथ अधिलेखित कर देगा!
+    </string>
+    <string name="preference_restore_settings_question">यह विकल्प आपको उन सेटिंग्स फ़ाइलों में से एक
+        का चयन करने की अनुमति देता है जिन्हें आपने पहले सहेजा था। सावधान रहें कि लोड करने के लिए
+        किसी फ़ाइल का चयन करने से सभी वर्तमान सेटिंग्स अधिलेखित हो जाएंगी!
+    </string>
+    <string name="saved_settings">सहेजी गई सेटिंग्स</string>
+    <string name="save_settings_failed">सेटिंग्स सहेजने में विफल</string>
+    <string name="restore_settings_failed">सेटिंग्स पुनर्स्थापित करने में विफल</string>
+    <string name="preference_image_format">छवि प्रारूप</string>
+    <string name="preference_image_format_jpeg">JPEG</string>
+    <string name="preference_image_format_webp">WebP</string>
+    <string name="preference_image_format_png">PNG</string>
+    <string name="preference_nr_mode">एनआर मोड</string>
+    <string name="preference_nr_mode_normal">सामान्य</string>
+    <string name="preference_nr_mode_low_light">कम रोशनी</string>
+    <string name="preference_ui_placement_left">बाएँ हाथ का उपयोगकर्ता इंटरफ़ेस</string>
+    <string name="preference_ui_placement_right">दाएँ हाथ का उपयोगकर्ता इंटरफ़ेस</string>
+    <string name="preference_ui_placement_top">ऊपर आइकन (पोर्ट्रेट)</string>
+    <string name="preference_show_face_detection">चेहरा पहचान आइकन दिखाएं</string>
+    <string name="preference_show_face_detection_summary">चेहरा पहचान को सक्षम या अक्षम करने के लिए
+        ऑन-स्क्रीन आइकन दिखाना है या नहीं
+    </string>
+    <string name="face_detection_enable">चेहरा पहचान सक्षम करें</string>
+    <string name="face_detection_disable">चेहरा पहचान अक्षम करें</string>
+    <string name="face_detection_enabled">चेहरा पहचान सक्षम</string>
+    <string name="face_detection_disabled">चेहरा पहचान अक्षम</string>
+
+    <string name="preference_image_format_jpeg_r">अल्ट्राएचडीआर जेपीईजी</string>
+    <string name="open_files_saf_exception_generic">इस डिवाइस पर कोई फ़ाइल संवाद नहीं मिला, विकल्प
+        समर्थित नहीं है
+    </string>
+    <string name="preference_show_auto_level">ऑटो-लेवल आइकन दिखाएं</string>
+    <string name="preference_show_auto_level_summary">ऑटो-लेवल को सक्षम या अक्षम करने के लिए
+        ऑन-स्क्रीन आइकन दिखाना है या नहीं। जब ऑटो-लेवल सक्षम होता है, तो फ़ोटो को घुमाया जाएगा ताकि
+        वे क्षितिज के साथ स्वचालित रूप से समतल हो जाएं।
+    </string>
+    <string name="auto_level_enable">ऑटो-लेवल सक्षम करें</string>
+    <string name="auto_level_disable">ऑटो-लेवल अक्षम करें</string>
+    <string name="preference_show_stamp">स्टाम्प फोटो आइकन दिखाएं</string>
+    <string name="preference_show_stamp_summary">फोटो स्टाम्प को सक्षम या अक्षम करने के लिए
+        ऑन-स्क्रीन आइकन दिखाना है या नहीं
+    </string>
+    <string name="stamp_enable">फोटो स्टाम्प सक्षम करें</string>
+    <string name="stamp_disable">फोटो स्टाम्प अक्षम करें</string>
+    <string name="stamp_enabled">फोटो स्टाम्प सक्षम</string>
+    <string name="stamp_disabled">फोटो स्टाम्प अक्षम</string>
+    <string name="preference_show_textstamp">कस्टम टेक्स्ट स्टाम्प फोटो आइकन दिखाएं</string>
+    <string name="preference_show_textstamp_summary">फोटो पर स्टाम्प किए जाने वाले कस्टम टेक्स्ट को
+        निर्दिष्ट करने के लिए ऑन-स्क्रीन आइकन दिखाना है या नहीं
+    </string>
+    <string name="preference_show_white_balance_lock">ऑटो व्हाइट बैलेंस लॉक आइकन दिखाएं</string>
+    <string name="preference_show_white_balance_lock_summary">ऑटो व्हाइट बैलेंस को लॉक या अनलॉक करने
+        के लिए ऑन-स्क्रीन आइकन दिखाना है या नहीं
+    </string>
+    <string name="white_balance_lock">व्हाइट बैलेंस लॉक करें</string>
+    <string name="white_balance_unlock">व्हाइट बैलेंस अनलॉक करें</string>
+    <string name="white_balance_locked">व्हाइट बैलेंस लॉक किया गया</string>
+    <string name="white_balance_unlocked">व्हाइट बैलेंस अनलॉक किया गया</string>
+
+    <string name="preference_remote_type_kraken" translatable="false">क्रैकेन</string>
+
+    <string name="preference_show_exposure_lock">ऑटो एक्सपोजर लॉक आइकन दिखाएं</string>
+    <string name="preference_show_exposure_lock_summary">एक्सपोजर को लॉक या अनलॉक करने के लिए
+        ऑन-स्क्रीन आइकन दिखाना है या नहीं
+    </string>
+    <string name="exposure_unlock">एक्सपोजर अनलॉक करें</string>
+    <string name="preference_nr_mode_low_light_message">कम रोशनी मोड: कृपया कैमरे को स्थिर रखें
+    </string>
+    <string name="photo_mode_panorama">पैनो</string> <!-- keep short, as this shows in the popup menu; probably shouldn't be translated? -->
+    <string name="photo_mode_panorama_full">पैनोरमा</string>
+    <string name="preference_screen_remote_control">ब्लूटूथ ले रिमोट कंट्रोल…</string>
+    <string name="preference_enable_remote">ब्लूटूथ ले रिमोट कंट्रोल सक्षम करें</string>
+    <string name="preference_enable_remote_summary">ब्लूटूथ ले (बीएलई) रिमोट कंट्रोल डिवाइस सक्षम
+        करें
+    </string>
+    <string name="preference_remote_type">रिमोट डिवाइस प्रकार</string>
+    <string name="ble_not_supported">बीएलई समर्थित नहीं है</string>
+    <string name="scan_ble">बीएलई डिवाइस स्कैन</string>
+    <string name="bluetooth_not_supported">ब्लूटूथ समर्थित नहीं है।</string>
+    <string name="unknown_device">अज्ञात डिवाइस</string>
+    <string name="preference_remote_disconnect_screen_dim">रिमोट डिस्कनेक्ट होने पर स्क्रीन मंद
+        करें
+    </string>
+    <string name="preference_remote_disconnect_screen_dim_summary">संकेत: ManualCamera शुरू करने से
+        पहले डिफ़ॉल्ट चमक को न्यूनतम स्तर पर सेट करें।
+    </string>
+    <string name="preference_water_type">गहराई गणना के लिए खारे पानी का उपयोग करें</string>
+    <string name="preference_water_type_summary">पानी के नीचे के आवासों के लिए, यदि सही पानी का
+        प्रकार चुना जाता है तो सटीकता में सुधार होता है।
+    </string>
+    <string name="remote_connected">रिमोट कनेक्टेड</string>
+    <string name="preference_stamp_geo_address">पतों का प्रयोग करें</string>
+    <string name="preference_stamp_geo_address_both">यदि संभव हो तो पता प्रदर्शित करें, जीपीएस
+        निर्देशांक के अतिरिक्त
+    </string>
+    <string name="preference_stamp_geo_address_prefer">जीपीएस निर्देशांक के बजाय पते को प्राथमिकता
+        दें
+    </string>
+    <string name="preference_stamp_geo_address_no">पता प्रदर्शित न करें</string>
+    <string name="preference_show_store_location">स्टोर स्थान डेटा आइकन दिखाएं</string>
+    <string name="preference_show_store_location_summary">स्थान डेटा (जियोटैगिंग) को सक्षम या अक्षम
+        करने के लिए ऑन-स्क्रीन आइकन दिखाना है या नहीं
+    </string>
+    <string name="preference_location_enable">स्थान डेटा संग्रहीत करें</string>
+    <string name="preference_location_disable">स्थान डेटा संग्रहीत करना बंद करें</string>
+    <string name="preference_histogram">एक हिस्टोग्राम दिखाएं</string>
+    <string name="preference_histogram_summary">स्क्रीन पर दिखाए गए रंगों का हिस्टोग्राम प्रदर्शित
+        करना है या नहीं\n%s
+    </string>
+    <string name="preference_histogram_off">बंद</string>
+    <string name="preference_histogram_rgb">आरजीबी रंग</string>
+    <string name="preference_histogram_luminance">ल्यूमिनेंस</string>
+    <string name="preference_histogram_value">मान (अधिकतम)</string>
+    <string name="preference_histogram_intensity">तीव्रता (औसत)</string>
+    <string name="preference_histogram_lightness">हल्कापन (न्यूनतम-अधिकतम का औसत)</string>
+    <string name="preference_focus_peaking">फोकस पीकिंग</string>
+    <string name="preference_focus_peaking_summary">यदि यह विकल्प सक्षम है, तो हाइलाइट्स इन-फोकस
+        किनारों (कंटूर) पर दिखाए जाएंगे। यह मुख्य रूप से मैनुअल फोकस के लिए उपयोगी है, और यह
+        निर्धारित करने में मदद करने के लिए इस्तेमाल किया जा सकता है कि छवि के कौन से क्षेत्र फोकस
+        में हैं।\n%s
+    </string>
+    <string name="preference_focus_peaking_off">बंद</string>
+    <string name="preference_focus_peaking_on">चालू</string>
+    <string name="preference_focus_peaking_color">फोकस पीकिंग रंग</string>
+    <string name="preference_focus_peaking_color_summary">इन-फोकस किनारों को हाइलाइट करने के लिए किस
+        रंग का उपयोग करना है\n%s
+    </string>
+    <string name="preference_zebra_stripes">ज़ेबरा धारियाँ दिखाएं</string>
+    <string name="preference_zebra_stripes_summary">यदि यह विकल्प सक्षम है, तो ज़ेबरा धारियाँ
+        ऑन-स्क्रीन खींची जाएंगी जो दिखाती हैं कि कैमरा पूर्वावलोकन कहाँ ओवरएक्सपोज़्ड है।\n%s
+    </string>
+    <string name="preference_zebra_stripes_off">बंद</string>
+
+    <string name="preference_zebra_stripes_70pc">70%</string>
+    <string name="preference_zebra_stripes_80pc">80%</string>
+    <string name="preference_zebra_stripes_90pc">90%</string>
+    <string name="preference_zebra_stripes_93pc">93%</string>
+    <string name="preference_zebra_stripes_95pc">95%</string>
+    <string name="preference_zebra_stripes_97pc">97%</string>
+    <string name="preference_zebra_stripes_98pc">98%</string>
+    <string name="preference_zebra_stripes_99pc">99%</string>
+    <string name="preference_zebra_stripes_100pc">100%</string>
+
+    <string name="remaining">शेष</string>
+    <string name="preference_preview">कैमरा पूर्वावलोकन…</string>
+    <string name="cycle_flash">फ्लैश चक्र</string>
+    <string name="preference_show_cycle_flash">फ्लैश आइकन दिखाएं</string>
+    <string name="preference_show_cycle_flash_summary">पॉपअप मेनू पर फ्लैश विकल्पों को प्रदर्शित
+        करने के बजाय, फ्लैश विकल्पों के माध्यम से साइकिल चलाने के लिए ऑन-स्क्रीन आइकन दिखाना है या
+        नहीं। ध्यान दें कि इस आइकन का उपयोग करते समय टॉर्च उपलब्ध नहीं है।
+    </string>
+    <string name="preference_raw_expo_bracketing">एक्सपो ब्रैकेटिंग के लिए रॉ की अनुमति दें</string>
+    <string name="preference_raw_expo_bracketing_summary">क्या रॉ विकल्प एक्सपो ब्रैकेटिंग फोटो मोड
+        (या एचडीआर मोड के लिए जब "एचडीआर मोड के लिए सभी छवियों को सहेजें" सक्षम हो) पर भी लागू होना
+        चाहिए। यदि यह विकल्प अक्षम है, तो उन फोटो मोड में केवल गैर-डीएनजी (जेपीईजी/आदि) छवियां सहेजी
+        जाएंगी।
+    </string>
+    <string name="preference_raw_focus_bracketing">फोकस ब्रैकेटिंग के लिए रॉ की अनुमति दें</string>
+    <string name="preference_raw_focus_bracketing_summary">क्या रॉ विकल्प फोकस ब्रैकेटिंग फोटो मोड
+        पर भी लागू होना चाहिए। यदि यह विकल्प अक्षम है, तो फोकस ब्रैकेटिंग फोटो मोड में केवल
+        गैर-डीएनजी (जेपीईजी/आदि) छवियां सहेजी जाएंगी।
+    </string>
+    <string name="cycle_raw">रॉ मोड चक्र</string>
+    <string name="preference_show_cycle_raw">रॉ आइकन दिखाएं</string>
+    <string name="preference_show_cycle_raw_summary">रॉ मोड के माध्यम से साइकिल चलाने के लिए
+        ऑन-स्क्रीन आइकन दिखाना है या नहीं
+    </string>
+    <string name="bluetooth_current_remote">वर्तमान रिमोट:</string>
+    <string name="bluetooth_scan">स्कैन</string>
+    <string name="preference_stamp_style_shadowed">छायांकित पाठ</string>
+    <string name="preference_stamp_style_plain">सादा पाठ</string>
+    <string name="preference_stamp_style_background">छायांकित पृष्ठभूमि वाला पाठ</string>
+    <string name="image_saving_notification">छवियां सहेजी जा रही हैं…</string>
+
+    <string name="finish_panorama">पैनोरमा समाप्त करें</string>
+    <string name="cancel_panorama">पैनोरमा रद्द करें</string>
+    <string name="panorama_cancelled">पैनोरमा रद्द किया गया</string>
+    <string name="failed_to_process_panorama">पैनोरमा छवि बनाने में विफल</string>
+    <string name="preference_panorama_crop">पैनोरमा ऑटो-क्रॉप</string>
+    <string name="preference_panorama_crop_summary">पैनोरमा मोड के लिए, लहरदार सीमाओं को हटाना है या
+        नहीं\n%s
+    </string>
+    <string name="panorama_info">पैनोरमा छवि लेने के लिए, अपने डिवाइस को पोर्ट्रेट ओरिएंटेशन में
+        पकड़ें, और पैनोरमा शुरू करने के लिए फोटो लेने के लिए क्लिक करें। फिर केंद्रित सफेद वृत्त को
+        नीले बिंदु पर ले जाने के लिए अपने डिवाइस को बाएँ या दाएँ घुमाएँ। प्रत्येक नई छवि कैप्चर होने
+        के बाद, प्रत्येक नए नीले बिंदु को कवर करने के लिए अपने डिवाइस को घुमाते रहें जो बदले में
+        दिखाई देता है।\n\nपैनोरमा को सहेजने के लिए टिक आइकन पर क्लिक करें, या रद्द करने के लिए क्रॉस
+        आइकन पर क्लिक करें।\n\nध्यान दें कि पैनोरमा फ़ोटो को संसाधित करने और सहेजने में समय लग सकता
+        है।
+    </string>
+    <string name="preference_panorama_save">पैनोरमा मूल छवियां</string>
+    <string name="preference_panorama_save_summary">पैनोरमा मोड में मूल छवियों को सहेजना है या नहीं।
+        ध्यान दें कि इससे पैनोरमा फ़ोटो सहेजना धीमा हो जाएगा। पैनोरमा के साथ समस्याओं की रिपोर्ट
+        करने के लिए उपयोगी XML फ़ाइल को सहेजने का विकल्प भी देता है।\n%s
+    </string>
+    <string name="preference_panorama_save_no">मूल छवियां न सहेजें</string>
+    <string name="preference_panorama_save_all">मूल छवियां सहेजें</string>
+    <string name="preference_panorama_save_all_plus_debug">मूल छवियां और डीबग XML सहेजें</string>
+    <string name="camera_id">आईडी</string> <!-- ID as in camera ID -->
+    <string name="exposure_compensation_seekbar">एक्सपोजर मुआवजे को बदलने के लिए सीकबार</string>
+    <string name="preference_image_format_summary">फ़ोटो सहेजने के लिए उपयोग किए जाने वाले फ़ाइल
+        प्रारूप का चयन करें। यह "मानक" (रॉ नहीं) फ़ोटो को प्रभावित करता है। केवल JPEG प्रारूप Exif
+        मेटाडेटा सहेजने का समर्थन करते हैं। अल्ट्राएचडीआर एनआर, एचडीआर, पैनो, एक्स- मोड के लिए
+        समर्थित नहीं है। ध्यान दें कि पीएनजी प्रारूप वास्तव में दोषरहित नहीं है, इसके बजाय इसे 100%%
+        गुणवत्ता पर जेपीईजी से परिवर्तित किया जाता है।\n%s
+    </string>
+    <string name="preference_camera_api">कैमरा एपीआई</string>
+    <string name="preference_camera_api_summary">एक्सपोजर, फोकस, व्हाइट बैलेंस के लिए मैनुअल मोड
+        जैसी अतिरिक्त सुविधाओं को सक्षम करने के लिए कैमरा2 एपीआई का चयन करें, साथ ही रॉ (यदि डिवाइस
+        द्वारा समर्थित हो)। एपीआई बदलने से पुनरारंभ होगा।\n%s
+    </string>
+    <string name="preference_camera_api_old">मूल कैमरा एपीआई</string>
+    <string name="preference_camera_api_camera2">कैमरा2 एपीआई</string>
+
+    <string name="preference_video_profile_gamma_1_6">1.6</string>
+    <string name="preference_video_profile_gamma_1_8">1.8</string>
+    <string name="preference_video_profile_gamma_1_9">1.9</string>
+    <string name="preference_video_profile_gamma_2_0">2.0</string>
+    <string name="preference_video_profile_gamma_2_1">2.1</string>
+    <string name="preference_video_profile_gamma_2_2">2.2</string>
+    <string name="preference_video_profile_gamma_2_3">2.3</string>
+    <string name="preference_video_profile_gamma_2_4">2.4</string>
+    <string name="preference_video_profile_gamma_2_6">2.6</string>
+    <string name="preference_video_profile_gamma_2_8">2.8</string>
+    <string name="preference_video_jtvideo">जेटीवीडियो</string>
+    <string name="preference_video_jtlog">जेटीलॉग</string>
+    <string name="preference_video_jtlog2">जेटीलॉग2</string>
+
+    <string name="preference_audio_control_summary">शोर का पता चलने पर फोटो/वीडियो लें।
+        सक्षम होने पर, सुनने को शुरू/बंद करने के लिए ऑन-स्क्रीन माइक्रोफ़ोन बटन का उपयोग करें।
+        \n%s
+    </string>
+
+    <string name="intro_text">फोकस करने के लिए स्पर्श करें, और फ़ोटो लेने के लिए गोलाकार नीले शटर
+        बटन को दबाएं।
+        \n\nएसडी कार्ड में सहेजने के लिए, सेटिंग्स/अधिक कैमरा नियंत्रण/"स्टोरेज एक्सेस फ्रेमवर्क"
+        देखें।
+        अधिक सहायता के लिए, सेटिंग्स से "ऑनलाइन सहायता" पर क्लिक करें।
+    </string>
+    <string name="preference_select_remote">रिमोट डिवाइस चुनें</string>
+    <string name="preference_video_rec709">REC709</string>
+    <string name="preference_video_srgb">sRGB</string>
+    <string name="preference_video_gamma">गामा</string>
+    <string name="preference_video_profile_gamma">वीडियो गामा मान</string>
+    <string name="preference_video_profile_gamma_summary">वीडियो के लिए उपयोग करने के लिए गामा मान
+        यदि वीडियो चित्र प्रोफ़ाइल गामा पर सेट है\n%s
+    </string>
+    <string name="preference_immersive_mode_off">बंद</string>
+    <string name="preference_immersive_mode_navigation">ऑन-स्क्रीन वर्चुअल नेविगेशन बटन छिपाएं
+    </string>
+    <string name="preference_immersive_mode_gui">जीयूआई छिपाएं</string>
+    <string name="preference_immersive_mode_everything">सब कुछ छिपाएं</string>
+    <string name="preference_ghost_image_alpha">घोस्ट छवि अपारदर्शिता</string>
+    <string name="preference_ghost_image_alpha_summary">घोस्ट छवियों के लिए उपयोग करने के लिए अल्फा
+        मान। कम मान का अर्थ है अधिक पारदर्शी, उच्च का अर्थ है अधिक अपारदर्शी।\n%s
+    </string>
+    <string name="preference_zebra_stripes_foreground_color">ज़ेबरा धारियों का अग्रभूमि रंग</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">ज़ेबरा धारियाँ दिखाते समय
+        अग्रभूमि धारी के लिए उपयोग करने वाला रंग।\n%s
+    </string>
+    <string name="preference_zebra_stripes_background_color">ज़ेबरा धारियों का पृष्ठभूमि रंग
+    </string>
+    <string name="preference_zebra_stripes_background_color_summary">ज़ेबरा धारियाँ दिखाते समय
+        पृष्ठभूमि धारी के लिए उपयोग करने वाला रंग।\n%s
+    </string>
+    <string name="preference_zebra_stripes_color_black">काला</string>
+    <string name="preference_zebra_stripes_color_red">लाल</string>
+    <string name="preference_zebra_stripes_color_orange">नारंगी</string>
+    <string name="preference_zebra_stripes_color_transparent">पारदर्शी</string>
+    <string name="preference_zebra_stripes_color_white">सफ़ेद</string>
+
+    <string name="external_camera">बाहरी कैमरा</string>
+    <string name="ultrawide">अल्ट्रा-वाइड</string>
+    <string name="switch_to_external_camera">बाहरी कैमरे पर स्विच करें</string>
+    <string name="switch_to_unknown_camera">कैमरा स्विच करें</string>
+    <string name="switch_multi_camera">एकाधिक कैमरों के बीच स्विच करें</string>
+    <string name="preference_multi_cam_button">एकाधिक कैमरे आइकन</string>
+    <string name="preference_multi_cam_button_summary">यदि सक्षम किया गया है, तो फ्रंट/बैक कैमरों के
+        बीच स्विच करने और कई फ्रंट/बैक फेसिंग कैमरों के बीच स्विच करने के लिए अलग-अलग बटन का उपयोग
+        करें। यदि अक्षम किया गया है, तो स्विच कैमरा आइकन सभी कैमरों के माध्यम से चक्र करेगा।
+    </string>
+    <string name="preference_show_camera_id">कैमरा आईडी दिखाएं</string>
+    <string name="preference_show_camera_id_summary">स्क्रीन पर वर्तमान कैमरा आईडी नंबर प्रदर्शित
+        करें
+    </string>
+    <string name="preference_allow_long_press">लंबी प्रेस क्रियाओं की अनुमति दें</string>
+    <string name="preference_allow_long_press_summary">लंबी प्रेस क्रियाओं की अनुमति देना है या नहीं
+        (जैसे, सहेजने का स्थान बदलने के लिए गैलरी पर लंबी प्रेस)।
+    </string>
+
+    <string name="aperture">एपर्चर</string>
+    <string name="error_features_4k">4K यूएचडी</string>
+    <string name="error_features_bitrate">बिटरेट</string>
+    <string name="error_features_frame_rate">फ्रेम दर</string>
+    <string name="error_features_slow_motion">धीमी गति</string>
+    <string name="preference_comment_ypr">याव, पिच और रोल स्टोर करें</string>
+    <string name="preference_comment_ypr_summary">डिवाइस के याव, पिच और रोल को फोटो के Exif
+        उपयोगकर्ता टिप्पणी में संग्रहीत करें (केवल JPEG प्रारूप)
+    </string>
+    <string name="array_seekbar_preference_seekbar">वर्तमान वरीयता मान बदलने के लिए सीकबार</string>
+    <string name="preference_audio_control_none">कोई नहीं</string>
+    <string name="preference_audio_control_noise">जोर शोर</string>
+    <string name="preference_audio_control_voice">आवाज आदेश: "चीज़"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+    <string name="preference_camera2_dummy_capture_hack">डमी कैप्चर एचडीआर/एक्सपो फिक्स सक्षम करें
+    </string>
+    <string name="preference_camera2_dummy_capture_hack_summary">यदि आपके डिवाइस में एचडीआर या
+        एक्सपो फोटो मोड के साथ फोटो लेते समय समस्याएं हैं (यदि एक्सपो छवियां समान एक्सपोजर के साथ
+        आती हैं) तो इसे सक्षम करने का प्रयास करें। केवल तभी प्रासंगिक है जब नीचे फास्ट एचडीआर/एक्सपो
+        विकल्प भी सक्षम हो।
+    </string>
+    <string name="permission_rationale_bluetooth_scan_connect">ब्लूटूथ ले रिमोट कंट्रोल डिवाइस खोजने
+        और कनेक्ट करने के लिए ब्लूटूथ स्कैन/कनेक्ट अनुमतियां आवश्यक हैं।
+    </string>
+    <string name="unknown_device_no_permission">अज्ञात डिवाइस (ब्लूटूथ कनेक्ट अनुमति उपलब्ध नहीं
+        है)
+    </string>
+
+    <string name="photo_mode_x_auto">एक्स-ऑटो</string>
+    <string name="photo_mode_x_auto_full">ऑटो</string>
+    <string name="photo_mode_x_hdr">एक्स-एचडीआर</string>
+    <string name="photo_mode_x_hdr_full">एचडीआर</string>
+    <string name="photo_mode_x_night">एक्स-नाइट</string>
+    <string name="photo_mode_x_night_full">रात</string>
+    <string name="photo_mode_x_bokeh">एक्स-बोकेह</string>
+    <string name="photo_mode_x_bokeh_full">बोकेह</string>
+    <string name="photo_mode_x_beauty">एक्स-बीटी</string>
+    <string name="photo_mode_x_beauty_full">सौंदर्य / चेहरा सुधार</string>
+    <string name="preference_hdr_tonemapping">एचडीआर टोनमैपिंग</string>
+    <string name="preference_hdr_tonemapping_summary">एचडीआर फोटो मोड में टोनमैपिंग के लिए उपयोग
+        करने वाला एल्गोरिदम\n%s
+    </string>
+    <string name="preference_hdr_tonemapping_clamp">सरल क्लैंप</string>
+    <string name="preference_hdr_tonemapping_exponential">घातीय</string>
+    <string name="preference_hdr_tonemapping_default">डिफ़ॉल्ट</string>
+    <string name="preference_remove_device_exif">डिवाइस EXIF डेटा हटाएं</string>
+    <string name="preference_remove_device_exif_summary">JPEG फ़ोटो से डिवाइस EXIF मेटाडेटा हटाना है
+        या नहीं। यह EXIF मेटाडेटा लागू करने वाली अन्य सेटिंग्स द्वारा लागू किए गए exif टैग को नहीं
+        हटाएगा (जैसे स्थान/जियोटैगिंग)। वे अन्य विकल्प स्वतंत्र हैं और इस सेटिंग को ओवरराइड करेंगे।
+        रॉ/डीएनजी और वीडियो प्रभावित नहीं होते हैं।\n%s
+    </string>
+    <string name="preference_remove_device_exif_off">डिवाइस EXIF डेटा न हटाएं</string>
+    <string name="preference_remove_device_exif_on">डिवाइस EXIF डेटा हटाएं</string>
+    <string name="preference_remove_device_exif_keep_datetime">तिथि/समय को छोड़कर हटाएं</string>
+
+    <string name="preference_hdr_tonemapping_aces">ACES</string>
+
+    <string name="choose_camera">कैमरा चुनें:</string>
+    <string name="preference_show_focus_peaking">फोकस पीकिंग आइकन दिखाएं</string>
+    <string name="preference_show_focus_peaking_summary">फोकस पीकिंग को सक्षम या अक्षम करने के लिए
+        ऑन-स्क्रीन आइकन दिखाना है या नहीं। जब फोकस पीकिंग सक्षम होता है, तो हाइलाइट्स इन-फोकस
+        किनारों (कंटूर) पर दिखाए जाएंगे। सेटिंग्स/कैमरा पूर्वावलोकन/"फोकस पीकिंग" देखें।
+    </string>
+    <string name="focus_peaking_enable">फोकस पीकिंग सक्षम करें</string>
+    <string name="focus_peaking_disable">फोकस पीकिंग अक्षम करें</string>
+    <string name="preference_photo_optimise_focus">इसके लिए फोकस अनुकूलित करें…</string>
+    <string name="preference_photo_optimise_focus_summary">फ़ोटो लेते समय, विलंबता या गुणवत्ता के
+        लिए अनुकूलन करना है या नहीं। केवल निरंतर फोकस मोड का उपयोग करते समय प्रासंगिक। गुणवत्ता के
+        लिए अनुकूलन यह सुनिश्चित करता है कि दृश्य केंद्रित है, लेकिन फ़ोटो लेने में देरी हो सकती
+        है।\n%s
+    </string>
+    <string name="preference_photo_optimise_focus_latency">विलंबता</string>
+    <string name="preference_photo_optimise_focus_quality">गुणवत्ता</string>
+    <string name="preference_save_preshots">पूर्वावलोकन शॉट सहेजें</string>
+    <string name="preference_save_preshots_summary">सक्षम होने पर, प्रत्येक फोटो के साथ एक छोटा
+        वीडियो सहेजा जाएगा, जिसमें फोटो लेने से पहले के क्षण के शॉट होंगे। एक्सपो, फोकस ब्रैकेटिंग
+        या पैनोरमा मोड के लिए समर्थित नहीं है।\n%s
+    </string>
+    <string name="telephoto">टेलीफोटो</string>
+    <string name="auto_lens">ऑटो लेंस</string>
+    <string name="lens">लेंस</string>
+    <string name="physical_cameras_info">&#9432; डिफ़ॉल्ट रूप से, एक कैमरा ऑटो लेंस चयन का उपयोग
+        करता है, जिसका अर्थ है कि ज़ूम स्तर नियंत्रित करता है कि किस लेंस का उपयोग किया जाता है।
+        हालाँकि यह मेनू आपको स्पष्ट रूप से यह चुनने की भी अनुमति देता है कि किस लेंस का उपयोग किया
+        जा रहा है।
+    </string>
+    <string name="focus_bracketing_auto_source_distance">ऑटो स्रोत</string>
+    <string name="preference_allow_haptic_feedback">कंपन प्रतिक्रिया की अनुमति दें</string>
+    <string name="preference_allow_haptic_feedback_summary">हैप्टिक कंपन प्रतिक्रिया की अनुमति देना
+        है या नहीं, उदाहरण के लिए कुछ नियंत्रणों को समायोजित करते समय। ध्यान दें कि इसके लिए आपके
+        डिवाइस की सेटिंग्स में टच इंटरैक्शन भी सक्षम होना आवश्यक है।
+    </string>
+    <string name="preference_using_saf">स्टोरेज एक्सेस फ्रेमवर्क</string>
+    <string name="color_effects">रंग प्रभाव</string>
+    <string name="preference_languages">भाषाएँ</string>
+    <string name="s_photo_mode">फोटो मोड</string>
+    <string name="s_video_mode">वीडियो मोड</string>
+    <string name="photo_settings">फोटो सेटिंग्स</string>
+    <string name="more_settings">अधिक सेटिंग्स</string>
+    <string name="resolution">रिज़ॉल्यूशन</string>
+    <string name="raw_jpeg">रॉ+जेपीईजी</string>
+    <string name="jpeg_only">केवल जेपीईजी</string>
+    <string name="no_raw">कोई रॉ नहीं</string>
+    <string name="only_raw">केवल रॉ</string>
+    <string name="jpeg">जेपीईजी</string>
+    <string name="raw_photos">रॉ तस्वीरें</string>
+    <string name="more_light">अधिक प्रकाश</string>
+    <string name="video_settings">वीडियो सेटिंग्स</string>
+    <string name="Night">रात</string>
+    <string name="photo_mode_focus">फोकस</string>
+    <string name="photo_mode_standard_photo">फोटो</string>
+    <string name="brightness">चमक</string>
+    <string name="s_white_balance">सफ़ेद संतुलन</string>
+    <string name="s_exposure">एक्सपोजर</string>
+    <string name="s_shutter_speed">शटर गति</string>
+    <string name="s_iso">आईएसओ</string>
+    <string name="speed">गति</string>
+    <string name="focus_mode_macro">मैक्रो</string>
+    <string name="focus_mode_locked">बंद</string>
+    <string name="focus_mode_infinity">अनंत</string>
+    <string name="focus_mode_manual2">मैनुअल</string>
+    <string name="focus_mode_edof">ईडीओएफ</string>
+    <string name="focus_mode_continuous_picture">सीपी</string>
+    <string name="focus_mode_auto">ऑटो</string>
+    <string name="scene_modes">दृश्य मोड</string>
+    <string name="reset_iso_auto">आईएसओ ऑटो रीसेट करें</string>
+    <string name="shutter">शटर</string>
+    <string name="action_reset_all_settings">सभी सेटिंग्स रीसेट करें</string>
+    <string name="awb_lock">लॉक</string>
+    <string name="preference_category_photo_settings">फोटो सेटिंग्स</string>
+    <string name="preference_category_video_settings">वीडियो सेटिंग्स</string>
+    <string name="preference_category_location_settings">स्थान सेटिंग्स</string>
+    <string name="preference_category_processing_settings">प्रसंस्करण सेटिंग्स</string>
+    <string name="preference_category_on_screen_gui_settings">ऑन स्क्रीन जीयूआई सेटिंग्स</string>
+    <string name="preference_category_finder_preview">व्यू फाइंडर सेटिंग्स</string>
+    <string name="preference_show_zoom_text">वर्तमान ज़ूम जानकारी दिखाएं</string>
+    <string name="preference_video_bitrate2">वीडियो बिटरेट</string>
+    <string name="preference_video_fps2">वीडियो फ्रेम दर</string>
+    <string name="video_bitrate">वीडियो बिटरेट</string>
+    <string name="video_frame_rate">फ्रेम दर</string>
+    <string name="preference_category_camera_preview">कैमरा पूर्वावलोकन</string>
+    <string name="repeat">दोहराएं</string>
+    <string name="msg_upgrade_not_support">यह सुविधा अगले अपडेट में आएगी।</string>
+    <string name="auto_wb">ऑटो डब्ल्यूबी</string>
+    <string name="auto">ऑटो</string>
+    <string name="focus">फोकस</string>
+    <string name="close">बंद करें</string>
+    <string name="pro_version">(प्रो संस्करण)</string>
+    <string name="pro_version_features">यह सुविधा केवल प्रो उपयोगकर्ताओं के लिए उपलब्ध है।</string>
+    <string name="dialog_pro_version_title">✨ प्रीमियम सुविधा ✨</string>
+    <string name="dialog_pro_version_msg">यह विकल्प प्रो पैक का हिस्सा है। पूर्ण कैमरा क्षमता को अनलॉक करने के लिए अपग्रेड करें।</string>
+    <string name="unlock_pro">प्रो अनलॉक करें</string>
+    <string name="later">बाद में</string>
+    <string name="s_focus">फोकस</string>
+    <string name="reset_all">सब रीसेट करो</string>
+</resources>

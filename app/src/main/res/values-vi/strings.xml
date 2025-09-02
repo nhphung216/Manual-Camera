@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ManualCamera</string> <!-- shouldn't be translated -->
+    <string name="app_name">Manual Camera</string> <!-- shouldn't be translated -->
     <string name="action_settings">Cài đặt</string>
     <string name="action_popup">Cài đặt cửa sổ bật lên</string>
     <string name="intro_ok">OK (Thông báo này không hiển thị nữa)</string>
 
     <string name="on">Bật</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
     <string name="off">Tắt</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
-    
+
     <string name="choose_save_location">Chọn vị trí lưu:</string>
     <string name="clear_folder_history">Xóa lịch sử thư mục</string>
     <string name="clear_folder_history_question">Bạn có chắc muốn xóa lịch sử thư mục không?</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">Hiệu ứng màu</string>
     <string name="scene_mode">Chế độ cảnh</string>
     <string name="white_balance">Cân bằng trắng</string>
-    
+
     <string name="angle">Góc</string>
     <string name="direction">Hướng</string>
     <string name="failed_to_open_camera_1">KHÔNG THỂ MỞ MÁY ẢNH.</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">Bộ nhớ khả dụng</string>
     <string name="screen_lock_message_1">[ĐÃ KHÓA:</string>
     <string name="screen_lock_message_2">Trượt để mở khóa]</string>
-    
+
     <string name="failed_to_stamp">Không thể đóng dấu hình ảnh</string>
-    <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-    
+    <string name="metres_abbreviation">m</string>
+
     <string name="preference_category_camera_effects">Hiệu ứng máy ảnh</string>
     <string name="preference_auto_stabilise">Chống rung tự động</string>
     <string name="preference_auto_stabilise_summary">Hình ảnh sẽ được tự động điều chỉnh để đạt mức cân bằng (chụp ảnh sẽ chậm hơn và có thể bị lỗi trên các thiết bị có bộ nhớ quá thấp)</string>
@@ -96,7 +96,7 @@
     <string name="preference_timer_beep_summary">Phát tiếng bíp khi đếm ngược thời gian hoặc chế độ chụp liên tục bị trì hoãn</string>
     <string name="preference_timer_speak">Tiếng nói</string>
     <string name="preference_timer_speak_summary">Phát tiếng nói khi đếm ngược thời gian hoặc chế độ chụp liên tục bị trì hoãn (từ 60 giây)</string>
-    <string name="preference_burst_mode">Chụp liên tục</string> <!-- preference is called "burst" for historical reasons, but is more of a repeat mode; also used in popup menu, so shouldn't be too long a string -->
+    <string name="preference_burst_mode">Chụp liên tục</string>
     <string name="preference_burst_interval">Khoảng thời gian chụp liên tục</string>
     <string name="preference_screen_camera_controls_more">Thêm tùy chọn điều khiển máy ảnh</string>
     <string name="preference_touch_capture">Chạm để chụp</string>
@@ -165,7 +165,7 @@
     <string name="preference_keep_display_on_summary">Nếu kích hoạt, màn hình sẽ không tắt khi Giao diện người dùng chính của ManualCamera đang hoạt động</string>
     <string name="preference_max_brightness">Buộc độ sáng tối đa</string>
     <string name="preference_max_brightness_summary">Bắt buộc màn hình hiển thị ở độ sáng tối đa, thay vì mặc định của thiết bị</string>
-    
+
     <string name="preference_category_camera_quality">Cài đặt ảnh và video</string>
     <string name="preference_screen_photo_settings">Cài đặt ảnh</string>
     <string name="preference_screen_video_settings">Cài đặt video</string>
@@ -220,7 +220,7 @@
     <string name="preference_record_audio_channels_summary">Thiết lập âm thanh đơn hoặc nổi (chỉ hỗ trợ âm thanh nổi trên một số thiết bị)\n%s</string>
     <string name="preference_video_flash">Nháy đèn flash khi quay video</string>
     <string name="preference_video_flash_summary">Nếu kích hoạt, đèn flash sẽ nháy khi quay video (có thể được sử dụng để cảnh báo camera vẫn đang quay ở khoảng cách xa)</string>
-    
+
     <string name="preference_category_online">Xem thêm</string>
     <string name="preference_online_help">Trợ giúp trực tuyến</string>
     <string name="preference_online_help_summary">Truy cập trang chủ ManualCamera bằng trình duyệt của bạn</string>
@@ -237,7 +237,7 @@
     <string name="about_available">Khả dụng</string>
     <string name="about_not_available">Không khả dụng</string>
     <string name="about_copy_to_clipboard">Chép vào bảng tạm</string>
-    
+
     <string name="take_photo">Chụp ảnh</string>
     <string name="gallery">Thư viện</string>
     <string name="exposure">Phơi sáng</string>
@@ -250,7 +250,7 @@
     <string name="switch_to_photo">Chuyển sang chế độ ảnh</string>
     <string name="trash">Xóa ảnh cuối</string>
     <string name="share">Chia sẻ ảnh</string>
-    
+
     <string name="parent_folder">Thư mục gốc</string>
     <string name="new_folder">Thư mục mới</string>
     <string name="cant_write_folder">Không thể ghi vào thư mục này</string>
@@ -291,7 +291,7 @@
     <string name="photo_mode_hdr">HDR</string> <!-- keep short, as this shows in the popup menu -->
     <string name="photo_mode_expo_bracketing">EXPO</string> <!-- keep short, as this shows in the popup menu -->
     <string name="photo_mode_expo_bracketing_full">Phơi sáng mở rộng</string>
-     <!-- keep short, as this shows in the popup menu; shouldn't be translated -->
+    <!-- keep short, as this shows in the popup menu; shouldn't be translated -->
     <string name="photo_mode_fast_burst_full">Chụp nhanh</string>
     <string name="photo_mode_noise_reduction">NR</string> <!-- keep short, as this shows in the popup menu; probably shouldn't be translated? -->
     <string name="photo_mode_noise_reduction_full">Giảm nhiễu</string>
@@ -470,7 +470,7 @@
     <string name="preference_stamp_dateformat_mmddyyyy">mm/dd/yyyy</string>
     <string name="preference_stamp_dateformat_none">Không</string>
 
-    <string name="preference_fast_burst_n_images">Số ảnh</string>
+    <string name="preference_fast_burst_n_images">Số ảnh chụp nhanh</string>
     <string name="preference_fast_burst_n_images_entries_2">2</string>
     <string name="preference_fast_burst_n_images_entries_3">3</string>
     <string name="preference_fast_burst_n_images_entries_4">4</string>
@@ -787,6 +787,243 @@
 
     <string name="preference_audio_control_none">Không</string>
     <string name="preference_audio_control_noise">Tiếng động lớn</string>
-    <string name="preference_audio_control_voice">Tiếng cheese</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+    <string name="preference_audio_control_voice">Tiếng cheese</string>
 
+    <string name="s_photo_mode">Chế độ chụp ảnh</string>
+    <string name="s_video_mode">Chế độ quay video</string>
+    <string name="photo_settings">Cài đặt ảnh</string>
+    <string name="more_settings">Cài đặt khác</string>
+    <string name="resolution">Độ phân giải</string>
+    <string name="raw_jpeg">RAW/JPEG</string>
+    <string name="jpeg_only">Chỉ JPEG</string>
+    <string name="no_raw">Không dùng RAW</string>
+    <string name="only_raw">Chỉ RAW</string>
+    <string name="jpeg">JPEG</string>
+    <string name="raw_photos">Ảnh RAW</string>
+    <string name="more_light">Nhiều ánh sáng hơn</string>
+    <string name="video_settings">Cài đặt video</string>
+    <string name="Night">Ban đêm</string>
+    <string name="photo_mode_focus">Lấy nét</string>
+    <string name="photo_mode_standard_photo">Chụp ảnh</string>
+    <string name="brightness">Độ sáng</string>
+    <string name="s_white_balance">Cân bằng trắng</string>
+    <string name="s_exposure">Phơi sáng</string>
+    <string name="s_shutter_speed">Tốc độ màn trập</string>
+    <string name="s_iso">ISO</string>
+    <string name="speed">Tốc độ</string>
+    <string name="focus_mode_macro">Macro</string>
+    <string name="focus_mode_locked">Khóa</string>
+    <string name="focus_mode_infinity">Vô cực</string>
+    <string name="focus_mode_manual2">Thủ công</string>
+    <string name="focus_mode_edof">EDOF</string>
+    <string name="focus_mode_continuous_picture">Tự động liên tục</string>
+    <string name="focus_mode_auto">Tự động</string>
+    <string name="scene_modes">Chế độ cảnh</string>
+    <string name="reset_iso_auto">Đặt lại ISO tự động</string>
+    <string name="shutter">Màn trập</string>
+    <string name="action_reset_all_settings">Khôi phục tất cả cài đặt</string>
+    <string name="awb_lock">Khóa</string>
+    <string name="preference_category_photo_settings">Cài đặt ảnh</string>
+    <string name="preference_category_video_settings">Cài đặt video</string>
+    <string name="preference_category_location_settings">Cài đặt vị trí</string>
+    <string name="preference_category_processing_settings">Cài đặt xử lý</string>
+    <string name="preference_category_on_screen_gui_settings">Giao diện hiển thị</string>
+    <string name="preference_category_finder_preview">Cài đặt khung ngắm</string>
+    <string name="preference_show_zoom_text">Hiển thị thông tin zoom hiện tại</string>
+    <string name="preference_video_bitrate2">Chất lượng video (bitrate)</string>
+    <string name="preference_video_fps2">Tốc độ khung hình</string>
+    <string name="video_bitrate">Bitrate video</string>
+    <string name="video_frame_rate">Tốc độ khung hình</string>
+    <string name="preference_category_camera_preview">Xem trước camera</string>
+    <string name="repeat">Lặp lại</string>
+    <string name="msg_upgrade_not_support">Tính năng này sẽ có trong bản cập nhật sắp tới.</string>
+    <string name="auto_wb">Cân bằng trắng tự động</string>
+    <string name="auto">Tự động</string>
+    <string name="focus">Lấy nét</string>
+    <string name="close">Đóng</string>
+    <string name="pro_version">(Phiên bản Pro)</string>
+    <string name="pro_version_features">Tính năng này chỉ dành cho người dùng Pro.</string>
+    <string name="dialog_pro_version_title">✨ Tính năng cao cấp ✨</string>
+    <string name="dialog_pro_version_msg">Tùy chọn này là một phần của gói Pro. Nâng cấp để mở khóa toàn bộ chức năng máy ảnh.</string>
+    <string name="unlock_pro">Mở khóa Pro</string>
+    <string name="later">Để sau</string>
+    <string name="preference_hdr_tonemapping">Ánh xạ tông HDR</string>
+    <string name="preference_hdr_tonemapping_summary">Thuật toán sử dụng để ánh xạ tông trong chế độ chụp ảnh HDR\n%s</string>
+    <string name="preference_hdr_tonemapping_clamp">Clamp đơn giản</string>
+    <string name="preference_hdr_tonemapping_exponential">Hàm mũ</string>
+    <string name="preference_hdr_tonemapping_default">Mặc định</string>
+    <string name="preference_hdr_tonemapping_aces">ACES</string>
+    <string name="preference_remove_device_exif">Xóa dữ liệu EXIF thiết bị</string>
+    <string name="preference_remove_device_exif_summary">Có nên xóa siêu dữ liệu EXIF của thiết bị khỏi ảnh JPEG. Việc này không ảnh hưởng đến các thẻ EXIF khác như vị trí hoặc gắn thẻ địa lý. Các tùy chọn đó là độc lập và sẽ ghi đè thiết lập này. Không áp dụng cho ảnh RAW/DNG và video.\n%s</string>
+    <string name="preference_remove_device_exif_off">Không xóa EXIF của thiết bị</string>
+    <string name="preference_remove_device_exif_on">Xóa EXIF của thiết bị</string>
+    <string name="preference_remove_device_exif_keep_datetime">Xóa ngoại trừ ngày/giờ</string>
+    <string name="choose_camera">Chọn máy ảnh:</string>
+    <string name="preference_show_focus_peaking">Hiện biểu tượng Focus Peaking</string>
+    <string name="preference_show_focus_peaking_summary">Có nên hiển thị biểu tượng trên màn hình để bật/tắt tính năng focus peaking. Khi bật, các đường viền đang lấy nét sẽ được đánh dấu. Xem thêm trong Cài đặt/Xem trước máy ảnh/"Focus peaking".</string>
+    <string name="focus_peaking_enable">Bật focus peaking</string>
+    <string name="focus_peaking_disable">Tắt focus peaking</string>
+    <string name="preference_photo_optimise_focus">Tối ưu lấy nét cho…</string>
+    <string name="preference_photo_optimise_focus_summary">Khi chụp ảnh, lựa chọn giữa tối ưu độ trễ hoặc chất lượng. Chỉ áp dụng khi dùng chế độ lấy nét liên tục. Tối ưu cho chất lượng đảm bảo ảnh được lấy nét kỹ, nhưng có thể gây trễ khi chụp.\n%s</string>
+    <string name="preference_photo_optimise_focus_latency">Độ trễ</string>
+    <string name="preference_photo_optimise_focus_quality">Chất lượng</string>
+    <string name="preference_save_preshots">Lưu ảnh trước khi chụp</string>
+    <string name="preference_save_preshots_summary">Khi bật, một đoạn video ngắn sẽ được lưu kèm với mỗi ảnh, ghi lại khoảnh khắc trước khi chụp. Không hỗ trợ với các chế độ phơi sáng, lấy nét bracketing hoặc panorama.\n%s</string>
+    <string name="telephoto">Tele</string>
+    <string name="auto_lens">Ống kính tự động</string>
+    <string name="lens">Ống kính</string>
+    <string name="physical_cameras_info">&#9432; Theo mặc định, máy ảnh sử dụng lựa chọn ống kính tự động, nghĩa là mức thu phóng sẽ quyết định ống kính nào được sử dụng. Tuy nhiên, bạn có thể chọn cụ thể ống kính tại đây.</string>
+    <string name="focus_bracketing_auto_source_distance">Nguồn tự động</string>
+    <string name="preference_allow_haptic_feedback">Cho phép phản hồi rung</string>
+    <string name="preference_allow_haptic_feedback_summary">Có cho phép phản hồi rung khi thực hiện một số điều chỉnh. Lưu ý: điều này còn phụ thuộc vào việc bật phản hồi cảm ứng trong cài đặt thiết bị.</string>
+    <string name="s_focus">Lấy nét</string>
+    <string name="preference_using_saf">Bộ khung truy cập bộ nhớ (SAF)</string>
+    <string name="color_effects">Hiệu ứng màu</string>
+    <string name="preference_languages">Ngôn ngữ</string>
+    <string name="photo_mode_fast_burst" translatable="false">[]]]</string>
+    <string name="cycle_flash">Chuyển chế độ flash</string>
+    <string name="preference_show_cycle_flash">Hiển thị biểu tượng flash</string>
+    <string name="preference_show_cycle_flash_summary">Có hiển thị biểu tượng trên màn hình để chuyển qua các chế độ flash thay vì hiển thị trong menu pop‑up. Lưu ý là đèn pin (torch) sẽ không khả dụng khi dùng biểu tượng này.</string>
+
+    <string name="preference_raw_expo_bracketing">Cho phép RAW trong expo bracketing</string>
+    <string name="preference_raw_expo_bracketing_summary">Cho phép chế độ RAW cũng áp dụng cho chế độ chụp expo bracketing (hoặc HDR khi tùy chọn “Lưu tất cả ảnh HDR” được bật). Nếu tắt, chỉ ảnh không phải DNG (JPEG…) mới được lưu.</string>
+
+    <string name="preference_raw_focus_bracketing">Cho phép RAW trong focus bracketing</string>
+    <string name="preference_raw_focus_bracketing_summary">Có cho phép RAW áp dụng cho chế độ chụp focus bracketing không. Nếu tắt, chỉ ảnh không phải DNG sẽ được lưu trong các chế độ focus bracketing.</string>
+
+    <string name="cycle_raw">Chuyển chế độ RAW</string>
+    <string name="preference_show_cycle_raw">Hiển thị biểu tượng RAW</string>
+    <string name="preference_show_cycle_raw_summary">Có hiển thị biểu tượng trên màn hình để chuyển qua các chế độ RAW không.</string>
+
+    <string name="bluetooth_current_remote">Remote hiện tại:</string>
+    <string name="bluetooth_scan">Quét</string>
+
+    <string name="preference_stamp_style_background">Chữ có nền mờ</string>
+
+    <string name="image_saving_notification">Đang lưu ảnh…</string>
+
+    <string name="finish_panorama">Hoàn thành panorama</string>
+    <string name="cancel_panorama">Hủy panorama</string>
+    <string name="panorama_cancelled">Panorama đã bị hủy</string>
+    <string name="failed_to_process_panorama">Không thể tạo ảnh Panorama</string>
+    <string name="preference_stamp_geo_address">Dùng địa chỉ</string>
+    <string name="preference_stamp_geo_address_both">Hiển thị địa chỉ nếu có thể, bên cạnh tọa độ GPS</string>
+    <string name="preference_stamp_geo_address_prefer">Ưu tiên địa chỉ hơn tọa độ GPS</string>
+    <string name="preference_stamp_geo_address_no">Không hiển thị địa chỉ</string>
+    <string name="preference_show_store_location">Hiển thị biểu tượng lưu vị trí</string>
+    <string name="preference_show_store_location_summary">Hiển thị biểu tượng trên màn hình để bật/tắt lưu dữ liệu vị trí (geotagging)</string>
+    <string name="preference_location_enable">Lưu dữ liệu vị trí</string>
+    <string name="preference_location_disable">Dừng lưu dữ liệu vị trí</string>
+    <string name="preference_histogram">Hiển thị biểu đồ</string>
+    <string name="preference_histogram_summary">Hiển thị biểu đồ màu sắc trên màn hình\n%s</string>
+    <string name="preference_histogram_off">Tắt</string>
+    <string name="preference_histogram_rgb">Màu RGB</string>
+    <string name="preference_histogram_luminance">Độ sáng</string>
+    <string name="preference_histogram_value">Giá trị (Tối đa)</string>
+    <string name="preference_histogram_intensity">Cường độ (Trung bình)</string>
+    <string name="preference_histogram_lightness">Độ sáng (Trung bình min‑max)</string>
+    <string name="preference_zebra_stripes">Hiển thị sọc zebra</string>
+    <string name="preference_zebra_stripes_summary">Nếu bật, sẽ hiển thị sọc zebra ở vùng ảnh xem trước bị cháy sáng.\n%s</string>
+    <string name="preference_zebra_stripes_off">Tắt</string>
+    <string name="preference_focus_peaking">Focus peaking</string>
+    <string name="preference_focus_peaking_summary">Nếu bật, sẽ làm nổi bật các cạnh đang được lấy nét. Hữu ích khi lấy nét thủ công.\n%s</string>
+    <string name="preference_focus_peaking_off">Tắt</string>
+    <string name="preference_focus_peaking_on">Bật</string>
+    <string name="preference_focus_peaking_color">Màu focus peaking</string>
+    <string name="preference_focus_peaking_color_summary">Màu để làm nổi bật các cạnh rõ nét\n%s</string>
+    <string name="permission_rationale_storage">Cần có quyền đọc/ghi bộ nhớ để lưu các tệp kết quả như ảnh hoặc video</string>
+    <string name="permission_rationale_location">Cần có quyền vị trí để gắn thẻ địa lý (lưu trữ dữ liệu vị trí trong ảnh và video, bao gồm các tùy chọn dấu thời gian và phụ đề). Quyền vị trí cũng được yêu cầu (ít nhất đối với Android 11 trở về trước) để kết nối với các thiết bị điều khiển từ xa Bluetooth LE.</string>
+    <string name="preference_image_format_jpeg_r">UltraHDR JPEG</string>
+    <string name="preference_panorama_crop">Tự động cắt ảnh toàn cảnh</string>
+    <string name="preference_panorama_crop_summary">Đối với chế độ toàn cảnh, có xóa các đường ranh giới lượn sóng hay không\n%s</string>
+    <string name="panorama_info">Để chụp ảnh toàn cảnh, hãy giữ thiết bị của bạn theo hướng dọc và nhấp để chụp ảnh để bắt đầu ảnh toàn cảnh. Sau đó xoay thiết bị của bạn sang trái hoặc phải để di chuyển vòng tròn trắng ở giữa qua chấm màu xanh lam. Sau mỗi lần chụp ảnh mới, hãy tiếp tục xoay thiết bị của bạn để bao phủ từng chấm màu xanh lam mới xuất hiện lần lượt.\n\nNhấp vào biểu tượng dấu kiểm để lưu ảnh toàn cảnh hoặc biểu tượng dấu thập để hủy.\n\nLưu ý rằng ảnh toàn cảnh có thể mất thời gian để xử lý và lưu.</string>
+    <string name="preference_panorama_save">Ảnh gốc toàn cảnh</string>
+    <string name="preference_panorama_save_summary">Có lưu ảnh gốc ở chế độ toàn cảnh hay không. Lưu ý điều này sẽ làm cho việc lưu ảnh toàn cảnh chậm hơn. Cũng cho phép tùy chọn lưu tệp XML có thể hữu ích khi báo cáo sự cố với ảnh toàn cảnh.\n%s</string>
+    <string name="preference_panorama_save_no">Không lưu ảnh gốc</string>
+    <string name="preference_panorama_save_all">Lưu ảnh gốc</string>
+    <string name="preference_panorama_save_all_plus_debug">Lưu ảnh gốc cộng với XML gỡ lỗi</string>
+    <string name="camera_id">ID</string>
+    <string name="exposure_compensation_seekbar">Thanh tìm kiếm để thay đổi bù phơi sáng</string>
+    <string name="preference_image_format_summary">Chọn định dạng tệp được sử dụng để lưu ảnh. Điều này ảnh hưởng đến ảnh "tiêu chuẩn" (không phải RAW). Chỉ các định dạng JPEG mới hỗ trợ lưu siêu dữ liệu Exif. UltraHDR không được hỗ trợ cho các chế độ NR, HDR, Pano, X-. Lưu ý rằng định dạng PNG không thực sự không mất dữ liệu, thay vào đó nó được chuyển đổi từ JPEG ở chất lượng 100%%.\n%s</string>
+    <string name="preference_camera_api">API máy ảnh</string>
+    <string name="preference_camera_api_summary">Chọn API Camera2 để bật các tính năng bổ sung như chế độ thủ công cho phơi sáng, lấy nét, cân bằng trắng, cùng với RAW (nếu được thiết bị hỗ trợ). Thay đổi API sẽ gây ra khởi động lại.\n%s</string>
+    <string name="preference_camera_api_old">API máy ảnh gốc</string>
+    <string name="preference_camera_api_camera2">API Camera2</string>
+    <string name="preference_save_include_milliseconds">Sử dụng mili giây trong tên tệp</string>
+    <string name="preference_save_include_milliseconds_summary">Nếu được bật, tên tệp sẽ bao gồm mili giây</string>
+    <string name="remaining">Còn lại</string>
+    <string name="preference_preview">Xem trước máy ảnh…</string>
+    <string name="photo_mode_x_auto">X-Tự động</string>
+    <string name="photo_mode_x_auto_full">Tự động</string>
+    <string name="photo_mode_x_hdr">X-HDR</string>
+    <string name="photo_mode_x_hdr_full">HDR</string>
+    <string name="photo_mode_x_night">X-Ban đêm</string>
+    <string name="photo_mode_x_night_full">Ban đêm</string>
+    <string name="photo_mode_x_bokeh">X-Xóa phông</string>
+    <string name="photo_mode_x_bokeh_full">Xóa phông</string>
+    <string name="photo_mode_x_beauty">X-Làm đẹp</string>
+    <string name="photo_mode_x_beauty_full">Làm đẹp / Chỉnh sửa khuôn mặt</string>
+    <string name="external_camera">Máy ảnh ngoài</string>
+    <string name="ultrawide">Siêu rộng</string>
+    <string name="switch_to_external_camera">Chuyển sang máy ảnh ngoài</string>
+    <string name="switch_to_unknown_camera">Chuyển đổi máy ảnh</string>
+    <string name="switch_multi_camera">Chuyển đổi giữa nhiều máy ảnh</string>
+    <string name="preference_multi_cam_button">Biểu tượng nhiều máy ảnh</string>
+    <string name="preference_multi_cam_button_summary">Nếu được bật, hãy sử dụng các nút riêng biệt để chuyển đổi giữa máy ảnh trước/sau và để chuyển đổi giữa nhiều máy ảnh trước/sau. Nếu bị tắt, biểu tượng Chuyển đổi máy ảnh sẽ chuyển qua tất cả các máy ảnh.</string>
+    <string name="preference_show_camera_id">Hiển thị ID máy ảnh</string>
+    <string name="preference_show_camera_id_summary">Hiển thị số ID máy ảnh hiện tại trên màn hình</string>
+    <string name="preference_allow_long_press">Cho phép nhấn giữ</string>
+    <string name="preference_allow_long_press_summary">Có cho phép các hành động nhấn giữ hay không (ví dụ: nhấn giữ vào thư viện để thay đổi vị trí lưu).</string>
+    <string name="aperture">Khẩu độ</string>
+    <string name="error_features_4k">4K UHD</string>
+    <string name="error_features_bitrate">Tốc độ bit</string>
+    <string name="error_features_frame_rate">Tốc độ khung hình</string>
+    <string name="error_features_slow_motion">Chuyển động chậm</string>
+    <string name="preference_comment_ypr">Lưu trữ độ lệch, độ cao và độ cuộn</string>
+    <string name="preference_comment_ypr_summary">Lưu trữ độ lệch, độ cao và độ cuộn của thiết bị trong nhận xét người dùng Exif của ảnh (chỉ định dạng JPEG)</string>
+    <string name="array_seekbar_preference_seekbar">Thanh tìm kiếm để thay đổi giá trị tùy chọn hiện tại</string>
+    <string name="preference_camera2_dummy_capture_hack">Bật sửa lỗi phơi sáng/HDR chụp giả</string>
+    <string name="preference_camera2_dummy_capture_hack_summary">Hãy thử bật tùy chọn này nếu thiết bị của bạn gặp sự cố khi chụp ảnh ở chế độ HDR hoặc Expo (nếu ảnh phơi sáng có cùng độ phơi sáng). Chỉ liên quan nếu tùy chọn phơi sáng/HDR nhanh bên dưới cũng được bật.</string>
+    <string name="permission_rationale_bluetooth_scan_connect">Cần có quyền quét/kết nối Bluetooth để khám phá và kết nối với các thiết bị điều khiển từ xa Bluetooth LE.</string>
+    <string name="unknown_device_no_permission">Thiết bị không xác định (không có quyền kết nối bluetooth)</string>
+    <string name="photo_mode_panorama">Toàn cảnh</string>
+    <string name="photo_mode_panorama_full">Toàn cảnh</string>
+    <string name="preference_screen_remote_control">Điều khiển từ xa Bluetooth LE…</string>
+    <string name="preference_enable_remote">Bật điều khiển từ xa Bluetooth LE</string>
+    <string name="preference_enable_remote_summary">Bật thiết bị điều khiển từ xa Bluetooth LE (BLE)</string>
+    <string name="preference_remote_type">Loại thiết bị từ xa</string>
+    <string name="ble_not_supported">BLE không được hỗ trợ</string>
+    <string name="scan_ble">Quét thiết bị BLE</string>
+    <string name="bluetooth_not_supported">Bluetooth không được hỗ trợ.</string>
+    <string name="unknown_device">Thiết bị không xác định</string>
+    <string name="preference_remote_disconnect_screen_dim">Làm mờ màn hình nếu điều khiển từ xa ngắt kết nối</string>
+    <string name="preference_remote_disconnect_screen_dim_summary">Gợi ý: đặt độ sáng mặc định ở mức tối thiểu trước khi khởi động ManualCamera.</string>
+    <string name="preference_water_type">Sử dụng nước mặn để tính toán độ sâu</string>
+    <string name="preference_water_type_summary">Đối với vỏ máy dưới nước, cải thiện độ chính xác nếu chọn đúng loại nước.</string>
+    <string name="remote_connected">Đã kết nối điều khiển từ xa</string>
+    <string name="preference_audio_control_summary">Chụp ảnh/quay video khi phát hiện tiếng ồn.
+        Khi được bật, hãy sử dụng nút micrô trên màn hình để bắt đầu/dừng nghe.
+        \n%s</string>
+    <string name="intro_text">Chạm để lấy nét và nhấn nút chụp màu xanh lam hình tròn để chụp ảnh.
+        \n\nĐể lưu vào thẻ SD, hãy xem Cài đặt/Điều khiển máy ảnh khác/\"Khung truy cập bộ nhớ\".
+        Để được trợ giúp thêm, hãy nhấp vào \"Trợ giúp trực tuyến\" từ Cài đặt.
+    </string>
+    <string name="preference_select_remote">Chọn thiết bị từ xa</string>
+    <string name="preference_video_rec709">REC709</string>
+    <string name="preference_video_srgb">sRGB</string>
+    <string name="preference_video_gamma">Gamma</string>
+    <string name="preference_video_profile_gamma">Giá trị gamma video</string>
+    <string name="preference_video_profile_gamma_summary">Giá trị gamma để sử dụng cho video nếu cấu hình ảnh video được đặt thành Gamma\n%s</string>
+    <string name="preference_ghost_image_alpha">Độ mờ của ảnh ma</string>
+    <string name="preference_ghost_image_alpha_summary">Giá trị alpha để sử dụng cho ảnh ma. Giá trị thấp hơn có nghĩa là trong suốt hơn, giá trị cao hơn có nghĩa là mờ hơn.\n%s</string>
+    <string name="preference_zebra_stripes_foreground_color">Màu nền trước của sọc ngựa vằn</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">Màu để sử dụng cho sọc nền trước khi hiển thị sọc ngựa vằn.\n%s</string>
+    <string name="preference_zebra_stripes_background_color">Màu nền sau của sọc ngựa vằn</string>
+    <string name="preference_zebra_stripes_background_color_summary">Màu để sử dụng cho sọc nền sau khi hiển thị sọc ngựa vằn.\n%s</string>
+    <string name="preference_zebra_stripes_color_black">Đen</string>
+    <string name="preference_zebra_stripes_color_red">Đỏ</string>
+    <string name="preference_zebra_stripes_color_orange">Cam</string>
+    <string name="preference_zebra_stripes_color_transparent">Trong suốt</string>
+    <string name="preference_zebra_stripes_color_white">Trắng</string>
+    <string name="reset_all">Đặt lại tất cả</string>
 </resources>

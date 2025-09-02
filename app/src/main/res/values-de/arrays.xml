@@ -140,13 +140,6 @@
         <item>preference_grid_phi_3x3</item>
         <item>preference_grid_4x2</item>
         <item>preference_grid_crosshair</item>
-        <item>preference_grid_golden_spiral_right</item>
-        <item>preference_grid_golden_spiral_left</item>
-        <item>preference_grid_golden_spiral_upside_down_right</item>
-        <item>preference_grid_golden_spiral_upside_down_left</item>
-        <item>preference_grid_golden_triangle_1</item>
-        <item>preference_grid_golden_triangle_2</item>
-        <item>preference_grid_diagonals</item>
     </string-array>
     <string-array name="preference_stamp_entries">
         <item>Kein Stempel</item>

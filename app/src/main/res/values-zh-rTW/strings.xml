@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ManualCamera</string> <!-- shouldn't be translated, unless deemed appropriate e.g. alternative alphabets -->
+    <string name="app_name">Manual Camera</string> <!-- shouldn't be translated, unless deemed appropriate e.g. alternative alphabets -->
     <string name="action_settings">設定</string>
     <string name="action_popup">彈出設定</string>
     <string name="intro_ok">好 (此訊息將不再顯示)</string>
 
     <string name="on">開啟</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
     <string name="off">關閉</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
-    
+
     <string name="choose_save_location">選擇儲存位置：</string>
     <string name="clear_folder_history">清除資料夾歷史</string>
     <string name="clear_folder_history_question">清除資料夾歷史？</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">顏色效果</string>
     <string name="scene_mode">場景模式</string>
     <string name="white_balance">白平衡</string>
-    
+
     <string name="angle">角度</string>
     <string name="direction">方向</string>
     <string name="failed_to_open_camera_1">開啟相機失敗。</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">可用記憶體</string>
     <string name="screen_lock_message_1">[已鎖定：</string>
     <string name="screen_lock_message_2">滑動以解鎖]</string>
-    
+
     <string name="failed_to_stamp">在照片上標記失敗</string>
-    <string name="metres_abbreviation">公尺</string> <!-- symbol short for metres -->
-    
+    <string name="metres_abbreviation">公尺</string>
+
     <string name="preference_category_camera_effects">相機特效</string>
     <string name="preference_auto_stabilise">自動水平</string>
     <string name="preference_auto_stabilise_summary">圖片將被旋轉，使它們自動對準(僅照片) (拍照更慢，且可能在記憶體過低的裝置上失敗)</string>
@@ -96,7 +96,7 @@
     <string name="preference_timer_beep_summary">當定時器倒數或連拍模式延遲時提示</string>
     <string name="preference_timer_speak">語音倒數計時</string>
     <string name="preference_timer_speak_summary">定時或連拍模式時使用語音倒數計時 (從 60 秒開始)</string>
-    <string name="preference_burst_mode">連拍模式</string> <!-- preference is called "burst" for historical reasons, but is more of a repeat mode; also used in popup menu, so shouldn't be too long a string -->
+    <string name="preference_burst_mode">連拍模式</string>
     <string name="preference_burst_interval">連拍模式間隔</string>
     <string name="preference_screen_camera_controls_more">更多相機控制…</string>
     <string name="preference_touch_capture">點擊拍照</string>
@@ -166,7 +166,7 @@
     <string name="preference_keep_display_on_summary">如果開啟，當 ManualCamera 的使用者介面啟動時，螢幕將不會關閉。</string>
     <string name="preference_max_brightness">強制最大亮度</string>
     <string name="preference_max_brightness_summary">強制螢幕以最大亮度顯示，而不是裝置預設值</string>
-    
+
     <string name="preference_category_camera_quality">照片和影片設定</string>
     <string name="preference_screen_photo_settings">照片設定…</string>
     <string name="preference_screen_video_settings">影片設定…</string>
@@ -221,7 +221,7 @@
     <string name="preference_record_audio_channels_summary">指定使用單聲道或立體聲來錄音 (立體聲只支援某些裝置)\n%s</string>
     <string name="preference_video_flash">錄影時閃光</string>
     <string name="preference_video_flash_summary">如果啟用，錄影時閃光將開啟/關閉 (在一段距離外可以用來判斷相機仍然在錄製)</string>
-    
+
     <string name="preference_category_online">其他</string>
     <string name="preference_online_help">線上說明</string>
     <string name="preference_online_help_summary">在瀏覽器中開啟 ManualCamera 網站</string>
@@ -238,7 +238,7 @@
     <string name="about_available">可用</string>
     <string name="about_not_available">不可用</string>
     <string name="about_copy_to_clipboard">複製到剪貼簿</string>
-    
+
     <string name="take_photo">拍照</string>
     <string name="gallery">相簿</string>
     <string name="exposure">曝光</string>
@@ -251,7 +251,7 @@
     <string name="switch_to_photo">切換到照片模式</string>
     <string name="trash">刪除上一張照片</string>
     <string name="share">分享照片</string>
-    
+
     <string name="parent_folder">上層資料夾</string>
     <string name="new_folder">新資料夾</string>
     <string name="cant_write_folder">不能寫入這個資料夾</string>
@@ -966,6 +966,113 @@
 
     <string name="preference_audio_control_none">無</string>
     <string name="preference_audio_control_noise">大的聲音</string>
-    <string name="preference_audio_control_voice">音訊指令：「cheese」</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+    <string name="preference_audio_control_voice">音訊指令：「cheese」</string>
 
+    <string name="s_photo_mode">拍照模式</string>
+    <string name="s_video_mode">錄影模式</string>
+    <string name="photo_settings">照片設定</string>
+    <string name="more_settings">更多設定</string>
+    <string name="resolution">解析度</string>
+    <string name="raw_jpeg">RAW+JPEG</string>
+    <string name="jpeg_only">僅限 JPEG</string>
+    <string name="no_raw">無 RAW</string>
+    <string name="only_raw">僅限 RAW</string>
+    <string name="jpeg">JPEG</string>
+    <string name="raw_photos">RAW 照片</string>
+    <string name="more_light">更多光線</string>
+    <string name="video_settings">影片設定</string>
+    <string name="Night">夜景</string>
+    <string name="photo_mode_focus">對焦</string>
+    <string name="photo_mode_standard_photo">照片</string>
+    <string name="brightness">亮度</string>
+    <string name="s_white_balance">白平衡</string>
+    <string name="s_exposure">曝光</string>
+    <string name="s_focus">對焦</string>
+    <string name="s_shutter_speed">快門速度</string>
+    <string name="s_iso">ISO</string>
+    <string name="speed">速度</string>
+    <string name="focus_mode_macro">微距</string>
+    <string name="focus_mode_locked">鎖定</string>
+    <string name="focus_mode_infinity">無限遠</string>
+    <string name="focus_mode_manual2">手動</string>
+    <string name="focus_mode_edof">EDOF</string>
+    <string name="focus_mode_continuous_picture">持續對焦</string>
+    <string name="focus_mode_auto">自動</string>
+    <string name="scene_modes">場景模式</string>
+    <string name="reset_iso_auto">重設 ISO 為自動</string>
+    <string name="shutter">快門</string>
+    <string name="action_reset_all_settings">重設所有設定</string>
+    <string name="awb_lock">鎖定</string>
+    <string name="preference_category_photo_settings">照片設定</string>
+    <string name="preference_category_video_settings">影片設定</string>
+    <string name="preference_category_location_settings">位置設定</string>
+    <string name="preference_category_processing_settings">處理設定</string>
+    <string name="preference_category_on_screen_gui_settings">畫面介面設定</string>
+    <string name="preference_category_finder_preview">觀景窗設定</string>
+    <string name="preference_show_zoom_text">顯示目前的縮放資訊</string>
+    <string name="preference_video_bitrate2">影片位元率</string>
+    <string name="preference_video_fps2">影片影格率</string>
+    <string name="video_bitrate">影片位元率</string>
+    <string name="video_frame_rate">影格率</string>
+    <string name="preference_category_camera_preview">相機預覽</string>
+    <string name="repeat">重複</string>
+    <string name="msg_upgrade_not_support">功能即將在下次更新中推出。</string>
+    <string name="auto_wb">自動白平衡</string>
+    <string name="auto">自動</string>
+    <string name="focus">對焦</string>
+    <string name="close">關閉</string>
+    <string name="pro_version">(專業版)</string>
+    <string name="pro_version_features">此功能僅限專業版用戶使用。</string>
+    <string name="dialog_pro_version_title">✨ 專業功能 ✨</string>
+    <string name="dialog_pro_version_msg">此選項屬於專業版套件，升級以解鎖完整相機功能。</string>
+    <string name="unlock_pro">解鎖專業版</string>
+    <string name="later">稍後</string>
+    <string name="preference_hdr_tonemapping">HDR 色調映射</string>
+    <string name="preference_hdr_tonemapping_summary">HDR 照片模式中用於色調映射的算法\n%s</string>
+    <string name="preference_hdr_tonemapping_clamp">簡單截斷</string>
+    <string name="preference_hdr_tonemapping_exponential">指數</string>
+    <string name="preference_hdr_tonemapping_default">預設</string>
+    <string name="preference_hdr_tonemapping_aces">ACES</string>
+    <string name="preference_remove_device_exif">移除裝置 EXIF 資料</string>
+    <string name="preference_remove_device_exif_summary">是否從 JPEG 照片中移除裝置 EXIF 元資料。這不會移除由其他設定加入的 EXIF 標籤（例如位置標籤）。這些選項是獨立的，且可能覆蓋此設定。RAW/DNG 和影片不受影響。\n%s</string>
+    <string name="preference_remove_device_exif_off">不移除裝置 EXIF 資料</string>
+    <string name="preference_remove_device_exif_on">移除裝置 EXIF 資料</string>
+    <string name="preference_remove_device_exif_keep_datetime">除日期/時間外移除</string>
+    <string name="choose_camera">選擇攝影機：</string>
+    <string name="preference_show_focus_peaking">顯示對焦峰值圖示</string>
+    <string name="preference_show_focus_peaking_summary">是否在螢幕上顯示圖示以啟用或停用對焦峰值。啟用時，會突出顯示對焦邊緣。參見 設定/相機預覽/"Focus peaking"。</string>
+    <string name="focus_peaking_enable">啟用對焦峰值</string>
+    <string name="focus_peaking_disable">停用對焦峰值</string>
+    <string name="preference_photo_optimise_focus">最佳化對焦以…</string>
+    <string name="preference_photo_optimise_focus_summary">拍攝時，可選擇最佳化延遲或品質。僅在連續對焦模式下相關。最佳化品質可確保場景對焦，但可能導致拍攝延遲。\n%s</string>
+    <string name="preference_photo_optimise_focus_latency">延遲</string>
+    <string name="preference_photo_optimise_focus_quality">品質</string>
+    <string name="preference_save_preshots">保存預覽鏡頭</string>
+    <string name="preference_save_preshots_summary">啟用時，每張照片都會保存一段短影片，其中包含拍攝前的畫面。不支援曝光、對焦包圍或全景模式。\n%s</string>
+    <string name="telephoto">長焦</string>
+    <string name="auto_lens">自動鏡頭</string>
+    <string name="lens">鏡頭</string>
+    <string name="physical_cameras_info">&#9432; 預設情況下，相機會使用自動鏡頭選擇，變焦級別決定使用哪個鏡頭。但此選單允許您明確選擇鏡頭。</string>
+    <string name="focus_bracketing_auto_source_distance">自動來源</string>
+    <string name="preference_allow_haptic_feedback">允許觸覺反饋</string>
+    <string name="preference_allow_haptic_feedback_summary">是否允許振動反饋，例如在調整某些控件時。注意，這也需要在裝置的設定中啟用觸摸互動。\n%s</string>
+    <string name="preference_using_saf">Storage Access Framework</string>
+    <string name="color_effects">色彩效果</string>
+    <string name="preference_languages">語言</string>
+    <string name="photo_mode_fast_burst" translatable="false">[]]]</string>
+    <string name="permission_rationale_storage">儲存相片或影片等結果檔案需要儲存空間讀取/寫入權限</string>
+    <string name="preference_image_format_jpeg_r">UltraHDR JPEG</string>
+    <string name="preference_save_include_milliseconds">在檔案名稱中使用毫秒</string>
+    <string name="preference_save_include_milliseconds_summary">如果啟用，檔案名稱將包含毫秒</string>
+    <string name="photo_mode_x_auto">X-自動</string>
+    <string name="photo_mode_x_auto_full">自動</string>
+    <string name="photo_mode_x_hdr">X-HDR</string>
+    <string name="photo_mode_x_hdr_full">HDR</string>
+    <string name="photo_mode_x_night">X-夜景</string>
+    <string name="photo_mode_x_night_full">夜景</string>
+    <string name="photo_mode_x_bokeh">X-景深</string>
+    <string name="photo_mode_x_bokeh_full">景深</string>
+    <string name="photo_mode_x_beauty">X-美肌</string>
+    <string name="photo_mode_x_beauty_full">美肌 / 臉部修飾</string>
+    <string name="reset_all">全部重設</string>
 </resources>

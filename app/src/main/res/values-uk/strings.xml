@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ManualCamera</string>
+    <string name="app_name">Manual Camera</string>
     <string name="action_settings">Налаштування</string>
     <string name="action_popup">Налаштування зринаючих вікон</string>
     <string name="intro_ok">"Гаразд (Більше це повідомлення не з'явиться.)"</string>
@@ -212,7 +212,6 @@
     <string name="preference_video_max_filesize">Максимальний розмір файлу відео</string>
 
 
-
     <string name="preference_record_audio">Запис звуку</string>
     <string name="preference_record_audio_summary">Запис звуку під час запису відео</string>
     <string name="preference_record_audio_src">Джерело звуку</string>
@@ -280,9 +279,6 @@
     <string name="audio_listener_started">Створіть сильний шум</string>
 
 
-
-
-
     <string name="dont_show_again">Надалі не показувати</string>
 
     <string name="photo_mode">Режим фото</string>
@@ -295,28 +291,14 @@
     <string name="preference_hdr_save_expo">Зберішати всі зображення в режимі HDR</string>
 
 
-
-
-
-
-
-
-
     <string name="preference_category_photo_debugging">Налаштування відлагодження</string>
     <string name="preference_category_video_debugging">Налаштування відлагодження</string>
-
-
-
-
-
-
 
 
     <string name="seconds_abbreviation">с</string> <!-- short for seconds -->
 
     <string name="video_no_free_space">Недостатньо вільного міця для запису відео</string>
     <string name="video_power_critical">Запис відео зупинено\nКритично низький рівень заряду батареї</string>
-
 
 
     <string name="dark">Темніше</string> <!-- exposure compensation dark -->
@@ -326,13 +308,9 @@
     <string name="camera_error">Суттєва помилка камери</string>
 
 
-
-
     <string name="camera">Камера</string>
     <string name="record_video">Записати відео</string>
     <string name="selfie">Селфі</string>
-
-
 
 
     <string name="preference_calibrate_level">Калібрувати рівень кута</string>
@@ -344,12 +322,6 @@
     <string name="preference_calibrate_level_calibration_reset">Скидання калібровки рівня</string>
 
     <string name="photo_mode_dro">DRO</string>
-
-
-
-
-
-
 
 
     <string name="duration_unlimited">Без обмеження</string>
@@ -376,8 +348,6 @@
     <string name="duration_30m">30 хвилин</string>
     <string name="duration_45m">45 хвилин</string>
     <string name="duration_1h">Година</string>
-
-
 
 
     <string name="video_pause">Запис відео призупинено</string>
@@ -511,6 +481,469 @@
 
     <string name="preference_audio_control_none">Немає</string>
     <string name="preference_audio_control_noise">Низький шум</string>
-    <string name="preference_audio_control_voice">Голосова команда: \"сир\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+    <string name="preference_audio_control_voice">Голосова команда: \"сир\"</string>
 
+    <string name="s_photo_mode">Режим фото</string>
+    <string name="s_video_mode">Режим відео</string>
+    <string name="photo_settings">Налаштування фото</string>
+    <string name="more_settings">Додаткові налаштування</string>
+    <string name="resolution">Роздільна здатність</string>
+    <string name="raw_jpeg">RAW+JPEG</string>
+    <string name="jpeg_only">Тільки JPEG</string>
+    <string name="no_raw">Без RAW</string>
+    <string name="only_raw">Тільки RAW</string>
+    <string name="jpeg">JPEG</string>
+    <string name="raw_photos">RAW фото</string>
+    <string name="more_light">Більше світла</string>
+    <string name="video_settings">Налаштування відео</string>
+    <string name="Night">Ніч</string>
+    <string name="photo_mode_focus">Фокус</string>
+    <string name="photo_mode_standard_photo">Фото</string>
+    <string name="brightness">Яскравість</string>
+    <string name="s_white_balance">Баланс білого</string>
+    <string name="s_exposure">Експозиція</string>
+    <string name="s_focus">Фокус</string>
+    <string name="s_shutter_speed">Швидкість затвору</string>
+    <string name="s_iso">ISO</string>
+    <string name="speed">Швидкість</string>
+    <string name="focus_mode_macro">Макро</string>
+    <string name="focus_mode_locked">Заблоковано</string>
+    <string name="focus_mode_infinity">Нескінченність</string>
+    <string name="focus_mode_manual2">Ручний</string>
+    <string name="focus_mode_edof">EDOF</string>
+    <string name="focus_mode_continuous_picture">CP</string>
+    <string name="focus_mode_auto">Авто</string>
+    <string name="scene_modes">Режими сцен</string>
+    <string name="reset_iso_auto">скинути ISO на авто</string>
+    <string name="shutter">Затвор</string>
+    <string name="action_reset_all_settings">Скинути всі налаштування</string>
+    <string name="awb_lock">Блокування</string>
+    <string name="preference_category_photo_settings">Налаштування фото</string>
+    <string name="preference_category_video_settings">Налаштування відео</string>
+    <string name="preference_category_location_settings">Налаштування локації</string>
+    <string name="preference_category_processing_settings">Налаштування обробки</string>
+    <string name="preference_category_on_screen_gui_settings">Налаштування інтерфейсу</string>
+    <string name="preference_category_finder_preview">Налаштування видошукача</string>
+    <string name="preference_show_zoom_text">Показати поточне збільшення</string>
+    <string name="preference_video_bitrate2">Бітрейт відео</string>
+    <string name="preference_video_fps2">Частота кадрів</string>
+    <string name="video_bitrate">Бітрейт відео</string>
+    <string name="video_frame_rate">Частота кадрів</string>
+    <string name="preference_category_camera_preview">Попередній перегляд</string>
+    <string name="repeat">Повторити</string>
+    <string name="msg_upgrade_not_support">Функція буде доступна в наступному оновленні.</string>
+    <string name="auto_wb">Авто WB</string>
+    <string name="auto">Авто</string>
+    <string name="focus">Фокус</string>
+    <string name="close">Закрити</string>
+    <string name="pro_version">(PRO версія)</string>
+    <string name="pro_version_features">Ця функція доступна лише для PRO користувачів.</string>
+    <string name="dialog_pro_version_title">✨ Преміум функція ✨</string>
+    <string name="dialog_pro_version_msg">Цей параметр є частиною Pro пакету. Оновіть, щоб розблокувати всі можливості.</string>
+    <string name="unlock_pro">Розблокувати Pro</string>
+    <string name="later">Пізніше</string>
+    <string name="white_balance_auto">Авто</string>
+    <string name="white_balance_cloudy">Хмарно</string>
+    <string name="white_balance_daylight">Денне світло</string>
+    <string name="white_balance_fluorescent">Флуоресцентне</string>
+    <string name="white_balance_incandescent">Накалювання</string>
+    <string name="white_balance_shade">Тінь</string>
+    <string name="white_balance_twilight">Сутінки</string>
+    <string name="white_balance_warm">Теплий</string>
+    <string name="white_balance_manual">Ручний</string>
+    <string name="scene_mode_action">Екшен</string>
+    <string name="scene_mode_barcode">Штрихкод</string>
+    <string name="scene_mode_beach">Пляж</string>
+    <string name="scene_mode_candlelight">Світло свічки</string>
+    <string name="scene_mode_auto">Авто</string>
+    <string name="scene_mode_fireworks">Феєрверк</string>
+    <string name="scene_mode_landscape">Пейзаж</string>
+    <string name="scene_mode_night">Ніч</string>
+    <string name="scene_mode_night_portrait">Нічний портрет</string>
+    <string name="scene_mode_party">Вечірка</string>
+    <string name="scene_mode_portrait">Портрет</string>
+    <string name="scene_mode_snow">Сніг</string>
+    <string name="scene_mode_sports">Спорт</string>
+    <string name="scene_mode_steady_photo">Стабільне фото</string>
+    <string name="scene_mode_sunset">Захід сонця</string>
+    <string name="scene_mode_theatre">Театр</string>
+    <string name="color_effect_aqua">Аква</string>
+    <string name="color_effect_blackboard">Дошка</string>
+    <string name="color_effect_mono">Моно</string>
+    <string name="color_effect_negative">Негатив</string>
+    <string name="color_effect_none">Немає</string>
+    <string name="color_effect_posterize">Постеризувати</string>
+    <string name="color_effect_sepia">Сепія</string>
+    <string name="color_effect_solarize">Соляризація</string>
+    <string name="color_effect_whiteboard">Біла дошка</string>
+    <string name="preference_hdr_tonemapping">HDR тонемапінг</string>
+    <string name="preference_hdr_tonemapping_summary">Алгоритм тонемапінгу в режимі HDR-фото\n%s</string>
+    <string name="preference_hdr_tonemapping_clamp">Просте обрізання</string>
+    <string name="preference_hdr_tonemapping_exponential">Експоненцільний</string>
+    <string name="preference_hdr_tonemapping_default">За замовчуванням</string>
+    <string name="preference_hdr_tonemapping_aces">ACES</string>
+    <string name="preference_remove_device_exif">Видалити EXIF‑дані пристрою</string>
+    <string name="preference_remove_device_exif_summary">Видаляти EXIF метадані пристрою з фотографій JPEG чи ні. Не видаляє інші EXIF теги, додані іншими налаштуваннями (напр. геотеги). Інші параметри незалежні і можуть перевизначати це. RAW/DNG і відео не зачіпаються.\n%s</string>
+    <string name="preference_remove_device_exif_off">Не видаляти EXIF пристрою</string>
+    <string name="preference_remove_device_exif_on">Видалити EXIF пристрою</string>
+    <string name="preference_remove_device_exif_keep_datetime">Видалити, окрім дати/часу</string>
+    <string name="choose_camera">Виберіть камеру:</string>
+    <string name="preference_show_focus_peaking">Показати іконку фокус-пікінгу</string>
+    <string name="preference_show_focus_peaking_summary">Чи показувати іконку для увімкнення/вимкнення фокус-пікінгу на екрані. При увімкненому пикингу краї в фокусі підсвічуються. Див. Налаштування/Попередній перегляд камери/"Focus peaking".</string>
+    <string name="focus_peaking_enable">Увімкнути фокус-пікінг</string>
+    <string name="focus_peaking_disable">Вимкнути фокус-пікінг</string>
+    <string name="preference_photo_optimise_focus">Оптимізувати фокус для…</string>
+    <string name="preference_photo_optimise_focus_summary">Під час зйомки фото оптимізувати фокус для затримки або якості. Актуально лише в режимі безперервної фокусування. Оптимізація для якості гарантує фокусність, але може затримати зйомку.\n%s</string>
+    <string name="preference_photo_optimise_focus_latency">Затримка</string>
+    <string name="preference_photo_optimise_focus_quality">Якість</string>
+    <string name="preference_save_preshots">Зберігати попередній перегляд</string>
+    <string name="preference_save_preshots_summary">Якщо увімкнено, коротке відео буде збережено разом з кожним фото, з кадрами до моменту зйомки. Не підтримується для режимів експозиції, фокусного бракета або панорами.\n%s</string>
+    <string name="telephoto">Телеоб’єктив</string>
+    <string name="auto_lens">Автооб’єктив</string>
+    <string name="lens">Об’єктив</string>
+    <string name="physical_cameras_info">&#9432; За замовчуванням камера використовує автопідбір об’єктива залежно від рівня зуму. У цьому меню можна вибрати конкретний об’єктив вручну.</string>
+    <string name="focus_bracketing_auto_source_distance">Автоджерело</string>
+    <string name="preference_allow_haptic_feedback">Дозволити тактильний відгук</string>
+    <string name="preference_allow_haptic_feedback_summary">Чи дозволяти вібрацію як відгук, наприклад при налаштуванні деяких контролів. Перевірте, щоб сенсорні взаємодії були включені в налаштуваннях пристрою.\n%s</string>
+    <string name="preference_using_saf">Storage Access Framework</string>
+    <string name="color_effects">Колірні ефекти</string>
+    <string name="preference_languages">Мови</string>
+    <string name="photo_mode_expo_bracketing_full">Брекетинг експозиції</string>
+    <string name="photo_mode_fast_burst" translatable="false">[]]]</string>
+    <string name="photo_mode_fast_burst_full">Швидка серія</string>
+    <string name="photo_mode_noise_reduction">NR</string>
+    <string name="photo_mode_noise_reduction_full">Зниження шуму</string>
+    <string name="preference_hdr_save_expo_summary">Якщо увімкнено, у режимі HDR зберігаються три базові експозиції та фінальне HDR‑зображення. Зверніть увагу, що збереження буде повільнішим, особливо якщо активовані параметри як «Фотоштамп» або авто‑рівень.</string>
+    <string name="saf_permission_failed">Не вдалося зберегти в цю папку</string>
+    <string name="auto_stabilise_info">Auto-level автоматично поверне фотографії так, щоб вони виглядали рівними.\n\nЗверніть увагу: це означає, що зображення матимуть трохи нижчу роздільну здатність (через необхідні обертання та обрізання).</string>
+    <string name="raw_info">Файли DNG містять повну нек</string>
+    <string name="preference_stamp_geo_address">Використовувати адреси</string>
+    <string name="preference_stamp_geo_address_both">Показати адресу, якщо можливо, крім GPS‑координат</string>
+    <string name="preference_stamp_geo_address_prefer">Адресу переважати перед GPS‑координатами</string>
+    <string name="preference_stamp_geo_address_no">Не показувати адресу</string>
+    <string name="preference_show_store_location">Показати значок збереження місцезнаходження</string>
+    <string name="preference_show_store_location_summary">Відображати значок на екрані для вмикання або вимикання збереження даних про місцезнаходження (геотегування)</string>
+    <string name="preference_location_enable">Зберігати дані про місцезнаходження</string>
+    <string name="preference_location_disable">Припинити зберігати місцезнаходження</string>
+    <string name="preference_histogram">Показати гістограму</string>
+    <string name="preference_histogram_summary">Показувати гістограму кольорів, що відображаються на екрані\n%s</string>
+    <string name="preference_histogram_off">Вимкнено</string>
+    <string name="preference_histogram_rgb">Кольори RGB</string>
+    <string name="preference_histogram_luminance">Яскравість</string>
+    <string name="preference_histogram_value">Значення (Максимум)</string>
+    <string name="preference_histogram_intensity">Інтенсивність (Середнє)</string>
+    <string name="preference_histogram_lightness">Світлість (Середнє min‑max)</string>
+    <string name="preference_zebra_stripes">Показати зеброві смуги</string>
+    <string name="preference_zebra_stripes_summary">Якщо ввімкнено, на екрані з’являться зеброві смуги там, де попередній перегляд камери є пересвітленим.\n%s</string>
+    <string name="preference_zebra_stripes_off">Вимкнено</string>
+    <string name="preference_focus_peaking">Фокус‑пікінг</string>
+    <string name="preference_focus_peaking_summary">Якщо ввімкнено, будуть підсвічені краю, що в фокусі. Корисно для ручного фокусування.\n%s</string>
+    <string name="preference_focus_peaking_off">Вимкнено</string>
+    <string name="preference_focus_peaking_on">Увімкнено</string>
+    <string name="preference_focus_peaking_color">Колір фокус‑пікінгу</string>
+    <string name="preference_focus_peaking_color_summary">Якого кольору слід використовувати, щоб виділити фокусовані краї\n%s</string>
+    <string name="no_permission" translatable="false">ДОЗВОЛИ НЕДОСТУПНІ</string>
+    <string name="permission_rationale_title">Потрібен дозвіл</string>
+    <string name="permission_rationale_camera">Для ввімкнення камери потрібен дозвіл на доступ до камери</string>
+    <string name="permission_rationale_storage">Для збереження файлів, таких як фотографії або відео, потрібен дозвіл на читання/запис у сховище</string>
+    <string name="permission_rationale_record_audio">Для запису відео зі звуком, а також для використання параметрів «Керування звуком» потрібен дозвіл на доступ до мікрофона</string>
+    <string name="permission_rationale_location">Дозвіл на визначення місцезнаходження потрібен для гео тегування (збереження даних про місцезнаходження на фотографіях і відео, включно з параметрами штампа та субтитрів). Дозвіл на визначення місцезнаходження також потрібен (принаймні для Android 11 і раніших версій) для підключення до пристроїв дистанційного керування Bluetooth LE.</string>
+    <string name="preference_camera2_fake_flash">Використовувати альтернативний метод спалаху</string>
+    <string name="preference_camera2_fake_flash_summary">Увімкніть це, якщо на вашому пристрої спостерігається некоректна робота спалаху з Camera2 API</string>
+    <string name="preference_expo_bracketing_n_images">Брекетинг експозиції</string>
+    <string name="preference_expo_bracketing_n_images_summary">Кількість зображень для режиму брекетингу експозиції\n%s</string>
+    <string name="preference_expo_bracketing_stops">Стопи брекетингу експозиції</string>
+    <string name="preference_expo_bracketing_stops_summary">Скільки стопів відняти/додати для найтемнішого/найсвітлішого зображення\n%s</string>
+    <string name="preference_nr_save">Оригінальні зображення шумозаглушення</string>
+    <string name="preference_nr_save_summary">Чи зберігати оригінальні зображення в режимі шумозаглушення. Зауважте, що це може значно сповільнити збереження фотографій.\n%s</string>
+    <string name="preference_nr_save_no">Не зберігати оригінальні зображення</string>
+    <string name="preference_nr_save_single">Зберегти одне оригінальне зображення</string>
+    <string name="preference_nr_save_all">Зберегти всі оригінальні зображення (повільно)</string>
+    <string name="preference_video_low_power_check">Перевірка критичного заряду акумулятора</string>
+    <string name="preference_video_low_power_check_summary">Зупинити запис відео, якщо рівень заряду акумулятора критично низький. Це допомагає зменшити ризик пошкодження відео, якщо ваш пристрій раптово вимкнеться через брак живлення.</string>
+    <string name="preference_camera2_fast_burst">Увімкнути швидку серійну зйомку HDR/експозиції</string>
+    <string name="preference_camera2_fast_burst_summary">Дозволяє швидше знімати HDR/експозиційні кадри. Вимкніть цю опцію, якщо ваш пристрій має проблеми під час фотографування в режимах HDR або Експозиція.</string>
+    <string name="preference_front_camera_mirror">Дзеркало передньої камери</string>
+    <string name="preference_front_camera_mirror_summary">Чи віддзеркалювати кінцеві фотографії під час використання передньої камери\n%s</string>
+    <string name="preference_calibrate_level_summary">Ця опція калібрує акселерометр вашого пристрою, щоб параметри автоматичного вирівнювання та рівня/кута на екрані працювали правильно</string>
+    <string name="preference_calibrate_level_dialog">Будь ласка, покладіть пристрій на рівну горизонтальну поверхню так, щоб він був вирівняний (у портретній або альбомній орієнтації), а потім виберіть «Калібрувати».\n\nНатисніть «Скинути», щоб видалити калібрування з пристрою.\n\nНатисніть кнопку «Назад», щоб скасувати.</string>
+    <string name="preference_show_pitch_lines">Показувати лінії тангажу</string>
+    <string name="preference_show_pitch_lines_summary">Відображати горизонтальні лінії тангажу</string>
+    <string name="preference_show_geo_direction_lines">Показувати лінії напрямку компаса</string>
+    <string name="preference_show_geo_direction_lines_summary">Відображати лінії напрямку компаса</string>
+    <string name="preference_video_subtitle">Субтитри до відео</string>
+    <string name="preference_video_subtitle_summary">Створити файл субтитрів (.SRT), який зберігає дату та час; а також інформацію GPS, якщо ввімкнено дані про місцезнаходження/напрямок. (На Android 11+ ця опція вимагає ввімкнення Додаткових елементів керування камерою/Framework доступу до сховища.)\n%s</string>
+    <string name="preference_show_take_photo">Показати значок "Зробити фото"</string>
+    <string name="preference_show_take_photo_summary">Показувати значок для фотографування та запису відео. Зніміть прапорець, якщо ви віддаєте перевагу робити фотографії іншими способами (наприклад, якщо на вашому пристрої є апаратна кнопка спуску затвора або за допомогою клавіш гучності).</string>
+    <string name="failed_to_process_hdr">Не вдалося створити HDR-зображення</string>
+    <string name="preference_burst_interval_0_5s">0.5с</string>
+    <string name="preference_video_max_filesize_2gb">2 ГБ</string>
+    <string name="preference_video_max_filesize_5gb">5 ГБ</string>
+    <string name="preference_video_max_filesize_9gb">9 ГБ</string>
+    <string name="cancelled_focus_bracketing">Скасовано брекетинг фокусування</string>
+    <string name="preference_hdr_contrast_enhancement">Покращення контрастності HDR</string>
+    <string name="preference_hdr_contrast_enhancement_summary">Коли використовувати алгоритм покращення контрастності для HDR. Це може покращити вигляд у випадках, коли в сцені дуже високий динамічний діапазон, а також надає результатам «вигляд HDR».\n%s</string>
+    <string name="preference_hdr_contrast_enhancement_off">Вимкнено</string>
+    <string name="preference_hdr_contrast_enhancement_smart">Розумний</string>
+    <string name="preference_hdr_contrast_enhancement_always">Завжди</string>
+    <string name="preference_video_output_format">Формат відео</string>
+    <string name="preference_video_output_format_summary">Формат відео- та аудіофайлів та кодеки\n%s</string>
+    <string name="preference_video_output_format_default">За замовчуванням</string>
+    <string name="preference_video_output_format_mpeg4_h264">MPEG4 H264</string>
+    <string name="preference_video_output_format_mpeg4_hevc">MPEG4 HEVC</string>
+    <string name="preference_video_output_format_3gpp">3GPP</string>
+    <string name="preference_video_output_format_webm">WebM (аудіо не підтримується)</string>
+    <string name="preference_screen_settings_manager">Менеджер налаштувань</string>
+    <string name="preference_save_settings">Зберегти налаштування</string>
+    <string name="preference_save_settings_summary">Зберігає всі налаштування ManualCamera у файл</string>
+    <string name="preference_save_settings_filename">Назва збережених налаштувань</string>
+    <string name="preference_restore_settings">Відновити налаштування</string>
+    <string name="preference_restore_settings_summary">Відновлює раніше збережені налаштування. Це перезапише всі поточні налаштування збереженими налаштуваннями!</string>
+    <string name="preference_restore_settings_question">Цей параметр дозволяє вибрати один із файлів налаштувань, які ви раніше зберегли. Майте на увазі, що вибір файлу для завантаження перезапише всі поточні налаштування!</string>
+    <string name="saved_settings">Збережені налаштування</string>
+    <string name="save_settings_failed">Не вдалося зберегти налаштування</string>
+    <string name="restore_settings_failed">Не вдалося відновити налаштування</string>
+    <string name="open_files_saf_exception_generic">На цьому пристрої не знайдено діалогове вікно файлів, опція не підтримується</string>
+    <string name="preference_image_format">Формат зображення</string>
+    <string name="preference_image_format_jpeg">JPEG</string>
+    <string name="preference_image_format_jpeg_r">UltraHDR JPEG</string>
+    <string name="preference_image_format_webp">WebP</string>
+    <string name="preference_image_format_png">PNG</string>
+    <string name="preference_nr_mode">Режим NR</string>
+    <string name="preference_nr_mode_normal">Звичайний</string>
+    <string name="preference_nr_mode_low_light">Слабке освітлення</string>
+    <string name="preference_ui_placement_top">Значки вгорі (портрет)</string>
+    <string name="preference_show_face_detection">Показати значок виявлення облич</string>
+    <string name="preference_show_face_detection_summary">Чи показувати на екрані значок для ввімкнення або вимкнення виявлення облич</string>
+    <string name="face_detection_enable">Увімкнути виявлення облич</string>
+    <string name="face_detection_disable">Вимкнути виявлення облич</string>
+    <string name="face_detection_enabled">Виявлення облич увімкнено</string>
+    <string name="face_detection_disabled">Виявлення облич вимкнено</string>
+    <string name="preference_video_max_filesize_summary">Запис відео зупиниться та/або перезапуститься (див. параметр нижче), коли буде досягнуто (приблизного) максимального розміру файлу. Зауважте, що багато пристроїв Android мають максимальний розмір файлу для відео (зазвичай близько 2 ГБ або 4 ГБ), але цей параметр дозволяє встановити конкретне значення. Зауважте, що цей параметр не можна використовувати для збільшення вбудованого максимуму пристрою.\n%s</string>
+    <string name="preference_video_restart_max_filesize">Перезапустити при максимальному розмірі файлу</string>
+    <string name="preference_video_restart_max_filesize_summary">Чи автоматично перезапускати, коли досягнуто максимального розміру файлу (чи то максимальний розмір файлу за замовчуванням пристрою, чи то вказаний користувачем)</string>
+    <string name="whats_new">Що нового:</string>
+    <string name="donate">Пожертвувати</string>
+    <string name="face_detected">обличчя</string>
+    <string name="faces_detected">обличчя</string>
+    <string name="left_of_screen">ліворуч від екрана</string>
+    <string name="right_of_screen">праворуч від екрана</string>
+    <string name="top_of_screen">угорі екрана</string>
+    <string name="bottom_of_screen">внизу екрана</string>
+    <string name="centre_of_screen">по центру</string>
+    <string name="high_speed">Висока швидкість</string>
+    <string name="preference_category_exif_tags">Користувацькі теги EXIF</string>
+    <string name="preference_exif_artist">Виконавець</string>
+    <string name="preference_exif_artist_summary">Текст для збереження в метаданих зображення для тегу "виконавець" (лише формати JPEG). (Залиште порожнім, якщо не потрібно.)</string>
+    <string name="preference_exif_copyright">Авторське право</string>
+    <string name="preference_exif_copyright_summary">Текст для збереження в метаданих зображення для тегу "авторське право" (лише формати JPEG). (Залиште порожнім, якщо не потрібно.)</string>
+    <string name="processing">Обробка…</string>
+    <string name="preference_raw_only">Лише DNG (RAW)</string>
+    <string name="preference_video_capture_rate">Швидкість</string>
+    <string name="preference_video_capture_rate_normal">Звичайна</string>
+    <string name="slow_motion_enabled">Уповільнену зйомку ввімкнено</string>
+    <string name="slow_motion_disabled">Уповільнену зйомку вимкнено</string>
+    <string name="flash_frontscreen_torch">Ліхтарик екрана</string>
+    <string name="preference_antibanding">Антимерехтіння</string>
+    <string name="preference_antibanding_summary">Алгоритми для допомоги з мерехтінням світла.\n%s</string>
+    <string name="anti_banding_auto">Авто</string>
+    <string name="anti_banding_50hz">50 Гц</string>
+    <string name="anti_banding_60hz">60 Гц</string>
+    <string name="anti_banding_off">Вимкнено</string>
+    <string name="preference_ghost_image">Фантомне зображення</string>
+    <string name="preference_ghost_image_summary">Відобразити зображення поверх попереднього перегляду для допомоги з вирівнюванням.\n%s</string>
+    <string name="preference_ghost_image_off">Вимкнено</string>
+    <string name="preference_ghost_image_last">Останнє зроблене фото</string>
+    <string name="preference_ghost_image_selected">Вибране зображення</string>
+    <string name="open_files_saf_exception_ghost">На цьому пристрої не знайдено діалогове вікно файлів, опція фантомного зображення не підтримується</string>
+    <string name="saf_permission_failed_open_image">Неможливо відкрити це зображення</string>
+    <string name="preference_camera2_photo_video_recording">Дозволити фотографувати під час запису відео</string>
+    <string name="preference_camera2_photo_video_recording_summary">Дозволяє робити фотографії під час запису відео. Вимкніть це, якщо на вашому пристрої виникають проблеми із записом відео з увімкненим Camera2 API.</string>
+    <string name="preference_video_log">Профілі відеозображень</string>
+    <string name="preference_video_log_summary">Встановити стандартний або плаский профіль зображення для режиму відео\n%s</string>
+    <string name="preference_video_log_off">За замовчуванням</string>
+    <string name="preference_video_log_fine">Log (Детальний)</string>
+    <string name="preference_video_log_low">Log (Низький)</string>
+    <string name="preference_video_log_medium">Log (Середній)</string>
+    <string name="preference_video_log_strong">Log (Сильний)</string>
+    <string name="preference_video_log_extra_strong">Log (Надсильний)</string>
+    <string name="video_log">Профіль Log</string>
+    <string name="preference_record_audio_src_voice_recognition">Оптимізовано для розпізнавання голосу</string>
+    <string name="preference_record_audio_src_unprocessed">Необроблений</string>
+    <string name="preference_show_auto_level">Показувати значок авторівня</string>
+    <string name="preference_show_auto_level_summary">Чи показувати на екрані значок для ввімкнення або вимкнення авторівня. Коли авторівень увімкнено, фотографії повертатимуться так, щоб вони автоматично вирівнювалися по горизонту.</string>
+    <string name="auto_level_enable">Увімкнути авторівень</string>
+    <string name="auto_level_disable">Вимкнути авторівень</string>
+    <string name="preference_show_stamp">Показувати значок штампа на фото</string>
+    <string name="preference_show_stamp_summary">Чи показувати на екрані значок для ввімкнення або вимкнення штампа на фото</string>
+    <string name="stamp_enable">Увімкнути штамп на фото</string>
+    <string name="stamp_disable">Вимкнути штамп на фото</string>
+    <string name="stamp_enabled">Штамп на фото ввімкнено</string>
+    <string name="stamp_disabled">Штамп на фото вимкнено</string>
+    <string name="preference_show_textstamp">Показувати значок власного текстового штампа на фото</string>
+    <string name="preference_show_textstamp_summary">Чи показувати на екрані значок для вказання власного тексту, який буде нанесено на фото</string>
+    <string name="preference_show_white_balance_lock">Показувати значок блокування автобалансу білого</string>
+    <string name="preference_show_white_balance_lock_summary">Чи показувати на екрані значок для блокування або розблокування автобалансу білого</string>
+    <string name="white_balance_lock">Заблокувати баланс білого</string>
+    <string name="white_balance_unlock">Розблокувати баланс білого</string>
+    <string name="white_balance_locked">Баланс білого заблоковано</string>
+    <string name="white_balance_unlocked">Баланс білого розблоковано</string>
+    <string name="finish_panorama">Завершити панораму</string>
+    <string name="cancel_panorama">Скасувати панораму</string>
+    <string name="panorama_cancelled">Панораму скасовано</string>
+    <string name="failed_to_process_panorama">Не вдалося створити панорамне зображення</string>
+    <string name="preference_panorama_crop">Автоматичне обрізання панорами</string>
+    <string name="preference_panorama_crop_summary">Для режиму панорами, чи видаляти хвилясті межі\n%s</string>
+    <string name="panorama_info">Щоб зробити панорамний знімок, тримайте пристрій у портретній орієнтації та клацніть, щоб зробити фото та розпочати панораму. Потім поверніть пристрій ліворуч або праворуч, щоб перемістити центральне біле коло на синю крапку. Після кожного нового захопленого зображення продовжуйте обертати пристрій, щоб накрити кожну нову синю крапку, яка з’являється по черзі.\n\nКлацніть значок галочки, щоб зберегти панораму, або значок хрестика, щоб скасувати.\n\nЗауважте, що обробка та збереження панорамних фотографій може зайняти деякий час.</string>
+    <string name="preference_panorama_save">Оригінальні зображення панорами</string>
+    <string name="preference_panorama_save_summary">Чи зберігати оригінальні зображення в режимі панорами. Зауважте, що це сповільнить збереження панорамних фотографій. Також дозволяє зберегти XML-файл, який може бути корисним для повідомлення про проблеми з панорамою.\n%s</string>
+    <string name="preference_panorama_save_no">Не зберігати оригінальні зображення</string>
+    <string name="preference_panorama_save_all">Зберегти оригінальні зображення</string>
+    <string name="preference_panorama_save_all_plus_debug">Зберегти оригінальні зображення плюс налагоджувальний XML</string>
+    <string name="camera_id">Ідентифікатор</string>
+    <string name="exposure_compensation_seekbar">Повзунок для зміни компенсації експозиції</string>
+    <string name="preference_image_format_summary">Виберіть формат файлу, який використовується для збереження фотографій. Це впливає на "стандартні" (не RAW) фотографії. Лише формати JPEG підтримують збереження метаданих Exif. UltraHDR не підтримується для режимів NR, HDR, Pano, X-. Зауважте, що формат PNG не є справді без втрат, натомість він конвертується з JPEG зі 100%% якістю.\n%s</string>
+    <string name="preference_camera_api">API камери</string>
+    <string name="preference_camera_api_summary">Виберіть Camera2 API, щоб увімкнути додаткові функції, такі як ручні режими для експозиції, фокусування, балансу білого, а також RAW (якщо підтримується пристроєм). Зміна API призведе до перезапуску.\n%s</string>
+    <string name="preference_camera_api_old">Оригінальний API камери</string>
+    <string name="preference_camera_api_camera2">Camera2 API</string>
+    <string name="no_burst">немає серії</string>
+    <string name="preference_show_video_max_amp">Показувати вимірювач рівня звуку</string>
+    <string name="preference_show_video_max_amp_summary">Чи показувати на екрані рівень звуку під час запису відео</string>
+    <string name="photo_mode_focus_bracketing">Фокус {}</string>
+    <string name="photo_mode_focus_bracketing_full">Брекетинг фокусування</string>
+    <string name="focus_bracketing_source_distance">Вихідна відстань брекетингу фокусування</string>
+    <string name="focus_bracketing_target_distance">Цільова відстань брекетингу фокусування</string>
+    <string name="focus_bracketing_add_infinity">Додати нескінченну відстань</string>
+    <string name="magnetic_accuracy_title">Напрямок компаса</string>
+    <string name="magnetic_accuracy_info">Компас вашого пристрою потребує калібрування для покращення точності. Це можна зробити, рухаючи пристрій у вигляді вісімки.\n\nПоточна точність:</string>
+    <string name="accuracy_unreliable">Ненадійний</string>
+    <string name="accuracy_low">Низька</string>
+    <string name="accuracy_medium">Середня</string>
+    <string name="accuracy_high">Висока</string>
+    <string name="accuracy_unknown">Невідома</string>
+    <string name="preference_units_distance">Одиниця відстані</string>
+    <string name="preference_units_distance_summary">Використовується для висоти GPS для позначки на фото та субтитрів до відео\n%s</string>
+    <string name="preference_units_distance_m">Метри</string>
+    <string name="preference_units_distance_ft">Фути</string>
+    <string name="feet_abbreviation">фут</string>
+    <string name="preference_show_whats_new">Показувати діалогове вікно "Що нового"</string>
+    <string name="preference_show_whats_new_summary">Чи показувати інформацію про нові функції та покращення після оновлення програми</string>
+    <string name="preference_edge_mode">Алгоритм режиму країв</string>
+    <string name="preference_edge_mode_summary">Алгоритм, який драйвер камери повинен використовувати для застосування покращення країв. Покращення країв покращує різкість та деталізацію знятого зображення. (Цей параметр ігнорується в фоторежимі NR.)\n%s</string>
+    <string name="preference_screen_processing_settings">Налаштування обробки…</string>
+    <string name="preference_noise_reduction_mode">Алгоритм зменшення шуму</string>
+    <string name="preference_noise_reduction_mode_summary">Алгоритм, який драйвер камери повинен використовувати для застосування зменшення шуму. Алгоритм зменшення шуму намагається покращити якість зображення, видаляючи надмірний шум, доданий процесом зйомки, особливо в темних умовах. (Зауважте, що це не пов\'язано з фоторежимом зменшення шуму, і фактично цей параметр ігнорується в фоторежимі NR.)\n%s</string>
+    <string name="noise_reduction_mode_default">За замовчуванням</string>
+    <string name="noise_reduction_mode_off">Вимкнено</string>
+    <string name="noise_reduction_mode_minimal">Мінімальний</string>
+    <string name="noise_reduction_mode_fast">Швидкий</string>
+    <string name="noise_reduction_mode_high_quality">Висока якість</string>
+    <string name="preference_focus_assist">Допомога при фокусуванні</string>
+    <string name="preference_focus_assist_summary">Чи збільшувати масштаб при регулюванні відстані ручного фокусування\n%s</string>
+    <string name="preference_focus_assist_off">Вимкнено</string>
+    <string name="preference_focus_assist_2x">2x</string>
+    <string name="preference_focus_assist_4x">4x</string>
+    <string name="exposure_compensation_zoom">Збільшити або зменшити компенсацію експозиції</string>
+    <string name="previous">Попередній</string>
+    <string name="next">Наступний</string>
+    <string name="preference_save_include_milliseconds">Використовувати мілісекунди в назві файлу</string>
+    <string name="preference_save_include_milliseconds_summary">Якщо ввімкнено, назви файлів міститимуть мілісекунди</string>
+    <string name="preference_startup_focus_summary">Чи виконувати автофокусування під час запуску ManualCamera. Якщо у вас виникає проблема з увімкненням спалаху під час запуску, вимкніть цю опцію</string>
+    <string name="preference_audio_noise_control_sensitivity_summary">Чутливість рівня шуму для опції аудіо (гучний шум)</string>
+    <string name="hdr_info">Режим HDR корисний для знімків із великою різницею яскравості. Він працює, роблячи кілька знімків із різною експозицією та поєднуючи їх для створення остаточного зображення.\n\nЗауважте, що HDR не підходить для сцен зі швидким рухом і може призвести до менш точного відтворення кольорів.\n\nФотографування в режимі HDR буде повільнішим.</string>
+    <string name="preference_fast_burst_n_images">Кількість фотографій</string>
+    <string name="remaining">Залишилося</string>
+    <string name="preference_preview">Попередній перегляд камери…</string>
+    <string name="cycle_flash">Цикл спалаху</string>
+    <string name="preference_show_cycle_flash">Показати значок спалаху</string>
+    <string name="preference_show_cycle_flash_summary">Чи показувати на екрані значок для перемикання параметрів спалаху замість відображення параметрів спалаху у спливаючому меню. Зверніть увагу, що ліхтарик недоступний, якщо використовується цей значок.</string>
+    <string name="preference_raw_expo_bracketing">Дозволити RAW для брекетингу експозиції</string>
+    <string name="preference_raw_expo_bracketing_summary">Чи слід застосовувати параметр RAW також до режиму фотографування з брекетингом експозиції (або до режиму HDR, якщо ввімкнено «Зберігати всі зображення для режиму HDR»). Якщо цей параметр вимкнено, у цих режимах фотографування зберігатимуться лише зображення, відмінні від DNG (JPEG тощо).</string>
+    <string name="preference_raw_focus_bracketing">Дозволити RAW для брекетингу фокусування</string>
+    <string name="preference_raw_focus_bracketing_summary">Чи слід застосовувати параметр RAW також до режиму фотографування з брекетингом фокусування. Якщо цей параметр вимкнено, у цих режимах фотографування зберігатимуться лише зображення, відмінні від DNG (JPEG тощо).</string>
+    <string name="cycle_raw">Цикл режимів RAW</string>
+    <string name="preference_show_cycle_raw">Показати значок RAW</string>
+    <string name="preference_show_cycle_raw_summary">Чи показувати на екрані значок для перемикання режимів RAW</string>
+    <string name="bluetooth_current_remote">Поточний пульт:</string>
+    <string name="bluetooth_scan">Сканувати</string>
+    <string name="preference_stamp_style_background">Текст із затіненим фоном</string>
+    <string name="image_saving_notification">Збереження зображень…</string>
+    <string name="photo_mode_x_auto">X-Авто</string>
+    <string name="photo_mode_x_auto_full">Авто</string>
+    <string name="photo_mode_x_hdr">X-HDR</string>
+    <string name="photo_mode_x_hdr_full">HDR</string>
+    <string name="photo_mode_x_night">X-Ніч</string>
+    <string name="photo_mode_x_night_full">Ніч</string>
+    <string name="photo_mode_x_bokeh">X-Боке</string>
+    <string name="photo_mode_x_bokeh_full">Боке</string>
+    <string name="photo_mode_x_beauty">X-Краса</string>
+    <string name="photo_mode_x_beauty_full">Краса / Ретуш обличчя</string>
+    <string name="external_camera">Зовнішня камера</string>
+    <string name="ultrawide">Надширококутна</string>
+    <string name="switch_to_external_camera">Переключитися на зовнішню камеру</string>
+    <string name="switch_to_unknown_camera">Переключити камеру</string>
+    <string name="switch_multi_camera">Перемикання між кількома камерами</string>
+    <string name="preference_multi_cam_button">Значок кількох камер</string>
+    <string name="preference_multi_cam_button_summary">Якщо ввімкнено, використовуйте окремі кнопки для перемикання між передньою/задньою камерами та для перемикання між кількома передніми/задніми камерами. Якщо вимкнено, значок «Переключити камеру» циклічно перемикатиме всі камери.</string>
+    <string name="preference_show_camera_id">Показати ідентифікатор камери</string>
+    <string name="preference_show_camera_id_summary">Відображати поточний номер ідентифікатора камери на екрані</string>
+    <string name="preference_allow_long_press">Дозволити тривале натискання</string>
+    <string name="preference_allow_long_press_summary">Чи дозволяти дії тривалого натискання (наприклад, тривале натискання на галерею для зміни місця збереження).</string>
+    <string name="aperture">Діафрагма</string>
+    <string name="error_features_4k">4K UHD</string>
+    <string name="error_features_bitrate">Бітрейт</string>
+    <string name="error_features_frame_rate">Частота кадрів</string>
+    <string name="error_features_slow_motion">Уповільнений рух</string>
+    <string name="preference_comment_ypr">Зберігати рискання, тангаж і крен</string>
+    <string name="preference_comment_ypr_summary">Зберігати рискання, тангаж і крен пристрою в коментарі користувача Exif фотографії (лише формати JPEG)</string>
+    <string name="array_seekbar_preference_seekbar">Повзунок для зміни поточного значення налаштування</string>
+    <string name="preference_camera2_dummy_capture_hack">Увімкнути фіктивне захоплення HDR/виправлення експозиції</string>
+    <string name="preference_camera2_dummy_capture_hack_summary">Спробуйте ввімкнути це, якщо на вашому пристрої виникають проблеми під час фотографування в режимах HDR або Expo (якщо експозиційні зображення виходять з однаковою експозицією). Актуально, лише якщо також увімкнено опцію швидкого HDR/експозиції нижче.</string>
+    <string name="permission_rationale_bluetooth_scan_connect">Дозволи на сканування/підключення Bluetooth необхідні для виявлення та підключення до пристроїв дистанційного керування Bluetooth LE.</string>
+    <string name="unknown_device_no_permission">Невідомий пристрій (дозвіл на підключення Bluetooth недоступний)</string>
+    <string name="preference_show_exposure_lock">Показувати значок блокування автоекспозиції</string>
+    <string name="preference_show_exposure_lock_summary">Чи показувати на екрані значок для блокування або розблокування експозиції</string>
+    <string name="exposure_unlock">Розблокувати експозицію</string>
+    <string name="preference_nr_mode_low_light_message">Режим слабкого освітлення: тримайте камеру нерухомо</string>
+    <string name="photo_mode_panorama">Панорама</string>
+    <string name="photo_mode_panorama_full">Панорама</string>
+    <string name="preference_screen_remote_control">Пульт дистанційного керування Bluetooth LE…</string>
+    <string name="preference_enable_remote">Увімкнути пульт дистанційного керування Bluetooth LE</string>
+    <string name="preference_enable_remote_summary">Увімкнути пристрої дистанційного керування Bluetooth LE (BLE)</string>
+    <string name="preference_remote_type">Тип віддаленого пристрою</string>
+    <string name="ble_not_supported">BLE не підтримується</string>
+    <string name="scan_ble">Сканування пристроїв BLE</string>
+    <string name="bluetooth_not_supported">Bluetooth не підтримується.</string>
+    <string name="unknown_device">Невідомий пристрій</string>
+    <string name="preference_remote_disconnect_screen_dim">Затемнити екран, якщо пульт дистанційного керування від’єднається</string>
+    <string name="preference_remote_disconnect_screen_dim_summary">Підказка: встановіть яскравість за замовчуванням на мінімальний рівень перед запуском ManualCamera.</string>
+    <string name="preference_water_type">Використовувати солону воду для розрахунків глибини</string>
+    <string name="preference_water_type_summary">Для підводних корпусів покращує точність, якщо вибрано правильний тип води.</string>
+    <string name="remote_connected">Пульт дистанційного керування підключено</string>
+    <string name="preference_audio_control_summary">Зробити фото/відео при виявленні шуму.
+        Якщо ввімкнено, використовуйте екранну кнопку мікрофона, щоб почати/зупинити прослуховування.
+        \n%s</string>
+    <string name="intro_text">Торкніться, щоб сфокусуватися, і натисніть круглу синю кнопку спуску, щоб зробити фотографії.
+        \n\nЩоб зберегти на SD-карти, див. Налаштування/Додаткові елементи керування камерою/\"Фреймворк доступу до сховища\".
+        Для отримання додаткової допомоги натисніть \"Онлайн-довідка\" в Налаштуваннях.
+    </string>
+    <string name="preference_select_remote">Вибрати віддалений пристрій</string>
+    <string name="preference_video_rec709">REC709</string>
+    <string name="preference_video_srgb">sRGB</string>
+    <string name="preference_video_gamma">Гама</string>
+    <string name="preference_video_profile_gamma">Значення гами відео</string>
+    <string name="preference_video_profile_gamma_summary">Значення гами, яке буде використовуватися для відео, якщо для профілю зображення відео встановлено значення Гама\n%s</string>
+    <string name="preference_ghost_image_alpha">Непрозорість фантомного зображення</string>
+    <string name="preference_ghost_image_alpha_summary">Альфа-значення, яке буде використовуватися для фантомних зображень. Менше значення означає більшу прозорість, більше — більшу непрозорість.\n%s</string>
+    <string name="preference_zebra_stripes_foreground_color">Колір переднього плану зебрових смуг</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">Колір, який буде використовуватися для смуги переднього плану при показі зебрових смуг.\n%s</string>
+    <string name="preference_zebra_stripes_background_color">Колір фону зебрових смуг</string>
+    <string name="preference_zebra_stripes_background_color_summary">Колір, який буде використовуватися для фонової смуги при показі зебровых смуг.\n%s</string>
+    <string name="preference_zebra_stripes_color_black">Чорний</string>
+    <string name="preference_zebra_stripes_color_red">Червоний</string>
+    <string name="preference_zebra_stripes_color_orange">Помаранчевий</string>
+    <string name="preference_zebra_stripes_color_transparent">Прозорий</string>
+    <string name="preference_zebra_stripes_color_white">Білий</string>
+    <string name="reset_all">Скинути все</string>
 </resources>

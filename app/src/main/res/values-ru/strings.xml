@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ManualCamera</string>
+    <string name="app_name">Manual Camera</string>
     <string name="action_settings">Настройки</string>
     <string name="action_popup">Настройки всплывающих окон</string>
     <string name="intro_ok">Ок (Это сообщение больше не появится)</string>
 
     <string name="on">Вкл</string>
     <string name="off">Выкл</string>
-    
+
     <string name="choose_save_location">Выберите папку для сохранения:</string>
     <string name="clear_folder_history">Очистить историю папки</string>
     <string name="clear_folder_history_question">Очистить историю папки?</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">Цветовой эффект</string>
     <string name="scene_mode">Сцена</string>
     <string name="white_balance">Баланс белого</string>
-    
+
     <string name="angle">Угол</string>
     <string name="direction">Направление</string>
     <string name="failed_to_open_camera_1">Не удалось открыть камеру</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">Память</string>
     <string name="screen_lock_message_1">[Заблокировано:</string>
     <string name="screen_lock_message_2">Проведите по экрану, чтобы разблокировать]</string>
-    
+
     <string name="failed_to_stamp">Не удалось добавить отметку</string>
     <string name="metres_abbreviation">м</string>
-    
+
     <string name="preference_category_camera_effects">Эффекты</string>
     <string name="preference_auto_stabilise">Автостабилизация</string>
     <string name="preference_auto_stabilise_summary">Изображение будет стабилизироваться. Не рекомендуется на слабых устройствах</string>
@@ -166,7 +166,7 @@
     <string name="preference_keep_display_on_summary">Если включено, экран не будет выключаться, пока ManualCamera открыта</string>
     <string name="preference_max_brightness">Максимальная яркость</string>
     <string name="preference_max_brightness_summary">Включение максимальной яркости во время съемки</string>
-    
+
     <string name="preference_category_camera_quality">Качество фото и видео</string>
     <string name="preference_screen_photo_settings">Настройки фото…</string>
     <string name="preference_screen_video_settings">Настройки видео…</string>
@@ -221,7 +221,7 @@
     <string name="preference_record_audio_channels_summary">Настройка моно или стереозвука (стерео доступно не на всех устройствах)\n%s</string>
     <string name="preference_video_flash">Вспышка во время записи видео</string>
     <string name="preference_video_flash_summary">Если включено, вспышка будет включаться/выключаться при записи видео (можно использовать, чтобы выполнить запись на расстоянии)</string>
-    
+
     <string name="preference_category_online">Разное</string>
     <string name="preference_online_help">Помощь в Интернете</string>
     <string name="preference_online_help_summary">Открыть веб-сайт ManualCamera в вашем браузере</string>
@@ -238,7 +238,7 @@
     <string name="about_available">Доступно</string>
     <string name="about_not_available">Недоступно</string>
     <string name="about_copy_to_clipboard">Копировать в буфер</string>
-    
+
     <string name="take_photo">Сделать фото</string>
     <string name="gallery">Галерея</string>
     <string name="exposure">Экспозиция</string>
@@ -251,7 +251,7 @@
     <string name="switch_to_photo">Переключиться в режим фото</string>
     <string name="trash">Удалить последний снимок</string>
     <string name="share">Поделиться</string>
-    
+
     <string name="parent_folder">Родительская папка</string>
     <string name="new_folder">Новая папка</string>
     <string name="cant_write_folder">Невозможно записать в эту папку</string>
@@ -966,6 +966,120 @@
 
     <string name="preference_audio_control_none">Нет</string>
     <string name="preference_audio_control_noise">Громкий шум</string>
-    <string name="preference_audio_control_voice">Голосовая команда: \"cheese\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+    <string name="preference_audio_control_voice">Голосовая команда: \"cheese\"</string>
+
+    <string name="s_photo_mode">Режим фото</string>
+    <string name="s_video_mode">Режим видео</string>
+    <string name="photo_settings">Настройки фото</string>
+    <string name="more_settings">Дополнительные настройки</string>
+    <string name="resolution">Разрешение</string>
+    <string name="raw_jpeg">RAW/JPEG</string>
+    <string name="jpeg_only">Только JPEG</string>
+    <string name="no_raw">Без RAW</string>
+    <string name="only_raw">Только RAW</string>
+    <string name="jpeg">JPEG</string>
+    <string name="raw_photos">Фотографии RAW</string>
+    <string name="more_light">Больше света</string>
+    <string name="video_settings">Настройки видео</string>
+    <string name="Night">Ночь</string>
+    <string name="photo_mode_focus">Фокус</string>
+    <string name="photo_mode_standard_photo">Фото</string>
+    <string name="brightness">Яркость</string>
+    <string name="s_white_balance">Баланс белого</string>
+    <string name="s_exposure">Экспозиция</string>
+    <string name="s_shutter_speed">Выдержка</string>
+    <string name="s_iso">ISO</string>
+    <string name="speed">Скорость</string>
+    <string name="focus_mode_macro">Макро</string>
+    <string name="focus_mode_locked">Заблокирован</string>
+    <string name="focus_mode_infinity">Бесконечность</string>
+    <string name="focus_mode_manual2">Ручной</string>
+    <string name="focus_mode_edof">EDOF</string>
+    <string name="focus_mode_continuous_picture">Непрерывный</string>
+    <string name="focus_mode_auto">Авто</string>
+    <string name="scene_modes">Режимы сцены</string>
+    <string name="reset_iso_auto">сбросить ISO авто</string>
+    <string name="shutter">Затвор</string>
+    <string name="action_reset_all_settings">Сбросить все настройки</string>
+    <string name="awb_lock">Блокировка</string>
+    <string name="preference_category_photo_settings">Настройки фото</string>
+    <string name="preference_category_video_settings">Настройки видео</string>
+    <string name="preference_category_location_settings">Настройки местоположения</string>
+    <string name="preference_category_processing_settings">Обработка</string>
+    <string name="preference_category_on_screen_gui_settings">Настройки интерфейса</string>
+    <string name="preference_category_finder_preview">Настройки видоискателя</string>
+    <string name="preference_show_zoom_text">Показать уровень зума</string>
+    <string name="preference_video_bitrate2">Битрейт видео</string>
+    <string name="preference_video_fps2">Кадров в секунду</string>
+    <string name="video_bitrate">Битрейт</string>
+    <string name="video_frame_rate">Частота кадров</string>
+    <string name="preference_category_camera_preview">Превью камеры</string>
+    <string name="repeat">Повтор</string>
+    <string name="msg_upgrade_not_support">Функция появится в следующем обновлении.</string>
+    <string name="auto_wb">Авто ББ</string>
+    <string name="auto">Авто</string>
+    <string name="focus">Фокус</string>
+    <string name="close">Закрыть</string>
+    <string name="pro_version">(PRO версия)</string>
+    <string name="pro_version_features">Эта функция доступна только для пользователей Pro.</string>
+    <string name="dialog_pro_version_title">✨ Премиум-функция ✨</string>
+    <string name="dialog_pro_version_msg">Эта опция входит в пакет Pro. Обновитесь, чтобы раскрыть весь потенциал камеры.</string>
+    <string name="unlock_pro">Разблокировать Pro</string>
+    <string name="later">Позже</string>
+    <string name="preference_hdr_tonemapping">HDR тонемаппинг</string>
+    <string name="preference_hdr_tonemapping_summary">Алгоритм тонемаппинга в режиме HDR-фото\n%s</string>
+    <string name="preference_hdr_tonemapping_clamp">Простое обрезание</string>
+    <string name="preference_hdr_tonemapping_exponential">Экспоненциальный</string>
+    <string name="preference_hdr_tonemapping_default">По умолчанию</string>
+    <string name="preference_hdr_tonemapping_aces">ACES</string>
+    <string name="preference_remove_device_exif">Удалить EXIF‑данные устройства</string>
+    <string name="preference_remove_device_exif_summary">Удалять ли EXIF‑метаданные устройства из JPEG‑фото. Это не удалит метки EXIF, добавленные другими настройками (например, геотеги). Другие опции независимы и могут переопределять это. RAW/DNG и видео не затрагиваются.\n%s</string>
+    <string name="preference_remove_device_exif_off">Не удалять EXIF всех устройств</string>
+    <string name="preference_remove_device_exif_on">Удалить EXIF устройства</string>
+    <string name="preference_remove_device_exif_keep_datetime">Удалить, кроме даты/времени</string>
+    <string name="choose_camera">Выбрать камеру:</string>
+    <string name="preference_show_focus_peaking">Показать иконку фокус-пикинга</string>
+    <string name="preference_show_focus_peaking_summary">Показывать ли иконку на экран для включения/отключения фокус-пикинга. При включенном пикинге края в фокусе будут выделены. Смотрите Настройки/Предпросмотр камеры/"Focus peaking".</string>
+    <string name="focus_peaking_enable">Включить фокус-пикинг</string>
+    <string name="focus_peaking_disable">Отключить фокус-пикинг</string>
+    <string name="preference_photo_optimise_focus">Оптимизировать фокус для…</string>
+    <string name="preference_photo_optimise_focus_summary">При съемке фото оптимизировать фокус по задержке или качеству. Актуально только при непрерывной фокусировке. Оптимизация по качеству гарантирует резкость, но может замедлить съемку.\n%s</string>
+    <string name="preference_photo_optimise_focus_latency">Задержка</string>
+    <string name="preference_photo_optimise_focus_quality">Качество</string>
+    <string name="preference_save_preshots">Сохранять предпросмотры</string>
+    <string name="preference_save_preshots_summary">Если включено, короткое видео будет сохранено вместе с каждой фотографией, с кадрами до съемки. Не поддерживается для режимов экспозиции, фокусного брекетинга или панорам.\n%s</string>
+    <string name="telephoto">Телеобъектив</string>
+    <string name="auto_lens">Авто-объектив</string>
+    <string name="lens">Объектив</string>
+    <string name="physical_cameras_info">&#9432; По умолчанию камера использует автоматический выбор объектива на основе уровня зума. Однако в этом меню можно явно выбрать объектив.</string>
+    <string name="focus_bracketing_auto_source_distance">Авто источник</string>
+    <string name="preference_allow_haptic_feedback">Разрешить вибрационную отдачу</string>
+    <string name="preference_allow_haptic_feedback_summary">Разрешить вибрацию при настройке контролов. Также требуется включенное сенсорное взаимодействие в настройках устройства.\n%s</string>
+    <string name="s_focus">Фокус</string>
+    <string name="preference_using_saf">Storage Access Framework</string>
+    <string name="color_effects">Цветовые эффекты</string>
+    <string name="preference_languages">Языки</string>
+    <string name="photo_mode_fast_burst" translatable="false">[]]]</string>
+    <string name="permission_rationale_storage">Для сохранения полученных файлов, таких как фотографии или видео, требуется разрешение на чтение/запись в хранилище</string>
+    <string name="permission_rationale_record_audio">Для записи видео со звуком, а также для использования параметров «Управление звуком» требуется разрешение на доступ к микрофону</string>
+    <string name="preference_image_format_jpeg_r">UltraHDR JPEG</string>
+    <string name="preference_save_include_milliseconds">Использовать миллисекунды в имени файла</string>
+    <string name="preference_save_include_milliseconds_summary">Если включено, имена файлов будут включать миллисекунды</string>
+    <string name="photo_mode_x_auto">X-Авто</string>
+    <string name="photo_mode_x_auto_full">Авто</string>
+    <string name="photo_mode_x_hdr">X-HDR</string>
+    <string name="photo_mode_x_hdr_full">HDR</string>
+    <string name="photo_mode_x_night">X-Ночь</string>
+    <string name="photo_mode_x_night_full">Ночь</string>
+    <string name="photo_mode_x_bokeh">X-Боке</string>
+    <string name="photo_mode_x_bokeh_full">Боке</string>
+    <string name="photo_mode_x_beauty">X-Красота</string>
+    <string name="photo_mode_x_beauty_full">Красота / Ретушь лица</string>
+    <string name="array_seekbar_preference_seekbar">Ползунок для изменения текущего значения настройки</string>
+    <string name="preference_camera2_dummy_capture_hack">Включить фиктивный захват HDR/исправление экспозиции</string>
+    <string name="preference_camera2_dummy_capture_hack_summary">Попробуйте включить это, если на вашем устройстве возникают проблемы при фотосъемке в режимах HDR или Expo (если экспозиционные изображения получаются с одинаковой экспозицией). Актуально, только если также включена опция быстрого HDR/экспозиции ниже.</string>
+    <string name="permission_rationale_bluetooth_scan_connect">Разрешения на сканирование/подключение Bluetooth необходимы для обнаружения и подключения к устройствам дистанционного управления Bluetooth LE.</string>
+    <string name="unknown_device_no_permission">Неизвестное устройство (разрешение на подключение Bluetooth недоступно)</string>
+    <string name="reset_all">Сбросить все</string>
 
 </resources>

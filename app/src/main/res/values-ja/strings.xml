@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ManualCamera</string> <!-- shouldn't be translated -->
+    <string name="app_name">Manual Camera</string> <!-- shouldn't be translated -->
     <string name="action_settings">設定</string>
     <string name="action_popup">ポップアップ設定</string>
     <string name="intro_ok">了解しました (この内容を再度表示しない)</string>
 
     <string name="on">オン</string> <!-- whether a setting is turned on, e.g., "Auto-level: On" -->
     <string name="off">オフ</string> <!-- whether a setting is turned off, e.g., "Auto-level: Off" -->
-    
+
     <string name="choose_save_location">保存場所を選択する:</string>
     <string name="clear_folder_history">フォルダの履歴を消去する</string>
     <string name="clear_folder_history_question">履歴を消去しますか？</string>
@@ -57,7 +57,7 @@
     <string name="color_effect">カラーエフェクト</string>
     <string name="scene_mode">シーンモード</string>
     <string name="white_balance">ホワイトバランス</string>
-    
+
     <string name="angle">角度</string>
     <string name="direction">方角</string>
     <string name="failed_to_open_camera_1">カメラが開けません。</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">空き</string>
     <string name="screen_lock_message_1">[固定:</string>
     <string name="screen_lock_message_2">スワイプで解除]</string>
-    
+
     <string name="failed_to_stamp">スタンプの貼り付けに失敗しました</string>
-    <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-    
+    <string name="metres_abbreviation">m</string>
+
     <string name="preference_category_camera_effects">カメラエフェクト</string>
     <string name="preference_auto_stabilise">傾き補正</string>
     <string name="preference_auto_stabilise_summary">水平を(写真のみ)自動的に修正します(撮影後の処理に時間がかかります。メモリの少ない端末では失敗する事があります)</string>
@@ -96,7 +96,7 @@
     <string name="preference_timer_beep_summary">タイマー撮影やインターバル撮影のカウントダウンで音を鳴らします</string>
     <string name="preference_timer_speak">音声タイマー</string>
     <string name="preference_timer_speak_summary">タイマー撮影やインターバル撮影のカウントダウンで(残り1分から)音声を流します</string>
-    <string name="preference_burst_mode">連続撮影</string> <!-- preference is called "burst" for historical reasons, but is more of a repeat mode; also used in popup menu, so shouldn't be too long a string -->
+    <string name="preference_burst_mode">連続撮影</string>
     <string name="preference_burst_interval">インターバル</string>
     <string name="preference_screen_camera_controls_more">カメラ制御の詳細設定…</string>
     <string name="preference_touch_capture">画面タッチで撮影する</string>
@@ -119,7 +119,7 @@
     <string name="preference_save_video_prefix_summary">保存するビデオのファイル名の手前につける内容を設定します</string>
     <string name="preference_save_zulu_time">ファイル名に使用する時刻フォーマット</string>
     <string name="preference_show_when_locked">ロック画面上でもカメラを表示する</string>
-    <string name="preference_show_when_locked_summary">有効にするとManualCameraがロック画面上でも表示されます(ギャラリーを既定のアプリにしているなど、ロックの解除が必要になる場合もあります)</string>
+    <string name="preference_show_when_locked_summary">有効にするとPhotonLabがロック画面上でも表示されます(ギャラリーを既定のアプリにしているなど、ロックの解除が必要になる場合もあります)</string>
     <string name="preference_startup_focus">起動時にオートフォーカスを行う</string>
     <string name="preference_startup_focus_summary">ManualCamera の起動時にオートフォーカスを行います。もし起動時にライトが点灯する問題が起こる場合は設定をオフにしてください。</string>
     <string name="preference_lock_video">録画中は画面を固定する</string>
@@ -166,7 +166,7 @@
     <string name="preference_keep_display_on_summary">有効にすると使用している間は画面が消えなくなります</string>
     <string name="preference_max_brightness">明るさを常に最大にする</string>
     <string name="preference_max_brightness_summary">画面の明るさを常に最大にします</string>
-    
+
     <string name="preference_category_camera_quality">写真とビデオの設定…</string>
     <string name="preference_screen_photo_settings">写真の設定…</string>
     <string name="preference_screen_video_settings">ビデオの設定…</string>
@@ -219,7 +219,7 @@
     <string name="preference_record_audio_channels_summary">モノラルもしくはステレオを指定します (ステレオはサポートしている端末でのみ有効です)\n%s</string>
     <string name="preference_video_flash">録画中にライトを点滅する</string>
     <string name="preference_video_flash_summary">有効にすると撮影中にライトが点滅します (撮影中である事を相手に伝えることができます)</string>
-    
+
     <string name="preference_category_online">その他の内容</string>
     <string name="preference_online_help">オンラインヘルプ</string>
     <string name="preference_online_help_summary">ManualCamera のWEBサイトをブラウザで開きます</string>
@@ -230,13 +230,13 @@
     <string name="preference_about">このアプリについて</string>
     <string name="preference_about_summary">アプリとデバッグの情報を表示します</string>
     <string name="preference_reset">設定をリセットする</string>
-    <string name="preference_reset_summary">ManualCameraの設定をすべてリセットします</string>
+    <string name="preference_reset_summary">PhotonLabの設定をすべてリセットします</string>
     <string name="preference_reset_question">本当にすべての設定をリセットしますか？</string>
 
     <string name="about_available">利用可能</string>
     <string name="about_not_available">利用不可</string>
     <string name="about_copy_to_clipboard">クリップボードにコピーする</string>
-    
+
     <string name="take_photo">写真を撮影する</string>
     <string name="gallery">ギャラリーを開く</string>
     <string name="exposure">露出を設定する</string>
@@ -249,7 +249,7 @@
     <string name="switch_to_photo">写真モードに切り替える</string>
     <string name="trash">さっきの写真を削除する</string>
     <string name="share">この写真を共有する</string>
-    
+
     <string name="parent_folder">親フォルダ</string>
     <string name="new_folder">新規フォルダを作る</string>
     <string name="cant_write_folder">このフォルダは使えません</string>
@@ -853,6 +853,191 @@
 
     <string name="preference_audio_control_none">なし</string>
     <string name="preference_audio_control_noise">音に反応</string>
-    <string name="preference_audio_control_voice">音声コマンド: \"チーズ\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+    <string name="preference_audio_control_voice">音声コマンド: \"チーズ\"</string>
 
+    <string name="s_photo_mode">写真モード</string>
+    <string name="s_video_mode">ビデオモード</string>
+    <string name="photo_settings">写真設定</string>
+    <string name="more_settings">その他の設定</string>
+    <string name="resolution">解像度</string>
+    <string name="raw_jpeg">RAW+JPEG</string>
+    <string name="jpeg_only">JPEGのみ</string>
+    <string name="no_raw">RAWなし</string>
+    <string name="only_raw">RAWのみ</string>
+    <string name="jpeg">JPEG</string>
+    <string name="raw_photos">RAW写真</string>
+    <string name="more_light">より多くの光</string>
+    <string name="video_settings">ビデオ設定</string>
+    <string name="Night">夜景</string>
+    <string name="photo_mode_focus">フォーカス</string>
+    <string name="photo_mode_standard_photo">写真</string>
+    <string name="brightness">明るさ</string>
+    <string name="s_white_balance">ホワイトバランス</string>
+    <string name="s_exposure">露出</string>
+    <string name="s_focus">フォーカス</string>
+    <string name="s_shutter_speed">シャッター速度</string>
+    <string name="s_iso">ISO</string>
+    <string name="speed">速度</string>
+    <string name="focus_mode_macro">マクロ</string>
+    <string name="focus_mode_locked">ロック</string>
+    <string name="focus_mode_infinity">無限遠</string>
+    <string name="focus_mode_manual2">マニュアル</string>
+    <string name="focus_mode_edof">EDOF</string>
+    <string name="focus_mode_continuous_picture">CP</string>
+    <string name="focus_mode_auto">自動</string>
+    <string name="scene_modes">シーンモード</string>
+    <string name="reset_iso_auto">ISOを自動にリセット</string>
+    <string name="shutter">シャッター</string>
+    <string name="action_reset_all_settings">すべての設定をリセット</string>
+    <string name="awb_lock">ロック</string>
+    <string name="preference_category_photo_settings">写真設定</string>
+    <string name="preference_category_video_settings">ビデオ設定</string>
+    <string name="preference_category_location_settings">位置情報設定</string>
+    <string name="preference_category_processing_settings">処理設定</string>
+    <string name="preference_category_on_screen_gui_settings">画面GUI設定</string>
+    <string name="preference_category_finder_preview">ファインダー設定</string>
+    <string name="preference_show_zoom_text">現在のズーム情報を表示</string>
+    <string name="preference_video_bitrate2">ビデオビットレート</string>
+    <string name="preference_video_fps2">フレームレート</string>
+    <string name="video_bitrate">ビデオビットレート</string>
+    <string name="video_frame_rate">フレームレート</string>
+    <string name="preference_category_camera_preview">カメラプレビュー</string>
+    <string name="repeat">繰り返し</string>
+    <string name="msg_upgrade_not_support">この機能は次回のアップデートで提供されます。</string>
+    <string name="auto_wb">自動WB</string>
+    <string name="auto">自動</string>
+    <string name="focus">フォーカス</string>
+    <string name="close">閉じる</string>
+    <string name="pro_version">(PROバージョン)</string>
+    <string name="pro_version_features">この機能はProユーザーのみ利用可能です。</string>
+    <string name="dialog_pro_version_title">✨ プレミアム機能 ✨</string>
+    <string name="dialog_pro_version_msg">このオプションはProパックに含まれています。全機能を解放するにはアップグレードしてください。</string>
+    <string name="unlock_pro">Proをアンロック</string>
+    <string name="later">後で</string>
+    <string name="scene_mode_steady_photo">手ぶれ防止写真</string>
+    <string name="preference_save_include_milliseconds">ファイル名にミリ秒を含める</string>
+    <string name="preference_save_include_milliseconds_summary">有効にすると、ファイル名にミリ秒が含まれます</string>
+    <string name="photo_mode_fast_burst" translatable="false">[]]]</string>
+    <string name="max_filesize">最大ファイルサイズ</string>
+    <string name="raw_info">DNG ファイルにはカメラからの圧縮・加工されていない完全な情報が含まれます。\n\n注意: 一部のギャラリーアプリは DNG を認識しません。DNG 画像は専門の編集ソフトで使用できます。\n\n“写真にスタンプ” や Auto-level などの処理オプションは非 DNG（JPEG 等）の画像にのみ適用され、DNG 画像には適用されません。</string>
+    <string name="slow_motion_enabled">スローモーション有効</string>
+    <string name="slow_motion_disabled">スローモーション無効</string>
+    <string name="permission_rationale_storage">写真や動画などの結果ファイルを保存するには、ストレージの読み取り/書き込み権限が必要です</string>
+    <string name="dark">暗い</string> <!-- 露出補正 暗い -->
+    <string name="bright">明るい</string> <!-- 露出補正 明るい -->
+    <string name="exposure_shutter_speed">シャッタースピード</string>
+    <string name="camera_error">重大なカメラエラー</string>
+    <string name="camera">カメラ</string>
+    <string name="video_pause">動画を一時停止しました</string>
+    <string name="video_resume">動画を再開しました</string>
+    <string name="pause_video">動画録画を一時停止</string>
+    <string name="resume_video">動画録画を再開</string>
+    <string name="cancelled_focus_bracketing">フォーカスブラケットをキャンセルしました</string>
+    <string name="preference_background_photo_saving">バックグラウンドスレッドを使用</string>
+    <string name="preference_background_photo_saving_summary">写真をバックグラウンドスレッドで保存するかどうか（高速な操作のため）</string>
+    <string name="high_speed">高速</string>
+    <string name="preference_raw_no">いいえ</string>
+    <string name="preference_raw_yes">標準およびDNG（RAW）</string>
+    <string name="preference_raw_only">DNG（RAW）のみ</string>
+    <string name="video_log">ログプロファイル</string>
+    <string name="preference_image_format_jpeg_r">UltraHDR JPEG</string>
+    <string name="open_files_saf_exception_generic">このデバイスにファイルダイアログが見つかりません。オプションはサポートされていません</string>
+    <string name="panorama_cancelled">パノラマはキャンセルされました</string>
+    <string name="failed_to_process_panorama">パノラマ画像の作成に失敗しました</string>
+    <string name="no_burst">バーストなし</string>
+    <string name="accuracy_unreliable">信頼できない</string>
+    <string name="accuracy_low">低い</string>
+    <string name="accuracy_medium">普通</string>
+    <string name="accuracy_high">高い</string>
+    <string name="accuracy_unknown">不明</string>
+    <string name="exposure_compensation_zoom">露出補正を増減する</string>
+    <string name="preference_raw_expo_bracketing">露出ブラケットにRAWを許可</string>
+    <string name="preference_raw_expo_bracketing_summary">RAWオプションを露出ブラケット写真モード（または「HDRモードのすべての画像を保存」が有効な場合はHDRモード）にも適用するかどうか。このオプションが無効になっている場合、これらの写真モードでは非DNG（JPEGなど）画像のみが保存されます。</string>
+    <string name="preference_raw_focus_bracketing">フォーカスブラケットにRAWを許可</string>
+    <string name="preference_raw_focus_bracketing_summary">RAWオプションをフォーカスブラケット写真モードにも適用するかどうか。このオプションが無効になっている場合、これらの写真モードでは非DNG（JPEGなど）画像のみが保存されます。</string>
+    <string name="cycle_raw">RAWモードサイクル</string>
+    <string name="preference_show_cycle_raw">RAWアイコンを表示</string>
+    <string name="preference_show_cycle_raw_summary">画面にRAWモードを切り替えるアイコンを表示するかどうか</string>
+    <string name="image_saving_notification">画像を保存しています…</string>
+    <string name="choose_camera">カメラを選択:</string>
+    <string name="preference_show_focus_peaking">フォーカスピーキングアイコンを表示</string>
+    <string name="preference_show_focus_peaking_summary">フォーカスピーキングを有効または無効にするための画面上のアイコンを表示するかどうか。フォーカスピーキングが有効になっている場合、焦点の合っているエッジ（輪郭）にハイライトが表示されます。設定/カメラプレビュー/「フォーカスピーキング」を参照してください。</string>
+    <string name="focus_peaking_enable">フォーカスピーキングを有効にする</string>
+    <string name="focus_peaking_disable">フォーカスピーキングを無効にする</string>
+    <string name="preference_photo_optimise_focus">フォーカスを最適化する対象…</string>
+    <string name="preference_photo_optimise_focus_summary">写真を撮るときに、遅延と品質のどちらを最適化するか。連続フォーカスモードを使用している場合にのみ該当します。品質を最適化すると、シーンに焦点が合っていることが保証されますが、写真の撮影に遅延が発生する場合があります。\n%s</string>
+    <string name="preference_photo_optimise_focus_latency">遅延</string>
+    <string name="preference_photo_optimise_focus_quality">品質</string>
+    <string name="preference_save_preshots">プレショットを保存</string>
+    <string name="preference_save_preshots_summary">有効にすると、写真が撮影される直前のショットを含む短い動画が各写真と一緒に保存されます。露出、フォーカスブラケット、またはパノラマモードではサポートされていません。\n%s</string>
+    <string name="telephoto">望遠</string>
+    <string name="auto_lens">オートレンズ</string>
+    <string name="lens">レンズ</string>
+    <string name="physical_cameras_info"><![CDATA[&#9432; デフォルトでは、カメラはオートレンズ選択を使用します。つまり、ズームレベルによって使用されるレンズが制御されます。ただし、このメニューでは、使用しているレンズを明示的に選択することもできます。]]></string>
+    <string name="focus_bracketing_auto_source_distance">オートソース</string>
+    <string name="preference_allow_haptic_feedback">振動フィードバックを許可</string>
+    <string name="preference_allow_haptic_feedback_summary">一部のコントロールを調整するときなどに、触覚振動フィードバックを許可するかどうか。これには、デバイスの設定でタッチ操作を有効にする必要もあることに注意してください。</string>
+    <string name="preference_using_saf">ストレージアクセスフレームワーク</string>
+    <string name="color_effects">カラーエフェクト</string>
+    <string name="preference_languages">言語</string>
+    <string name="photo_mode_x_auto">X-オート</string>
+    <string name="photo_mode_x_auto_full">オート</string>
+    <string name="photo_mode_x_hdr">X-HDR</string>
+    <string name="photo_mode_x_hdr_full">HDR</string>
+    <string name="photo_mode_x_night">X-夜景</string>
+    <string name="photo_mode_x_night_full">夜景</string>
+    <string name="photo_mode_x_bokeh">X-ボケ</string>
+    <string name="photo_mode_x_bokeh_full">ボケ</string>
+    <string name="photo_mode_x_beauty">X-ビューティー</string>
+    <string name="photo_mode_x_beauty_full">ビューティー / 顔修正</string>
+    <string name="preference_hdr_tonemapping">HDRトーンマッピング</string>
+    <string name="preference_hdr_tonemapping_summary">HDR写真モードでトーンマッピングに使用するアルゴリズム\n%s</string>
+    <string name="preference_hdr_tonemapping_clamp">単純クランプ</string>
+    <string name="preference_hdr_tonemapping_exponential">指数関数</string>
+    <string name="preference_hdr_tonemapping_default">デフォルト</string>
+    <string name="preference_remove_device_exif">デバイスのEXIFデータを削除</string>
+    <string name="preference_remove_device_exif_summary">JPEG写真からデバイスのEXIFメタデータを削除するかどうか。これにより、EXIFメタデータを適用する他の設定（例：場所/ジオタギング）によって適用されたexifタグは削除されません。これらの他のオプションは独立しており、この設定を上書きします。RAW/DNGおよび動画は影響を受けません。\n%s</string>
+    <string name="preference_remove_device_exif_off">デバイスのEXIFデータを削除しない</string>
+    <string name="preference_remove_device_exif_on">デバイスのEXIFデータを削除</string>
+    <string name="preference_remove_device_exif_keep_datetime">日時以外を削除</string>
+    <string name="external_camera">外部カメラ</string>
+    <string name="ultrawide">超広角</string>
+    <string name="switch_to_external_camera">外部カメラに切り替え</string>
+    <string name="switch_to_unknown_camera">カメラを切り替え</string>
+    <string name="switch_multi_camera">複数のカメラを切り替え</string>
+    <string name="preference_multi_cam_button">複数カメラアイコン</string>
+    <string name="preference_multi_cam_button_summary">有効にすると、個別のボタンを使用して前面/背面カメラを切り替えたり、複数の前面/背面カメラを切り替えたりします。無効にすると、[カメラを切り替え] アイコンですべてのカメラが順番に切り替わります。</string>
+    <string name="preference_show_camera_id">カメラIDを表示</string>
+    <string name="preference_show_camera_id_summary">現在のカメラID番号を画面に表示します</string>
+    <string name="preference_allow_long_press">長押し操作を許可</string>
+    <string name="preference_allow_long_press_summary">長押し操作を許可するかどうか (例: ギャラリーを長押しして保存場所を変更)。</string>
+    <string name="aperture">絞り</string>
+    <string name="error_features_4k">4K UHD</string>
+    <string name="error_features_bitrate">ビットレート</string>
+    <string name="error_features_frame_rate">フレームレート</string>
+    <string name="error_features_slow_motion">スローモーション</string>
+    <string name="preference_comment_ypr">ヨー、ピッチ、ロールを保存</string>
+    <string name="preference_comment_ypr_summary">写真のExifユーザーコメントにデバイスのヨー、ピッチ、ロールを保存します（JPEG形式のみ）</string>
+    <string name="array_seekbar_preference_seekbar">現在の設定値を変更するためのシークバー</string>
+    <string name="preference_camera2_dummy_capture_hack">ダミーキャプチャHDR/露出修正を有効にする</string>
+    <string name="preference_camera2_dummy_capture_hack_summary">HDRまたはExpo写真モードで写真を撮るときにデバイスに問題がある場合（露出画像が同じ露出で出てくる場合）は、これを有効にしてみてください。以下の高速HDR/露出オプションも有効になっている場合にのみ関連します。</string>
+    <string name="permission_rationale_bluetooth_scan_connect">Bluetooth LEリモートコントロールデバイスを検出して接続するには、Bluetoothスキャン/接続権限が必要です。</string>
+    <string name="unknown_device_no_permission">不明なデバイス（Bluetooth接続権限がありません）</string>
+    <string name="preference_video_rec709">REC709</string>
+    <string name="preference_video_srgb">sRGB</string>
+    <string name="preference_video_gamma">ガンマ</string>
+    <string name="preference_video_profile_gamma">ビデオガンマ値</string>
+    <string name="preference_video_profile_gamma_summary">ビデオピクチャプロファイルがガンマに設定されている場合にビデオに使用するガンマ値\n%s</string>
+    <string name="preference_ghost_image_alpha">ゴースト画像の不透明度</string>
+    <string name="preference_ghost_image_alpha_summary">ゴースト画像に使用するアルファ値。値が低いほど透明になり、高いほど不透明になります。\n%s</string>
+    <string name="preference_zebra_stripes_foreground_color">ゼブラストライプの前景色</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">ゼブラストライプを表示するときの前景ストライプに使用する色。\n%s</string>
+    <string name="preference_zebra_stripes_background_color">ゼブラストライプの背景色</string>
+    <string name="preference_zebra_stripes_background_color_summary">ゼブラストライプを表示するときの背景ストライプに使用する色。\n%s</string>
+    <string name="preference_zebra_stripes_color_black">黒</string>
+    <string name="preference_zebra_stripes_color_red">赤</string>
+    <string name="preference_zebra_stripes_color_orange">オレンジ</string>
+    <string name="preference_zebra_stripes_color_transparent">透明</string>
+    <string name="preference_zebra_stripes_color_white">白</string>
+    <string name="reset_all">すべてリセット</string>
 </resources>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ManualCamera</string> <!-- shouldn't be translated -->
+    <string name="app_name">Manual Camera</string> <!-- shouldn't be translated -->
     <string name="action_settings">Einstellungen</string>
     <string name="action_popup">Popup-Einstellungen</string>
     <string name="intro_ok">OK (Diese Nachricht wird nicht wieder angezeigt.)</string>
 
     <string name="on">Ein</string> <!-- whether a setting is turned on, e.g., "Auto-stabilise: On" -->
     <string name="off">Aus</string> <!-- whether a setting is turned off, e.g., "Auto-stabilise: Off" -->
-    
+
     <string name="choose_save_location">Speicherort auswählen:</string>
     <string name="clear_folder_history">Ordnerhistorie löschen</string>
     <string name="clear_folder_history_question">Ordnerhistorie löschen?</string>
@@ -68,10 +68,10 @@
     <string name="free_memory">Frei</string>
     <string name="screen_lock_message_1">[GESPERRT:</string>
     <string name="screen_lock_message_2">Zum Entsperren wischen]</string>
-    
+
     <string name="failed_to_stamp">Fehler beim Stempeln des Fotos</string>
-    <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-    
+    <string name="metres_abbreviation">m</string>
+
     <string name="preference_category_camera_effects">Kameraeffekte</string>
     <string name="preference_auto_stabilise">Bildlagekorrektur</string>
     <string name="preference_auto_stabilise_summary">Die Aufnahme wird automatisch waagerecht ausgerichtet (nur bei Fotos, Aufnahme dauert länger und kann bei kleinem Gerätespeicher fehlschlagen)</string>
@@ -221,7 +221,7 @@
     <string name="preference_record_audio_channels_summary">Mono- oder Stereo-Aufnahme (Stereo wird nur von einigen Geräten unterstützt)\n%s</string>
     <string name="preference_video_flash">Blitzlicht während der Videoaufnahme</string>
     <string name="preference_video_flash_summary">Wenn aktiviert, blinkt der Blitz während der Videoaufnahme.</string>
-    
+
     <string name="preference_category_online">Verschiedenes</string>
     <string name="preference_online_help">Online-Hilfe</string>
     <string name="preference_online_help_summary">Öffne die ManualCamera Website in deinem Browser</string>
@@ -238,7 +238,7 @@
     <string name="about_available">verfügbar</string>
     <string name="about_not_available">nicht verfügbar</string>
     <string name="about_copy_to_clipboard">In die Zwischenablage kopieren</string>
-    
+
     <string name="take_photo">Foto aufnehmen</string>
     <string name="gallery">Galerie</string>
     <string name="exposure">Belichtung</string>
@@ -251,7 +251,7 @@
     <string name="switch_to_photo">Umschalten in Kamera Modus</string>
     <string name="trash">Letztes Foto löschen</string>
     <string name="share">Foto teilen</string>
-    
+
     <string name="parent_folder">Übergeordnetes Verzeichnis</string>
     <string name="new_folder">Neuer Ordner</string>
     <string name="cant_write_folder">In diesem Ordner kann nicht gespeichert werden</string>
@@ -963,6 +963,121 @@
 
     <string name="preference_audio_control_none">Keine</string>
     <string name="preference_audio_control_noise">Lautes Geräusch</string>
-    <string name="preference_audio_control_voice">Sprachkommando: \"cheese\"</string> <!-- note that cheese shouldn't be translated, as we listen for this no matter what language is being used -->
+    <string name="preference_audio_control_voice">Sprachkommando: \"cheese\"</string>
 
+    <string name="s_photo_mode">Fotomodus</string>
+    <string name="s_video_mode">Videomodus</string>
+    <string name="photo_settings">Fotoeinstellungen</string>
+    <string name="more_settings">Weitere Einstellungen</string>
+    <string name="resolution">Auflösung</string>
+    <string name="raw_jpeg">RAW+JPEG</string>
+    <string name="jpeg_only">Nur JPEG</string>
+    <string name="no_raw">Kein RAW</string>
+    <string name="only_raw">Nur RAW</string>
+    <string name="jpeg">JPEG</string>
+    <string name="raw_photos">RAW-Fotos</string>
+    <string name="more_light">Mehr Licht</string>
+    <string name="video_settings">Videoeinstellungen</string>
+    <string name="Night">Nacht</string>
+    <string name="photo_mode_focus">Fokus</string>
+    <string name="photo_mode_standard_photo">Foto</string>
+    <string name="brightness">Helligkeit</string>
+    <string name="s_white_balance">Weißabgleich</string>
+    <string name="s_exposure">Belichtung</string>
+    <string name="s_focus">Fokus</string>
+    <string name="s_shutter_speed">Verschlusszeit</string>
+    <string name="s_iso">ISO</string>
+    <string name="speed">Geschwindigkeit</string>
+    <string name="focus_mode_macro">Makro</string>
+    <string name="focus_mode_locked">Gesperrt</string>
+    <string name="focus_mode_infinity">Unendlich</string>
+    <string name="focus_mode_manual2">Manuell</string>
+    <string name="focus_mode_edof">EDOF</string>
+    <string name="focus_mode_continuous_picture">CP</string>
+    <string name="focus_mode_auto">Auto</string>
+    <string name="scene_modes">Szenenmodi</string>
+    <string name="reset_iso_auto">ISO-Auto zurücksetzen</string>
+    <string name="shutter">Verschluss</string>
+    <string name="action_reset_all_settings">Alle Einstellungen zurücksetzen</string>
+    <string name="awb_lock">Sperren</string>
+    <string name="preference_category_photo_settings">Fotoeinstellungen</string>
+    <string name="preference_category_video_settings">Videoeinstellungen</string>
+    <string name="preference_category_location_settings">Standort-Einstellungen</string>
+    <string name="preference_category_processing_settings">Verarbeitungseinstellungen</string>
+    <string name="preference_category_on_screen_gui_settings">GUI-Einstellungen</string>
+    <string name="preference_category_finder_preview">Sucher-Einstellungen</string>
+    <string name="preference_show_zoom_text">Zoom-Informationen anzeigen</string>
+    <string name="preference_video_bitrate2">Video-Bitrate</string>
+    <string name="preference_video_fps2">Bildrate</string>
+    <string name="video_bitrate">Video-Bitrate</string>
+    <string name="video_frame_rate">Bildrate</string>
+    <string name="preference_category_camera_preview">Kamera-Vorschau</string>
+    <string name="repeat">Wiederholen</string>
+    <string name="msg_upgrade_not_support">Funktion kommt im nächsten Update.</string>
+    <string name="auto_wb">Auto WB</string>
+    <string name="auto">Auto</string>
+    <string name="focus">Fokus</string>
+    <string name="close">Schließen</string>
+    <string name="pro_version">(PRO-Version)</string>
+    <string name="pro_version_features">Diese Funktion ist nur für Pro-Nutzer verfügbar.</string>
+    <string name="dialog_pro_version_title">✨ Premium-Funktion ✨</string>
+    <string name="dialog_pro_version_msg">Diese Option gehört zum Pro-Paket. Upgrade freischalten für volles Potenzial.</string>
+    <string name="unlock_pro">Pro freischalten</string>
+    <string name="later">Später</string>
+    <string name="photo_mode_x_auto">X‑Auto</string>
+    <string name="photo_mode_x_auto_full">Auto</string>
+    <string name="photo_mode_x_hdr">X‑HDR</string>
+    <string name="photo_mode_x_hdr_full">HDR</string>
+    <string name="photo_mode_x_night">X‑Night</string>
+    <string name="photo_mode_x_night_full">Night</string>
+    <string name="photo_mode_x_bokeh">X‑Bokeh</string>
+    <string name="photo_mode_x_bokeh_full">Bokeh</string>
+    <string name="photo_mode_x_beauty">X‑Bty</string>
+    <string name="photo_mode_x_beauty_full">Beauty / Face Retouch</string>
+    <string name="preference_hdr_tonemapping">HDR Tonemapping</string>
+    <string name="preference_hdr_tonemapping_summary">Algorithmus für Tonemapping im HDR‑Foto‑Modus\n%s</string>
+    <string name="preference_hdr_tonemapping_clamp">Einfache Beschneidung</string>
+    <string name="preference_hdr_tonemapping_exponential">Exponentiell</string>
+    <string name="preference_hdr_tonemapping_default">Standard</string>
+    <string name="preference_hdr_tonemapping_aces">ACES</string>
+    <string name="preference_remove_device_exif">Geräte‑EXIF entfernen</string>
+    <string name="preference_remove_device_exif_summary">Ob EXIF‑Gerätedaten aus JPEG‑Fotos gelöscht werden sollen. Andere EXIF‑Tags bleiben erhalten.\n%s</string>
+    <string name="preference_remove_device_exif_off">Geräte‑EXIF nicht entfernen</string>
+    <string name="preference_remove_device_exif_on">Geräte‑EXIF entfernen</string>
+    <string name="preference_remove_device_exif_keep_datetime">Außer Datum/Uhrzeit entfernen</string>
+    <string name="choose_camera">Kamera wählen:</string>
+    <string name="preference_show_focus_peaking">Fokus-Peaking-Icon anzeigen</string>
+    <string name="preference_show_focus_peaking_summary">Wenn Fokus‑Peaking aktiviert ist, werden fokussierte Kanten hervorgehoben.</string>
+    <string name="focus_peaking_enable">Fokus‑Peaking aktivieren</string>
+    <string name="focus_peaking_disable">Fokus‑Peaking deaktivieren</string>
+    <string name="preference_photo_optimise_focus">Fokus optimieren für…</string>
+    <string name="preference_photo_optimise_focus_summary">Beim Fotografieren Fokus auf Latenz oder Qualität optimieren.\n%s</string>
+    <string name="preference_photo_optimise_focus_latency">Latenz</string>
+    <string name="preference_photo_optimise_focus_quality">Qualität</string>
+    <string name="preference_save_preshots">Vorschau‑Aufnahmen speichern</string>
+    <string name="preference_save_preshots_summary">Wenn aktiviert, wird ein kurzes Video vor dem Foto gespeichert.\n%s</string>
+    <string name="telephoto">Teleobjektiv</string>
+    <string name="auto_lens">Auto‑Objektiv</string>
+    <string name="lens">Objektiv</string>
+    <string name="physical_cameras_info">&#9432; Standardmäßig wird das Objektiv basierend auf Zoom ausgewählt. Hier ist auch manuelle Auswahl möglich.</string>
+    <string name="focus_bracketing_auto_source_distance">Auto‑Quelle</string>
+    <string name="preference_allow_haptic_feedback">Vibration erlauben</string>
+    <string name="preference_allow_haptic_feedback_summary">Vibration bei Steuerung zulassen. Touch im Gerät muss aktiviert sein.</string>
+    <string name="preference_using_saf">Storage Access Framework</string>
+    <string name="color_effects">Farb‑Effekte</string>
+    <string name="preference_languages">Sprachen</string>
+    <string name="preference_save_include_milliseconds">Millisekunden im Dateinamen</string>
+    <string name="preference_save_include_milliseconds_summary">Wenn aktiviert, enthalten Dateinamen auch Millisekunden</string>
+    <string name="photo_mode_fast_burst" translatable="false">[]]]</string>
+    <string name="permission_rationale_storage">Die Lese-/Schreibberechtigung für den Speicher ist erforderlich, um Ergebnisdateien wie Fotos oder Videos zu speichern</string>
+    <string name="permission_rationale_record_audio">Die Mikrofonberechtigung ist erforderlich, um Videos mit Audio aufzunehmen und die Optionen „Audiosteuerung“ zu verwenden</string>
+    <string name="preference_image_format_jpeg_r">UltraHDR JPEG</string>
+    <string name="preference_edge_mode">Kantenmodus-Algorithmus</string>
+    <string name="preference_edge_mode_summary">Algorithmus, den der Kameratreiber zur Anwendung der Kantenanhebung verwenden sollte. Kantenanhebung verbessert die Schärfe und Details im aufgenommenen Bild. (Diese Einstellung wird im NR-Fotomodus ignoriert.)\n%s</string>
+    <string name="array_seekbar_preference_seekbar">Schieberegler zum Ändern des aktuellen Einstellungswerts</string>
+    <string name="preference_camera2_dummy_capture_hack">Dummy-Aufnahme-HDR/Belichtungs-Fix aktivieren</string>
+    <string name="preference_camera2_dummy_capture_hack_summary">Versuchen Sie, dies zu aktivieren, wenn Ihr Gerät Probleme beim Aufnehmen von Fotos im HDR- oder Belichtungs-Fotomodus hat (wenn Belichtungsbilder mit denselben Belichtungen herauskommen). Nur relevant, wenn die Option „Schnelles HDR/Belichtung“ unten ebenfalls aktiviert ist.</string>
+    <string name="permission_rationale_bluetooth_scan_connect">Bluetooth-Scan-/Verbindungsberechtigungen sind erforderlich, um Bluetooth LE-Fernbedienungsgeräte zu erkennen und eine Verbindung zu ihnen herzustellen.</string>
+    <string name="unknown_device_no_permission">Unbekanntes Gerät (Bluetooth-Verbindungsberechtigung nicht verfügbar)</string>
+    <string name="reset_all">Alles zurücksetzen</string>
 </resources>

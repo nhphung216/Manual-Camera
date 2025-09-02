@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ManualCamera</string>
-    <string name="action_settings">设置</string>    
+    <string name="app_name">Manual Camera</string>
+    <string name="action_settings">设置</string>
     <string name="action_popup">弹出设置</string>
     <string name="intro_ok">好 (此消息将不再显示)</string>
 
     <string name="on">开启</string> <!-- whether a setting is turned on, e.g., "Auto-stabilise: On" -->
     <string name="off">关闭</string> <!-- whether a setting is turned off, e.g., "Auto-stabilise: Off" -->
-    
+
     <string name="choose_save_location">选择保存位置:</string>
     <string name="clear_folder_history">清除文件夹历史</string>
     <string name="clear_folder_history_question">清除文件夹历史？</string>
@@ -56,7 +56,7 @@
     <string name="color_effect">颜色效果</string>
     <string name="scene_mode">场景模式</string>
     <string name="white_balance">白平衡</string>
-    
+
     <string name="angle">角度</string>
     <string name="direction">方向</string>
     <string name="failed_to_open_camera_1">打开相机失败。</string>
@@ -67,10 +67,10 @@
     <string name="free_memory">可用内存</string>
     <string name="screen_lock_message_1">[锁定:</string>
     <string name="screen_lock_message_2">滑动以解锁]</string>
-    
+
     <string name="failed_to_stamp">在照片上增加水印失败了</string>
-    <string name="metres_abbreviation">m</string> <!-- symbol short for metres -->
-    
+    <string name="metres_abbreviation">m</string>
+
     <string name="preference_category_camera_effects">相机特效</string>
     <string name="preference_auto_stabilise">自动水平</string>
     <string name="preference_auto_stabilise_summary">图像将被旋转，使它们自动水平(仅照片) (拍照更慢，并且在内存过低的设备上失败)</string>
@@ -161,7 +161,7 @@
     <string name="preference_keep_display_on_summary">如果开启，当 ManualCamera 的主界面激活时，屏幕将不会关闭。</string>
     <string name="preference_max_brightness">强制最大亮度</string>
     <string name="preference_max_brightness_summary">强制屏幕以最大亮度显示，而不是设备默认值</string>
-    
+
     <string name="preference_category_camera_quality">照片和视频设置</string>
     <string name="preference_screen_photo_settings">照片设置…</string>
     <string name="preference_screen_video_settings">视频设置…</string>
@@ -213,7 +213,7 @@
     <string name="preference_record_audio_channels_summary">规定使用单声道或者立体声进行录音（仅部分设备支持立体声）\n%s</string>
     <string name="preference_video_flash">录像时闪光</string>
     <string name="preference_video_flash_summary">如果启用，录像时闪光将开启/关闭 (在一段距离外可以用来告诉相机仍然在录制)。</string>
-    
+
     <string name="preference_category_online">杂项</string>
     <string name="preference_online_help">在线帮助</string>
     <string name="preference_donate">捐赠以支持开发</string>
@@ -229,7 +229,7 @@
     <string name="about_available">可用</string>
     <string name="about_not_available">不可用</string>
     <string name="about_copy_to_clipboard">复制到剪贴板</string>
-    
+
     <string name="take_photo">拍照</string>
     <string name="gallery">图库</string>
     <string name="exposure">曝光</string>
@@ -339,7 +339,7 @@
     <string name="preference_raw">RAW</string>
     <string name="preference_background_photo_saving">使用后台线程</string>
     <string name="preference_background_photo_saving_summary">使用后台线程保存照片（操作更流畅）</string>
-    <string name="preference_online_help_summary">在浏览器中打开ManualCamera网站</string>
+    <string name="preference_online_help_summary">在浏览器中打开PhotonLab网站</string>
     <string name="switch_to_front_camera">切换到前摄像头</string>
     <string name="switch_to_back_camera">切换到后摄像头</string>
     <string name="switch_to_video">切换到摄像模式</string>
@@ -467,7 +467,7 @@
     <string name="preference_video_subtitle_summary">创建一个存储日期和时间的字幕文件(.SET格式)；如果启用了定位/方向数据，同时也会记录GPS信息.\n%s</string>
 
     <string name="preference_record_audio_src_voice_recognition">针对语音识别优化</string>
-        <string name="camera_error">相机发生了严重错误</string>
+    <string name="camera_error">相机发生了严重错误</string>
 
     <string name="preference_video_log">视频图片配置文件</string>
     <string name="preference_video_log_summary">为视频模式设定标准或者平铺的图片配置文件\n%s</string>
@@ -607,7 +607,6 @@
     <string name="preference_audio_noise_control_sensitivity_m3">-3 (低灵敏度)</string>
 
 
-
     <string name="photo_mode">拍照模式</string>
     <string name="photo_mode_focus_bracketing_full">包围对焦</string>
     <string name="focus_bracketing_source_distance">包围对焦源距离</string>
@@ -619,7 +618,7 @@
     <string name="photo_mode_hdr">HDR</string> <!-- keep short, as this shows in the popup menu -->
     <string name="photo_mode_expo_bracketing">包围曝光</string> <!-- keep short, as this shows in the popup menu -->
     <string name="photo_mode_expo_bracketing_full">包围曝光(Expo)</string>
-     <!-- keep short, as this shows in the popup menu; shouldn't be translated -->
+    <!-- keep short, as this shows in the popup menu; shouldn't be translated -->
     <string name="photo_mode_fast_burst_full">快速连拍</string>
     <string name="photo_mode_noise_reduction">NR</string> <!-- keep short, as this shows in the popup menu; probably shouldn't be translated? -->
     <string name="photo_mode_noise_reduction_full">降噪(NR)</string>
@@ -652,12 +651,12 @@
     <string name="preference_screen_settings_manager">配置管理器</string>
 
     <string name="preference_save_settings">保存配置</string>
-    <string name="preference_save_settings_summary">保存ManualCamera所有选项的至文件中</string>
+    <string name="preference_save_settings_summary">保存PhotonLab所有选项的至文件中</string>
     <string name="preference_save_settings_filename">保存的文件名</string>
 
     <string name="preference_restore_settings">恢复配置</string>
-    <string name="preference_restore_settings_summary">恢复配置文件到ManualCamera。注意这会覆盖现在的所有设定值！</string>
-    <string name="preference_restore_settings_question">这个选项允许你选择一个先前保存的配置文件并恢复到ManualCamera中。需要注意这个文件载入后会覆盖当前所有选项的设定值！</string>
+    <string name="preference_restore_settings_summary">恢复配置文件到PhotonLab。注意这会覆盖现在的所有设定值！</string>
+    <string name="preference_restore_settings_question">这个选项允许你选择一个先前保存的配置文件并恢复到PhotonLab中。需要注意这个文件载入后会覆盖当前所有选项的设定值！</string>
 
     <string name="preference_video_output_format">视频格式</string>
     <string name="preference_video_output_format_summary">录像的编码和格式\n%s</string>
@@ -749,7 +748,7 @@
     <string name="bluetooth_not_supported">不支持蓝牙</string>
     <string name="unknown_device">未知设备</string>
     <string name="preference_remote_disconnect_screen_dim">断开控制时熄屏</string>
-    <string name="preference_remote_disconnect_screen_dim_summary">提示：打开ManualCamera前，请把默认亮度调到最低</string>
+    <string name="preference_remote_disconnect_screen_dim_summary">提示：打开PhotonLab前，请把默认亮度调到最低</string>
     <string name="preference_water_type">使用盐水计算深度</string>
     <string name="preference_water_type_summary">设置正确的水下兔笼的类型，可以提高水下拍摄时深度计算的准确性</string>
     <string name="remote_connected">控制器已连接</string>
@@ -970,5 +969,92 @@
     <string name="preference_show_focus_peaking_summary">是否在屏幕上显示峰值对焦开关。启用峰值对焦后，会在对焦边缘显示高光。见设置/成预览/峰值对焦。</string>
     <string name="focus_peaking_enable">峰值对焦已启用</string>
     <string name="focus_peaking_disable">峰值对焦已禁用</string>
-
+    <string name="s_photo_mode">照片模式</string>
+    <string name="s_video_mode">视频模式</string>
+    <string name="photo_settings">照片设置</string>
+    <string name="more_settings">更多设置</string>
+    <string name="resolution">分辨率</string>
+    <string name="raw_jpeg">RAW/JPEG</string>
+    <string name="jpeg_only">仅 JPEG</string>
+    <string name="no_raw">无 RAW</string>
+    <string name="only_raw">仅 RAW</string>
+    <string name="jpeg">JPEG</string>
+    <string name="raw_photos">RAW 照片</string>
+    <string name="more_light">更多光线</string>
+    <string name="video_settings">视频设置</string>
+    <string name="Night">夜景</string>
+    <string name="photo_mode_focus">对焦</string>
+    <string name="photo_mode_standard_photo">照片</string>
+    <string name="brightness">亮度</string>
+    <string name="s_white_balance">白平衡</string>
+    <string name="s_exposure">曝光</string>
+    <string name="s_shutter_speed">快门速度</string>
+    <string name="s_iso">ISO</string>
+    <string name="speed">速度</string>
+    <string name="focus_mode_macro">微距</string>
+    <string name="focus_mode_locked">锁定</string>
+    <string name="focus_mode_infinity">无限远</string>
+    <string name="focus_mode_manual2">手动</string>
+    <string name="focus_mode_edof">EDOF</string>
+    <string name="focus_mode_continuous_picture">连续拍照</string>
+    <string name="focus_mode_auto">自动</string>
+    <string name="scene_modes">场景模式</string>
+    <string name="reset_iso_auto">重置 ISO 自动</string>
+    <string name="shutter">快门</string>
+    <string name="action_reset_all_settings">重置所有设置</string>
+    <string name="awb_lock">锁定</string>
+    <string name="preference_category_photo_settings">照片设置</string>
+    <string name="preference_category_video_settings">视频设置</string>
+    <string name="preference_category_location_settings">位置信息设置</string>
+    <string name="preference_category_processing_settings">图像处理设置</string>
+    <string name="preference_category_on_screen_gui_settings">屏幕显示设置</string>
+    <string name="preference_category_finder_preview">取景器设置</string>
+    <string name="preference_show_zoom_text">显示当前变焦信息</string>
+    <string name="preference_video_bitrate2">视频码率</string>
+    <string name="preference_video_fps2">视频帧率</string>
+    <string name="video_bitrate">视频码率</string>
+    <string name="video_frame_rate">帧率</string>
+    <string name="preference_category_camera_preview">相机预览</string>
+    <string name="repeat">重复</string>
+    <string name="msg_upgrade_not_support">此功能将在下次更新中推出。</string>
+    <string name="auto_wb">自动白平衡</string>
+    <string name="auto">自动</string>
+    <string name="focus">对焦</string>
+    <string name="close">关闭</string>
+    <string name="pro_version">（专业版）</string>
+    <string name="pro_version_features">此功能仅适用于专业版用户。</string>
+    <string name="dialog_pro_version_title">✨ 高级功能 ✨</string>
+    <string name="dialog_pro_version_msg">此选项是专业版的一部分。升级以解锁全部相机功能。</string>
+    <string name="unlock_pro">解锁专业版</string>
+    <string name="later">稍后</string>
+    <string name="preference_hdr_tonemapping_clamp">简单截断</string>
+    <string name="preference_hdr_tonemapping_exponential">指数</string>
+    <string name="preference_hdr_tonemapping_default">默认</string>
+    <string name="preference_hdr_tonemapping_aces">ACES</string>
+    <string name="preference_photo_optimise_focus">优化对焦以…</string>
+    <string name="preference_photo_optimise_focus_summary">拍照时，可选择优化延迟或质量。仅在连续对焦模式下相关。优化质量可确保场景对焦，但可能导致拍照延迟。\n%s</string>
+    <string name="preference_photo_optimise_focus_latency">延迟</string>
+    <string name="preference_photo_optimise_focus_quality">质量</string>
+    <string name="preference_save_preshots">保存预览帧</string>
+    <string name="preference_save_preshots_summary">启用时，每张照片都会保存一个短视频，其中包含拍摄前的瞬间。不支持曝光、对焦包围或全景模式。\n%s</string>
+    <string name="telephoto">长焦</string>
+    <string name="auto_lens">自动镜头</string>
+    <string name="lens">镜头</string>
+    <string name="physical_cameras_info">&#9432; 默认情况下，相机会使用自动镜头选择，变焦级别决定使用哪个镜头。但此菜单允许您明确选择镜头。</string>
+    <string name="focus_bracketing_auto_source_distance">自动来源</string>
+    <string name="preference_allow_haptic_feedback">允许触觉反馈</string>
+    <string name="preference_allow_haptic_feedback_summary">是否允许振动反馈，例如在调整某些控件时。注意，这还需要设备设置中开启触摸交互。\n%s</string>
+    <string name="s_focus">对焦</string>
+    <string name="preference_using_saf">Storage Access Framework</string>
+    <string name="color_effects">色彩效果</string>
+    <string name="preference_languages">语言</string>
+    <string name="photo_mode_fast_burst" translatable="false">[]]]</string>
+    <string name="preference_image_format_jpeg_r">UltraHDR JPEG</string>
+    <string name="preference_save_include_milliseconds">在文件名中使用毫秒</string>
+    <string name="preference_save_include_milliseconds_summary">如果启用，文件名将包含毫秒</string>
+    <string name="photo_mode_x_auto">X-自动</string>
+    <string name="photo_mode_x_auto_full">自动</string>
+    <string name="photo_mode_x_hdr">X-HDR</string>
+    <string name="photo_mode_x_hdr_full">HDR</string>
+    <string name="reset_all">全部重置</string>
 </resources>
