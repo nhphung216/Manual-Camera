@@ -298,25 +298,12 @@ fun CameraControls(
                 }
                 controls.forEach {
                     val control = cameraControls[it] ?: return@forEach
-                    var isChanged = false
-                    when (it) {
-                        "exposure" -> {
-                            isChanged = exposureValue != 0f
-                        }
-                        "iso" -> { // auto
-                            isChanged = isoValue != 0f
-                        }
-                        "shutter" -> { // auto
-                            isChanged = shutterValue != 0f
-                        }
-                    }
                     item {
                         MenuItem(
                             icon = painterResource(control.icon),
                             label = control.text,
                             onClick = { onControlIdSelected(control.id) },
                             selected = controlIdSelected == control.id,
-                            isChanged = isChanged
                         )
                     }
                 }

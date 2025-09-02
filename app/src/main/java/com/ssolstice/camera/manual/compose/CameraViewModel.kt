@@ -52,7 +52,7 @@ class CameraViewModel @Inject constructor(
         return sharedPrefManager.getPhotoModes()
     }
 
-    fun saveVideoModes(modes: ArrayList<VideoModeUiModel>) {
+    fun saveVideoModesDb(modes: ArrayList<VideoModeUiModel>) {
         sharedPrefManager.saveVideoModes(modes)
     }
 
@@ -1031,7 +1031,7 @@ class CameraViewModel @Inject constructor(
         )
         Log.e(TAG, "captureRateValue: $captureRate")
 
-        val videoModes = mutableListOf<VideoModeUiModel>()
+        val videoModes = arrayListOf<VideoModeUiModel>()
         val slowMotion =
             VideoModeUiModel(VideoMode.Slow_Motion, activity.getString(R.string.slow_motion))
         val normalMode = VideoModeUiModel(VideoMode.Video, activity.getString(R.string.video))
@@ -1065,12 +1065,12 @@ class CameraViewModel @Inject constructor(
             model.copy(selected = model.mode == _currentVideoMode.value.mode)
         }
 
+        saveVideoModesDb(videoModes)
+
         val getCameraId = preview.getCameraId()
         val cameraIdSPhysicalPref = PreferenceKeys.getVideoCaptureRatePreferenceKey(
             getCameraId, applicationInterface.cameraIdSPhysicalPref
         )
-        Log.e(TAG, "getCameraId: $getCameraId")
-        Log.e(TAG, "cameraIdSPhysicalPref: $cameraIdSPhysicalPref")
 
         sharedPreferences.edit { putFloat(cameraIdSPhysicalPref, captureRate) }
         viewModelScope.launch {
