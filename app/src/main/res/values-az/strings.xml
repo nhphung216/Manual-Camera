@@ -888,4 +888,9 @@
     <string name="preference_zebra_stripes_color_transparent">Şəffaf</string>
     <string name="preference_zebra_stripes_color_white">Ağ</string>
     <string name="reset_all">Hamısını sıfırla</string>
+    <string name="cancel">Ləğv et</string>
+    <string name="yes">Bəli</string>
+    <string name="slow_motion">Yavaş Hərəkət</string>
+    <string name="time_lapse">Zaman Aşımı</string>
+
 </resources>

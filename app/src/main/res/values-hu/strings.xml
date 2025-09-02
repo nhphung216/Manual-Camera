@@ -940,5 +940,8 @@
     <string name="preference_zebra_stripes_color_transparent">Átlátszó</string>
     <string name="preference_zebra_stripes_color_white">Fehér</string>
     <string name="reset_all">Összes visszaállítása</string>
-
+    <string name="cancel">Mégse</string>
+    <string name="yes">Igen</string>
+    <string name="slow_motion">Lassított felvétel</string>
+    <string name="time_lapse">Gyorsított felvétel</string>
 </resources>

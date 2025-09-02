@@ -919,7 +919,6 @@
     <string name="preference_allow_haptic_feedback">Allow vibration feedback</string>
     <string name="preference_allow_haptic_feedback_summary">Whether to allow haptic vibration feedback, for example when adjusting some controls. Note this also requires touch interactions to be enabled in your device\'s settings.</string>
     <string name="preference_using_saf">Storage Access Framework</string>
-    <string name="color_effects">Color Effects</string>
     <string name="preference_languages">Languages</string>
 
     <string name="preference_privacy_policy">Privacy policy</string>
@@ -1055,4 +1054,9 @@
     <string name="later">Later</string>
     <string name="s_focus">Focus</string>
     <string name="reset_all">Reset All</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="slow_motion">Slow Motion</string>
+    <string name="time_lapse">Time Lapse</string>
+    <string name="color_effects">Color Effects</string>
 </resources>

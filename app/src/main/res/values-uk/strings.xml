@@ -946,4 +946,8 @@
     <string name="preference_zebra_stripes_color_transparent">Прозорий</string>
     <string name="preference_zebra_stripes_color_white">Білий</string>
     <string name="reset_all">Скинути все</string>
+    <string name="yes">Так</string>
+    <string name="slow_motion">Уповільнена зйомка</string>
+    <string name="time_lapse">Інтервальна зйомка</string>
+    <string name="cancel">Скасувати</string>
 </resources>

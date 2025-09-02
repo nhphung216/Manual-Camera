@@ -894,5 +894,8 @@
     <string name="preference_zebra_stripes_color_transparent">Διαφανές</string>
     <string name="preference_zebra_stripes_color_white">Λευκό</string>
     <string name="reset_all">Επαναφορά όλων</string>
-
+    <string name="cancel">Άκυρο</string>
+    <string name="yes">Ναι</string>
+    <string name="slow_motion">Αργή Κίνηση</string>
+    <string name="time_lapse">Time Lapse</string>
 </resources>

@@ -1081,5 +1081,9 @@
     <string name="permission_rationale_bluetooth_scan_connect">Разрешения на сканирование/подключение Bluetooth необходимы для обнаружения и подключения к устройствам дистанционного управления Bluetooth LE.</string>
     <string name="unknown_device_no_permission">Неизвестное устройство (разрешение на подключение Bluetooth недоступно)</string>
     <string name="reset_all">Сбросить все</string>
+    <string name="cancel">Отмена</string>
+    <string name="yes">Да</string>
+    <string name="slow_motion">Замедленная съемка</string>
+    <string name="time_lapse">Интервальная съемка</string>
 
 </resources>

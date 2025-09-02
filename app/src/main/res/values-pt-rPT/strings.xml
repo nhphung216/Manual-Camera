@@ -883,4 +883,8 @@
     <string name="preference_zebra_stripes_color_transparent">Transparente</string>
     <string name="preference_zebra_stripes_color_white">Branco</string>
     <string name="reset_all">Repor tudo</string>
+    <string name="cancel">Cancelar</string>
+    <string name="yes">Sim</string>
+    <string name="slow_motion">Câmera Lenta</string>
+    <string name="time_lapse">Lapso de Tempo</string>
 </resources>

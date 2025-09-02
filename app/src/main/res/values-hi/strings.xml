@@ -1303,4 +1303,8 @@
     <string name="later">बाद में</string>
     <string name="s_focus">फोकस</string>
     <string name="reset_all">सब रीसेट करो</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="yes">हाँ</string>
+    <string name="slow_motion">धीमी गति</string>
+    <string name="time_lapse">समय चूक</string>
 </resources>

@@ -1026,4 +1026,8 @@
     <string name="preference_zebra_stripes_color_transparent">Trong suốt</string>
     <string name="preference_zebra_stripes_color_white">Trắng</string>
     <string name="reset_all">Đặt lại tất cả</string>
+    <string name="cancel">Hủy</string> <!-- Dịch sang tiếng Việt theo yêu cầu chung -->
+    <string name="yes">Có</string>
+    <string name="slow_motion">Chuyển động chậm</string>
+    <string name="time_lapse">Tua nhanh thời gian</string>
 </resources>

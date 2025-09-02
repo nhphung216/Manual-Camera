@@ -478,35 +478,35 @@
     <string name="preference_stamp_dateformat_none">None</string>
 
     <string name="preference_fast_burst_n_images">Number of photos</string>
-    <string name="preference_fast_burst_n_images_entries_2">2</string>
-    <string name="preference_fast_burst_n_images_entries_3">3</string>
-    <string name="preference_fast_burst_n_images_entries_4">4</string>
-    <string name="preference_fast_burst_n_images_entries_5">5</string>
-    <string name="preference_fast_burst_n_images_entries_6">6</string>
-    <string name="preference_fast_burst_n_images_entries_8">8</string>
-    <string name="preference_fast_burst_n_images_entries_10">10</string>
-    <string name="preference_fast_burst_n_images_entries_12">12</string>
-    <string name="preference_fast_burst_n_images_entries_15">15</string>
-    <string name="preference_fast_burst_n_images_entries_20">20</string>
+    <string name="preference_fast_burst_n_images_entries_2" translatable="false">2</string>
+    <string name="preference_fast_burst_n_images_entries_3" translatable="false">3</string>
+    <string name="preference_fast_burst_n_images_entries_4" translatable="false">4</string>
+    <string name="preference_fast_burst_n_images_entries_5" translatable="false">5</string>
+    <string name="preference_fast_burst_n_images_entries_6" translatable="false">6</string>
+    <string name="preference_fast_burst_n_images_entries_8" translatable="false">8</string>
+    <string name="preference_fast_burst_n_images_entries_10" translatable="false">10</string>
+    <string name="preference_fast_burst_n_images_entries_12" translatable="false">12</string>
+    <string name="preference_fast_burst_n_images_entries_15" translatable="false">15</string>
+    <string name="preference_fast_burst_n_images_entries_20" translatable="false">20</string>
 
-    <string name="preference_focus_bracketing_n_images">Number of photos</string>
-    <string name="preference_focus_bracketing_n_images_entries_2">2</string>
-    <string name="preference_focus_bracketing_n_images_entries_3">3</string>
-    <string name="preference_focus_bracketing_n_images_entries_4">4</string>
-    <string name="preference_focus_bracketing_n_images_entries_5">5</string>
-    <string name="preference_focus_bracketing_n_images_entries_6">6</string>
-    <string name="preference_focus_bracketing_n_images_entries_8">8</string>
-    <string name="preference_focus_bracketing_n_images_entries_10">10</string>
-    <string name="preference_focus_bracketing_n_images_entries_12">12</string>
-    <string name="preference_focus_bracketing_n_images_entries_15">15</string>
-    <string name="preference_focus_bracketing_n_images_entries_20">20</string>
-    <string name="preference_focus_bracketing_n_images_entries_25">25</string>
-    <string name="preference_focus_bracketing_n_images_entries_30">30</string>
-    <string name="preference_focus_bracketing_n_images_entries_40">40</string>
-    <string name="preference_focus_bracketing_n_images_entries_50">50</string>
-    <string name="preference_focus_bracketing_n_images_entries_100">100</string>
-    <string name="preference_focus_bracketing_n_images_entries_150">150</string>
-    <string name="preference_focus_bracketing_n_images_entries_200">200</string>
+    <string name="preference_focus_bracketing_n_images" translatable="false">Number of photos</string>
+    <string name="preference_focus_bracketing_n_images_entries_2" translatable="false">2</string>
+    <string name="preference_focus_bracketing_n_images_entries_3" translatable="false">3</string>
+    <string name="preference_focus_bracketing_n_images_entries_4" translatable="false">4</string>
+    <string name="preference_focus_bracketing_n_images_entries_5" translatable="false">5</string>
+    <string name="preference_focus_bracketing_n_images_entries_6" translatable="false">6</string>
+    <string name="preference_focus_bracketing_n_images_entries_8" translatable="false">8</string>
+    <string name="preference_focus_bracketing_n_images_entries_10" translatable="false">10</string>
+    <string name="preference_focus_bracketing_n_images_entries_12" translatable="false">12</string>
+    <string name="preference_focus_bracketing_n_images_entries_15" translatable="false">15</string>
+    <string name="preference_focus_bracketing_n_images_entries_20" translatable="false">20</string>
+    <string name="preference_focus_bracketing_n_images_entries_25" translatable="false">25</string>
+    <string name="preference_focus_bracketing_n_images_entries_30" translatable="false">30</string>
+    <string name="preference_focus_bracketing_n_images_entries_40" translatable="false">40</string>
+    <string name="preference_focus_bracketing_n_images_entries_50" translatable="false">50</string>
+    <string name="preference_focus_bracketing_n_images_entries_100" translatable="false">100</string>
+    <string name="preference_focus_bracketing_n_images_entries_150" translatable="false">150</string>
+    <string name="preference_focus_bracketing_n_images_entries_200" translatable="false">200</string>
 
     <string name="preference_video_capture_rate">Speed</string>
     <string name="preference_video_capture_rate_normal">Normal</string>
@@ -558,32 +558,32 @@
     <string name="preference_record_audio_src_voice_recognition">Optimised for voice recognition</string>
     <string name="preference_record_audio_src_unprocessed">Unprocessed</string>
 
-    <string name="preference_video_bitrate_default">Default</string>
-    <string name="preference_video_bitrate_100000">100kbps</string>
-    <string name="preference_video_bitrate_200000">200kbps</string>
-    <string name="preference_video_bitrate_500000">500kbps</string>
-    <string name="preference_video_bitrate_1000000">1Mbps</string>
-    <string name="preference_video_bitrate_2000000">2Mbps</string>
-    <string name="preference_video_bitrate_3000000">3Mbps</string>
-    <string name="preference_video_bitrate_4000000">4Mbps</string>
-    <string name="preference_video_bitrate_5000000">5Mbps</string>
-    <string name="preference_video_bitrate_6000000">6Mbps</string>
-    <string name="preference_video_bitrate_7000000">7Mbps</string>
-    <string name="preference_video_bitrate_8000000">8Mbps</string>
-    <string name="preference_video_bitrate_9000000">9Mbps</string>
-    <string name="preference_video_bitrate_10000000">10Mbps</string>
-    <string name="preference_video_bitrate_15000000">15Mbps</string>
-    <string name="preference_video_bitrate_20000000">20Mbps</string>
-    <string name="preference_video_bitrate_30000000">30Mbps</string>
-    <string name="preference_video_bitrate_40000000">40Mbps</string>
-    <string name="preference_video_bitrate_50000000">50Mbps</string>
-    <string name="preference_video_bitrate_60000000">60Mbps</string>
-    <string name="preference_video_bitrate_70000000">70Mbps</string>
-    <string name="preference_video_bitrate_80000000">80Mbps</string>
-    <string name="preference_video_bitrate_90000000">90Mbps</string>
-    <string name="preference_video_bitrate_100000000">100Mbps</string>
-    <string name="preference_video_bitrate_150000000">150Mbps</string>
-    <string name="preference_video_bitrate_200000000">200Mbps</string>
+    <string name="preference_video_bitrate_default" translatable="false">Default</string>
+    <string name="preference_video_bitrate_100000" translatable="false">100kbps</string>
+    <string name="preference_video_bitrate_200000" translatable="false">200kbps</string>
+    <string name="preference_video_bitrate_500000" translatable="false">500kbps</string>
+    <string name="preference_video_bitrate_1000000" translatable="false">1Mbps</string>
+    <string name="preference_video_bitrate_2000000" translatable="false">2Mbps</string>
+    <string name="preference_video_bitrate_3000000" translatable="false">3Mbps</string>
+    <string name="preference_video_bitrate_4000000" translatable="false">4Mbps</string>
+    <string name="preference_video_bitrate_5000000" translatable="false">5Mbps</string>
+    <string name="preference_video_bitrate_6000000" translatable="false">6Mbps</string>
+    <string name="preference_video_bitrate_7000000" translatable="false">7Mbps</string>
+    <string name="preference_video_bitrate_8000000" translatable="false">8Mbps</string>
+    <string name="preference_video_bitrate_9000000" translatable="false">9Mbps</string>
+    <string name="preference_video_bitrate_10000000" translatable="false">10Mbps</string>
+    <string name="preference_video_bitrate_15000000" translatable="false">15Mbps</string>
+    <string name="preference_video_bitrate_20000000" translatable="false">20Mbps</string>
+    <string name="preference_video_bitrate_30000000" translatable="false">30Mbps</string>
+    <string name="preference_video_bitrate_40000000" translatable="false">40Mbps</string>
+    <string name="preference_video_bitrate_50000000" translatable="false">50Mbps</string>
+    <string name="preference_video_bitrate_60000000" translatable="false">60Mbps</string>
+    <string name="preference_video_bitrate_70000000" translatable="false">70Mbps</string>
+    <string name="preference_video_bitrate_80000000" translatable="false">80Mbps</string>
+    <string name="preference_video_bitrate_90000000" translatable="false">90Mbps</string>
+    <string name="preference_video_bitrate_100000000" translatable="false">100Mbps</string>
+    <string name="preference_video_bitrate_150000000" translatable="false">150Mbps</string>
+    <string name="preference_video_bitrate_200000000" translatable="false">200Mbps</string>
 
     <string name="no_burst">no burst</string> <!-- string for burst mode not being supported for a resolution -->
 
@@ -686,26 +686,26 @@
 
     <string name="cancelled_focus_bracketing">Cancelled focus bracketing</string>
 
-    <string name="preference_crop_guide_none">None</string>
-    <string name="preference_crop_guide_1">1 (1:1)</string>
-    <string name="preference_crop_guide_1_25">1.25 (5:4)</string>
-    <string name="preference_crop_guide_1_33">1.33 (4:3)</string>
-    <string name="preference_crop_guide_1_4">1.4 (7:4)</string>
-    <string name="preference_crop_guide_1_5">1.5 (3:2)</string>
-    <string name="preference_crop_guide_1_78">1.78 (16:9)</string>
-    <string name="preference_crop_guide_1_85">1.85 (37:20)</string>
-    <string name="preference_crop_guide_2">2 (2:1)</string>
-    <string name="preference_crop_guide_2_33">2.33 (21:9)</string>
-    <string name="preference_crop_guide_2_35">2.35 (47:20)</string>
-    <string name="preference_crop_guide_2_4">2.4 (12:5)</string>
+    <string name="preference_crop_guide_none" translatable="false">None</string>
+    <string name="preference_crop_guide_1" translatable="false">1 (1:1)</string>
+    <string name="preference_crop_guide_1_25" translatable="false">1.25 (5:4)</string>
+    <string name="preference_crop_guide_1_33" translatable="false">1.33 (4:3)</string>
+    <string name="preference_crop_guide_1_4" translatable="false">1.4 (7:4)</string>
+    <string name="preference_crop_guide_1_5" translatable="false">1.5 (3:2)</string>
+    <string name="preference_crop_guide_1_78" translatable="false">1.78 (16:9)</string>
+    <string name="preference_crop_guide_1_85" translatable="false">1.85 (37:20)</string>
+    <string name="preference_crop_guide_2" translatable="false">2 (2:1)</string>
+    <string name="preference_crop_guide_2_33" translatable="false">2.33 (21:9)</string>
+    <string name="preference_crop_guide_2_35" translatable="false">2.35 (47:20)</string>
+    <string name="preference_crop_guide_2_4" translatable="false">2.4 (12:5)</string>
 
-    <string name="preference_audio_noise_control_sensitivity_3">+3 (high sensitivity)</string>
-    <string name="preference_audio_noise_control_sensitivity_2">+2</string>
-    <string name="preference_audio_noise_control_sensitivity_1">+1</string>
-    <string name="preference_audio_noise_control_sensitivity_0">0 (default)</string>
-    <string name="preference_audio_noise_control_sensitivity_m1">-1</string>
-    <string name="preference_audio_noise_control_sensitivity_m2">-2</string>
-    <string name="preference_audio_noise_control_sensitivity_m3">-3 (low sensitivity)</string>
+    <string name="preference_audio_noise_control_sensitivity_3" translatable="false">+3 (high sensitivity)</string>
+    <string name="preference_audio_noise_control_sensitivity_2" translatable="false">+2</string>
+    <string name="preference_audio_noise_control_sensitivity_1" translatable="false">+1</string>
+    <string name="preference_audio_noise_control_sensitivity_0" translatable="false">0 (default)</string>
+    <string name="preference_audio_noise_control_sensitivity_m1" translatable="false">-1</string>
+    <string name="preference_audio_noise_control_sensitivity_m2" translatable="false">-2</string>
+    <string name="preference_audio_noise_control_sensitivity_m3" translatable="false">-3 (low sensitivity)</string>
 
     <string name="preference_hdr_contrast_enhancement">HDR contrast enhancement</string>
     <string name="preference_hdr_contrast_enhancement_summary">When to use a contrast enhancement algorithm for HDR. This can improve the appearance in cases where there is a very high dynamic range in the scene, and also gives a "HDR look" to the results.\n%s</string>
@@ -830,15 +830,15 @@
     <string name="preference_zebra_stripes">Show zebra stripes</string>
     <string name="preference_zebra_stripes_summary">If this option is enabled, zebra stripes will be drawn on-screen showing where the camera preview is over exposed.\n%s</string>
     <string name="preference_zebra_stripes_off">Off</string>
-    <string name="preference_zebra_stripes_70pc">70%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
-    <string name="preference_zebra_stripes_80pc">80%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
-    <string name="preference_zebra_stripes_90pc">90%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
-    <string name="preference_zebra_stripes_93pc">93%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
-    <string name="preference_zebra_stripes_95pc">95%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
-    <string name="preference_zebra_stripes_97pc">97%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
-    <string name="preference_zebra_stripes_98pc">98%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
-    <string name="preference_zebra_stripes_99pc">99%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
-    <string name="preference_zebra_stripes_100pc">100%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
+    <string name="preference_zebra_stripes_70pc" translatable="false">70%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
+    <string name="preference_zebra_stripes_80pc" translatable="false">80%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
+    <string name="preference_zebra_stripes_90pc" translatable="false">90%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
+    <string name="preference_zebra_stripes_93pc" translatable="false">93%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
+    <string name="preference_zebra_stripes_95pc" translatable="false">95%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
+    <string name="preference_zebra_stripes_97pc" translatable="false">97%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
+    <string name="preference_zebra_stripes_98pc" translatable="false">98%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
+    <string name="preference_zebra_stripes_99pc" translatable="false">99%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
+    <string name="preference_zebra_stripes_100pc" translatable="false">100%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
 
     <string name="preference_focus_peaking">Focus peaking</string>
     <string name="preference_focus_peaking_summary">If this option is enabled, highlights will be shown on in-focus edges (contours). This is primarily useful for manual focus, and can be used to help determine which regions of the image are in focus.\n%s</string>
@@ -921,16 +921,16 @@
     <string name="preference_video_jtlog2" translatable="false">JTLog2</string>
     <string name="preference_video_profile_gamma">Video gamma value</string>
     <string name="preference_video_profile_gamma_summary">Gamma value to use for video if video picture profile is set to Gamma\n%s</string>
-    <string name="preference_video_profile_gamma_1_6">1.6</string>
-    <string name="preference_video_profile_gamma_1_8">1.8</string>
-    <string name="preference_video_profile_gamma_1_9">1.9</string>
-    <string name="preference_video_profile_gamma_2_0">2.0</string>
-    <string name="preference_video_profile_gamma_2_1">2.1</string>
-    <string name="preference_video_profile_gamma_2_2">2.2</string>
-    <string name="preference_video_profile_gamma_2_3">2.3</string>
-    <string name="preference_video_profile_gamma_2_4">2.4</string>
-    <string name="preference_video_profile_gamma_2_6">2.6</string>
-    <string name="preference_video_profile_gamma_2_8">2.8</string>
+    <string name="preference_video_profile_gamma_1_6" translatable="false">1.6</string>
+    <string name="preference_video_profile_gamma_1_8" translatable="false">1.8</string>
+    <string name="preference_video_profile_gamma_1_9" translatable="false">1.9</string>
+    <string name="preference_video_profile_gamma_2_0" translatable="false">2.0</string>
+    <string name="preference_video_profile_gamma_2_1" translatable="false">2.1</string>
+    <string name="preference_video_profile_gamma_2_2" translatable="false">2.2</string>
+    <string name="preference_video_profile_gamma_2_3" translatable="false">2.3</string>
+    <string name="preference_video_profile_gamma_2_4" translatable="false">2.4</string>
+    <string name="preference_video_profile_gamma_2_6" translatable="false">2.6</string>
+    <string name="preference_video_profile_gamma_2_8" translatable="false">2.8</string>
 
     <string name="preference_immersive_mode_off">Off</string>
     <string name="preference_immersive_mode_navigation">Hide on-screen virtual navigation buttons</string>
@@ -1112,7 +1112,6 @@
             <li>Various other improvements and bug fixes.\n</li>
         </ul>
     </string>
-    <string name="title_activity_camera">CameraActivity</string>
 
     <string name="s_photo_mode">Photo Mode</string>
     <string name="s_video_mode">Video Mode</string>
@@ -1174,15 +1173,10 @@
     <string name="later">Later</string>
     <string name="s_focus">Focus</string>
     <string name="reset_all">Reset All</string>
-    <string name="strength">Strength</string>
-    <string name="contrast">Contrast</string>
-    <string name="sharpen">Sharpen</string>
-    <string name="vignette">vignette</string>
-    <string name="saturation">saturation</string>
+    <string name="preference_languages">Languages</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="slow_motion">Slow Motion</string>
     <string name="time_lapse">Time Lapse</string>
-    <string name="preference_languages">Languages</string>
-    <string name="more_camera_preview">More camera preview</string>
+    <string name="color_effects">Color Effects</string>
 </resources>

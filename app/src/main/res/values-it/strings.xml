@@ -1081,5 +1081,8 @@
     <string name="permission_rationale_bluetooth_scan_connect">Le autorizzazioni di scansione/connessione Bluetooth sono necessarie per individuare e connettersi a dispositivi di controllo remoto Bluetooth LE.</string>
     <string name="unknown_device_no_permission">Dispositivo sconosciuto (autorizzazione connessione bluetooth non disponibile)</string>
     <string name="reset_all">Ripristina tutto</string>
-
+    <string name="cancel">Annulla</string>
+    <string name="yes">Sì</string>
+    <string name="slow_motion">Rallentatore</string>
+    <string name="time_lapse">Time Lapse</string>
 </resources>

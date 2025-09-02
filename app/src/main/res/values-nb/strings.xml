@@ -945,4 +945,8 @@
     <string name="preference_zebra_stripes_color_transparent">Gjennomsiktig</string>
     <string name="preference_zebra_stripes_color_white">Hvit</string>
     <string name="reset_all">Tilbakestill alt</string>
+    <string name="cancel">Avbryt</string>
+    <string name="yes">Ja</string>
+    <string name="slow_motion">Sakte film</string>
+    <string name="time_lapse">Tidsforløp</string>
 </resources>

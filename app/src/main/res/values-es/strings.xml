@@ -960,4 +960,8 @@
     <string name="preference_zebra_stripes_color_transparent">Transparente</string>
     <string name="preference_zebra_stripes_color_white">Blanco</string>
     <string name="reset_all">Restablecer todo</string>
+    <string name="cancel">Cancelar</string>
+    <string name="yes">Sí</string>
+    <string name="slow_motion">Cámara Lenta</string>
+    <string name="time_lapse">Time Lapse</string>
 </resources>

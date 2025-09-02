@@ -940,4 +940,8 @@
     <string name="preference_zebra_stripes_color_transparent">Transparent</string>
     <string name="preference_zebra_stripes_color_white">Blanc</string>
     <string name="reset_all">Tout réinitialiser</string>
+    <string name="cancel">Annuler</string>
+    <string name="yes">Oui</string>
+    <string name="slow_motion">Ralenti</string>
+    <string name="time_lapse">Accéléré</string>
 </resources>

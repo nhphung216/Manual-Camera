@@ -908,4 +908,9 @@
     <string name="preference_zebra_stripes_color_transparent">Průhledná</string>
     <string name="preference_zebra_stripes_color_white">Bílá</string>
     <string name="reset_all">Resetovat vše</string>
+    <string name="cancel">Zrušit</string>
+    <string name="yes">Ano</string>
+    <string name="slow_motion">Zpomalený pohyb</string>
+    <string name="time_lapse">Časosběr</string>
+
 </resources>

@@ -905,4 +905,8 @@
     <string name="preference_zebra_stripes_color_transparent">Şeffaf</string>
     <string name="preference_zebra_stripes_color_white">Beyaz</string>
     <string name="reset_all">Tümünü Sıfırla</string>
+    <string name="cancel">İptal</string>
+    <string name="yes">Evet</string>
+    <string name="slow_motion">Yavaş Çekim</string>
+    <string name="time_lapse">Hızlandırılmış Çekim</string>
 </resources>

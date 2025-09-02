@@ -1080,4 +1080,8 @@
     <string name="permission_rationale_bluetooth_scan_connect">Bluetooth-Scan-/Verbindungsberechtigungen sind erforderlich, um Bluetooth LE-Fernbedienungsgeräte zu erkennen und eine Verbindung zu ihnen herzustellen.</string>
     <string name="unknown_device_no_permission">Unbekanntes Gerät (Bluetooth-Verbindungsberechtigung nicht verfügbar)</string>
     <string name="reset_all">Alles zurücksetzen</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="yes">Ja</string>
+    <string name="slow_motion">Zeitlupe</string>
+    <string name="time_lapse">Zeitraffer</string>
 </resources>

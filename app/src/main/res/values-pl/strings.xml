@@ -1093,4 +1093,9 @@
     <string name="color_effects">Efekty kolorystyczne</string>
     <string name="preference_languages">Języki</string>
     <string name="reset_all">Zresetuj wszystko</string>
+    <string name="cancel">Anuluj</string>
+    <string name="yes">Tak</string>
+    <string name="slow_motion">Zwolnione tempo</string>
+    <string name="time_lapse">Film poklatkowy</string>
+
 </resources>

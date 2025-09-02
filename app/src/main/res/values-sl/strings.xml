@@ -1082,5 +1082,9 @@
     <string name="permission_rationale_bluetooth_scan_connect">Dovoljenja za skeniranje/povezovanje Bluetooth so potrebna za odkrivanje in povezovanje z napravami za daljinsko upravljanje Bluetooth LE.</string>
     <string name="unknown_device_no_permission">Neznana naprava (dovoljenje za povezavo bluetooth ni na voljo)</string>
     <string name="reset_all">Ponastavi vse</string>
+    <string name="cancel">Prekliči</string>
+    <string name="yes">Da</string>
+    <string name="slow_motion">Počasni posnetek</string>
+    <string name="time_lapse">Časovni zamik</string>
 
 </resources>

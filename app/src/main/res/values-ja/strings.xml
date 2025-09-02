@@ -1040,4 +1040,9 @@
     <string name="preference_zebra_stripes_color_transparent">透明</string>
     <string name="preference_zebra_stripes_color_white">白</string>
     <string name="reset_all">すべてリセット</string>
+    <string name="cancel">キャンセル</string>
+    <string name="yes">はい</string>
+    <string name="slow_motion">スローモーション</string>
+    <string name="time_lapse">タイムラプス</string>
+
 </resources>

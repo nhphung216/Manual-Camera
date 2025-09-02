@@ -1057,4 +1057,8 @@
     <string name="photo_mode_x_hdr">X-HDR</string>
     <string name="photo_mode_x_hdr_full">HDR</string>
     <string name="reset_all">全部重置</string>
+    <string name="cancel">取消</string>
+    <string name="yes">是</string>
+    <string name="slow_motion">慢动作</string>
+    <string name="time_lapse">延时摄影</string>
 </resources>
