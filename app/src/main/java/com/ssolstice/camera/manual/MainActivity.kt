@@ -543,9 +543,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // with using the switch camera icon to iterate over all cameras.
         val nCameras = preview?.cameraControllerManager?.getNumberOfCameras() ?: 0
         if (nCameras > 2) {
-            this.back_camera_ids = ArrayList<Int?>()
-            this.frontCameraIds = ArrayList<Int?>()
-            this.otherCameraIds = ArrayList<Int?>()
+            this.back_camera_ids = ArrayList()
+            this.frontCameraIds = ArrayList()
+            this.otherCameraIds = ArrayList()
             for (i in 0..<nCameras) {
                 when (preview?.cameraControllerManager?.getFacing(i)) {
                     Facing.FACING_BACK -> back_camera_ids!!.add(i)
@@ -5905,17 +5905,15 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         PreferenceKeys.ShowZoomSliderControlsPreferenceKey, true
                     )
                 ) {
-                    if (mainUI?.inImmersiveMode() == false) {
-                        zoomSeekBar.visibility = View.VISIBLE
-                    }
+//                    if (mainUI?.inImmersiveMode() == false) {
+//                        zoomSeekBar.visibility = View.VISIBLE
+//                    }
                 } else {
-                    zoomSeekBar.visibility =
-                        View.INVISIBLE // should be INVISIBLE not GONE, as the focus_seekbar is aligned to be left to this; in future we might want this similarly for exposure panel
+                    zoomSeekBar.visibility = View.INVISIBLE // should be INVISIBLE not GONE, as the focus_seekbar is aligned to be left to this; in future we might want this similarly for exposure panel
                 }
             } else {
                 zoomControls.visibility = View.GONE
-                zoomSeekBar.visibility =
-                    View.INVISIBLE // should be INVISIBLE not GONE, as the focus_seekbar is aligned to be left to this; in future we might want this similarly for the exposure panel
+                zoomSeekBar.visibility = View.INVISIBLE // should be INVISIBLE not GONE, as the focus_seekbar is aligned to be left to this; in future we might want this similarly for the exposure panel
             }
             if (MyDebug.LOG) Log.d(
                 TAG,
