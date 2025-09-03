@@ -21,7 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssolstice.camera.manual.R
-import com.ssolstice.camera.manual.compose.ui.theme.colorMain
+import com.ssolstice.camera.manual.compose.ui.theme.colorBackground
+import com.ssolstice.camera.manual.compose.ui.theme.textColorSelected
 
 @Preview
 @Composable
@@ -57,7 +58,7 @@ fun MenuItem(
                 .padding(bottom = 8.dp)
                 .size(size.dp)
                 .background(
-                    color = if (selected) colorMain() else Color.DarkGray,
+                    color = if (selected) colorBackground() else Color.DarkGray,
                     shape = CircleShape
                 )
                 .padding(4.dp),
@@ -81,7 +82,7 @@ fun MenuItem(
         }
         Text(
             text = label,
-            color = if (selected) colorMain() else Color.LightGray,
+            color = if (selected) textColorSelected() else Color.LightGray,
             fontSize = 14.sp,
         )
     }

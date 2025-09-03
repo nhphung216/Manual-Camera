@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ssolstice.camera.manual.compose.ui.theme.colorMain
+import com.ssolstice.camera.manual.compose.ui.theme.colorBackground
 
 @Composable
 fun ItemResolution(
@@ -38,7 +38,7 @@ fun ItemResolution(
             .padding(8.dp)
             .background(
                 if (isSelect) {
-                    colorMain()
+                    colorBackground()
                 } else {
                     Color.Black
                 },

@@ -28,7 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssolstice.camera.manual.MyApplicationInterface
 import com.ssolstice.camera.manual.R
-import com.ssolstice.camera.manual.compose.ui.theme.colorMain
+import com.ssolstice.camera.manual.compose.ui.theme.borderColor
+import com.ssolstice.camera.manual.compose.ui.theme.textColorMain
 import com.ssolstice.camera.manual.compose.widgets.ItemResolution
 import com.ssolstice.camera.manual.compose.widgets.SubTitleSettingRow
 import com.ssolstice.camera.manual.compose.widgets.TitleSettingRow
@@ -276,14 +277,14 @@ fun CameraSettings(
             modifier = Modifier
                 .padding(top = 4.dp, end = 16.dp, bottom = 16.dp)
                 .border(
-                    width = 1.dp, color = colorMain(), shape = RoundedCornerShape(16.dp) // bo góc
+                    width = 1.dp, color = borderColor(), shape = RoundedCornerShape(16.dp) // bo góc
                 )
                 .align(Alignment.End)
                 .clickable { onOpenSettings() }) {
             Text(
                 stringResource(R.string.more_settings),
                 style = MaterialTheme.typography.bodySmall,
-                color = colorMain(),
+                color = textColorMain(),
                 modifier = Modifier.padding(start = 12.dp, top = 8.dp, bottom = 8.dp, end = 12.dp)
             )
         }

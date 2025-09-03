@@ -1265,13 +1265,21 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 }
 
                 BackHandler {
-                    val preferenceFragment = getFragmentManager()
-                        .findFragmentByTag("PREFERENCE_FRAGMENT") as MyPreferenceFragment?
+                    val fm = getFragmentManager()
+                    val preferenceFragment = fm.findFragmentByTag("PREFERENCE_FRAGMENT") as? MyPreferenceFragment
+
                     if (preferenceFragment != null && preferenceFragment.isVisible) {
-                        getFragmentManager().beginTransaction()
-                            .hide(preferenceFragment)
-                            .commit()
-                        activity.settingsClosing()
+                        // Nếu có sub-screen trong back stack của PREFERENCE_FRAGMENT
+                        if (fm.backStackEntryCount > 1) {
+                            fm.popBackStack() // quay về fragment trước đó (sub -> main)
+                        } else {
+                            // không có sub nữa, ẩn fragment cha
+                            fm.beginTransaction()
+                                .remove(preferenceFragment)
+                                .commit()
+                            fm.executePendingTransactions()
+                            activity.settingsClosing()
+                        }
                     } else if (showCameraSettings.value) {
                         showCameraSettings.value = false
                     } else if (showCameraControls.value) {
@@ -1280,6 +1288,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         activity.finish()
                     }
                 }
+
             }
         }
 

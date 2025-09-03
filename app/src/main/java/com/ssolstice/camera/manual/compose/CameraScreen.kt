@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssolstice.camera.manual.MyApplicationInterface
-import com.ssolstice.camera.manual.compose.ui.theme.colorMain
+import com.ssolstice.camera.manual.compose.ui.theme.colorBackground
 import com.ssolstice.camera.manual.compose.widgets.CaptureCameraControls
 import com.ssolstice.camera.manual.compose.widgets.CaptureRateSelector
 import com.ssolstice.camera.manual.compose.widgets.OptionSelector
@@ -250,7 +250,7 @@ fun CameraScreen(
                         .size(38.dp)
                         .background(
                             if (isPhotoMode) {
-                                colorMain()
+                                colorBackground()
                             } else {
                                 Color.DarkGray
                             }, shape = CircleShape
@@ -266,7 +266,7 @@ fun CameraScreen(
                         .size(38.dp)
                         .background(
                             if (!isPhotoMode) {
-                                colorMain()
+                                colorBackground()
                             } else {
                                 Color.DarkGray
                             },

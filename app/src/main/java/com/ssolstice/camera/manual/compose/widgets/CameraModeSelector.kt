@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,7 +18,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ssolstice.camera.manual.compose.ui.theme.colorMain
 import com.ssolstice.camera.manual.compose.ui.theme.colorSecondary
 import com.ssolstice.camera.manual.models.PhotoModeUiModel
 import com.ssolstice.camera.manual.models.VideoModeUiModel

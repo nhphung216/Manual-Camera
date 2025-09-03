@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.ssolstice.camera.manual.compose.ui.theme.colorMain
+import com.ssolstice.camera.manual.compose.ui.theme.textColorMain
 
 @Composable
 fun TitleSettingRow(text: String) {
@@ -24,7 +24,7 @@ fun SubTitleSettingRow(text: String) {
     Text(
         text,
         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.ExtraBold),
-        color = colorMain(),
+        color = textColorMain(),
         modifier = Modifier.padding(start = 16.dp, end = 16.dp)
     )
 }

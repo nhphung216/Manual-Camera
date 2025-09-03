@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssolstice.camera.manual.compose.WhiteColor
-import com.ssolstice.camera.manual.compose.ui.theme.colorMain
+import com.ssolstice.camera.manual.compose.ui.theme.colorBackground
 import com.ssolstice.camera.manual.models.OptionRes
 
 @Preview
@@ -130,7 +130,7 @@ fun OptionSelectorItem(
             .padding(vertical = 4.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(
-                if (isSelected) colorMain() else Color.Transparent
+                if (isSelected) colorBackground() else Color.Transparent
             )
             .clickable { onClick() }
             .padding(vertical = 4.dp),
