@@ -819,6 +819,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 //                    } else if (showCameraControls.value) {
 //                        showCameraControls.value = false
 //                    } else {
+//                        val settings_is_open = settingsIsOpen()
 //                        activity.finish()
 //                    }
 //                }
