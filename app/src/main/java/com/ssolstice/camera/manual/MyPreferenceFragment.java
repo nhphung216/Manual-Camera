@@ -1011,17 +1011,17 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             // (needed for Pixel 6 Pro where setting to sRGB causes camera to fail to open when in video mode)
             Preference pref = findPreference(PreferenceKeys.VideoLogPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pref != null & pg != null) pg.removePreference(pref);
 
             pref = findPreference(PreferenceKeys.VideoProfileGammaPreferenceKey);
             pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pref != null & pg != null) pg.removePreference(pref);
         }
 
         if (!supports_video_stabilization) {
             Preference pref = findPreference(VideoStabilizationPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pref != null & pg != null) pg.removePreference(pref);
         }
 
         {

@@ -813,15 +813,15 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     }
                 }
 
-                BackHandler {
-                    if (showCameraSettings.value) {
-                        showCameraSettings.value = false
-                    } else if (showCameraControls.value) {
-                        showCameraControls.value = false
-                    } else {
-                        activity.finish()
-                    }
-                }
+//                BackHandler {
+//                    if (showCameraSettings.value) {
+//                        showCameraSettings.value = false
+//                    } else if (showCameraControls.value) {
+//                        showCameraControls.value = false
+//                    } else {
+//                        activity.finish()
+//                    }
+//                }
 
                 Box {
                     CameraScreen(
