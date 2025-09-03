@@ -9,6 +9,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
+import com.ssolstice.camera.manual.utils.Logger;
+
 import java.util.HashSet;
 
 /** Must be used as the parent class for all sub-screens.
@@ -23,30 +25,27 @@ public class PreferenceSubScreen extends PreferenceFragment implements SharedPre
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onCreate");
+        Logger.INSTANCE.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
         final Bundle bundle = getArguments();
         this.edge_to_edge_mode = bundle.getBoolean("edge_to_edge_mode");
 
-        if( MyDebug.LOG )
-            Log.d(TAG, "onCreate done");
+        Logger.INSTANCE.d(TAG, "onCreate done");
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if( edge_to_edge_mode ) {
+        if (edge_to_edge_mode) {
             MyPreferenceFragment.handleEdgeToEdge(view);
         }
     }
 
     @Override
     public void onDestroy() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onDestroy");
+        Logger.INSTANCE.d(TAG, "onDestroy");
         super.onDestroy();
 
         MyPreferenceFragment.dismissDialogs(getFragmentManager(), dialogs);
@@ -64,10 +63,9 @@ public class PreferenceSubScreen extends PreferenceFragment implements SharedPre
     /* See comment for MyPreferenceFragment.onSharedPreferenceChanged().
      */
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onSharedPreferenceChanged: " + key);
+        Logger.INSTANCE.d(TAG, "onSharedPreferenceChanged: " + key);
 
-        if( key == null ) {
+        if (key == null) {
             // On Android 11+, when targetting Android 11+, this method is called with key==null
             // if preferences are cleared. Unclear if this happens here in practice, but return
             // just in case.

@@ -43,6 +43,7 @@ import kotlin.math.max
 import kotlin.math.min
 import androidx.core.view.size
 import androidx.core.view.isNotEmpty
+import com.ssolstice.camera.manual.utils.Logger
 
 /** This defines the UI for the "popup" button, that provides quick access to a
  * range of options.
@@ -65,10 +66,10 @@ class PopupView(context: Context?) : LinearLayout(context) {
     private val decimal_format_1dp_force0 = DecimalFormat("0.0")
 
     init {
-        if (MyDebug.LOG) Log.d(TAG, "new PopupView: $this")
+        Logger.d(TAG, "new PopupView: $this")
 
         val debug_time = System.nanoTime()
-        if (MyDebug.LOG) Log.d(TAG, "PopupView time 1: " + (System.nanoTime() - debug_time))
+        Logger.d(TAG, "PopupView time 1: " + (System.nanoTime() - debug_time))
         this.orientation = VERTICAL
 
         val scale = resources.displayMetrics.density
@@ -86,14 +87,14 @@ class PopupView(context: Context?) : LinearLayout(context) {
             small_screen = true
         }
         if (MyDebug.LOG) {
-            Log.d(TAG, "max_width_dp: $max_width_dp")
-            Log.d(TAG, "total_width_dp: $total_width_dp")
-            Log.d(TAG, "small_screen: $small_screen")
+            Logger.d(TAG, "max_width_dp: $max_width_dp")
+            Logger.d(TAG, "total_width_dp: $total_width_dp")
+            Logger.d(TAG, "small_screen: $small_screen")
         }
 
         val preview = main_activity.preview
         val isCameraExtension = main_activity.applicationInterface!!.isCameraExtensionPref()
-        if (MyDebug.LOG) Log.d(TAG, "PopupView time 2: " + (System.nanoTime() - debug_time))
+        Logger.d(TAG, "PopupView time 2: " + (System.nanoTime() - debug_time))
 
         if (!main_activity.mainUI!!.showCycleFlashIcon()) {
             var supportedFlashValues = preview!!.supportedFlashValues
@@ -116,13 +117,13 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     "TEST_FLASH",
                     object : ButtonOptionsPopupListener() {
                         override fun onClick(option: String?) {
-                            if (MyDebug.LOG) Log.d(TAG, "clicked flash: $option")
+                            Logger.d(TAG, "clicked flash: $option")
                             preview.updateFlash(option)
                         }
                     })
             }
         }
-        if (MyDebug.LOG) Log.d(TAG, "PopupView time 3: " + (System.nanoTime() - debug_time))
+        Logger.d(TAG, "PopupView time 3: " + (System.nanoTime() - debug_time))
 
         if (preview!!.isVideo && preview.isVideoRecording) {
             // don't add any more options
@@ -153,11 +154,11 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 "TEST_FOCUS",
                 object : ButtonOptionsPopupListener() {
                     override fun onClick(option: String?) {
-                        if (MyDebug.LOG) Log.d(TAG, "clicked focus: $option")
+                        Logger.d(TAG, "clicked focus: $option")
                         preview.updateFocus(option, false, true)
                     }
                 })
-            if (MyDebug.LOG) Log.d(TAG, "PopupView time 4: " + (System.nanoTime() - debug_time))
+            Logger.d(TAG, "PopupView time 4: " + (System.nanoTime() - debug_time))
 
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(main_activity)
 
@@ -245,7 +246,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         "TEST_PHOTO_MODE",
                         object : RadioOptionsListener() {
                             override fun onClick(selected_value: String?) {
-                                if (MyDebug.LOG) Log.d(TAG, "clicked photo mode: $selected_value")
+                                Logger.d(TAG, "clicked photo mode: $selected_value")
                                 selected_value?.let {
                                     changePhotoMode(
                                         photo_modes,
@@ -257,7 +258,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         })
                 } else {
                     addTitleToPopup(getResources().getString(R.string.photo_mode))
-                    if (MyDebug.LOG) Log.d(
+                    Logger.d(
                         TAG,
                         "PopupView time 6: " + (System.nanoTime() - debug_time)
                     )
@@ -272,7 +273,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         "TEST_PHOTO_MODE",
                         object : ButtonOptionsPopupListener() {
                             override fun onClick(option: String?) {
-                                if (MyDebug.LOG) Log.d(TAG, "clicked photo mode: $option")
+                                Logger.d(TAG, "clicked photo mode: $option")
                                 option?.let {
                                     changePhotoMode(
                                         photo_modes,
@@ -284,10 +285,10 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         })
                 }
             }
-            if (MyDebug.LOG) Log.d(TAG, "PopupView time 7: " + (System.nanoTime() - debug_time))
+            Logger.d(TAG, "PopupView time 7: " + (System.nanoTime() - debug_time))
 
             if (!preview.isVideo && photo_mode == PhotoMode.NoiseReduction) {
-                if (MyDebug.LOG) Log.d(TAG, "add noise reduction options")
+                Logger.d(TAG, "add noise reduction options")
 
                 val nr_mode_values =
                     getResources().getStringArray(R.array.preference_nr_mode_values)
@@ -306,7 +307,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 val nr_mode_value = main_activity.applicationInterface!!.nRMode
                 nr_mode_index = Arrays.asList<String?>(*nr_mode_values).indexOf(nr_mode_value)
                 if (nr_mode_index == -1) {
-                    if (MyDebug.LOG) Log.d(
+                    Logger.d(
                         TAG,
                         "can't find nr_mode_value " + nr_mode_value + " in nr_mode_values!"
                     )
@@ -379,13 +380,14 @@ class PopupView(context: Context?) : LinearLayout(context) {
 
                 this.addView(checkBox)
             }
-            if (MyDebug.LOG) Log.d(TAG, "PopupView time 8: " + (System.nanoTime() - debug_time))
+            Logger.d(TAG, "PopupView time 8: " + (System.nanoTime() - debug_time))
 
             if (!preview.isVideo && photo_mode != PhotoMode.Panorama) {
                 // Only show photo resolutions in photo mode - even if photo snapshots whilst recording video is supported, the
                 // resolutions for that won't match what the user has requested for photo mode resolutions.
                 // And Panorama mode chooses its own resolution.
-                val picture_sizes: MutableList<CameraController.Size> = ArrayList(preview.getSupportedPictureSizes(true))
+                val picture_sizes: MutableList<CameraController.Size> =
+                    ArrayList(preview.getSupportedPictureSizes(true))
                 // take a copy so that we can reorder
                 // picture_sizes is sorted high to low, but we want to order low to high
                 picture_sizes.reverse()
@@ -394,7 +396,8 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 val picture_size_strings: MutableList<String?> = ArrayList()
                 for (i in picture_sizes.indices) {
                     val picture_size = picture_sizes[i]
-                    val size_string = picture_size.width.toString() + " x " + picture_size.height + " (" + Preview.getMPString(
+                    val size_string =
+                        picture_size.width.toString() + " x " + picture_size.height + " (" + Preview.getMPString(
                             picture_size.width,
                             picture_size.height
                         ) + ")"
@@ -406,7 +409,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 if (picture_size_index == -1) {
                     Log.e(TAG, "couldn't find index of current picture size")
                 } else {
-                    if (MyDebug.LOG) Log.d(TAG, "picture_size_index: $picture_size_index")
+                    Logger.d(TAG, "picture_size_index: $picture_size_index")
                 }
                 addArrayOptionsToPopup(
                     picture_size_strings,
@@ -419,7 +422,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     object : ArrayOptionsPopupListener() {
                         val handler: Handler = Handler()
                         val update_runnable: Runnable = Runnable {
-                            if (MyDebug.LOG) Log.d(
+                            Logger.d(
                                 TAG,
                                 "update settings due to resolution change"
                             )
@@ -434,8 +437,10 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         private fun update() {
                             if (picture_size_index == -1) return
                             val new_size = picture_sizes.get(picture_size_index)
-                            val resolution_string = new_size.width.toString() + " " + new_size.height
-                            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(main_activity)
+                            val resolution_string =
+                                new_size.width.toString() + " " + new_size.height
+                            val sharedPreferences =
+                                PreferenceManager.getDefaultSharedPreferences(main_activity)
                             val editor = sharedPreferences.edit()
                             editor.putString(
                                 PreferenceKeys.getResolutionPreferenceKey(
@@ -473,7 +478,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         }
                     })
             }
-            if (MyDebug.LOG) Log.d(TAG, "PopupView time 9: " + (System.nanoTime() - debug_time))
+            Logger.d(TAG, "PopupView time 9: " + (System.nanoTime() - debug_time))
 
             if (preview.isVideo()) {
                 // only show video resolutions in video mode
@@ -501,7 +506,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         break
                     }
                 }
-                if (MyDebug.LOG) Log.d(TAG, "video_size_index:$video_size_index")
+                Logger.d(TAG, "video_size_index:$video_size_index")
                 val video_size_strings: MutableList<String?> = ArrayList<String?>()
                 for (video_size in video_sizes) {
                     val quality_string = preview.getCamcorderProfileDescriptionShort(video_size)
@@ -518,7 +523,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     object : ArrayOptionsPopupListener() {
                         val handler: Handler = Handler()
                         val update_runnable: Runnable = Runnable {
-                            if (MyDebug.LOG) Log.d(
+                            Logger.d(
                                 TAG,
                                 "update settings due to video resolution change"
                             )
@@ -569,11 +574,11 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         }
                     })
             }
-            if (MyDebug.LOG) Log.d(TAG, "PopupView time 10: " + (System.nanoTime() - debug_time))
+            Logger.d(TAG, "PopupView time 10: " + (System.nanoTime() - debug_time))
 
             // apertures probably not supported for camera extensions anyway
             if (preview.getSupportedApertures() != null && !isCameraExtension) {
-                if (MyDebug.LOG) Log.d(TAG, "add apertures")
+                Logger.d(TAG, "add apertures")
 
                 addTitleToPopup(getResources().getString(R.string.aperture))
 
@@ -616,11 +621,11 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     "TEST_APERTURE",
                     object : ButtonOptionsPopupListener() {
                         override fun onClick(option: String?) {
-                            if (MyDebug.LOG) Log.d(TAG, "clicked aperture: " + option)
+                            Logger.d(TAG, "clicked aperture: " + option)
                             val index = apertures_strings.indexOf(option)
                             if (index != -1) {
                                 val new_aperture: Float = apertures.get(index)!!
-                                if (MyDebug.LOG) Log.d(TAG, "new_aperture: " + new_aperture)
+                                Logger.d(TAG, "new_aperture: " + new_aperture)
                                 preview.showToast(
                                     null,
                                     getResources().getString(R.string.aperture) + ": " + option,
@@ -638,7 +643,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
             }
 
             if (!preview.isVideo && photo_mode == PhotoMode.FastBurst) {
-                if (MyDebug.LOG) Log.d(TAG, "add fast burst options")
+                Logger.d(TAG, "add fast burst options")
 
                 val all_burst_mode_values =
                     getResources().getStringArray(R.array.preference_fast_burst_n_images_values)
@@ -657,8 +662,11 @@ class PopupView(context: Context?) : LinearLayout(context) {
 
                 var max_burst_images =
                     main_activity.applicationInterface!!.imageSaver?.queueSize ?: (0 + 1)
-                max_burst_images = max(2, max_burst_images) // make sure we at least allow the minimum of 2 burst images!
-                if (MyDebug.LOG) Log.d(TAG, "max_burst_images: " + max_burst_images)
+                max_burst_images = max(
+                    2,
+                    max_burst_images
+                ) // make sure we at least allow the minimum of 2 burst images!
+                Logger.d(TAG, "max_burst_images: " + max_burst_images)
 
                 // filter number of burst images - don't allow more than max_burst_images
                 val burst_mode_values_l: MutableList<String?> = ArrayList()
@@ -676,13 +684,13 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         continue
                     }
                     if (n_images > max_burst_images) {
-                        if (MyDebug.LOG) Log.d(
+                        Logger.d(
                             TAG,
                             "n_images " + n_images + " is more than max_burst_images: " + max_burst_images
                         )
                         continue
                     }
-                    if (MyDebug.LOG) Log.d(TAG, "n_images " + n_images)
+                    Logger.d(TAG, "n_images " + n_images)
                     burst_mode_values_l.add(all_burst_mode_values[i])
                     burst_mode_entries_l.add(all_burst_mode_entries[i])
                 }
@@ -691,9 +699,10 @@ class PopupView(context: Context?) : LinearLayout(context) {
 
                 val burst_mode_value: String =
                     sharedPreferences.getString(PreferenceKeys.FastBurstNImagesPreferenceKey, "5")!!
-                burst_n_images_index = Arrays.asList<String?>(*burst_mode_values).indexOf(burst_mode_value)
+                burst_n_images_index =
+                    Arrays.asList<String?>(*burst_mode_values).indexOf(burst_mode_value)
                 if (burst_n_images_index == -1) {
-                    if (MyDebug.LOG) Log.d(
+                    Logger.d(
                         TAG,
                         "can't find burst_mode_value " + burst_mode_value + " in burst_mode_values!"
                     )
@@ -744,7 +753,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         }
                     })
             } else if (!preview.isVideo && photo_mode == PhotoMode.FocusBracketing) {
-                if (MyDebug.LOG) Log.d(TAG, "add focus bracketing options")
+                Logger.d(TAG, "add focus bracketing options")
 
                 val burst_mode_values =
                     getResources().getStringArray(R.array.preference_focus_bracketing_n_images_values)
@@ -766,7 +775,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 burst_n_images_index =
                     Arrays.asList<String?>(*burst_mode_values).indexOf(burst_mode_value)
                 if (burst_n_images_index == -1) {
-                    if (MyDebug.LOG) Log.d(
+                    Logger.d(
                         TAG,
                         "can't find burst_mode_value " + burst_mode_value + " in burst_mode_values!"
                     )
@@ -878,7 +887,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 val capture_rate_values =
                     main_activity.applicationInterface!!.supportedVideoCaptureRates
                 if (capture_rate_values.size > 1) {
-                    if (MyDebug.LOG) Log.d(TAG, "add slow motion / timelapse video options")
+                    Logger.d(TAG, "add slow motion / timelapse video options")
                     val capture_rate_value = sharedPreferences.getFloat(
                         PreferenceKeys.getVideoCaptureRatePreferenceKey(
                             preview.getCameraId(),
@@ -900,7 +909,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         }
                     }
                     if (video_capture_rate_index == -1) {
-                        if (MyDebug.LOG) Log.d(TAG, "can't find video_capture_rate_index")
+                        Logger.d(TAG, "can't find video_capture_rate_index")
                         // default to no slow motion or timelapse
                         video_capture_rate_index = capture_rate_std_index
                         if (video_capture_rate_index == -1) {
@@ -922,7 +931,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                             val handler: Handler = Handler()
                             val update_runnable: Runnable = object : Runnable {
                                 override fun run() {
-                                    if (MyDebug.LOG) Log.d(
+                                    Logger.d(
                                         TAG,
                                         "update settings due to video capture rate change"
                                     )
@@ -969,13 +978,22 @@ class PopupView(context: Context?) : LinearLayout(context) {
                                         getResources().getString(R.string.slow_motion_disabled)
                                 }
                                 if (MyDebug.LOG) {
-                                    Log.d(TAG, "update settings due to capture rate change")
-                                    Log.d(TAG, "old_capture_rate_value: " + old_capture_rate_value)
-                                    Log.d(TAG, "new_capture_rate_value: " + new_capture_rate_value)
-                                    Log.d(TAG, "old_slow_motion: " + old_slow_motion)
-                                    Log.d(TAG, "new_slow_motion: " + new_slow_motion)
-                                    Log.d(TAG, "keep_popup: " + keep_popup)
-                                    Log.d(TAG, "toast_message: " + toast_message)
+                                    Logger.d(
+                                        TAG,
+                                        "update settings due to capture rate change"
+                                    )
+                                    Logger.d(
+                                        TAG,
+                                        "old_capture_rate_value: " + old_capture_rate_value
+                                    )
+                                    Logger.d(
+                                        TAG,
+                                        "new_capture_rate_value: " + new_capture_rate_value
+                                    )
+                                    Logger.d(TAG, "old_slow_motion: " + old_slow_motion)
+                                    Logger.d(TAG, "new_slow_motion: " + new_slow_motion)
+                                    Logger.d(TAG, "keep_popup: " + keep_popup)
+                                    Logger.d(TAG, "toast_message: " + toast_message)
                                 }
                                 old_video_capture_rate_index = video_capture_rate_index
 
@@ -1019,10 +1037,11 @@ class PopupView(context: Context?) : LinearLayout(context) {
 
                 val timer_values = getResources().getStringArray(R.array.preference_timer_values)
                 val timer_entries = getResources().getStringArray(R.array.preference_timer_entries)
-                val timer_value: String = sharedPreferences.getString(PreferenceKeys.TimerPreferenceKey, "0")!!
+                val timer_value: String =
+                    sharedPreferences.getString(PreferenceKeys.TimerPreferenceKey, "0")!!
                 timer_index = Arrays.asList<String?>(*timer_values).indexOf(timer_value)
                 if (timer_index == -1) {
-                    if (MyDebug.LOG) Log.d(
+                    Logger.d(
                         TAG,
                         "can't find timer_value " + timer_value + " in timer_values!"
                     )
@@ -1067,7 +1086,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         }
                     })
             }
-            if (MyDebug.LOG) Log.d(TAG, "PopupView time 11: " + (System.nanoTime() - debug_time))
+            Logger.d(TAG, "PopupView time 11: " + (System.nanoTime() - debug_time))
 
             if (photo_mode != PhotoMode.Panorama) {
                 // auto-repeat not supported with panorama
@@ -1081,7 +1100,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 repeat_mode_index =
                     Arrays.asList<String?>(*repeat_mode_values).indexOf(repeat_mode_value)
                 if (repeat_mode_index == -1) {
-                    if (MyDebug.LOG) Log.d(
+                    Logger.d(
                         TAG,
                         "can't find repeat_mode_value " + repeat_mode_value + " in repeat_mode_values!"
                     )
@@ -1129,7 +1148,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                             return -1
                         }
                     })
-                if (MyDebug.LOG) Log.d(
+                Logger.d(
                     TAG,
                     "PopupView time 12: " + (System.nanoTime() - debug_time)
                 )
@@ -1143,7 +1162,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
             )!!
             grid_index = Arrays.asList<String?>(*grid_values).indexOf(grid_value)
             if (grid_index == -1) {
-                if (MyDebug.LOG) Log.d(
+                Logger.d(
                     TAG,
                     "can't find grid_value $grid_value in grid_values!"
                 )
@@ -1189,7 +1208,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         return -1
                     }
                 })
-            if (MyDebug.LOG) Log.d(TAG, "PopupView time 13: " + (System.nanoTime() - debug_time))
+            Logger.d(TAG, "PopupView time 13: " + (System.nanoTime() - debug_time))
 
             // white balance modes, scene modes, color effects
             // all of these are only supported when not using extension mode
@@ -1218,7 +1237,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                             selectedValue?.let { switchToWhiteBalance(selectedValue) }
                         }
                     })
-                if (MyDebug.LOG) Log.d(
+                Logger.d(
                     TAG,
                     "PopupView time 14: " + (System.nanoTime() - debug_time)
                 )
@@ -1262,7 +1281,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                             }
                         }
                     })
-                if (MyDebug.LOG) Log.d(
+                Logger.d(
                     TAG,
                     "PopupView time 15: " + (System.nanoTime() - debug_time)
                 )
@@ -1293,14 +1312,14 @@ class PopupView(context: Context?) : LinearLayout(context) {
                             // keep popup open
                         }
                     })
-                if (MyDebug.LOG) Log.d(
+                Logger.d(
                     TAG,
                     "PopupView time 16: " + (System.nanoTime() - debug_time)
                 )
             }
         }
 
-        if (MyDebug.LOG) Log.d(TAG, "Overall PopupView time: " + (System.nanoTime() - debug_time))
+        Logger.d(TAG, "Overall PopupView time: " + (System.nanoTime() - debug_time))
     }
 
     val totalWidth: Int
@@ -1314,7 +1333,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
         photo_mode_values: MutableList<PhotoMode>,
         option: String
     ) {
-        if (MyDebug.LOG) Log.d(TAG, "changePhotoMode: $option")
+        Logger.d(TAG, "changePhotoMode: $option")
 
         val main_activity = this.context as MainActivity
         var option_id = -1
@@ -1323,7 +1342,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
             if (option == photo_modes[i]) option_id = i
             i++
         }
-        if (MyDebug.LOG) Log.d(TAG, "mode id: $option_id")
+        Logger.d(TAG, "mode id: $option_id")
         if (option_id == -1) {
             if (MyDebug.LOG) Log.e(TAG, "unknown mode id: $option_id")
         } else {
@@ -1478,7 +1497,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
     }
 
     fun switchToWhiteBalance(selected_value: String) {
-        if (MyDebug.LOG) Log.d(TAG, "switchToWhiteBalance: " + selected_value)
+        Logger.d(TAG, "switchToWhiteBalance: " + selected_value)
         val main_activity = this.getContext() as MainActivity
         val preview = main_activity.preview
         var close_popup = false
@@ -1488,12 +1507,12 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 val current_white_balance = preview.getCameraController().getWhiteBalance()
                 if (current_white_balance == null || current_white_balance != "manual") {
                     // try to choose a default manual white balance temperature as close as possible to the current auto
-                    if (MyDebug.LOG) Log.d(TAG, "changed to manual white balance")
+                    Logger.d(TAG, "changed to manual white balance")
                     close_popup = true
                     if (preview.getCameraController().captureResultHasWhiteBalanceTemperature()) {
                         temperature =
                             preview.getCameraController().captureResultWhiteBalanceTemperature()
-                        if (MyDebug.LOG) Log.d(
+                        Logger.d(
                             TAG,
                             "default to manual white balance temperature: " + temperature
                         )
@@ -1579,7 +1598,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
         test_key: String?,
         listener: ButtonOptionsPopupListener
     ) {
-        if (MyDebug.LOG) Log.d(TAG, "addButtonOptionsToPopup")
+        Logger.d(TAG, "addButtonOptionsToPopup")
         val main_activity = this.getContext() as MainActivity
         createButtonOptions(
             this,
@@ -1609,7 +1628,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
         textView.setTypeface(null, Typeface.BOLD)
         //text_view.setBackgroundColor(Color.GRAY); // debug
         this.addView(textView)
-        if (MyDebug.LOG) Log.d(TAG, "addTitleToPopup time: " + (System.nanoTime() - debugTime))
+        Logger.d(TAG, "addTitleToPopup time: " + (System.nanoTime() - debugTime))
     }
 
     private abstract class RadioOptionsListener {
@@ -1655,7 +1674,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
         test_key: String?,
         listener: RadioOptionsListener?
     ) {
-        if (MyDebug.LOG) Log.d(TAG, "addRadioOptionsToPopup: $title")
+        Logger.d(TAG, "addRadioOptionsToPopup: $title")
         if (supported_options_entries != null) {
             val main_activity = this.context as MainActivity
             val debug_time = System.nanoTime()
@@ -1669,7 +1688,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
             button.isAllCaps = false
             button.setTextSize(TypedValue.COMPLEX_UNIT_SP, title_text_size_dip)
             this.addView(button)
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToPopup time 1: " + (System.nanoTime() - debug_time)
             )
@@ -1678,7 +1697,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
             rg.orientation = VERTICAL
             rg.visibility = GONE
             main_activity.mainUI!!.testUIButtonsMap.put(test_key, rg)
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToPopup time 2: " + (System.nanoTime() - debug_time)
             )
@@ -1688,10 +1707,11 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 private var created = false
 
                 override fun onClick(view: View?) {
-                    if (MyDebug.LOG) Log.d(TAG, "clicked to open radio buttons menu: $title")
+                    Logger.d(TAG, "clicked to open radio buttons menu: $title")
                     if (opened) {
                         rg.visibility = GONE
-                        val popupContainer = main_activity.findViewById<ScrollView>(R.id.popup_container)
+                        val popupContainer =
+                            main_activity.findViewById<ScrollView>(R.id.popup_container)
                         // need to invalidate/requestLayout so that the scrollview's scroll positions update - otherwise scrollBy below doesn't work properly, when the user reopens the radio buttons
                         popupContainer.invalidate()
                         popupContainer.requestLayout()
@@ -1712,13 +1732,16 @@ class PopupView(context: Context?) : LinearLayout(context) {
                             created = true
                         }
                         rg.visibility = VISIBLE
-                        val popupContainer = main_activity.findViewById<ScrollView>(R.id.popup_container)
+                        val popupContainer =
+                            main_activity.findViewById<ScrollView>(R.id.popup_container)
                         popupContainer.viewTreeObserver.addOnGlobalLayoutListener(
                             object : OnGlobalLayoutListener {
                                 override fun onGlobalLayout() {
-                                    if (MyDebug.LOG) Log.d(TAG, "onGlobalLayout()")
+                                    Logger.d(TAG, "onGlobalLayout()")
                                     // stop listening - only want to call this once!
-                                    popupContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    popupContainer.viewTreeObserver.removeOnGlobalLayoutListener(
+                                        this
+                                    )
 
                                     // so that the user sees the options appear, if the button is at the bottom of the current scrollview position
                                     if (rg.isNotEmpty()) {
@@ -1739,7 +1762,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
             })
 
             this.addView(rg)
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToPopup time 5: " + (System.nanoTime() - debug_time)
             )
@@ -1759,7 +1782,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
         listener: RadioOptionsListener?
     ) {
         var current_option_value = current_option_value
-        if (MyDebug.LOG) Log.d(TAG, "addRadioOptionsToGroup: " + title)
+        Logger.d(TAG, "addRadioOptionsToGroup: " + title)
         if (preference_key != null) current_option_value =
             sharedPreferences.getString(preference_key, default_value)
         val debug_time = System.nanoTime()
@@ -1769,10 +1792,10 @@ class PopupView(context: Context?) : LinearLayout(context) {
             val supported_option_entry: String? = supported_options_entries.get(i)
             val supported_option_value = supported_options_values.get(i)
             if (MyDebug.LOG) {
-                Log.d(TAG, "supported_option_entry: " + supported_option_entry)
-                Log.d(TAG, "supported_option_value: " + supported_option_value)
+                Logger.d(TAG, "supported_option_entry: " + supported_option_entry)
+                Logger.d(TAG, "supported_option_value: " + supported_option_value)
             }
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToGroup time 1: " + (System.nanoTime() - debug_time)
             )
@@ -1786,7 +1809,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 LayoutInflater.from(this.getContext()).inflate(R.layout.popupview_radiobutton, null)
             val button = view.findViewById<RadioButton>(R.id.popupview_radiobutton)
 
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToGroup time 2: " + (System.nanoTime() - debug_time)
             )
@@ -1796,16 +1819,16 @@ class PopupView(context: Context?) : LinearLayout(context) {
             button.setText(supported_option_entry)
             button.setTextSize(TypedValue.COMPLEX_UNIT_SP, standard_text_size_dip)
             button.setTextColor(Color.WHITE)
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToGroup time 3: " + (System.nanoTime() - debug_time)
             )
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToGroup time 4: " + (System.nanoTime() - debug_time)
             )
             rg.addView(button)
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToGroup time 5: " + (System.nanoTime() - debug_time)
             )
@@ -1817,15 +1840,21 @@ class PopupView(context: Context?) : LinearLayout(context) {
             count++
 
             button.setContentDescription(supported_option_entry)
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToGroup time 6: " + (System.nanoTime() - debug_time)
             )
             button.setOnClickListener(object : OnClickListener {
                 override fun onClick(v: View?) {
                     if (MyDebug.LOG) {
-                        Log.d(TAG, "clicked current_option entry: " + supported_option_entry)
-                        Log.d(TAG, "clicked current_option entry: " + supported_option_value)
+                        Logger.d(
+                            TAG,
+                            "clicked current_option entry: " + supported_option_entry
+                        )
+                        Logger.d(
+                            TAG,
+                            "clicked current_option entry: " + supported_option_value
+                        )
                     }
                     if (preference_key != null) {
                         val sharedPreferences =
@@ -1843,7 +1872,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     }
                 }
             })
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToGroup time 7: " + (System.nanoTime() - debug_time)
             )
@@ -1851,12 +1880,12 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 test_key + "_" + supported_option_value,
                 button
             )
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addRadioOptionsToGroup time 8: " + (System.nanoTime() - debug_time)
             )
         }
-        if (MyDebug.LOG) Log.d(
+        Logger.d(
             TAG,
             "addRadioOptionsToGroup time total: " + (System.nanoTime() - debug_time)
         )
@@ -1928,7 +1957,8 @@ class PopupView(context: Context?) : LinearLayout(context) {
             )
             //text_view.setBackgroundColor(Color.GRAY); // debug
             text_view.setTextSize(TypedValue.COMPLEX_UNIT_SP, standard_text_size_dip)
-            text_view.isSingleLine = true // if text too long for the button, we'd rather not have wordwrap, even if it means cutting some text off
+            text_view.isSingleLine =
+                true // if text too long for the button, we'd rather not have wordwrap, even if it means cutting some text off
             val params = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1.0f)
             // Yuck! We want the arrow_button_w to be fairly large so that users can touch the arrow buttons easily, but if
             // the text is too much for the button size, we'd rather it extend into the arrow buttons (which the user won't see
@@ -1966,7 +1996,8 @@ class PopupView(context: Context?) : LinearLayout(context) {
             vg_params.width = arrow_button_w
             vg_params.height = arrow_button_h
             next_button.layoutParams = vg_params
-            next_button.visibility = if (cyclic || current_index < supported_options.size - 1) VISIBLE else INVISIBLE
+            next_button.visibility =
+                if (cyclic || current_index < supported_options.size - 1) VISIBLE else INVISIBLE
             next_button.contentDescription = resources.getString(R.string.next) + " " + title
             main_activity.mainUI!!.testUIButtonsMap.put(test_key + "_NEXT", next_button)
 
@@ -1982,7 +2013,8 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         new_index
                     )
                     prev_button.visibility = if (cyclic || new_index > 0) VISIBLE else INVISIBLE
-                    next_button.visibility = if (cyclic || new_index < supported_options.size - 1) VISIBLE else INVISIBLE
+                    next_button.visibility =
+                        if (cyclic || new_index < supported_options.size - 1) VISIBLE else INVISIBLE
                 }
             }
             next_button.setOnClickListener {
@@ -2003,7 +2035,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
 
             this.addView(ll2)
 
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "addArrayOptionsToPopup time: " + (System.nanoTime() - debug_time)
             )
@@ -2046,13 +2078,13 @@ class PopupView(context: Context?) : LinearLayout(context) {
             test_key: String?,
             listener: ButtonOptionsPopupListener
         ): MutableList<View?> {
-            if (MyDebug.LOG) Log.d(TAG, "createButtonOptions")
+            Logger.d(TAG, "createButtonOptions")
             val buttons: MutableList<View?> = ArrayList<View?>()
             if (supported_options != null) {
                 val debug_time = System.nanoTime()
                 var ll2 = LinearLayout(context)
                 ll2.setOrientation(HORIZONTAL)
-                if (MyDebug.LOG) Log.d(
+                Logger.d(
                     TAG,
                     "addButtonOptionsToPopup time 1: " + (System.nanoTime() - debug_time)
                 )
@@ -2060,14 +2092,14 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     if (icons_id != -1) context.getResources().getStringArray(icons_id) else null
                 val values =
                     if (values_id != -1) context.getResources().getStringArray(values_id) else null
-                if (MyDebug.LOG) Log.d(
+                Logger.d(
                     TAG,
                     "addButtonOptionsToPopup time 2: " + (System.nanoTime() - debug_time)
                 )
 
                 val scale = context.getResources().getDisplayMetrics().density
                 val scale_font = context.getResources().getDisplayMetrics().scaledDensity
-                if (MyDebug.LOG) Log.d(
+                Logger.d(
                     TAG,
                     "addButtonOptionsToPopup time 2.04: " + (System.nanoTime() - debug_time)
                 )
@@ -2084,35 +2116,35 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 }
                 var button_width = (button_width_dp * scale + 0.5f).toInt() // convert dps to pixels
                 if (MyDebug.LOG) {
-                    Log.d(TAG, "actual_max_per_row: " + actual_max_per_row)
-                    Log.d(TAG, "button_width_dp: " + button_width_dp)
-                    Log.d(TAG, "button_width: " + button_width)
-                    Log.d(TAG, "use_scrollview: " + use_scrollview)
+                    Logger.d(TAG, "actual_max_per_row: " + actual_max_per_row)
+                    Logger.d(TAG, "button_width_dp: " + button_width_dp)
+                    Logger.d(TAG, "button_width: " + button_width)
+                    Logger.d(TAG, "use_scrollview: " + use_scrollview)
                 }
 
                 val on_click_listener: OnClickListener = object : OnClickListener {
                     override fun onClick(v: View) {
                         val supported_option = v.getTag() as String?
-                        if (MyDebug.LOG) Log.d(TAG, "clicked: " + supported_option)
+                        Logger.d(TAG, "clicked: " + supported_option)
                         listener.onClick(supported_option)
                     }
                 }
                 var current_view: View? = null
-                if (MyDebug.LOG) Log.d(
+                Logger.d(
                     TAG,
                     "addButtonOptionsToPopup time 2.05: " + (System.nanoTime() - debug_time)
                 )
 
                 for (button_indx in supported_options.indices) {
                     val supported_option = supported_options[button_indx]
-                    if (MyDebug.LOG) Log.d(
+                    Logger.d(
                         TAG,
                         "addButtonOptionsToPopup time 2.06: " + (System.nanoTime() - debug_time)
                     )
-                    if (MyDebug.LOG) Log.d(TAG, "button_index = $button_indx")
+                    Logger.d(TAG, "button_index = $button_indx")
 
                     if (max_buttons_per_row > 0 && button_indx > 0 && button_indx % max_buttons_per_row == 0) {
-                        if (MyDebug.LOG) Log.d(TAG, "start a new row")
+                        Logger.d(TAG, "start a new row")
                         // add the previous row
                         // no need to handle use_scrollview, as we don't support scrollviews with multiple rows
                         parent.addView(ll2)
@@ -2120,18 +2152,18 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         ll2.setOrientation(HORIZONTAL)
 
                         val n_remaining = supported_options.size - button_indx
-                        if (MyDebug.LOG) Log.d(TAG, "n_remaining: $n_remaining")
+                        Logger.d(TAG, "n_remaining: $n_remaining")
                         if (n_remaining <= max_buttons_per_row) {
-                            if (MyDebug.LOG) Log.d(TAG, "final row")
+                            Logger.d(TAG, "final row")
                             button_width_dp = total_width_dp / n_remaining
                             button_width =
                                 (button_width_dp * scale + 0.5f).toInt() // convert dps to pixels
                         }
                     }
 
-                    if (MyDebug.LOG) Log.d(TAG, "supported_option: $supported_option")
+                    Logger.d(TAG, "supported_option: $supported_option")
                     var resource = -1
-                    if (MyDebug.LOG) Log.d(
+                    Logger.d(
                         TAG,
                         "addButtonOptionsToPopup time 2.08: " + (System.nanoTime() - debug_time)
                     )
@@ -2142,7 +2174,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                             if (values[i] == supported_option) index = i
                             i++
                         }
-                        if (MyDebug.LOG) Log.d(TAG, "index: $index")
+                        if (MyDebug.LOG) Logger.d(TAG, "index: $index")
                         if (index != -1) {
                             resource = context.resources.getIdentifier(
                                 icons[index],
@@ -2151,7 +2183,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                             )
                         }
                     }
-                    if (MyDebug.LOG) Log.d(
+                    if (MyDebug.LOG) Logger.d(
                         TAG,
                         "addButtonOptionsToPopup time 2.1: " + (System.nanoTime() - debug_time)
                     )
@@ -2187,22 +2219,22 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         button_string =
                             getButtonOptionString(include_prefix, prefix_string, supported_option)
                     }
-                    if (MyDebug.LOG) Log.d(TAG, "button_string: $button_string")
-                    if (MyDebug.LOG) Log.d(
+                    if (MyDebug.LOG) Logger.d(TAG, "button_string: $button_string")
+                    if (MyDebug.LOG) Logger.d(
                         TAG,
                         "addButtonOptionsToPopup time 2.105: " + (System.nanoTime() - debug_time)
                     )
                     val view: View?
                     if (resource != -1) {
                         val image_button = ImageButton(context)
-                        if (MyDebug.LOG) Log.d(
+                        if (MyDebug.LOG) Logger.d(
                             TAG,
                             "addButtonOptionsToPopup time 2.11: " + (System.nanoTime() - debug_time)
                         )
                         view = image_button
                         buttons.add(view)
                         ll2.addView(view)
-                        if (MyDebug.LOG) Log.d(
+                        if (MyDebug.LOG) Logger.d(
                             TAG,
                             "addButtonOptionsToPopup time 2.12: " + (System.nanoTime() - debug_time)
                         )
@@ -2212,12 +2244,12 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         val bm = main_activity.getPreloadedBitmap(resource)
                         if (bm != null) image_button.setImageBitmap(bm)
                         else {
-                            if (MyDebug.LOG) Log.d(
+                            if (MyDebug.LOG) Logger.d(
                                 TAG,
                                 "failed to find bitmap for resource $resource!"
                             )
                         }
-                        if (MyDebug.LOG) Log.d(
+                        if (MyDebug.LOG) Logger.d(
                             TAG,
                             "addButtonOptionsToPopup time 2.13: " + (System.nanoTime() - debug_time)
                         )
@@ -2242,7 +2274,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         val padding = (0 * scale + 0.5f).toInt() // convert dps to pixels
                         view.setPadding(padding, padding, padding, padding)
                     }
-                    if (MyDebug.LOG) Log.d(
+                    if (MyDebug.LOG) Logger.d(
                         TAG,
                         "addButtonOptionsToPopup time 2.2: " + (System.nanoTime() - debug_time)
                     )
@@ -2262,13 +2294,13 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     } else {
                         setButtonSelected(view, false)
                     }
-                    if (MyDebug.LOG) Log.d(
+                    if (MyDebug.LOG) Logger.d(
                         TAG,
                         "addButtonOptionsToPopup time 2.3: " + (System.nanoTime() - debug_time)
                     )
                     view.tag = supported_option
                     view.setOnClickListener(on_click_listener)
-                    if (MyDebug.LOG) Log.d(
+                    if (MyDebug.LOG) Logger.d(
                         TAG,
                         "addButtonOptionsToPopup time 2.35: " + (System.nanoTime() - debug_time)
                     )
@@ -2277,26 +2309,26 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         view
                     )
                     if (MyDebug.LOG) {
-                        Log.d(
+                        Logger.d(
                             TAG,
                             "addButtonOptionsToPopup time 2.4: " + (System.nanoTime() - debug_time)
                         )
-                        Log.d(
+                        Logger.d(
                             TAG,
                             "added to popup_buttons: " + test_key + "_" + supported_option + " view: " + view
                         )
-                        if (test_ui_buttons != null) Log.d(
+                        if (test_ui_buttons != null) Logger.d(
                             TAG,
                             "test_ui_buttons is now: $test_ui_buttons"
                         )
                     }
                 }
-                if (MyDebug.LOG) Log.d(
+                if (MyDebug.LOG) Logger.d(
                     TAG,
                     "addButtonOptionsToPopup time 3: " + (System.nanoTime() - debug_time)
                 )
                 if (use_scrollview) {
-                    if (MyDebug.LOG) Log.d(TAG, "using scrollview")
+                    if (MyDebug.LOG) Logger.d(TAG, "using scrollview")
                     val total_width =
                         (total_width_dp * scale + 0.5f).toInt() // convert dps to pixels;
                     val scroll = HorizontalScrollView(context)
@@ -2326,10 +2358,10 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         )
                     }
                 } else {
-                    if (MyDebug.LOG) Log.d(TAG, "not using scrollview")
+                    if (MyDebug.LOG) Logger.d(TAG, "not using scrollview")
                     parent.addView(ll2)
                 }
-                if (MyDebug.LOG) Log.d(
+                if (MyDebug.LOG) Logger.d(
                     TAG,
                     "addButtonOptionsToPopup time 4: " + (System.nanoTime() - debug_time)
                 )

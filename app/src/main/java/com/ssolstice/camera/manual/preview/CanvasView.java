@@ -1,6 +1,8 @@
 package com.ssolstice.camera.manual.preview;
 
 import com.ssolstice.camera.manual.MyDebug;
+import com.ssolstice.camera.manual.utils.Logger;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Handler;
@@ -18,15 +20,15 @@ public class CanvasView extends View {
     private static final String TAG = "CanvasView";
 
     private final Preview preview;
-    private final int [] measure_spec = new int[2];
+    private final int[] measure_spec = new int[2];
     private final Handler handler = new Handler();
     private final Runnable tick;
 
     CanvasView(Context context, final Preview preview) {
         super(context);
         this.preview = preview;
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "new CanvasView");
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "new CanvasView");
         }
 
         // deprecated setting, but required on Android versions prior to 3.0
@@ -35,7 +37,7 @@ public class CanvasView extends View {
         tick = new Runnable() {
             public void run() {
 				/*if( MyDebug.LOG )
-					Log.d(TAG, "invalidate()");*/
+					Logger.INSTANCE.d(TAG, "invalidate()");*/
                 preview.test_ticker_called = true;
                 invalidate();
                 handler.postDelayed(this, preview.getFrameRate());
@@ -46,27 +48,24 @@ public class CanvasView extends View {
     @Override
     public void onDraw(@NonNull Canvas canvas) {
 		/*if( MyDebug.LOG )
-			Log.d(TAG, "onDraw()");*/
+			Logger.INSTANCE.d(TAG, "onDraw()");*/
         preview.draw(canvas);
     }
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onMeasure: " + widthSpec + " x " + heightSpec);
+        Logger.INSTANCE.d(TAG, "onMeasure: " + widthSpec + " x " + heightSpec);
         preview.getMeasureSpec(measure_spec, widthSpec, heightSpec);
         super.onMeasure(measure_spec[0], measure_spec[1]);
     }
 
     void onPause() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onPause()");
+        Logger.INSTANCE.d(TAG, "onPause()");
         handler.removeCallbacks(tick);
     }
 
     void onResume() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onResume()");
+        Logger.INSTANCE.d(TAG, "onResume()");
         tick.run();
     }
 }

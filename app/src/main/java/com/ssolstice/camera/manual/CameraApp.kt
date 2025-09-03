@@ -5,6 +5,7 @@ import android.os.Process
 import android.util.Log
 import androidx.multidex.MultiDexApplication
 import com.ssolstice.camera.manual.utils.LocaleHelper
+import com.ssolstice.camera.manual.utils.Logger
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -19,13 +20,13 @@ class CameraApp : MultiDexApplication() {
     }
 
     override fun onCreate() {
-        if (MyDebug.LOG) Log.d(TAG, "onCreate")
+        Logger.d(TAG, "onCreate")
         super.onCreate()
         checkAppReplacingState()
     }
 
     private fun checkAppReplacingState() {
-        if (MyDebug.LOG) Log.d(TAG, "checkAppReplacingState")
+        Logger.d(TAG, "checkAppReplacingState")
         if (resources == null) {
             Log.e(TAG, "app is replacing, kill")
             Process.killProcess(Process.myPid())

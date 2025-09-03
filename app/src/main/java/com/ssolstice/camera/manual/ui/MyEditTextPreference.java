@@ -39,7 +39,7 @@ public class MyEditTextPreference extends DialogPreference {
 
         // can't get both strings and resources to work - only support resources
         int id = attrs.getAttributeResourceValue(namespace, "dialogMessage", 0);
-        if( id > 0 )
+        if (id > 0)
             this.dialogMessage = context.getString(id);
 
         this.inputType = attrs.getAttributeIntValue(namespace, "inputType", EditorInfo.TYPE_NULL);
@@ -57,7 +57,7 @@ public class MyEditTextPreference extends DialogPreference {
         TextView textView = view.findViewById(R.id.myedittextpreference_summary);
         textView.setText(dialogMessage);
 
-        if( value != null ) {
+        if (value != null) {
             this.edittext.setText(value);
         }
     }
@@ -66,9 +66,9 @@ public class MyEditTextPreference extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
 
-        if( positiveResult ) {
+        if (positiveResult) {
             String new_value = edittext.getText().toString();
-            if( callChangeListener(new_value) ) {
+            if (callChangeListener(new_value)) {
                 setValue(new_value);
             }
         }
@@ -80,11 +80,11 @@ public class MyEditTextPreference extends DialogPreference {
 
     private void setValue(String value) {
         final boolean changed = !TextUtils.equals(this.value, value);
-        if( changed || !value_set ) {
+        if (changed || !value_set) {
             this.value = value;
             value_set = true;
             persistString(value);
-            if( changed ) {
+            if (changed) {
                 notifyChanged();
             }
         }
@@ -103,7 +103,7 @@ public class MyEditTextPreference extends DialogPreference {
     @Override
     protected Parcelable onSaveInstanceState() {
         final Parcelable superState = super.onSaveInstanceState();
-        if( isPersistent() ) {
+        if (isPersistent()) {
             return superState;
         }
 
@@ -114,12 +114,12 @@ public class MyEditTextPreference extends DialogPreference {
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if( state == null || !state.getClass().equals(SavedState.class) ) {
+        if (state == null || !state.getClass().equals(SavedState.class)) {
             super.onRestoreInstanceState(state);
             return;
         }
 
-        SavedState myState = (SavedState)state;
+        SavedState myState = (SavedState) state;
         super.onRestoreInstanceState(myState.getSuperState());
         setValue(myState.value);
     }

@@ -9,27 +9,26 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.ssolstice.camera.manual.utils.Logger;
+
 /** Handles the ManualCamera "take photo" widget. This widget launches Open
  *  Camera, and immediately takes a photo.
  */
 public class MyWidgetProviderTakePhoto extends AppWidgetProvider {
     private static final String TAG = "MyWidgetProviderTakePho";
-    
-    // see http://developer.android.com/guide/topics/appwidgets/index.html
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int [] appWidgetIds) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onUpdate");
-        if( MyDebug.LOG )
-            Log.d(TAG, "length = " + appWidgetIds.length);
 
-        for(int appWidgetId : appWidgetIds) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "appWidgetId: " + appWidgetId);
+    // see http://developer.android.com/guide/topics/appwidgets/index.html
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Logger.INSTANCE.d(TAG, "onUpdate");
+        Logger.INSTANCE.d(TAG, "length = " + appWidgetIds.length);
+
+        for (int appWidgetId : appWidgetIds) {
+            Logger.INSTANCE.d(TAG, "appWidgetId: " + appWidgetId);
 
             Intent intent = new Intent(context, TakePhoto.class);
 
             int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-            if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 flags = flags | PendingIntent.FLAG_IMMUTABLE; // needed for targetting Android 12+, but fine to set it all versions from Android 6 onwards
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, flags);
 
@@ -43,16 +42,16 @@ public class MyWidgetProviderTakePhoto extends AppWidgetProvider {
     /*@Override
     public void onReceive(Context context, Intent intent) {
         if( MyDebug.LOG ) {
-            Log.d(TAG, "onReceive " + intent);
+            Logger.INSTANCE.d(TAG, "onReceive " + intent);
         }
         if (intent.getAction().equals("com.ssolstice.camera.manual.LAUNCH_OPEN_CAMERA")) {
             if( MyDebug.LOG )
-                Log.d(TAG, "Launching MainActivity");
+                Logger.INSTANCE.d(TAG, "Launching MainActivity");
             final Intent activity = new Intent(context, MainActivity.class);
             activity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(activity);
             if( MyDebug.LOG )
-                Log.d(TAG, "done");
+                Logger.INSTANCE.d(TAG, "done");
         }
         super.onReceive(context, intent);
     }*/

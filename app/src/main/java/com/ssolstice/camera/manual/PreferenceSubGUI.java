@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.ssolstice.camera.manual.ui.MyEditTextPreference;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import java.util.Locale;
 
@@ -20,7 +21,7 @@ public class PreferenceSubGUI extends PreferenceSubScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (MyDebug.LOG) Log.d(TAG, "onCreate");
+        Logger.INSTANCE.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_sub_gui);
 
@@ -34,7 +35,7 @@ public class PreferenceSubGUI extends PreferenceSubScreen {
             }
         }
 
-        if (MyDebug.LOG) Log.d(TAG, "onCreate done");
+        Logger.INSTANCE.d(TAG, "onCreate done");
     }
 
     private void updatePreferenceSummaries(PreferenceGroup group, SharedPreferences sharedPreferences) {

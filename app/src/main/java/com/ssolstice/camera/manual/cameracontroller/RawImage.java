@@ -5,6 +5,7 @@ import android.media.Image;
 import android.util.Log;
 
 import com.ssolstice.camera.manual.MyDebug;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,18 +26,15 @@ public class RawImage {
     /** Writes the dng file to the supplied output.
      */
     public void writeImage(OutputStream dngOutput) throws IOException {
-        if( MyDebug.LOG )
-            Log.d(TAG, "writeImage");
+        Logger.INSTANCE.d(TAG, "writeImage");
         try {
             dngCreator.writeImage(dngOutput, image);
-        }
-        catch(AssertionError e) {
+        } catch (AssertionError e) {
             // have had AssertionError from OnePlus 5 on Google Play; rethrow as an IOException so it's handled
             // in the same way
             e.printStackTrace();
             throw new IOException();
-        }
-        catch(IllegalStateException e) {
+        } catch (IllegalStateException e) {
             // have had IllegalStateException from Galaxy Note 8 on Google Play; rethrow as an IOException so it's handled
             // in the same way
             e.printStackTrace();
@@ -48,8 +46,7 @@ public class RawImage {
      *  this method, this object should not be used.
      */
     public void close() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "close");
+        Logger.INSTANCE.d(TAG, "close");
         image.close();
         dngCreator.close();
     }

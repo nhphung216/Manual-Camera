@@ -1,6 +1,7 @@
 package com.ssolstice.camera.manual.cameracontroller;
 
 import com.ssolstice.camera.manual.MyDebug;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public abstract class CameraController {
     public static final String EDGE_MODE_DEFAULT = "default";
     public static final String NOISE_REDUCTION_MODE_DEFAULT = "default";
     public static final String ISO_DEFAULT = "auto";
-    public static final long EXPOSURE_TIME_DEFAULT = 1000000000L/30; // note, responsibility of callers to check that this is within the valid min/max range
+    public static final long EXPOSURE_TIME_DEFAULT = 1000000000L / 30; // note, responsibility of callers to check that this is within the valid min/max range
 
     public static final int N_IMAGES_NR_DARK = 8;
     public static final int N_IMAGES_NR_DARK_LOW_LIGHT = 15;
@@ -71,9 +72,9 @@ public abstract class CameraController {
         final Map<Integer, List<android.util.Size>> extension_preview_sizes_map; // key is extension
 
         CameraFeaturesCache(CameraFeatures camera_features, Map<Integer, List<android.util.Size>> extension_picture_sizes_map, Map<Integer, List<android.util.Size>> extension_preview_sizes_map) {
-            if( camera_features.supported_extensions != null )
+            if (camera_features.supported_extensions != null)
                 this.supported_extensions = new ArrayList<>(camera_features.supported_extensions);
-            if( camera_features.supported_extensions_zoom != null )
+            if (camera_features.supported_extensions_zoom != null)
                 this.supported_extensions_zoom = new ArrayList<>(camera_features.supported_extensions_zoom);
             this.extension_picture_sizes_map = extension_picture_sizes_map;
             this.extension_preview_sizes_map = extension_preview_sizes_map;
@@ -94,7 +95,7 @@ public abstract class CameraController {
         public List<Integer> supported_extensions_zoom; // if non-null, list of camera vendor extensions that support zoom
         public List<String> supported_flash_values;
         public List<String> supported_focus_values;
-        public float [] apertures; // may be null if not supported, else will have at least 2 values
+        public float[] apertures; // may be null if not supported, else will have at least 2 values
         public int max_num_focus_areas;
         public float minimum_focus_distance;
         public boolean is_exposure_lock_supported;
@@ -129,19 +130,16 @@ public abstract class CameraController {
         /** Returns whether any of the supplied sizes support the requested fps.
          */
         public static boolean supportsFrameRate(List<Size> sizes, int fps) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "supportsFrameRate: " + fps);
-            if( sizes == null )
+            Logger.INSTANCE.d(TAG, "supportsFrameRate: " + fps);
+            if (sizes == null)
                 return false;
-            for(Size size : sizes) {
-                if( size.supportsFrameRate(fps) ) {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "fps is supported");
+            for (Size size : sizes) {
+                if (size.supportsFrameRate(fps)) {
+                    Logger.INSTANCE.d(TAG, "fps is supported");
                     return true;
                 }
             }
-            if( MyDebug.LOG )
-                Log.d(TAG, "fps is NOT supported");
+            Logger.INSTANCE.d(TAG, "fps is NOT supported");
             return false;
         }
 
@@ -151,7 +149,7 @@ public abstract class CameraController {
          */
         public static Size findSize(List<Size> sizes, Size size, double fps, boolean return_closest) {
             Size last_s = null;
-            for(Size s : sizes) {
+            for (Size s : sizes) {
                 if (size.equals(s)) {
                     last_s = s;
                     if (fps > 0) {
@@ -170,6 +168,7 @@ public abstract class CameraController {
     // Android docs and FindBugs recommend that Comparators also be Serializable
     static class RangeSorter implements Comparator<int[]>, Serializable {
         private static final long serialVersionUID = 5802214721073728212L;
+
         @Override
         public int compare(int[] o1, int[] o2) {
             if (o1[0] == o2[0]) return o1[1] - o2[1];
@@ -233,14 +232,14 @@ public abstract class CameraController {
             int closest_dist = -1;
             for (int[] f : this.fps_ranges) {
                 if (f[0] <= fps && fps <= f[1])
-                    return (int)fps;
+                    return (int) fps;
                 int this_fps;
-                if( fps < f[0] )
+                if (fps < f[0])
                     this_fps = f[0];
                 else
                     this_fps = f[1];
-                int dist = Math.abs(this_fps - (int)fps);
-                if( closest_dist == -1 || dist < closest_dist ) {
+                int dist = Math.abs(this_fps - (int) fps);
+                if (closest_dist == -1 || dist < closest_dist) {
                     closest_fps = this_fps;
                     closest_dist = dist;
                 }
@@ -250,9 +249,9 @@ public abstract class CameraController {
 
         @Override
         public boolean equals(Object o) {
-            if( !(o instanceof Size) )
+            if (!(o instanceof Size))
                 return false;
-            Size that = (Size)o;
+            Size that = (Size) o;
             return this.width == that.width && this.height == that.height;
         }
 
@@ -263,7 +262,7 @@ public abstract class CameraController {
             //return Objects.hash(width, height);
             // as this requires API level 19
             // so use this from http://stackoverflow.com/questions/11742593/what-is-the-hashcode-for-a-custom-class-having-just-two-int-properties
-            return width*41 + height;
+            return width * 41 + height;
         }
 
         @NonNull
@@ -368,6 +367,7 @@ public abstract class CameraController {
     public static class SupportedValues {
         public final List<String> values;
         public final String selected_value;
+
         SupportedValues(List<String> values, String selected_value) {
             this.values = values;
             this.selected_value = selected_value;
@@ -375,13 +375,17 @@ public abstract class CameraController {
     }
 
     public abstract void release();
+
     public abstract void onError(); // triggers error mechanism - should only be called externally for testing purposes
 
     CameraController(int cameraId) {
         this.cameraId = cameraId;
     }
+
     public abstract String getAPI();
+
     public abstract CameraFeatures getCameraFeatures() throws CameraControllerException;
+
     public int getCameraId() {
         return cameraId;
     }
@@ -397,36 +401,54 @@ public abstract class CameraController {
     public boolean shouldCoverPreview() {
         return false;
     }
+
     /** For CameraController2 only. After calling this, shouldCoverPreview() will return true, until a new
      *  frame from the camera has been received.
      */
     public void resetCoverPreview() {
     }
+
     public abstract SupportedValues setSceneMode(String value);
+
     /**
      * @return The current scene mode. Will be null if scene mode not supported.
      */
     public abstract String getSceneMode();
+
     /**
      * @return Returns true iff changing the scene mode can affect the available camera functionality
      *         (e.g., changing to Night scene mode might mean flash modes are no longer available).
      */
     public abstract boolean sceneModeAffectsFunctionality();
+
     public abstract SupportedValues setColorEffect(String value);
+
     public abstract String getColorEffect();
+
     public abstract SupportedValues setWhiteBalance(String value);
+
     public abstract String getWhiteBalance();
+
     public abstract boolean setWhiteBalanceTemperature(int temperature);
+
     public abstract int getWhiteBalanceTemperature();
+
     public abstract SupportedValues setAntiBanding(String value);
+
     public abstract String getAntiBanding();
+
     public abstract SupportedValues setEdgeMode(String value);
+
     public abstract String getEdgeMode();
+
     public abstract SupportedValues setNoiseReductionMode(String value);
+
     public abstract String getNoiseReductionMode();
+
     /** Set an ISO value. Only supported if supports_iso_range is false.
      */
     public abstract SupportedValues setISO(String value);
+
     /** Switch between auto and manual ISO mode. Only supported if supports_iso_range is true.
      * @param manual_iso Whether to switch to manual mode or back to auto.
      * @param iso If manual_iso is true, this specifies the desired ISO value. If this is outside
@@ -439,25 +461,38 @@ public abstract class CameraController {
      * @return Whether in manual ISO mode (as opposed to auto).
      */
     public abstract boolean isManualISO();
+
     /** Specify a specific ISO value. Only supported if supports_iso_range is true. Callers should
      *  first switch to manual ISO mode using setManualISO().
      */
     public abstract boolean setISO(int iso);
+
     public abstract String getISOKey();
+
     /** Returns the manual ISO value. Only supported if supports_iso_range is true.
      */
     public abstract int getISO();
+
     public abstract long getExposureTime();
+
     public abstract boolean setExposureTime(long exposure_time);
+
     public abstract void setAperture(float aperture);
+
     public abstract CameraController.Size getPictureSize();
+
     public abstract void setPictureSize(int width, int height);
+
     public abstract CameraController.Size getPreviewSize();
+
     public abstract void setPreviewSize(int width, int height);
 
     public abstract void setCameraExtension(boolean enabled, int extension);
+
     public abstract boolean isCameraExtension();
+
     public abstract int getCameraExtension();
+
     // whether to take a burst of images, and if so, what type
     public enum BurstType {
         BURSTTYPE_NONE, // no burst
@@ -466,29 +501,40 @@ public abstract class CameraController {
         BURSTTYPE_NORMAL, // take a regular burst
         BURSTTYPE_CONTINUOUS // as BURSTTYPE_NORMAL, but bursts will fire continually until stopContinuousBurst() is called.
     }
+
     public abstract void setBurstType(BurstType new_burst_type);
+
     public abstract BurstType getBurstType();
+
     /** Only relevant if setBurstType() is also called with BURSTTYPE_NORMAL. Sets the number of
      *  images to take in the burst.
      */
     public abstract void setBurstNImages(int burst_requested_n_images);
+
     /** Only relevant if setBurstType() is also called with BURSTTYPE_NORMAL. If this method is
      *  called with burst_for_noise_reduction, then the number of burst images, and other settings,
      *  will be set for noise reduction mode (and setBurstNImages() is ignored).
      */
     public abstract void setBurstForNoiseReduction(boolean burst_for_noise_reduction, boolean noise_reduction_low_light);
+
     public abstract boolean isContinuousBurstInProgress();
+
     public abstract void stopContinuousBurst();
+
     public abstract void stopFocusBracketingBurst();
+
     /** Only relevant if setBurstType() is also called with BURSTTYPE_EXPO. Sets the number of
      *  images to take in the expo burst.
      * @param n_images Must be an odd number greater than 1.
      */
     public abstract void setExpoBracketingNImages(int n_images);
+
     /** Only relevant if setBurstType() is also called with BURSTTYPE_EXPO.
      */
     public abstract void setExpoBracketingStops(double stops);
+
     public abstract void setUseExpoFastBurst(boolean use_expo_fast_burst);
+
     /** Whether to enable a workaround hack for some Galaxy devices - take an additional dummy photo
      *  when taking an expo/HDR burst, to avoid problem where manual exposure is ignored for the
      *  first image.
@@ -500,13 +546,16 @@ public abstract class CameraController {
      *  capture burst (for Camera2 API, see StreamConfigurationMap.getHighResolutionOutputSizes()).
      */
     public abstract boolean isCaptureFastBurst();
+
     /** If true, then the camera controller is currently capturing a burst of images.
      */
     public abstract boolean isCapturingBurst();
+
     /** If isCapturingBurst() is true, then this returns the number of images in the current burst
      *  captured so far.
      */
     public abstract int getNBurstTaken();
+
     /** If isCapturingBurst() is true, then this returns the total number of images in the current
      *  burst if known. If not known (e.g., for continuous burst mode), returns 0.
      */
@@ -531,6 +580,7 @@ public abstract class CameraController {
      *  This should be called only when the preview is paused or not yet started.
      */
     public abstract void setVideoHighSpeed(boolean setVideoHighSpeed);
+
     /**
      * setUseCamera2FakeFlash() should be called after creating the CameraController, and before calling getCameraFeatures() or
      * starting the preview (as it changes the available flash modes).
@@ -547,15 +597,20 @@ public abstract class CameraController {
      */
     public void setUseCamera2FakeFlash(boolean use_fake_precapture) {
     }
+
     public boolean getUseCamera2FakeFlash() {
         return false;
     }
+
     public abstract boolean getOpticalStabilization();
+
     /** Whether to enable digital video stabilization. Should only be set to true when intending to
      *  capture video.
      */
     public abstract void setVideoStabilization(boolean enabled);
+
     public abstract boolean getVideoStabilization();
+
     public enum TonemapProfile {
         TONEMAPPROFILE_OFF,
         TONEMAPPROFILE_REC709,
@@ -573,17 +628,23 @@ public abstract class CameraController {
      * @param gamma Only relevant if tonemap_profile set to TONEMAPPROFILE_GAMMA
      */
     public abstract void setTonemapProfile(TonemapProfile tonemap_profile, float log_profile_strength, float gamma);
+
     public abstract TonemapProfile getTonemapProfile();
+
     public abstract int getJpegQuality();
+
     public abstract void setJpegQuality(int quality);
+
     /** Returns the current zoom. The returned value is an index into the CameraFeatures.zoom_ratios
      *  array.
      */
     public abstract int getZoom();
+
     /** Set the zoom.
      * @param value The index into the CameraFeatures.zoom_ratios array.
      */
     public abstract void setZoom(int value);
+
     /** Set the zoom. Unlike setZoom(value), this allows specifying any zoom level within the
      *  supported range.
      * @param value The index into the CameraFeatures.zoom_ratios array.
@@ -595,79 +656,123 @@ public abstract class CameraController {
      *                    smooth_zoom must still be within the supported range of zoom values.
      */
     public abstract void setZoom(int value, float smooth_zoom);
+
     public abstract void resetZoom(); // resets to zoom 1x
+
     public abstract int getExposureCompensation();
+
     public abstract boolean setExposureCompensation(int new_exposure);
+
     public abstract void setPreviewFpsRange(int min, int max);
+
     public abstract void clearPreviewFpsRange();
-    public abstract List<int []> getSupportedPreviewFpsRange(); // result depends on setting of setVideoHighSpeed()
+
+    public abstract List<int[]> getSupportedPreviewFpsRange(); // result depends on setting of setVideoHighSpeed()
 
     public abstract void setFocusValue(String focus_value);
+
     public abstract String getFocusValue();
+
     public abstract float getFocusDistance();
+
     public abstract boolean setFocusDistance(float focus_distance);
+
     /** Only relevant if setBurstType() is also called with BURSTTYPE_FOCUS. Sets the number of
      *  images to take in the focus burst.
      */
     public abstract void setFocusBracketingNImages(int n_images);
+
     /** Only relevant if setBurstType() is also called with BURSTTYPE_FOCUS. If set to true, an
      *  additional image will be included at infinite distance.
      */
     public abstract void setFocusBracketingAddInfinity(boolean focus_bracketing_add_infinity);
+
     /** Only relevant if setBurstType() is also called with BURSTTYPE_FOCUS. Sets the source focus
      *  distance for focus bracketing.
      */
     public abstract void setFocusBracketingSourceDistance(float focus_bracketing_source_distance);
+
     public abstract float getFocusBracketingSourceDistance();
+
     /** Only relevant if setBurstType() is also called with BURSTTYPE_FOCUS. Sets the source focus
      *  distance to match the camera's current focus distance (typically useful if running in a
      *  non-manual focus mode).
      */
     public abstract void setFocusBracketingSourceDistanceFromCurrent();
+
     /** Only relevant if setBurstType() is also called with BURSTTYPE_FOCUS. Sets the target focus
      *  distance for focus bracketing.
      */
     public abstract void setFocusBracketingTargetDistance(float focus_bracketing_target_distance);
+
     public abstract float getFocusBracketingTargetDistance();
+
     public abstract void setFlashValue(String flash_value);
+
     public abstract String getFlashValue();
+
     public abstract void setRecordingHint(boolean hint);
+
     public abstract void setAutoExposureLock(boolean enabled);
+
     public abstract boolean getAutoExposureLock();
+
     public abstract void setAutoWhiteBalanceLock(boolean enabled);
+
     public abstract boolean getAutoWhiteBalanceLock();
+
     public abstract void setRotation(int rotation);
+
     public abstract void setLocationInfo(Location location);
+
     public abstract void removeLocationInfo();
+
     public abstract void enableShutterSound(boolean enabled);
+
     public abstract boolean setFocusAndMeteringArea(List<CameraController.Area> areas);
+
     public abstract void clearFocusAndMetering();
+
     public abstract List<CameraController.Area> getFocusAreas();
+
     public abstract List<CameraController.Area> getMeteringAreas();
+
     public abstract boolean supportsAutoFocus();
+
     public abstract boolean supportsMetering();
+
     public abstract boolean focusIsContinuous();
+
     public abstract boolean focusIsVideo();
+
     public abstract void reconnect() throws CameraControllerException;
+
     public abstract void setPreviewDisplay(SurfaceHolder holder) throws CameraControllerException;
+
     public abstract void setPreviewTexture(TextureView texture) throws CameraControllerException;
+
     /** This should be called when using a TextureView, and the texture view has reported a change
      *  in size via onSurfaceTextureSizeChanged.
      */
     public void updatePreviewTexture() {
         // dummy implementation
     }
+
     /** Starts the camera preview.
      *  @throws CameraControllerException if the camera preview fails to start.
      */
     public abstract void startPreview() throws CameraControllerException;
+
     /** Only relevant for CameraController2: stops the repeating burst for the previous (so effectively
      *  stops the preview), but does not close the capture session for the preview (for that, using
      *  stopPreview() instead of stopRepeating()).
      */
     public abstract void stopRepeating();
+
     public abstract void stopPreview();
+
     public abstract boolean startFaceDetection();
+
     public abstract void setFaceDetectionListener(final CameraController.FaceDetectionListener listener);
 
     /**
@@ -677,83 +782,111 @@ public abstract class CameraController {
      *                                       then takes photo before autofocus has completed), use setCaptureFollowAutofocusHint().
      */
     public abstract void autoFocus(final CameraController.AutoFocusCallback cb, boolean capture_follows_autofocus_hint);
+
     /** See autoFocus() for details - used to update the capture_follows_autofocus_hint setting.
      */
     public abstract void setCaptureFollowAutofocusHint(boolean capture_follows_autofocus_hint);
+
     public abstract void cancelAutoFocus();
+
     public abstract void setContinuousFocusMoveCallback(ContinuousFocusMoveCallback cb);
+
     public abstract void takePicture(final CameraController.PictureCallback picture, final ErrorCallback error);
+
     public abstract void setDisplayOrientation(int degrees);
+
     public abstract int getDisplayOrientation();
+
     public abstract int getCameraOrientation();
+
     public enum Facing {
         FACING_BACK,
         FACING_FRONT,
         FACING_EXTERNAL,
         FACING_UNKNOWN // returned if the Camera API returned an error or an unknown type
     }
+
     /** Returns whether the camera is front, back or external.
      */
     public abstract Facing getFacing();
+
     public abstract void unlock();
+
     /** Call to initialise video recording, should call before MediaRecorder.prepare().
      * @param video_recorder The media recorder object.
      */
     public abstract void initVideoRecorderPrePrepare(MediaRecorder video_recorder);
+
     /** Call to initialise video recording, should call after MediaRecorder.prepare(), but before MediaRecorder.start().
      * @param video_recorder The media recorder object.
      * @param want_photo_video_recording Whether support for taking photos whilst video recording is required. If this feature isn't supported, the option has no effect.
      */
     public abstract void initVideoRecorderPostPrepare(MediaRecorder video_recorder, boolean want_photo_video_recording) throws CameraControllerException;
+
     public abstract String getParametersString();
+
     public boolean captureResultIsAEScanning() {
         return false;
     }
+
     /**
      * @return whether flash will fire; returns false if not known
      */
     public boolean needsFlash() {
         return false;
     }
+
     /**
      * @return whether front screen "flash" will fire; returns false if not known
      */
     public boolean needsFrontScreenFlash() {
         return false;
     }
+
     public boolean captureResultHasWhiteBalanceTemperature() {
         return false;
     }
+
     public int captureResultWhiteBalanceTemperature() {
         return 0;
     }
+
     public boolean captureResultHasIso() {
         return false;
     }
+
     public int captureResultIso() {
         return 0;
     }
+
     public boolean captureResultHasExposureTime() {
         return false;
     }
+
     public long captureResultExposureTime() {
         return 0;
     }
+
     public boolean captureResultHasFrameDuration() {
         return false;
     }
+
     public long captureResultFrameDuration() {
         return 0;
     }
+
     public boolean captureResultHasFocusDistance() {
         return false;
     }
+
     public float captureResultFocusDistance() {
         return 0.0f;
     }
+
     public boolean captureResultHasAperture() {
         return false;
     }
+
     public float captureResultAperture() {
         return 0.0f;
     }
@@ -769,22 +902,20 @@ public abstract class CameraController {
 
     // gets the available values of a generic mode, e.g., scene, color etc, and makes sure the requested mode is available
     SupportedValues checkModeIsSupported(List<String> values, String value, String default_value) {
-        if( values != null && values.size() > 1 ) { // n.b., if there is only 1 supported value, we also return null, as no point offering the choice to the user (there are some devices, e.g., Samsung, that only have a scene mode of "auto")
-            if( MyDebug.LOG ) {
-                for(int i=0;i<values.size();i++) {
-                    Log.d(TAG, "supported value: " + values.get(i));
+        if (values != null && values.size() > 1) { // n.b., if there is only 1 supported value, we also return null, as no point offering the choice to the user (there are some devices, e.g., Samsung, that only have a scene mode of "auto")
+            if (MyDebug.LOG) {
+                for (int i = 0; i < values.size(); i++) {
+                    Logger.INSTANCE.d(TAG, "supported value: " + values.get(i));
                 }
             }
             // make sure result is valid
-            if( !values.contains(value) ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "value not valid!");
-                if( values.contains(default_value) )
+            if (!values.contains(value)) {
+                Logger.INSTANCE.d(TAG, "value not valid!");
+                if (values.contains(default_value))
                     value = default_value;
                 else
                     value = values.get(0);
-                if( MyDebug.LOG )
-                    Log.d(TAG, "value is now: " + value);
+                Logger.INSTANCE.d(TAG, "value is now: " + value);
             }
             return new SupportedValues(values, value);
         }

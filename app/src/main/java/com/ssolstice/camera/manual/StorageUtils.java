@@ -33,11 +33,14 @@ import android.provider.MediaStore.Video;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Video.VideoColumns;
 import android.provider.OpenableColumns;
+
 import androidx.core.content.ContextCompat;
 
 import android.system.Os;
 import android.system.StructStatVfs;
 import android.util.Log;
+
+import com.ssolstice.camera.manual.utils.Logger;
 
 /** Provides access to the filesystem. Supports both standard and Storage
  *  Access Framework.
@@ -91,8 +94,7 @@ public class StorageUtils {
     }
 
     void clearLastMediaScanned() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "clearLastMediaScanned");
+        Logger.INSTANCE.d(TAG, "clearLastMediaScanned");
         last_media_scanned = null;
         last_media_scanned_is_raw = false;
         last_media_scanned_hasnoexifdatetime = false;
@@ -103,15 +105,15 @@ public class StorageUtils {
         last_media_scanned = uri;
         last_media_scanned_is_raw = is_raw;
         last_media_scanned_hasnoexifdatetime = hasnoexifdatetime;
-        if( hasnoexifdatetime )
+        if (hasnoexifdatetime)
             last_media_scanned_check_uri = check_uri;
         else
             last_media_scanned_check_uri = null;
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "set last_media_scanned to " + last_media_scanned);
-            Log.d(TAG, "    last_media_scanned_is_raw: " + last_media_scanned_is_raw);
-            Log.d(TAG, "    last_media_scanned_hasnoexifdatetime: " + last_media_scanned_hasnoexifdatetime);
-            Log.d(TAG, "    last_media_scanned_check_uri: " + check_uri);
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "set last_media_scanned to " + last_media_scanned);
+            Logger.INSTANCE.d(TAG, "    last_media_scanned_is_raw: " + last_media_scanned_is_raw);
+            Logger.INSTANCE.d(TAG, "    last_media_scanned_hasnoexifdatetime: " + last_media_scanned_hasnoexifdatetime);
+            Logger.INSTANCE.d(TAG, "    last_media_scanned_check_uri: " + check_uri);
         }
     }
 
@@ -124,44 +126,37 @@ public class StorageUtils {
      *  See https://github.com/owncloud/android/issues/1675 for OwnCloud's discussion on this.
      */
     void announceUri(Uri uri, boolean is_new_picture, boolean is_new_video) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "announceUri: " + uri);
-        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "broadcasts deprecated on Android 7 onwards, so don't send them");
+        Logger.INSTANCE.d(TAG, "announceUri: " + uri);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Logger.INSTANCE.d(TAG, "broadcasts deprecated on Android 7 onwards, so don't send them");
             // see note above; the intents won't be delivered, so might as well save the trouble of trying to send them
-        }
-        else if( is_new_picture ) {
+        } else if (is_new_picture) {
             // note, we reference the string directly rather than via Camera.ACTION_NEW_PICTURE, as the latter class is now deprecated - but we still need to broadcast the string for other apps
-            context.sendBroadcast(new Intent( "android.hardware.action.NEW_PICTURE" , uri));
+            context.sendBroadcast(new Intent("android.hardware.action.NEW_PICTURE", uri));
             // for compatibility with some apps - apparently this is what used to be broadcast on Android?
             context.sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", uri));
 
-            if( MyDebug.LOG ) // this code only used for debugging/logging
+            if (MyDebug.LOG) // this code only used for debugging/logging
             {
                 @SuppressLint("InlinedApi") // complains this constant only available on API 29 (even though it was available on older versions, but looks like it was moved?)
-                String[] CONTENT_PROJECTION = { Images.Media.DATA, Images.Media.DISPLAY_NAME, Images.Media.MIME_TYPE, Images.Media.SIZE, Images.Media.DATE_TAKEN, Images.Media.DATE_ADDED };
+                String[] CONTENT_PROJECTION = {Images.Media.DATA, Images.Media.DISPLAY_NAME, Images.Media.MIME_TYPE, Images.Media.SIZE, Images.Media.DATE_TAKEN, Images.Media.DATE_ADDED};
                 Cursor c = context.getContentResolver().query(uri, CONTENT_PROJECTION, null, null, null);
-                if( c == null ) {
-                    if( MyDebug.LOG )
-                        Log.e(TAG, "Couldn't resolve given uri [1]: " + uri);
-                }
-                else if( !c.moveToFirst() ) {
-                    if( MyDebug.LOG )
-                        Log.e(TAG, "Couldn't resolve given uri [2]: " + uri);
-                }
-                else {
+                if (c == null) {
+                    Logger.INSTANCE.e(TAG, "Couldn't resolve given uri [1]: " + uri);
+                } else if (!c.moveToFirst()) {
+                    Logger.INSTANCE.e(TAG, "Couldn't resolve given uri [2]: " + uri);
+                } else {
                     String file_path = c.getString(c.getColumnIndexOrThrow(Images.Media.DATA));
                     String file_name = c.getString(c.getColumnIndexOrThrow(Images.Media.DISPLAY_NAME));
                     String mime_type = c.getString(c.getColumnIndexOrThrow(Images.Media.MIME_TYPE));
                     @SuppressLint("InlinedApi") // complains this constant only available on API 29 (even though it was available on older versions, but looks like it was moved?)
                     long date_taken = c.getLong(c.getColumnIndexOrThrow(Images.Media.DATE_TAKEN));
                     long date_added = c.getLong(c.getColumnIndexOrThrow(Images.Media.DATE_ADDED));
-                    Log.d(TAG, "file_path: " + file_path);
-                    Log.d(TAG, "file_name: " + file_name);
-                    Log.d(TAG, "mime_type: " + mime_type);
-                    Log.d(TAG, "date_taken: " + date_taken);
-                    Log.d(TAG, "date_added: " + date_added);
+                    Logger.INSTANCE.d(TAG, "file_path: " + file_path);
+                    Logger.INSTANCE.d(TAG, "file_name: " + file_name);
+                    Logger.INSTANCE.d(TAG, "mime_type: " + mime_type);
+                    Logger.INSTANCE.d(TAG, "date_taken: " + date_taken);
+                    Logger.INSTANCE.d(TAG, "date_added: " + date_added);
                     c.close();
                 }
             }
@@ -173,24 +168,23 @@ public class StorageUtils {
     	        Cursor c = context.getContentResolver().query(uri, CONTENT_PROJECTION, null, null, null); 
     	        if( c == null ) { 
 		 			if( MyDebug.LOG )
-		 				Log.e(TAG, "Couldn't resolve given uri [1]: " + uri); 
+		 				Logger.INSTANCE.e(TAG, "Couldn't resolve given uri [1]: " + uri);
     	        }
     	        else if( !c.moveToFirst() ) { 
 		 			if( MyDebug.LOG )
-		 				Log.e(TAG, "Couldn't resolve given uri [2]: " + uri); 
+		 				Logger.INSTANCE.e(TAG, "Couldn't resolve given uri [2]: " + uri);
     	        }
     	        else {
         	        long date_added = c.getLong(c.getColumnIndex(Images.Media.DATE_ADDED)); 
 		 			if( MyDebug.LOG )
-		 				Log.e(TAG, "replace date_taken with date_added: " + date_added); 
+		 				Logger.INSTANCE.e(TAG, "replace date_taken with date_added: " + date_added);
 					ContentValues values = new ContentValues(); 
 					values.put(Images.Media.DATE_TAKEN, date_added*1000); 
 					context.getContentResolver().update(uri, values, null, null);
         	        c.close(); 
     	        }
  			}*/
-        }
-        else if( is_new_video ) {
+        } else if (is_new_video) {
             context.sendBroadcast(new Intent("android.hardware.action.NEW_VIDEO", uri));
 
     		/*String[] CONTENT_PROJECTION = { Video.Media.DURATION }; 
@@ -217,7 +211,7 @@ public class StorageUtils {
 	
 	/*public Uri broadcastFileRaw(File file, Date current_date, Location location) {
 		if( MyDebug.LOG )
-			Log.d(TAG, "broadcastFileRaw: " + file.getAbsolutePath());
+			Logger.INSTANCE.d(TAG, "broadcastFileRaw: " + file.getAbsolutePath());
         ContentValues values = new ContentValues(); 
         values.put(ImageColumns.TITLE, file.getName().substring(0, file.getName().lastIndexOf(".")));
         values.put(ImageColumns.DISPLAY_NAME, file.getName());
@@ -235,7 +229,7 @@ public class StorageUtils {
         try {
     		uri = context.getContentResolver().insert(Images.Media.EXTERNAL_CONTENT_URI, values); 
  			if( MyDebug.LOG )
- 				Log.d(TAG, "inserted media uri: " + uri);
+ 				Logger.INSTANCE.d(TAG, "inserted media uri: " + uri);
     		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
         }
         catch (Throwable th) { 
@@ -259,32 +253,30 @@ public class StorageUtils {
      *    call this function for DNGs, so that they show up on MTP.
      */
     public void broadcastFile(final File file, final boolean is_new_picture, final boolean is_new_video, final boolean set_last_scanned, final boolean hasnoexifdatetime, final Uri saf_uri) {
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "broadcastFile: " + file.getAbsolutePath());
-            Log.d(TAG, "saf_uri: " + saf_uri);
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "broadcastFile: " + file.getAbsolutePath());
+            Logger.INSTANCE.d(TAG, "saf_uri: " + saf_uri);
         }
         // note that the new method means that the new folder shows up as a file when connected to a PC via MTP (at least tested on Windows 8)
-        if( file.isDirectory() ) {
+        if (file.isDirectory()) {
             //this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(file)));
             // ACTION_MEDIA_MOUNTED no longer allowed on Android 4.4! Gives: SecurityException: Permission Denial: not allowed to send broadcast android.intent.action.MEDIA_MOUNTED
             // note that we don't actually need to broadcast anything, the folder and contents appear straight away (both in Gallery on device, and on a PC when connecting via MTP)
             // also note that we definitely don't want to broadcast ACTION_MEDIA_SCANNER_SCAN_FILE or use scanFile() for folders, as this means the folder shows up as a file on a PC via MTP (and isn't fixed by rebooting!)
-        }
-        else {
+        } else {
             // both of these work fine, but using MediaScannerConnection.scanFile() seems to be preferred over sending an intent
             //context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
             failed_to_scan = true; // set to true until scanned okay
-            if( MyDebug.LOG )
-                Log.d(TAG, "failed_to_scan set to true");
-            MediaScannerConnection.scanFile(context, new String[] { file.getAbsolutePath() }, null,
+            Logger.INSTANCE.d(TAG, "failed_to_scan set to true");
+            MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null,
                     new MediaScannerConnection.OnScanCompletedListener() {
                         public void onScanCompleted(String path, Uri uri) {
                             failed_to_scan = false;
-                            if( MyDebug.LOG ) {
-                                Log.d(TAG, "Scanned " + path + ":");
-                                Log.d(TAG, "-> uri=" + uri);
+                            if (MyDebug.LOG) {
+                                Logger.INSTANCE.d(TAG, "Scanned " + path + ":");
+                                Logger.INSTANCE.d(TAG, "-> uri=" + uri);
                             }
-                            if( saf_uri != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ) {
+                            if (saf_uri != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 // Prefer using MediaStore.getMediaUri() to get the mediastore URI from a SAF URI.
                                 // Fixes bug on Pixel 6 Pro with SAF where the URI recieved by onScanCompleted() is
                                 // of the form =content://media/external_primary/images/media/123456, when this is not
@@ -293,18 +285,17 @@ public class StorageUtils {
                                 // Pixel 6 Pro at least) is of the form content://media/external_primary/file/123456.
                                 try {
                                     Uri media_uri_from_saf_uri = MediaStore.getMediaUri(context, saf_uri);
-                                    if( media_uri_from_saf_uri != null ) {
+                                    if (media_uri_from_saf_uri != null) {
                                         uri = media_uri_from_saf_uri;
-                                        if( MyDebug.LOG ) {
-                                            Log.d(TAG, "prefer getMediaUri from SAF: " + uri);
+                                        if (MyDebug.LOG) {
+                                            Logger.INSTANCE.d(TAG, "prefer getMediaUri from SAF: " + uri);
                                         }
                                     }
-                                }
-                                catch(Exception e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-                            if( set_last_scanned ) {
+                            if (set_last_scanned) {
                                 boolean is_raw = filenameIsRaw(file.getName());
                                 setLastMediaScanned(uri, is_raw, hasnoexifdatetime, saf_uri != null ? saf_uri : uri);
                             }
@@ -316,9 +307,9 @@ public class StorageUtils {
                             // It seems caller apps seem to prefer the content:// Uri rather than one based on a File
                             // update for Android 7: seems that passing file uris is now restricted anyway, see https://code.google.com/p/android/issues/detail?id=203555
                             // So we pass the uri back to the caller here.
-                            Activity activity = (Activity)context;
+                            Activity activity = (Activity) context;
                             String action = activity.getIntent().getAction();
-                            if( !MainActivity.useScopedStorage() && MediaStore.ACTION_VIDEO_CAPTURE.equals(action) ) {
+                            if (!MainActivity.useScopedStorage() && MediaStore.ACTION_VIDEO_CAPTURE.equals(action)) {
                                 applicationInterface.finishVideoIntent(uri);
                             }
                         }
@@ -330,8 +321,7 @@ public class StorageUtils {
     /** Wrapper for broadcastFile, when we only have a Uri (e.g., for SAF)
      */
     public void broadcastUri(final Uri uri, final boolean is_new_picture, final boolean is_new_video, final boolean set_last_scanned, final boolean hasnoexifdatetime, final boolean image_capture_intent) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "broadcastUri: " + uri);
+        Logger.INSTANCE.d(TAG, "broadcastUri: " + uri);
         /* We still need to broadcastFile for SAF for various reasons:
             1. To call storageUtils.announceUri() to broadcast NEW_PICTURE etc.
                Whilst in theory we could do this directly, it seems external apps that use such broadcasts typically
@@ -346,18 +336,14 @@ public class StorageUtils {
                mediastore uri, not the SAF uri.
         */
         File real_file = getFileFromDocumentUriSAF(uri, false);
-        if( MyDebug.LOG )
-            Log.d(TAG, "real_file: " + real_file);
-        if( real_file != null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "broadcast file");
+        Logger.INSTANCE.d(TAG, "real_file: " + real_file);
+        if (real_file != null) {
+            Logger.INSTANCE.d(TAG, "broadcast file");
             //Uri media_uri = broadcastFileRaw(real_file, current_date, location);
             //announceUri(media_uri, is_new_picture, is_new_video);
             broadcastFile(real_file, is_new_picture, is_new_video, set_last_scanned, hasnoexifdatetime, uri);
-        }
-        else if( !image_capture_intent ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "announce SAF uri");
+        } else if (!image_capture_intent) {
+            Logger.INSTANCE.d(TAG, "announce SAF uri");
             // shouldn't do this for an image capture intent - e.g., causes crash when calling from Google Keep
             announceUri(uri, is_new_picture, is_new_video);
         }
@@ -366,7 +352,7 @@ public class StorageUtils {
     public boolean isUsingSAF() {
         {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if( sharedPreferences.getBoolean(PreferenceKeys.UsingSAFPreferenceKey, false) ) {
+            if (sharedPreferences.getBoolean(PreferenceKeys.UsingSAFPreferenceKey, false)) {
                 return true;
             }
         }
@@ -413,13 +399,12 @@ public class StorageUtils {
      */
     File getImageFolder() {
         File file;
-        if( isUsingSAF() ) {
+        if (isUsingSAF()) {
             Uri uri = getTreeUriSAF();
     		/*if( MyDebug.LOG )
-    			Log.d(TAG, "uri: " + uri);*/
+    			Logger.INSTANCE.d(TAG, "uri: " + uri);*/
             file = getFileFromDocumentUriSAF(uri, true);
-        }
-        else {
+        } else {
             String folder_name = getSaveLocation();
             file = getImageFolder(folder_name);
         }
@@ -436,9 +421,9 @@ public class StorageUtils {
     // only valid if !isUsingSAF()
     // returns a form for use with RELATIVE_PATH (scoped storage)
     private static String getSaveRelativeFolder(String folder_name) {
-        if( folder_name.length() > 0 && folder_name.lastIndexOf('/') == folder_name.length()-1 ) {
+        if (folder_name.length() > 0 && folder_name.lastIndexOf('/') == folder_name.length() - 1) {
             // ignore final '/' character
-            folder_name = folder_name.substring(0, folder_name.length()-1);
+            folder_name = folder_name.substring(0, folder_name.length() - 1);
         }
         return RELATIVE_FOLDER_BASE + File.separator + folder_name;
     }
@@ -458,14 +443,13 @@ public class StorageUtils {
     // only valid if !isUsingSAF()
     private static File getImageFolder(String folder_name) {
         File file;
-        if( folder_name.length() > 0 && folder_name.lastIndexOf('/') == folder_name.length()-1 ) {
+        if (folder_name.length() > 0 && folder_name.lastIndexOf('/') == folder_name.length() - 1) {
             // ignore final '/' character
-            folder_name = folder_name.substring(0, folder_name.length()-1);
+            folder_name = folder_name.substring(0, folder_name.length() - 1);
         }
-        if( saveFolderIsFull(folder_name) ) {
+        if (saveFolderIsFull(folder_name)) {
             file = new File(folder_name);
-        }
-        else {
+        } else {
             file = new File(getBaseFolder(), folder_name);
         }
         return file;
@@ -486,93 +470,86 @@ public class StorageUtils {
      *  the File can be obtained anyway.
      *  However this is needed for a workaround to the fact that deleting a document file doesn't remove it from MediaStore.
      *  See:
-            http://stackoverflow.com/questions/21605493/storage-access-framework-does-not-update-mediascanner-mtp
-            http://stackoverflow.com/questions/20067508/get-real-path-from-uri-android-kitkat-new-storage-access-framework/
-        Note that when using Android Q's scoped storage, the returned File will be inaccessible. However we still sometimes call this,
-        e.g., to scan with mediascanner or get a human readable string for the path.
-        Also note that this will return null for media store Uris with Android Q's scoped storage: https://developer.android.com/preview/privacy/scoped-storage
-        "The DATA column is redacted for each file in the media store."
+     http://stackoverflow.com/questions/21605493/storage-access-framework-does-not-update-mediascanner-mtp
+     http://stackoverflow.com/questions/20067508/get-real-path-from-uri-android-kitkat-new-storage-access-framework/
+     Note that when using Android Q's scoped storage, the returned File will be inaccessible. However we still sometimes call this,
+     e.g., to scan with mediascanner or get a human readable string for the path.
+     Also note that this will return null for media store Uris with Android Q's scoped storage: https://developer.android.com/preview/privacy/scoped-storage
+     "The DATA column is redacted for each file in the media store."
      */
     public File getFileFromDocumentUriSAF(Uri uri, boolean is_folder) {
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "getFileFromDocumentUriSAF: " + uri);
-            Log.d(TAG, "is_folder?: " + is_folder);
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "getFileFromDocumentUriSAF: " + uri);
+            Logger.INSTANCE.d(TAG, "is_folder?: " + is_folder);
         }
         String authority = uri.getAuthority();
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "authority: " + authority);
-            Log.d(TAG, "scheme: " + uri.getScheme());
-            Log.d(TAG, "fragment: " + uri.getFragment());
-            Log.d(TAG, "path: " + uri.getPath());
-            Log.d(TAG, "last path segment: " + uri.getLastPathSegment());
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "authority: " + authority);
+            Logger.INSTANCE.d(TAG, "scheme: " + uri.getScheme());
+            Logger.INSTANCE.d(TAG, "fragment: " + uri.getFragment());
+            Logger.INSTANCE.d(TAG, "path: " + uri.getPath());
+            Logger.INSTANCE.d(TAG, "last path segment: " + uri.getLastPathSegment());
         }
         File file = null;
-        if( "com.android.externalstorage.documents".equals(authority) ) {
+        if ("com.android.externalstorage.documents".equals(authority)) {
             final String id = is_folder ? DocumentsContract.getTreeDocumentId(uri) : DocumentsContract.getDocumentId(uri);
-            if( MyDebug.LOG )
-                Log.d(TAG, "id: " + id);
-            String [] split = id.split(":");
-            if( split.length >= 1 ) {
+            Logger.INSTANCE.d(TAG, "id: " + id);
+            String[] split = id.split(":");
+            if (split.length >= 1) {
                 String type = split[0];
                 String path = split.length >= 2 ? split[1] : "";
 				/*if( MyDebug.LOG ) {
-					Log.d(TAG, "type: " + type);
-					Log.d(TAG, "path: " + path);
+					Logger.INSTANCE.d(TAG, "type: " + type);
+					Logger.INSTANCE.d(TAG, "path: " + path);
 				}*/
-                File [] storagePoints = new File("/storage").listFiles();
+                File[] storagePoints = new File("/storage").listFiles();
 
-                if( "primary".equalsIgnoreCase(type) ) {
+                if ("primary".equalsIgnoreCase(type)) {
                     final File externalStorage = Environment.getExternalStorageDirectory();
                     file = new File(externalStorage, path);
                 }
-                for(int i=0;storagePoints != null && i<storagePoints.length && file==null;i++) {
+                for (int i = 0; storagePoints != null && i < storagePoints.length && file == null; i++) {
                     File externalFile = new File(storagePoints[i], path);
-                    if( externalFile.exists() ) {
+                    if (externalFile.exists()) {
                         file = externalFile;
                     }
                 }
-                if( file == null ) {
+                if (file == null) {
                     // just in case?
                     file = new File(path);
                 }
             }
-        }
-        else if( "com.android.providers.downloads.documents".equals(authority) ) {
-            if( !is_folder ) {
+        } else if ("com.android.providers.downloads.documents".equals(authority)) {
+            if (!is_folder) {
                 final String id = DocumentsContract.getDocumentId(uri);
-                if( id.startsWith("raw:") ) {
+                if (id.startsWith("raw:")) {
                     // unclear if this is needed for ManualCamera, but on Vibrance HDR
                     // on some devices (at least on a Chromebook), I've had reports of id being of the form
                     // "raw:/storage/emulated/0/Download/..."
                     String filename = id.replaceFirst("raw:", "");
                     file = new File(filename);
-                }
-                else {
+                } else {
                     try {
                         final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
 
                         String filename = getDataColumn(contentUri, null, null);
-                        if( filename != null )
+                        if (filename != null)
                             file = new File(filename);
-                    }
-                    catch(NumberFormatException e) {
+                    } catch (NumberFormatException e) {
                         // have had crashes from Google Play from Long.parseLong(id)
-                        Log.e(TAG,"failed to parse id: " + id);
+                        Log.e(TAG, "failed to parse id: " + id);
                         e.printStackTrace();
                     }
                 }
-            }
-            else {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "downloads uri not supported for folders");
+            } else {
+                Logger.INSTANCE.d(TAG, "downloads uri not supported for folders");
                 // This codepath can be reproduced by enabling SAF and selecting Downloads.
                 // DocumentsContract.getDocumentId() throws IllegalArgumentException for
                 // this (content://com.android.providers.downloads.documents/tree/downloads).
                 // If we use DocumentsContract.getTreeDocumentId() for folders, it returns
                 // "downloads" - not clear how to parse this!
             }
-        }
-        else if( "com.android.providers.media.documents".equals(authority) ) {
+        } else if ("com.android.providers.media.documents".equals(authority)) {
             final String docId = DocumentsContract.getDocumentId(uri);
             final String[] split = docId.split(":");
             final String type = split[0];
@@ -591,25 +568,25 @@ public class StorageUtils {
             }
 
             final String selection = "_id=?";
-            final String[] selectionArgs = new String[] {
+            final String[] selectionArgs = new String[]{
                     split[1]
             };
 
             String filename = getDataColumn(contentUri, selection, selectionArgs);
-            if( filename != null )
+            if (filename != null)
                 file = new File(filename);
         }
 
-        if( MyDebug.LOG ) {
-            if( file != null )
-                Log.d(TAG, "file: " + file.getAbsolutePath());
+        if (MyDebug.LOG) {
+            if (file != null)
+                Logger.INSTANCE.d(TAG, "file: " + file.getAbsolutePath());
             else
-                Log.d(TAG, "failed to find file");
+                Logger.INSTANCE.d(TAG, "failed to find file");
         }
         return file;
     }
 
-    private String getDataColumn(Uri uri, String selection, String [] selectionArgs) {
+    private String getDataColumn(Uri uri, String selection, String[] selectionArgs) {
         final String column = MediaStore.Images.ImageColumns.DATA;
         final String[] projection = {
                 column
@@ -623,15 +600,12 @@ public class StorageUtils {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
             }
-        }
-        catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
-        }
-        catch(SecurityException e) {
+        } catch (SecurityException e) {
             // have received crashes from Google Play for this
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             if (cursor != null)
                 cursor.close();
         }
@@ -643,41 +617,35 @@ public class StorageUtils {
      * http://stackoverflow.com/questions/5568874/how-to-extract-the-file-name-from-uri-returned-from-intent-action-get-content .
      */
     public String getFileName(Uri uri) {
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "getFileName: " + uri);
-            Log.d(TAG, "uri has path: " + uri.getPath());
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "getFileName: " + uri);
+            Logger.INSTANCE.d(TAG, "uri has path: " + uri.getPath());
         }
         String result = null;
-        if( uri.getScheme() != null && uri.getScheme().equals("content") ) {
+        if (uri.getScheme() != null && uri.getScheme().equals("content")) {
             Cursor cursor = null;
             try {
                 cursor = context.getContentResolver().query(uri, null, null, null, null);
-                if( cursor != null && cursor.moveToFirst() ) {
+                if (cursor != null && cursor.moveToFirst()) {
                     final int column_index = cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME);
                     result = cursor.getString(column_index);
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "found name from database: " + result);
+                    Logger.INSTANCE.d(TAG, "found name from database: " + result);
                 }
-            }
-            catch(Exception e) {
-                if( MyDebug.LOG )
-                    Log.e(TAG, "Exception trying to find filename");
+            } catch (Exception e) {
+                Log.e(TAG, "Exception trying to find filename");
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 if (cursor != null)
                     cursor.close();
             }
         }
-        if( result == null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "resort to checking the uri's path");
+        if (result == null) {
+            Logger.INSTANCE.d(TAG, "resort to checking the uri's path");
             result = uri.getPath();
             int cut = result.lastIndexOf('/');
-            if( cut != -1 ) {
+            if (cut != -1) {
                 result = result.substring(cut + 1);
-                if( MyDebug.LOG )
-                    Log.d(TAG, "found name from path: " + result);
+                Logger.INSTANCE.d(TAG, "found name from path: " + result);
             }
         }
         return result;
@@ -685,23 +653,22 @@ public class StorageUtils {
 
     String createMediaFilename(int type, String suffix, int count, String extension, Date current_date) {
         String index = "";
-        if( count > 0 ) {
+        if (count > 0) {
             index = "_" + count; // try to find a unique filename
         }
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean useZuluTime = sharedPreferences.getString(PreferenceKeys.SaveZuluTimePreferenceKey, "local").equals("zulu");
         boolean includeMilliseconds = sharedPreferences.getBoolean(PreferenceKeys.SaveIncludeMillisecondsPreferenceKey, false);
         String dateFormatPattern = "yyyyMMdd_HHmmss";
-        if(includeMilliseconds) {
+        if (includeMilliseconds) {
             dateFormatPattern += ".SSS";
         }
         String timeStamp;
-        if( useZuluTime ) {
-            SimpleDateFormat fmt = new SimpleDateFormat(dateFormatPattern+"'Z'", Locale.US);
+        if (useZuluTime) {
+            SimpleDateFormat fmt = new SimpleDateFormat(dateFormatPattern + "'Z'", Locale.US);
             fmt.setTimeZone(TimeZone.getTimeZone("UTC"));
             timeStamp = fmt.format(current_date);
-        }
-        else {
+        } else {
             timeStamp = new SimpleDateFormat(dateFormatPattern, Locale.US).format(current_date);
         }
         String mediaFilename;
@@ -727,8 +694,7 @@ public class StorageUtils {
             }
             default:
                 // throw exception as this is a programming error
-                if (MyDebug.LOG)
-                    Log.e(TAG, "unknown type: " + type);
+                Log.e(TAG, "unknown type: " + type);
                 throw new RuntimeException();
         }
         return mediaFilename;
@@ -743,10 +709,9 @@ public class StorageUtils {
     /** Create the folder if it does not exist.
      */
     void createFolderIfRequired(File folder) throws IOException {
-        if( !folder.exists() ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "create directory: " + folder);
-            if( !folder.mkdirs() ) {
+        if (!folder.exists()) {
+            Logger.INSTANCE.d(TAG, "create directory: " + folder);
+            if (!folder.mkdirs()) {
                 Log.e(TAG, "failed to create directory");
                 throw new IOException();
             }
@@ -761,7 +726,7 @@ public class StorageUtils {
 
         // Create a media file name
         File mediaFile = null;
-        for(int count=0;count<100;count++) {
+        for (int count = 0; count < 100; count++) {
         	/*final boolean use_burst_folder = true;
         	if( use_burst_folder ) {
 				String burstFolderName = createMediaFilename(type, "", count, "", current_date);
@@ -782,19 +747,20 @@ public class StorageUtils {
 				String mediaFilename = suffix_alt + prefix + suffix_alt + "BURST" + "." + extension;
 				mediaFile = new File(burstFolder.getPath() + File.separator + mediaFilename);
 			}
-			else*/ {
+			else*/
+            {
                 String mediaFilename = createMediaFilename(type, suffix, count, "." + extension, current_date);
                 mediaFile = new File(mediaStorageDir.getPath() + File.separator + mediaFilename);
             }
-            if( !mediaFile.exists() ) {
+            if (!mediaFile.exists()) {
                 break;
             }
         }
 
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "getOutputMediaFile returns: " + mediaFile);
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "getOutputMediaFile returns: " + mediaFile);
         }
-        if( mediaFile == null )
+        if (mediaFile == null)
             throw new IOException();
         return mediaFile;
     }
@@ -803,46 +769,35 @@ public class StorageUtils {
     Uri createOutputFileSAF(String filename, String mimeType) throws IOException {
         try {
             Uri treeUri = getTreeUriSAF();
-            if( MyDebug.LOG )
-                Log.d(TAG, "treeUri: " + treeUri);
+            Logger.INSTANCE.d(TAG, "treeUri: " + treeUri);
             Uri docUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, DocumentsContract.getTreeDocumentId(treeUri));
-            if( MyDebug.LOG )
-                Log.d(TAG, "docUri: " + docUri);
+            Logger.INSTANCE.d(TAG, "docUri: " + docUri);
             // note that DocumentsContract.createDocument will automatically append to the filename if it already exists
             Uri fileUri = DocumentsContract.createDocument(context.getContentResolver(), docUri, mimeType, filename);
-            if( MyDebug.LOG )
-                Log.d(TAG, "returned fileUri: " + fileUri);
+            Logger.INSTANCE.d(TAG, "returned fileUri: " + fileUri);
 			/*if( true )
 				throw new SecurityException(); // test*/
-            if( fileUri == null )
+            if (fileUri == null)
                 throw new IOException();
             return fileUri;
-        }
-        catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             // DocumentsContract.getTreeDocumentId throws this if URI is invalid
-            if( MyDebug.LOG )
-                Log.e(TAG, "createOutputMediaFileSAF failed with IllegalArgumentException");
+            Log.e(TAG, "createOutputMediaFileSAF failed with IllegalArgumentException");
             e.printStackTrace();
             throw new IOException();
-        }
-        catch(IllegalStateException e) {
+        } catch (IllegalStateException e) {
             // Have reports of this from Google Play for DocumentsContract.createDocument - better to fail gracefully and tell user rather than crash!
-            if( MyDebug.LOG )
-                Log.e(TAG, "createOutputMediaFileSAF failed with IllegalStateException");
+            Log.e(TAG, "createOutputMediaFileSAF failed with IllegalStateException");
             e.printStackTrace();
             throw new IOException();
-        }
-        catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             // Have reports of this from Google Play for DocumentsContract.createDocument - better to fail gracefully and tell user rather than crash!
-            if( MyDebug.LOG )
-                Log.e(TAG, "createOutputMediaFileSAF failed with NullPointerException");
+            Log.e(TAG, "createOutputMediaFileSAF failed with NullPointerException");
             e.printStackTrace();
             throw new IOException();
-        }
-        catch(SecurityException e) {
+        } catch (SecurityException e) {
             // Have reports of this from Google Play - better to fail gracefully and tell user rather than crash!
-            if( MyDebug.LOG )
-                Log.e(TAG, "createOutputMediaFileSAF failed with SecurityException");
+            Log.e(TAG, "createOutputMediaFileSAF failed with SecurityException");
             e.printStackTrace();
             throw new IOException();
         }
@@ -874,7 +829,7 @@ public class StorageUtils {
      */
     String getVideoMimeType(String extension) {
         String mimeType;
-        switch( extension ) {
+        switch (extension) {
             case "3gp":
                 mimeType = "video/3gpp";
                 break;
@@ -905,8 +860,7 @@ public class StorageUtils {
                 break;
             default:
                 // throw exception as this is a programming error
-                if (MyDebug.LOG)
-                    Log.e(TAG, "unknown type: " + type);
+                Log.e(TAG, "unknown type: " + type);
                 throw new RuntimeException();
         }
         // note that DocumentsContract.createDocument will automatically append to the filename if it already exists
@@ -938,16 +892,15 @@ public class StorageUtils {
          *  will return null.
          */
         Uri getMediaStoreUri(Context context) {
-            if( this.mediastore )
+            if (this.mediastore)
                 return this.uri;
             else {
                 try {
                     // should only have allowed mediastore==null when using scoped storage
-                    if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         return MediaStore.getMediaUri(context, this.uri);
                     }
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return null;
@@ -961,7 +914,7 @@ public class StorageUtils {
 
     private static String filenameWithoutExtension(String filename) {
         String filename_without_ext = filename.toLowerCase(Locale.US);
-        if( filename_without_ext.indexOf(".") > 0 )
+        if (filename_without_ext.indexOf(".") > 0)
             filename_without_ext = filename_without_ext.substring(0, filename_without_ext.lastIndexOf("."));
         return filename_without_ext;
     }
@@ -971,14 +924,14 @@ public class StorageUtils {
      *  Received filename should not include an extension.
      */
     private static String filenameIsSpecial(String filename_without_ext) {
-        if( filename_without_ext.endsWith(ImageSaver.hdr_suffix) ) {
-            return filename_without_ext.substring(0, filename_without_ext.length()-ImageSaver.hdr_suffix.length());
+        if (filename_without_ext.endsWith(ImageSaver.hdr_suffix)) {
+            return filename_without_ext.substring(0, filename_without_ext.length() - ImageSaver.hdr_suffix.length());
         }
-        if( filename_without_ext.endsWith(ImageSaver.nr_suffix) ) {
-            return filename_without_ext.substring(0, filename_without_ext.length()-ImageSaver.nr_suffix.length());
+        if (filename_without_ext.endsWith(ImageSaver.nr_suffix)) {
+            return filename_without_ext.substring(0, filename_without_ext.length() - ImageSaver.nr_suffix.length());
         }
-        if( filename_without_ext.endsWith(ImageSaver.pano_suffix) ) {
-            return filename_without_ext.substring(0, filename_without_ext.length()-ImageSaver.pano_suffix.length());
+        if (filename_without_ext.endsWith(ImageSaver.pano_suffix)) {
+            return filename_without_ext.substring(0, filename_without_ext.length() - ImageSaver.pano_suffix.length());
         }
         return null;
     }
@@ -989,11 +942,11 @@ public class StorageUtils {
     }
 
     private Media getLatestMediaCore(Uri baseUri, String bucket_id, UriType uri_type) {
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "getLatestMediaCore");
-            Log.d(TAG, "baseUri: " + baseUri);
-            Log.d(TAG, "bucket_id: " + bucket_id);
-            Log.d(TAG, "uri_type: " + uri_type);
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "getLatestMediaCore");
+            Logger.INSTANCE.d(TAG, "baseUri: " + baseUri);
+            Logger.INSTANCE.d(TAG, "bucket_id: " + bucket_id);
+            Logger.INSTANCE.d(TAG, "uri_type: " + uri_type);
         }
         Media media = null;
 
@@ -1004,13 +957,13 @@ public class StorageUtils {
         final int column_orientation_c = 4; // for images only*/
         final int column_name_c = 2; // filename (without path), including extension
         final int column_orientation_c = 3; // for mediastore images only
-        String [] projection;
-        switch( uri_type ) {
+        String[] projection;
+        switch (uri_type) {
             case MEDIASTORE_IMAGES:
-                projection = new String[] {ImageColumns._ID, ImageColumns.DATE_TAKEN, ImageColumns.DISPLAY_NAME, ImageColumns.ORIENTATION};
+                projection = new String[]{ImageColumns._ID, ImageColumns.DATE_TAKEN, ImageColumns.DISPLAY_NAME, ImageColumns.ORIENTATION};
                 break;
             case MEDIASTORE_VIDEOS:
-                projection = new String[] {VideoColumns._ID, VideoColumns.DATE_TAKEN, VideoColumns.DISPLAY_NAME};
+                projection = new String[]{VideoColumns._ID, VideoColumns.DATE_TAKEN, VideoColumns.DISPLAY_NAME};
                 break;
             default:
                 throw new RuntimeException("unknown uri_type: " + uri_type);
@@ -1022,33 +975,31 @@ public class StorageUtils {
                 ImageColumns.MIME_TYPE + "='image/png' OR " +
                 ImageColumns.MIME_TYPE + "='image/x-adobe-dng'";*/
         String selection = "";
-        switch( uri_type ) {
-            case MEDIASTORE_IMAGES:
-            {
-                if( bucket_id != null )
+        switch (uri_type) {
+            case MEDIASTORE_IMAGES: {
+                if (bucket_id != null)
                     selection = ImageColumns.BUCKET_ID + " = " + bucket_id;
                 boolean and = selection.length() > 0;
-                if( and )
+                if (and)
                     selection += " AND ( ";
                 selection += ImageColumns.MIME_TYPE + "='image/jpeg' OR " +
                         ImageColumns.MIME_TYPE + "='image/webp' OR " +
                         ImageColumns.MIME_TYPE + "='image/png' OR " +
                         ImageColumns.MIME_TYPE + "='image/x-adobe-dng'";
-                if( and )
+                if (and)
                     selection += " )";
                 break;
             }
             case MEDIASTORE_VIDEOS:
-                if( bucket_id != null )
+                if (bucket_id != null)
                     selection = VideoColumns.BUCKET_ID + " = " + bucket_id;
                 break;
             default:
                 throw new RuntimeException("unknown uri_type: " + uri_type);
         }
-        if( MyDebug.LOG )
-            Log.d(TAG, "selection: " + selection);
+        Logger.INSTANCE.d(TAG, "selection: " + selection);
         String order;
-        switch( uri_type ) {
+        switch (uri_type) {
             case MEDIASTORE_IMAGES:
                 order = ImageColumns.DATE_TAKEN + " DESC," + ImageColumns._ID + " DESC";
                 break;
@@ -1065,14 +1016,12 @@ public class StorageUtils {
         // an equivalent non-RAW image
         // request 3, just in case
         Uri queryUri = baseUri.buildUpon().appendQueryParameter("limit", "3").build();
-        if( MyDebug.LOG )
-            Log.d(TAG, "queryUri: " + queryUri);
+        Logger.INSTANCE.d(TAG, "queryUri: " + queryUri);
 
         try {
             cursor = context.getContentResolver().query(queryUri, projection, selection, null, order);
-            if( cursor != null && cursor.moveToFirst() ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "found: " + cursor.getCount());
+            if (cursor != null && cursor.moveToFirst()) {
+                Logger.INSTANCE.d(TAG, "found: " + cursor.getCount());
 
                 // now sorted in order of date - so just pick the most recent one
 
@@ -1082,22 +1031,22 @@ public class StorageUtils {
                 //File save_folder = getImageFolder(); // may be null if using SAF
                 String save_folder_string = save_folder == null ? null : save_folder.getAbsolutePath() + File.separator;
                 if( MyDebug.LOG )
-                    Log.d(TAG, "save_folder_string: " + save_folder_string);
+                    Logger.INSTANCE.d(TAG, "save_folder_string: " + save_folder_string);
                 do {
                     String path = cursor.getString(column_data_c);
                     if( MyDebug.LOG )
-                        Log.d(TAG, "path: " + path);
+                        Logger.INSTANCE.d(TAG, "path: " + path);
                     // path may be null on Android 4.4!: http://stackoverflow.com/questions/3401579/get-filename-and-path-from-uri-from-mediastore
                     if( save_folder_string == null || (path != null && path.contains(save_folder_string) ) ) {
                         if( MyDebug.LOG )
-                            Log.d(TAG, "found most recent in ManualCamera folder");
+                            Logger.INSTANCE.d(TAG, "found most recent in ManualCamera folder");
                         // we filter files with dates in future, in case there exists an image in the folder with incorrect datestamp set to the future
                         // we allow up to 2 days in future, to avoid risk of issues to do with timezone etc
                         long date = cursor.getLong(column_date_taken_c);
                         long current_time = System.currentTimeMillis();
                         if( date > current_time + 172800000 ) {
                             if( MyDebug.LOG )
-                                Log.d(TAG, "skip date in the future!");
+                                Logger.INSTANCE.d(TAG, "skip date in the future!");
                         }
                         else {
                             found = true;
@@ -1109,7 +1058,7 @@ public class StorageUtils {
 
                 if( !found ) {
                     if( MyDebug.LOG )
-                        Log.d(TAG, "can't find suitable in ManualCamera folder, so just go with most recent");
+                        Logger.INSTANCE.d(TAG, "can't find suitable in ManualCamera folder, so just go with most recent");
                     cursor.moveToFirst();
                 }
                 */
@@ -1118,125 +1067,98 @@ public class StorageUtils {
                     // make sure we prefer JPEG/etc (non RAW) if there's a JPEG/etc version of this image
                     // this is because we want to support RAW only and JPEG+RAW modes
                     String filename = cursor.getString(column_name_c);
-                    if( MyDebug.LOG ) {
-                        Log.d(TAG, "filename: " + filename);
+                    if (MyDebug.LOG) {
+                        Logger.INSTANCE.d(TAG, "filename: " + filename);
                     }
                     // in theory now that we use DISPLAY_NAME instead of DATA (for path), this should always be non-null, but check just in case
-                    if( filename != null && filenameIsRaw(filename) ) {
-                        if( MyDebug.LOG )
-                            Log.d(TAG, "try to find a non-RAW version of the DNG");
+                    if (filename != null && filenameIsRaw(filename)) {
+                        Logger.INSTANCE.d(TAG, "try to find a non-RAW version of the DNG");
                         int dng_pos = cursor.getPosition();
                         boolean found_non_raw = false;
                         String filename_without_ext = filenameWithoutExtension(filename);
-                        if( MyDebug.LOG )
-                            Log.d(TAG, "filename_without_ext: " + filename_without_ext);
-                        while( cursor.moveToNext() ) {
+                        Logger.INSTANCE.d(TAG, "filename_without_ext: " + filename_without_ext);
+                        while (cursor.moveToNext()) {
                             String next_filename = cursor.getString(column_name_c);
-                            if( MyDebug.LOG )
-                                Log.d(TAG, "next_filename: " + next_filename);
-                            if( next_filename == null ) {
-                                if( MyDebug.LOG )
-                                    Log.d(TAG, "done scanning, couldn't find filename");
+                            Logger.INSTANCE.d(TAG, "next_filename: " + next_filename);
+                            if (next_filename == null) {
+                                Logger.INSTANCE.d(TAG, "done scanning, couldn't find filename");
                                 break;
                             }
                             String next_filename_without_ext = filenameWithoutExtension(next_filename);
-                            if( MyDebug.LOG )
-                                Log.d(TAG, "next_filename_without_ext: " + next_filename_without_ext);
-                            if( !filename_without_ext.equals(next_filename_without_ext) ) {
+                            Logger.INSTANCE.d(TAG, "next_filename_without_ext: " + next_filename_without_ext);
+                            if (!filename_without_ext.equals(next_filename_without_ext)) {
                                 // no point scanning any further as sorted by date - and we don't want to read through the entire set!
-                                if( MyDebug.LOG )
-                                    Log.d(TAG, "done scanning");
+                                Logger.INSTANCE.d(TAG, "done scanning");
                                 break;
                             }
                             // so we've found another file with matching filename - is it a JPEG/etc?
                             // we've already restricted the query to the image types we're interested in, so
                             // only need to check that it isn't another DNG (which would be strange, as it
                             // would mean a duplicate filename, but check just in case!)
-                            if( filenameIsRaw(next_filename) ) {
-                                if( MyDebug.LOG )
-                                    Log.d(TAG, "found another dng!");
-                            }
-                            else {
-                                if( MyDebug.LOG )
-                                    Log.d(TAG, "found equivalent non-dng");
+                            if (filenameIsRaw(next_filename)) {
+                                Logger.INSTANCE.d(TAG, "found another dng!");
+                            } else {
+                                Logger.INSTANCE.d(TAG, "found equivalent non-dng");
                                 found_non_raw = true;
                                 break;
                             }
                         }
-                        if( !found_non_raw ) {
-                            if( MyDebug.LOG )
-                                Log.d(TAG, "can't find equivalent jpeg/etc");
+                        if (!found_non_raw) {
+                            Logger.INSTANCE.d(TAG, "can't find equivalent jpeg/etc");
                             cursor.moveToPosition(dng_pos);
                         }
-                    }
-                    else if( filename != null ) {
+                    } else if (filename != null) {
                         // in cases where a HDR/NR/PANO photo was saved with base images, we should prefer the HDR image
                         String filename_without_ext = filenameWithoutExtension(filename).toUpperCase(Locale.US);
-                        if( MyDebug.LOG )
-                            Log.d(TAG, "filename_without_ext: " + filename_without_ext);
+                        Logger.INSTANCE.d(TAG, "filename_without_ext: " + filename_without_ext);
                         String filename_special_base = filenameIsSpecial(filename_without_ext);
-                        if( MyDebug.LOG )
-                            Log.d(TAG, "filename_special_base: " + filename_special_base);
-                        if( filename_special_base == null ) {
+                        Logger.INSTANCE.d(TAG, "filename_special_base: " + filename_special_base);
+                        if (filename_special_base == null) {
                             String filename_base = null;
                             // assume that base saved images are at most _XX
-                            if( filename_without_ext.length() >= 3 && filename_without_ext.charAt(filename_without_ext.length()-2) == '_' ) {
-                                filename_base = filename_without_ext.substring(0, filename_without_ext.length()-2);
+                            if (filename_without_ext.length() >= 3 && filename_without_ext.charAt(filename_without_ext.length() - 2) == '_') {
+                                filename_base = filename_without_ext.substring(0, filename_without_ext.length() - 2);
+                            } else if (filename_without_ext.length() >= 4 && filename_without_ext.charAt(filename_without_ext.length() - 3) == '_') {
+                                filename_base = filename_without_ext.substring(0, filename_without_ext.length() - 3);
                             }
-                            else if( filename_without_ext.length() >= 4 && filename_without_ext.charAt(filename_without_ext.length()-3) == '_' ) {
-                                filename_base = filename_without_ext.substring(0, filename_without_ext.length()-3);
-                            }
-                            if( MyDebug.LOG )
-                                Log.d(TAG, "filename_base: " + filename_base);
-                            if( filename_base != null ) {
+                            Logger.INSTANCE.d(TAG, "filename_base: " + filename_base);
+                            if (filename_base != null) {
                                 int last_pos = cursor.getPosition();
                                 boolean found_special = false;
                                 int scan_count = 0;
-                                while( cursor.moveToNext() ) {
+                                while (cursor.moveToNext()) {
                                     String next_filename = cursor.getString(column_name_c);
-                                    if( MyDebug.LOG )
-                                        Log.d(TAG, "next_filename: " + next_filename);
-                                    if( next_filename == null ) {
-                                        if( MyDebug.LOG )
-                                            Log.d(TAG, "done scanning, couldn't find filename");
+                                    Logger.INSTANCE.d(TAG, "next_filename: " + next_filename);
+                                    if (next_filename == null) {
+                                        Logger.INSTANCE.d(TAG, "done scanning, couldn't find filename");
                                         break;
                                     }
                                     String next_filename_without_ext = filenameWithoutExtension(next_filename).toUpperCase(Locale.US);
-                                    if( MyDebug.LOG )
-                                        Log.d(TAG, "next_filename_without_ext: " + next_filename_without_ext);
+                                    Logger.INSTANCE.d(TAG, "next_filename_without_ext: " + next_filename_without_ext);
                                     String next_filename_special_base = filenameIsSpecial(next_filename_without_ext);
-                                    if( MyDebug.LOG )
-                                        Log.d(TAG, "next_filename_special_base: " + next_filename_special_base);
-                                    if( next_filename_special_base != null ) {
+                                    Logger.INSTANCE.d(TAG, "next_filename_special_base: " + next_filename_special_base);
+                                    if (next_filename_special_base != null) {
                                         // found a special filename - is it the same base?
-                                        if( filename_base.equals(next_filename_special_base) ) {
+                                        if (filename_base.equals(next_filename_special_base)) {
                                             // found a match
-                                            if( MyDebug.LOG )
-                                                Log.d(TAG, "found equivalent special");
+                                            Logger.INSTANCE.d(TAG, "found equivalent special");
                                             found_special = true;
                                             break;
-                                        }
-                                        else {
+                                        } else {
                                             // found special, but doesn't match, so no point scanning further
-                                            if( MyDebug.LOG )
-                                                Log.d(TAG, "found another special");
+                                            Logger.INSTANCE.d(TAG, "found another special");
                                             break;
                                         }
-                                    }
-                                    else if( !next_filename_without_ext.startsWith(filename_base) ) {
-                                        if( MyDebug.LOG )
-                                            Log.d(TAG, "no longer matches filename_base");
+                                    } else if (!next_filename_without_ext.startsWith(filename_base)) {
+                                        Logger.INSTANCE.d(TAG, "no longer matches filename_base");
                                         break;
-                                    }
-                                    else if( scan_count++ > 10 ) {
-                                        if( MyDebug.LOG )
-                                            Log.d(TAG, "give up scanning");
+                                    } else if (scan_count++ > 10) {
+                                        Logger.INSTANCE.d(TAG, "give up scanning");
                                         break;
                                     }
                                 }
-                                if( !found_special ) {
-                                    if( MyDebug.LOG )
-                                        Log.d(TAG, "can't find equivalent non-special");
+                                if (!found_special) {
+                                    Logger.INSTANCE.d(TAG, "can't find equivalent non-special");
                                     cursor.moveToPosition(last_pos);
                                 }
                             }
@@ -1249,11 +1171,10 @@ public class StorageUtils {
                 int orientation = (uri_type == UriType.MEDIASTORE_IMAGES) ? cursor.getInt(column_orientation_c) : 0;
                 Uri uri = ContentUris.withAppendedId(baseUri, id);
                 String filename = cursor.getString(column_name_c);
-                if( MyDebug.LOG )
-                    Log.d(TAG, "found most recent uri for " + uri_type + ": " + uri);
+                Logger.INSTANCE.d(TAG, "found most recent uri for " + uri_type + ": " + uri);
 
                 boolean video;
-                switch( uri_type ) {
+                switch (uri_type) {
                     case MEDIASTORE_IMAGES:
                         video = false;
                         break;
@@ -1263,44 +1184,37 @@ public class StorageUtils {
                     default:
                         throw new RuntimeException("unknown uri_type: " + uri_type);
                 }
-                if( MyDebug.LOG )
-                    Log.d(TAG, "video: " + video);
+                Logger.INSTANCE.d(TAG, "video: " + video);
 
                 media = new Media(true, id, video, uri, date, orientation, filename);
 
-                if( MyDebug.LOG ) {
+                if (MyDebug.LOG) {
                     // debug
-                    if( cursor.moveToFirst() ) {
+                    if (cursor.moveToFirst()) {
                         do {
                             long this_id = cursor.getLong(column_id_c);
                             long this_date = cursor.getLong(column_date_taken_c);
                             Uri this_uri = ContentUris.withAppendedId(baseUri, this_id);
                             String this_filename = cursor.getString(column_name_c);
-                            Log.d(TAG, "Date: " + this_date + " ID: " + this_id + " Name: " + this_filename + " Uri: " + this_uri);
+                            Logger.INSTANCE.d(TAG, "Date: " + this_date + " ID: " + this_id + " Name: " + this_filename + " Uri: " + this_uri);
                         }
-                        while( cursor.moveToNext() );
+                        while (cursor.moveToNext());
                     }
                 }
+            } else {
+                Logger.INSTANCE.d(TAG, "mediastore returned no media");
             }
-            else {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "mediastore returned no media");
-            }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             // have had exceptions such as SQLiteException, NullPointerException reported on Google Play from within getContentResolver().query() call
-            if( MyDebug.LOG )
-                Log.e(TAG, "Exception trying to find latest media");
+            Log.e(TAG, "Exception trying to find latest media");
             e.printStackTrace();
-        }
-        finally {
-            if( cursor != null ) {
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
         }
 
-        if( MyDebug.LOG )
-            Log.d(TAG, "return latest media: " + media);
+        Logger.INSTANCE.d(TAG, "return latest media: " + media);
         return media;
     }
 
@@ -1314,8 +1228,7 @@ public class StorageUtils {
      *  Media.getMediaStoreUri(). What a mess!
      */
     private Media getLatestMediaSAF(Uri treeUri) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "getLatestMediaSAF: " + treeUri);
+        Logger.INSTANCE.d(TAG, "getLatestMediaSAF: " + treeUri);
 
         Media media = null;
 
@@ -1323,8 +1236,7 @@ public class StorageUtils {
         try {
             String parentDocUri = DocumentsContract.getTreeDocumentId(treeUri);
             baseUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, parentDocUri);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             // DocumentsContract.getTreeDocumentId throws IllegalArgumentException if the uri is
             // invalid. Unclear if this can happen in practice - this happens in test
             // testSaveFolderHistorySAF() but only because we test a dummy invalid SAF uri. But
@@ -1336,14 +1248,13 @@ public class StorageUtils {
             Log.e(TAG, "Exception using treeUri: " + treeUri);
             return media;
         }
-        if( MyDebug.LOG )
-            Log.d(TAG, "baseUri: " + baseUri);
+        Logger.INSTANCE.d(TAG, "baseUri: " + baseUri);
 
         final int column_id_c = 0;
         final int column_date_c = 1;
         final int column_name_c = 2; // filename (without path), including extension
         final int column_mime_c = 3;
-        String [] projection = new String[] {DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_LAST_MODIFIED, DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_MIME_TYPE};
+        String[] projection = new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_LAST_MODIFIED, DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_MIME_TYPE};
 
         // Note, it appears that when querying DocumentsContract, basic query functionality like selection, ordering, are ignored(!).
         // See: https://stackoverflow.com/questions/52770188/how-to-filter-the-results-of-a-query-with-buildchilddocumentsuriusingtree
@@ -1353,9 +1264,8 @@ public class StorageUtils {
         Cursor cursor = null;
         try {
             cursor = context.getContentResolver().query(baseUri, projection, null, null, null);
-            if( cursor != null && cursor.moveToFirst() ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "found: " + cursor.getCount());
+            if (cursor != null && cursor.moveToFirst()) {
+                Logger.INSTANCE.d(TAG, "found: " + cursor.getCount());
 
                 Uri latest_uri = null;
                 long latest_date = 0;
@@ -1378,7 +1288,7 @@ public class StorageUtils {
                     // if updating this code for allowed mime types, also update corresponding code in getLatestMediaCore()
                     boolean is_allowed;
                     boolean this_is_video;
-                    switch( this_mime_type ) {
+                    switch (this_mime_type) {
                         case "image/jpeg":
                         case "image/webp":
                         case "image/png":
@@ -1399,7 +1309,7 @@ public class StorageUtils {
                             this_is_video = false;
                             break;
                     }
-                    if( !is_allowed ) {
+                    if (!is_allowed) {
                         continue;
                     }
 
@@ -1409,46 +1319,43 @@ public class StorageUtils {
                         continue;
                     }
                     /*if( MyDebug.LOG ) {
-                        Log.d(TAG, "Date: " + this_date + " doc_id: " + doc_id + " Name: " + this_filename + " Uri: " + this_uri);
+                        Logger.INSTANCE.d(TAG, "Date: " + this_date + " doc_id: " + doc_id + " Name: " + this_filename + " Uri: " + this_uri);
                     }*/
 
-                    if( latest_uri == null || this_date > latest_date ) {
+                    if (latest_uri == null || this_date > latest_date) {
                         latest_uri = this_uri;
                         latest_date = this_date;
                         latest_filename = this_filename;
                         latest_is_video = this_is_video;
                     }
-                    if( !this_is_video && !filenameIsRaw(this_filename) ) {
-                        if( nonraw_latest_uri == null || this_date > nonraw_latest_date ) {
+                    if (!this_is_video && !filenameIsRaw(this_filename)) {
+                        if (nonraw_latest_uri == null || this_date > nonraw_latest_date) {
                             nonraw_latest_uri = this_uri;
                             nonraw_latest_date = this_date;
                             nonraw_latest_filename = this_filename;
                         }
                     }
                 }
-                while( cursor.moveToNext() );
+                while (cursor.moveToNext());
 
-                if( latest_uri == null ) {
-                    if( MyDebug.LOG )
-                        Log.e(TAG, "couldn't find latest uri");
-                }
-                else {
-                    if( MyDebug.LOG ) {
-                        Log.d(TAG, "latest_uri: " + latest_uri);
-                        Log.d(TAG, "nonraw_latest_uri: " + nonraw_latest_uri);
+                if (latest_uri == null) {
+                    Log.e(TAG, "couldn't find latest uri");
+                } else {
+                    if (MyDebug.LOG) {
+                        Logger.INSTANCE.d(TAG, "latest_uri: " + latest_uri);
+                        Logger.INSTANCE.d(TAG, "nonraw_latest_uri: " + nonraw_latest_uri);
                     }
 
-                    if( !latest_is_video && filenameIsRaw(latest_filename) && nonraw_latest_uri != null ) {
+                    if (!latest_is_video && filenameIsRaw(latest_filename) && nonraw_latest_uri != null) {
                         // prefer non-RAW to RAW? check filenames without extensions match
                         String filename_without_ext = filenameWithoutExtension(latest_filename);
                         String next_filename_without_ext = filenameWithoutExtension(nonraw_latest_filename);
-                        if( MyDebug.LOG ) {
-                            Log.d(TAG, "filename_without_ext: " + filename_without_ext);
-                            Log.d(TAG, "next_filename_without_ext: " + next_filename_without_ext);
+                        if (MyDebug.LOG) {
+                            Logger.INSTANCE.d(TAG, "filename_without_ext: " + filename_without_ext);
+                            Logger.INSTANCE.d(TAG, "next_filename_without_ext: " + next_filename_without_ext);
                         }
-                        if( filename_without_ext.equals(next_filename_without_ext) ) {
-                            if( MyDebug.LOG )
-                                Log.d(TAG, "prefer non-RAW to RAW");
+                        if (filename_without_ext.equals(next_filename_without_ext)) {
+                            Logger.INSTANCE.d(TAG, "prefer non-RAW to RAW");
                             latest_uri = nonraw_latest_uri;
                             latest_date = nonraw_latest_date;
                             latest_filename = nonraw_latest_filename;
@@ -1456,7 +1363,7 @@ public class StorageUtils {
                         }
                     }
 
-                    media = new Media(false,0, latest_is_video, latest_uri, latest_date, 0, latest_filename);
+                    media = new Media(false, 0, latest_is_video, latest_uri, latest_date, 0, latest_filename);
                 }
 
                 /*if( MyDebug.LOG ) {
@@ -1467,60 +1374,50 @@ public class StorageUtils {
                             long this_date = cursor.getLong(column_date_taken_c);
                             Uri this_uri = ContentUris.withAppendedId(baseUri, this_id);
                             String this_filename = cursor.getString(column_name_c);
-                            Log.d(TAG, "Date: " + this_date + " ID: " + this_id + " Name: " + this_filename + " Uri: " + this_uri);
+                            Logger.INSTANCE.d(TAG, "Date: " + this_date + " ID: " + this_id + " Name: " + this_filename + " Uri: " + this_uri);
                         }
                         while( cursor.moveToNext() );
                     }
                 }*/
+            } else {
+                Logger.INSTANCE.d(TAG, "mediastore returned no media");
             }
-            else {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "mediastore returned no media");
-            }
-        }
-        catch(Exception e) {
-            if( MyDebug.LOG )
-                Log.e(TAG, "Exception trying to find latest media");
+        } catch (Exception e) {
+            Log.e(TAG, "Exception trying to find latest media");
             e.printStackTrace();
-        }
-        finally {
-            if( cursor != null ) {
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
         }
 
-        if( MyDebug.LOG )
-            Log.d(TAG, "return latest media: " + media);
+        Logger.INSTANCE.d(TAG, "return latest media: " + media);
         return media;
     }
 
     private Media getLatestMedia(UriType uri_type) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "getLatestMedia: " + uri_type);
-        if( !MainActivity.useScopedStorage() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+        Logger.INSTANCE.d(TAG, "getLatestMedia: " + uri_type);
+        if (!MainActivity.useScopedStorage() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // needed for Android 6, in case users deny storage permission, otherwise we get java.lang.SecurityException from ContentResolver.query()
             // see https://developer.android.com/training/permissions/requesting.html
             // we now request storage permission before opening the camera, but keep this here just in case
             // we restrict check to Android 6 or later just in case, see note in LocationSupplier.setupLocationListener()
             // update for scoped storage: here we should no longer need READ_EXTERNAL_STORAGE (which we won't have), instead we'll only be able to see
             // media created by ManualCamera, which is fine
-            if( MyDebug.LOG )
-                Log.e(TAG, "don't have READ_EXTERNAL_STORAGE permission");
+            Log.e(TAG, "don't have READ_EXTERNAL_STORAGE permission");
             return null;
         }
 
         String save_folder = getImageFolderPath(); // may be null if using SAF
-        if( MyDebug.LOG )
-            Log.d(TAG, "save_folder: " + save_folder);
+        Logger.INSTANCE.d(TAG, "save_folder: " + save_folder);
         String bucket_id = null;
-        if( save_folder != null ) {
+        if (save_folder != null) {
             bucket_id = String.valueOf(save_folder.toLowerCase().hashCode());
         }
-        if( MyDebug.LOG )
-            Log.d(TAG, "bucket_id: " + bucket_id);
+        Logger.INSTANCE.d(TAG, "bucket_id: " + bucket_id);
 
         Uri baseUri;
-        switch( uri_type ) {
+        switch (uri_type) {
             case MEDIASTORE_IMAGES:
                 baseUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 break;
@@ -1531,12 +1428,10 @@ public class StorageUtils {
                 throw new RuntimeException("unknown uri_type: " + uri_type);
         }
 
-        if( MyDebug.LOG )
-            Log.d(TAG, "baseUri: " + baseUri);
+        Logger.INSTANCE.d(TAG, "baseUri: " + baseUri);
         Media media = getLatestMediaCore(baseUri, bucket_id, uri_type);
-        if( media == null && bucket_id != null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "fall back to checking any folder");
+        if (media == null && bucket_id != null) {
+            Logger.INSTANCE.d(TAG, "fall back to checking any folder");
             media = getLatestMediaCore(baseUri, null, uri_type);
         }
 
@@ -1544,7 +1439,7 @@ public class StorageUtils {
     }
 
     Media getLatestMedia() {
-        if( MainActivity.useScopedStorage() && this.isUsingSAF() ) {
+        if (MainActivity.useScopedStorage() && this.isUsingSAF()) {
             Uri treeUri = this.getTreeUriSAF();
             return getLatestMediaSAF(treeUri);
         }
@@ -1552,30 +1447,23 @@ public class StorageUtils {
         Media image_media = getLatestMedia(UriType.MEDIASTORE_IMAGES);
         Media video_media = getLatestMedia(UriType.MEDIASTORE_VIDEOS);
         Media media = null;
-        if( image_media != null && video_media == null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "only found images");
+        if (image_media != null && video_media == null) {
+            Logger.INSTANCE.d(TAG, "only found images");
             media = image_media;
-        }
-        else if( image_media == null && video_media != null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "only found videos");
+        } else if (image_media == null && video_media != null) {
+            Logger.INSTANCE.d(TAG, "only found videos");
             media = video_media;
-        }
-        else if( image_media != null && video_media != null ) {
-            if( MyDebug.LOG ) {
-                Log.d(TAG, "found images and videos");
-                Log.d(TAG, "latest image date: " + image_media.date + " : " + new Date(image_media.date));
-                Log.d(TAG, "latest video date: " + video_media.date + " : " + new Date(video_media.date));
+        } else if (image_media != null && video_media != null) {
+            if (MyDebug.LOG) {
+                Logger.INSTANCE.d(TAG, "found images and videos");
+                Logger.INSTANCE.d(TAG, "latest image date: " + image_media.date + " : " + new Date(image_media.date));
+                Logger.INSTANCE.d(TAG, "latest video date: " + video_media.date + " : " + new Date(video_media.date));
             }
-            if( image_media.date >= video_media.date ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "latest image is newer");
+            if (image_media.date >= video_media.date) {
+                Logger.INSTANCE.d(TAG, "latest image is newer");
                 media = image_media;
-            }
-            else {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "latest video is newer");
+            } else {
+                Logger.INSTANCE.d(TAG, "latest video is newer");
                 media = video_media;
 
                 // but in cases of using preview shots, sometimes the video ends up with a new date (even if only by 1s), so
@@ -1585,27 +1473,25 @@ public class StorageUtils {
                 // exclude _HDR extension etc, as these are only used for the image, not the preview video
                 {
                     String filename_special_base = filenameIsSpecial(image_filename_without_ext);
-                    if( filename_special_base != null )
+                    if (filename_special_base != null)
                         image_filename_without_ext = filename_special_base;
                 }
                 {
                     String filename_special_base = filenameIsSpecial(video_filename_without_ext);
-                    if( filename_special_base != null )
+                    if (filename_special_base != null)
                         video_filename_without_ext = filename_special_base;
                 }
-                if( MyDebug.LOG ) {
-                    Log.d(TAG, "image_filename_without_ext: " + image_filename_without_ext);
-                    Log.d(TAG, "video_filename_without_ext: " + video_filename_without_ext);
+                if (MyDebug.LOG) {
+                    Logger.INSTANCE.d(TAG, "image_filename_without_ext: " + image_filename_without_ext);
+                    Logger.INSTANCE.d(TAG, "video_filename_without_ext: " + video_filename_without_ext);
                 }
-                if( image_filename_without_ext.equals(video_filename_without_ext) ) {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "but prefer image due to identical filenames");
+                if (image_filename_without_ext.equals(video_filename_without_ext)) {
+                    Logger.INSTANCE.d(TAG, "but prefer image due to identical filenames");
                     media = image_media;
                 }
             }
         }
-        if( MyDebug.LOG )
-            Log.d(TAG, "return latest media: " + media);
+        Logger.INSTANCE.d(TAG, "return latest media: " + media);
         return media;
     }
 
@@ -1613,44 +1499,36 @@ public class StorageUtils {
     private long freeMemorySAF() {
         Uri treeUri = applicationInterface.storageUtils.getTreeUriSAF();
         ParcelFileDescriptor pfd = null;
-        if( MyDebug.LOG )
-            Log.d(TAG, "treeUri: " + treeUri);
+        Logger.INSTANCE.d(TAG, "treeUri: " + treeUri);
         try {
             Uri docUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, DocumentsContract.getTreeDocumentId(treeUri));
-            if( MyDebug.LOG )
-                Log.d(TAG, "docUri: " + docUri);
+            Logger.INSTANCE.d(TAG, "docUri: " + docUri);
             pfd = context.getContentResolver().openFileDescriptor(docUri, "r");
-            if( pfd == null ) { // just in case
+            if (pfd == null) { // just in case
                 Log.e(TAG, "pfd is null!");
                 throw new FileNotFoundException();
             }
-            if( MyDebug.LOG )
-                Log.d(TAG, "read direct from SAF uri");
+            Logger.INSTANCE.d(TAG, "read direct from SAF uri");
             StructStatVfs statFs = Os.fstatvfs(pfd.getFileDescriptor());
             long blocks = statFs.f_bavail;
             long size = statFs.f_bsize;
-            return (blocks*size) / 1048576;
-        }
-        catch(IllegalArgumentException e) {
+            return (blocks * size) / 1048576;
+        } catch (IllegalArgumentException e) {
             // IllegalArgumentException can be thrown by DocumentsContract.getTreeDocumentId or getContentResolver().openFileDescriptor
             e.printStackTrace();
-        }
-        catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             // We actually just want to catch ErrnoException here, but that isn't available pre-Android 5, and trying to catch ErrnoException
             // means we crash on pre-Android 5 with java.lang.VerifyError when trying to create the StorageUtils class!
             // One solution might be to move this method to a separate class that's only created on Android 5+, but this is a quick fix for
             // now.
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
-                if( pfd != null )
+                if (pfd != null)
                     pfd.close();
-            }
-            catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -1661,40 +1539,37 @@ public class StorageUtils {
      *  Be careful of calling this on main UI thread, as this can be slow when SAF is enabled.
      */
     public long freeMemory() { // return free memory in MB
-        if( MyDebug.LOG )
-            Log.d(TAG, "freeMemory");
-        if( applicationInterface.storageUtils.isUsingSAF() ) {
+        Logger.INSTANCE.d(TAG, "freeMemory");
+        if (applicationInterface.storageUtils.isUsingSAF()) {
             // if we fail for SAF, don't fall back to the methods below, as this may be incorrect (especially for external SD card)
             return freeMemorySAF();
         }
         // n.b., StatFs still seems to work with Android 10's scoped storage... (and there doesn't seem to be an official non-File based equivalent)
         try {
             File folder = getImageFolder();
-            if( folder == null ) {
+            if (folder == null) {
                 throw new IllegalArgumentException(); // so that we fall onto the backup
             }
             StatFs statFs = new StatFs(folder.getAbsolutePath());
             long blocks = statFs.getAvailableBlocksLong();
             long size = statFs.getBlockSizeLong();
-            return (blocks*size) / 1048576;
-        }
-        catch(IllegalArgumentException e) {
+            return (blocks * size) / 1048576;
+        } catch (IllegalArgumentException e) {
             // this can happen if folder doesn't exist, or don't have read access
             // if the save folder is a subfolder of DCIM, we can just use that instead
             try {
-                if( !isUsingSAF() ) {
+                if (!isUsingSAF()) {
                     // getSaveLocation() only valid if !isUsingSAF()
                     String folder_name = getSaveLocation();
-                    if( !saveFolderIsFull(folder_name) ) {
+                    if (!saveFolderIsFull(folder_name)) {
                         File folder = getBaseFolder();
                         StatFs statFs = new StatFs(folder.getAbsolutePath());
                         long blocks = statFs.getAvailableBlocksLong();
                         long size = statFs.getBlockSizeLong();
-                        return (blocks*size) / 1048576;
+                        return (blocks * size) / 1048576;
                     }
                 }
-            }
-            catch(IllegalArgumentException e2) {
+            } catch (IllegalArgumentException e2) {
                 // just in case
             }
         }

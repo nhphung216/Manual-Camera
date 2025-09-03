@@ -4,8 +4,12 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.service.quicksettings.TileService;
+
 import androidx.annotation.RequiresApi;
+
 import android.util.Log;
+
+import com.ssolstice.camera.manual.utils.Logger;
 
 /** Provides service for quick settings tile.
  */
@@ -41,20 +45,18 @@ public class MyTileServiceFrontCamera extends TileService {
 
     @Override
     public void onClick() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onClick");
+        Logger.INSTANCE.d(TAG, "onClick");
         super.onClick();
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setAction(TILE_ID);
         // use startActivityAndCollapse() instead of startActivity() so that the notification panel doesn't remain pulled down
-        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             // startActivityAndCollapse(Intent) throws UnsupportedOperationException on Android 14+
             // FLAG_IMMUTABLE needed for PendingIntents on Android 12+
             PendingIntent pending_intent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
             startActivityAndCollapse(pending_intent);
-        }
-        else {
+        } else {
             // still get warning for startActivityAndCollapse being deprecated, but startActivityAndCollapse(PendingIntent) requires Android 14+
             // and only seems possible to disable the warning for the function, not this statement
             startActivityAndCollapse(intent);

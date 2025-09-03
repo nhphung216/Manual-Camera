@@ -7,10 +7,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.ssolstice.camera.manual.MyDebug;
+import com.ssolstice.camera.manual.utils.Logger;
 
 /** This is essentially similar to CamcorderProfile in that it encapsulates a set of video settings
-     *  to be passed to MediaRecorder, but allows us to store additional fields.
-     */
+ *  to be passed to MediaRecorder, but allows us to store additional fields.
+ */
 public class VideoProfile {
     private static final String TAG = "VideoProfile";
 
@@ -79,36 +80,31 @@ public class VideoProfile {
      * Copies the fields of this profile to a MediaRecorder instance.
      */
     public void copyToMediaRecorder(MediaRecorder media_recorder) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "copyToMediaRecorder: " + media_recorder);
-        if( record_audio ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "record audio");
+        Logger.INSTANCE.d(TAG, "copyToMediaRecorder: " + media_recorder);
+        if (record_audio) {
+            Logger.INSTANCE.d(TAG, "record audio");
             media_recorder.setAudioSource(this.audioSource);
         }
         media_recorder.setVideoSource(this.videoSource);
         // n.b., order may be important - output format should be first, at least
         // also match order of MediaRecorder.setProfile() just to be safe, see https://stackoverflow.com/questions/5524672/is-it-possible-to-use-camcorderprofile-without-audio-source
         media_recorder.setOutputFormat(this.fileFormat);
-        if( MyDebug.LOG )
-            Log.d(TAG, "set frame rate: " + this.videoFrameRate);
+        Logger.INSTANCE.d(TAG, "set frame rate: " + this.videoFrameRate);
         media_recorder.setVideoFrameRate(this.videoFrameRate);
         // it's probably safe to always call setCaptureRate, but to be safe (and keep compatibility with old ManualCamera versions), we only do so when needed
-        if( this.videoCaptureRate != (double)this.videoFrameRate ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "set capture rate: " + this.videoCaptureRate);
+        if (this.videoCaptureRate != (double) this.videoFrameRate) {
+            Logger.INSTANCE.d(TAG, "set capture rate: " + this.videoCaptureRate);
             media_recorder.setCaptureRate(this.videoCaptureRate);
         }
         media_recorder.setVideoSize(this.videoFrameWidth, this.videoFrameHeight);
         media_recorder.setVideoEncodingBitRate(this.videoBitRate);
         media_recorder.setVideoEncoder(this.videoCodec);
-        if( record_audio ) {
+        if (record_audio) {
             media_recorder.setAudioEncodingBitRate(this.audioBitRate);
             media_recorder.setAudioChannels(this.audioChannels);
             media_recorder.setAudioSamplingRate(this.audioSampleRate);
             media_recorder.setAudioEncoder(this.audioCodec);
         }
-        if( MyDebug.LOG )
-            Log.d(TAG, "done: " + media_recorder);
+        Logger.INSTANCE.d(TAG, "done: " + media_recorder);
     }
 }

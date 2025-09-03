@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.android.billingclient.api.*;
 import com.ssolstice.camera.manual.MainActivity;
 import com.ssolstice.camera.manual.R;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,7 +82,7 @@ public class BillingManager implements PurchasesUpdatedListener {
         billingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingServiceDisconnected() {
-                Log.e(TAG, "Billing disconnected");
+                Logger.INSTANCE.e(TAG, "Billing disconnected");
             }
 
             @Override
@@ -134,7 +135,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                 }
                 listener.onResult(allProducts);
             } else {
-                Log.e(TAG, "In-app query failed: " + result.getDebugMessage());
+                Logger.INSTANCE.e(TAG, "In-app query failed: " + result.getDebugMessage());
             }
         });
     }
@@ -146,7 +147,7 @@ public class BillingManager implements PurchasesUpdatedListener {
     public void launchPurchaseFlow(Activity activity, String productId) {
         ProductDetails details = productDetailsMap.get(productId);
         if (details == null) {
-            Log.e(TAG, "ProductDetails not found for: " + productId);
+            Logger.INSTANCE.e(TAG, "ProductDetails not found for: " + productId);
             Toast.makeText(activity, activity.getString(R.string.msg_upgrade_not_support), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -276,7 +277,7 @@ public class BillingManager implements PurchasesUpdatedListener {
     }
 
     public void endConnection() {
-        Log.d(TAG, "endConnection");
+        Logger.INSTANCE.d(TAG, "endConnection");
         billingClient.endConnection();
     }
 

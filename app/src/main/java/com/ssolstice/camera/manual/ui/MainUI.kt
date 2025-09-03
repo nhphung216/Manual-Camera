@@ -42,6 +42,7 @@ import com.ssolstice.camera.manual.cameracontroller.CameraController
 import com.ssolstice.camera.manual.compose.CameraViewModel
 import com.ssolstice.camera.manual.preview.ApplicationInterface.RawPref
 import com.ssolstice.camera.manual.ui.PopupView.ButtonOptionsPopupListener
+import com.ssolstice.camera.manual.utils.Logger
 import java.util.Hashtable
 import kotlin.concurrent.Volatile
 import kotlin.math.abs
@@ -106,7 +107,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     val testUIButtonsMap: MutableMap<String?, View?> = Hashtable<String?, View?>()
 
     private fun setSeekbarColors() {
-        if (MyDebug.LOG) Log.d(TAG, "setSeekbarColors")
+        Logger.d(TAG, "setSeekbarColors")
         run {
             val progressColor = ColorStateList.valueOf(Color.argb(255, 240, 240, 240))
             val thumbColor = ColorStateList.valueOf(Color.argb(255, 255, 255, 255))
@@ -143,7 +144,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
     fun layoutUIWithRotation(viewRotateAnimationStart: Float) {
         if (MyDebug.LOG) {
-            Log.d(TAG, "layoutUIWithRotation: $viewRotateAnimationStart")
+            Logger.d(TAG, "layoutUIWithRotation: $viewRotateAnimationStart")
         }
         this.view_rotate_animation = true
         this.view_rotate_animation_start = viewRotateAnimationStart
@@ -206,7 +207,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         val layoutParams = view.layoutParams as LinearLayout.LayoutParams
         if (system_orientation == SystemOrientation.PORTRAIT) {
             val diff = (layoutParams.width - layoutParams.height) / 2
-            if (MyDebug.LOG) Log.d(TAG, "diff: $diff")
+            Logger.d(TAG, "diff: $diff")
             setMarginsForSystemUI(
                 layoutParams,
                 diff + left,
@@ -243,23 +244,23 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      */
     fun setTakePhotoIcon() {
         if (MyDebug.LOG) {
-            Log.d(TAG, "setTakePhotoIcon()")
+            Logger.d(TAG, "setTakePhotoIcon()")
         }
         if (mainActivity.preview != null) {
             if (mainActivity.preview!!.isVideo) {
                 cameraViewModel.setPhotoMode(false)
                 if (MyDebug.LOG) {
-                    Log.d(TAG, "set icon to video")
+                    Logger.d(TAG, "set icon to video")
                 }
             } else if (mainActivity.applicationInterface!!.photoMode == MyApplicationInterface.PhotoMode.Panorama &&
                 mainActivity.applicationInterface!!.gyroSensor.isRecording
             ) {
                 if (MyDebug.LOG) {
-                    Log.d(TAG, "set icon to recording panorama")
+                    Logger.d(TAG, "set icon to recording panorama")
                 }
             } else {
                 if (MyDebug.LOG) {
-                    Log.d(TAG, "set icon to photo")
+                    Logger.d(TAG, "set icon to photo")
                 }
             }
 
@@ -291,7 +292,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     /** Set content description for pause video button.
      */
     fun setPauseVideoContentDescription() {
-        if (MyDebug.LOG) Log.d(TAG, "setPauseVideoContentDescription()")
+        Logger.d(TAG, "setPauseVideoContentDescription()")
         if (mainActivity.preview!!.isVideoRecordingPaused) {
             cameraViewModel.setVideoRecordingPaused(true)
         } else {
@@ -636,7 +637,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun updateOnScreenIcons() {
-        if (MyDebug.LOG) Log.d(TAG, "updateOnScreenIcons")
+        Logger.d(TAG, "updateOnScreenIcons")
         this.updateExposureLockIcon()
         this.updateWhiteBalanceLockIcon()
         this.updateCycleRawIcon()
@@ -672,7 +673,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      * Opens or close the exposure settings (ISO, white balance, etc)
      */
     fun toggleExposureUI() {
-        if (MyDebug.LOG) Log.d(TAG, "toggleExposureUI")
+        Logger.d(TAG, "toggleExposureUI")
         closePopup()
         mSelectingExposureUIElement = false
         if (this.isExposureUIOpen) {
@@ -685,7 +686,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     private fun initRemoteControlForExposureUI() {
-        if (MyDebug.LOG) Log.d(TAG, "initRemoteControlForExposureUI")
+        Logger.d(TAG, "initRemoteControlForExposureUI")
         if (this.isExposureUIOpen) { // just in case
             remote_control_mode = true
             mExposureLine = 0
@@ -879,8 +880,8 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         val scale = mainActivity.getResources().getDisplayMetrics().density
         var dpHeight = (smaller_dim / scale).toInt()
         if (MyDebug.LOG) {
-            Log.d(TAG, "display size: " + display_size.x + " x " + display_size.y)
-            Log.d(TAG, "dpHeight: " + dpHeight)
+            Logger.d(TAG, "display size: " + display_size.x + " x " + display_size.y)
+            Logger.d(TAG, "dpHeight: " + dpHeight)
         }
         // allow space for the icons at top/right of screen
         val margin = if (centred) 120 else 50
@@ -890,7 +891,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
     val isSelectingExposureUIElement: Boolean
         get() {
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "isSelectingExposureUIElement returns:" + mSelectingExposureUIElement
             )
@@ -903,7 +904,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      * @return true if an action was taken
      */
     fun processRemoteUpButton(): Boolean {
-        if (MyDebug.LOG) Log.d(TAG, "processRemoteUpButton")
+        Logger.d(TAG, "processRemoteUpButton")
         var didProcess = false
         if (popupIsOpen()) {
             didProcess = true
@@ -928,7 +929,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      * @return true if an action was taken
      */
     fun processRemoteDownButton(): Boolean {
-        if (MyDebug.LOG) Log.d(TAG, "processRemoteDownButton")
+        Logger.d(TAG, "processRemoteDownButton")
         var didProcess = false
         if (popupIsOpen()) {
             if (selectingIcons()) {
@@ -952,7 +953,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     private var isoButtonManualIndex = -1
 
     init {
-        if (MyDebug.LOG) Log.d(TAG, "MainUI")
+        Logger.d(TAG, "MainUI")
         this.mainActivity = mainActivity
         this.cameraViewModel = cameraViewModel
 
@@ -962,7 +963,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     /** Opens the exposure UI if not already open, and sets up or updates the UI.
      */
     fun setupExposureUI() {
-        if (MyDebug.LOG) Log.d(TAG, "setupExposureUI")
+        Logger.d(TAG, "setupExposureUI")
         testUIButtonsMap.clear()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         val preview = mainActivity.preview
@@ -1014,7 +1015,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         var totalWidthDp = 280
         val maxWidthDp = getMaxHeightDp(true)
         if (totalWidthDp > maxWidthDp) totalWidthDp = maxWidthDp
-        if (MyDebug.LOG) Log.d(TAG, "total_width_dp: $totalWidthDp")
+        Logger.d(TAG, "total_width_dp: $totalWidthDp")
 
         // n.b., we hardcode the string "ISO" as this isn't a user displayed string, rather it's used to filter out "ISO" included in old Camera API parameters
         isoButtons = PopupView.createButtonOptions(
@@ -1032,21 +1033,21 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             "TEST_ISO",
             object : ButtonOptionsPopupListener() {
                 override fun onClick(option: String?) {
-                    if (MyDebug.LOG) Log.d(TAG, "clicked iso: $option")
+                    Logger.d(TAG, "clicked iso: $option")
                     val editor = sharedPreferences.edit()
                     val oldIso: String = sharedPreferences.getString(
                         PreferenceKeys.ISOPreferenceKey,
                         CameraController.ISO_DEFAULT
                     )!!
                     if (MyDebug.LOG) {
-                        Log.d(TAG, "old_iso: $oldIso")
+                        Logger.d(TAG, "old_iso: $oldIso")
                     }
                     editor.putString(PreferenceKeys.ISOPreferenceKey, option)
                     var toastOption: String? = option
 
                     if (preview.supportsISORange()) {
                         if (option == CameraController.ISO_DEFAULT) {
-                            if (MyDebug.LOG) Log.d(TAG, "switched from manual to auto iso")
+                            Logger.d(TAG, "switched from manual to auto iso")
                             // also reset exposure time when changing from manual to auto from the popup menu:
                             editor.putLong(
                                 PreferenceKeys.ExposureTimePreferenceKey,
@@ -1064,20 +1065,20 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                                 ""
                             ) // already showed the toast, so block from showing again
                         } else if (oldIso == CameraController.ISO_DEFAULT) {
-                            if (MyDebug.LOG) Log.d(TAG, "switched from auto to manual iso")
+                            Logger.d(TAG, "switched from auto to manual iso")
                             if (option == "m") {
                                 // if we used the generic "manual", then instead try to preserve the current iso if it exists
                                 if (preview.cameraController != null && preview.cameraController.captureResultHasIso()
                                 ) {
                                     val iso = preview.cameraController.captureResultIso()
-                                    if (MyDebug.LOG) Log.d(TAG, "apply existing iso of $iso")
+                                    Logger.d(TAG, "apply existing iso of $iso")
                                     editor.putString(
                                         PreferenceKeys.ISOPreferenceKey,
                                         iso.toString()
                                     )
                                     toastOption = iso.toString()
                                 } else {
-                                    if (MyDebug.LOG) Log.d(TAG, "no existing iso available")
+                                    Logger.d(TAG, "no existing iso available")
                                     // use a default
                                     val iso = 800
                                     editor.putString(PreferenceKeys.ISOPreferenceKey, "" + iso)
@@ -1091,7 +1092,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                             ) {
                                 val exposureTime =
                                     preview.cameraController.captureResultExposureTime()
-                                if (MyDebug.LOG) Log.d(
+                                Logger.d(
                                     TAG,
                                     "apply existing exposure time of $exposureTime"
                                 )
@@ -1100,7 +1101,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                                     exposureTime
                                 )
                             } else {
-                                if (MyDebug.LOG) Log.d(TAG, "no existing exposure time available")
+                                Logger.d(TAG, "no existing exposure time available")
                             }
 
                             editor.apply()
@@ -1115,10 +1116,10 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                                 ""
                             ) // already showed the toast, so block from showing again
                         } else {
-                            if (MyDebug.LOG) Log.d(TAG, "changed manual iso")
+                            Logger.d(TAG, "changed manual iso")
                             if (option == "m") {
                                 // if user selected the generic "manual", then just keep the previous non-ISO option
-                                if (MyDebug.LOG) Log.d(TAG, "keep existing iso of $oldIso")
+                                Logger.d(TAG, "keep existing iso of $oldIso")
                                 editor.putString(PreferenceKeys.ISOPreferenceKey, oldIso)
                             }
 
@@ -1240,7 +1241,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun closePopup() {
-        if (MyDebug.LOG) Log.d(TAG, "close popup")
+        Logger.d(TAG, "close popup")
 
         mainActivity.enablePopupOnBackPressedCallback(false)
 
@@ -1269,7 +1270,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun destroyPopup() {
-        if (MyDebug.LOG) Log.d(TAG, "destroyPopup")
+        Logger.d(TAG, "destroyPopup")
         force_destroy_popup = false
         if (popupIsOpen()) {
             closePopup()
@@ -1284,9 +1285,9 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      */
     private fun highlightPopupLine(highlight: Boolean, goUp: Boolean) {
         if (MyDebug.LOG) {
-            Log.d(TAG, "highlightPopupLine")
-            Log.d(TAG, "highlight: $highlight")
-            Log.d(TAG, "goUp: $goUp")
+            Logger.d(TAG, "highlightPopupLine")
+            Logger.d(TAG, "highlight: $highlight")
+            Logger.d(TAG, "goUp: $goUp")
         }
         if (!popupIsOpen()) { // Safety check
             clearSelectionState()
@@ -1304,7 +1305,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             // Ensure we stay within our bounds:
             mPopupLine = (mPopupLine + count) % count
             var v = inside.getChildAt(mPopupLine)
-            if (MyDebug.LOG) Log.d(TAG, "line: $mPopupLine view: $v")
+            Logger.d(TAG, "line: $mPopupLine view: $v")
             // to test example with HorizontalScrollView, see popup menu on Nokia 8 with Camera2 API, the flash icons row uses a HorizontalScrollView
             if (v is HorizontalScrollView && v.childCount > 0) v = v.getChildAt(0)
             if (v.isShown && v is LinearLayout) {
@@ -1321,12 +1322,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                     v.alpha = 1f
                 }
                 foundLine = true
-                if (MyDebug.LOG) Log.d(TAG, "found at line: $foundLine")
+                Logger.d(TAG, "found at line: $foundLine")
             } else {
                 mPopupLine += if (goUp) -1 else 1
             }
         }
-        if (MyDebug.LOG) Log.d(TAG, "Current line: $mPopupLine")
+        Logger.d(TAG, "Current line: $mPopupLine")
     }
 
     /**
@@ -1336,9 +1337,9 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      */
     private fun highlightPopupIcon(highlight: Boolean, goLeft: Boolean) {
         if (MyDebug.LOG) {
-            Log.d(TAG, "highlightPopupIcon")
-            Log.d(TAG, "highlight: $highlight")
-            Log.d(TAG, "goLeft: $goLeft")
+            Logger.d(TAG, "highlightPopupIcon")
+            Logger.d(TAG, "highlight: $highlight")
+            Logger.d(TAG, "goLeft: $goLeft")
         }
         if (!popupIsOpen()) { // Safety check
             clearSelectionState()
@@ -1352,7 +1353,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             // (careful, modulo in Java will allow negative numbers, hence the line below:
             mPopupIcon = (mPopupIcon + count) % count
             val v = mHighlightedLine!!.getChildAt(mPopupIcon)
-            if (MyDebug.LOG) Log.d(TAG, "row: $mPopupIcon view: $v")
+            Logger.d(TAG, "row: $mPopupIcon view: $v")
             if (v is ImageButton || v is Button) {
                 if (highlight) {
                     v.setBackgroundColor(highlightColor)
@@ -1362,7 +1363,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 } else {
                     v.setBackgroundColor(Color.TRANSPARENT)
                 }
-                if (MyDebug.LOG) Log.d(TAG, "found icon at row: $mPopupIcon")
+                Logger.d(TAG, "found icon at row: $mPopupIcon")
                 foundIcon = true
             } else {
                 mPopupIcon += if (goLeft) -1 else 1
@@ -1402,7 +1403,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      * Simulates a press on the currently selected icon
      */
     private fun clickSelectedIcon() {
-        if (MyDebug.LOG) Log.d(TAG, "clickSelectedIcon: $mHighlightedIcon")
+        Logger.d(TAG, "clickSelectedIcon: $mHighlightedIcon")
         if (mHighlightedIcon != null) {
             mHighlightedIcon!!.callOnClick()
         }
@@ -1413,7 +1414,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      * exit menu selection (used in remote control mode)
      */
     private fun clearSelectionState() {
-        if (MyDebug.LOG) Log.d(TAG, "clearSelectionState")
+        Logger.d(TAG, "clearSelectionState")
         mPopupLine = 0
         mPopupIcon = 0
         mSelectingIcons = false
@@ -1433,11 +1434,11 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             return
         }
         if (mainActivity.preview!!.cameraController == null) {
-            if (MyDebug.LOG) Log.d(TAG, "camera not opened!")
+            Logger.d(TAG, "camera not opened!")
             return
         }
 
-        if (MyDebug.LOG) Log.d(TAG, "open popup")
+        Logger.d(TAG, "open popup")
 
         mainActivity.enablePopupOnBackPressedCallback(true) // so that back button will close the popup instead of exiting the application
 
@@ -1453,12 +1454,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         }
 
         if (this.popupView == null) {
-            if (MyDebug.LOG) Log.d(TAG, "create new popup_view")
+            Logger.d(TAG, "create new popup_view")
             testUIButtonsMap.clear()
             this.popupView = PopupView(mainActivity)
             popup_container.addView(this.popupView)
         } else {
-            if (MyDebug.LOG) Log.d(TAG, "use cached popup_view")
+            Logger.d(TAG, "use cached popup_view")
             popupView!!.visibility = View.VISIBLE
         }
         popup_view_is_open = true
@@ -1474,13 +1475,13 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         popup_container.viewTreeObserver.addOnGlobalLayoutListener(
             object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    if (MyDebug.LOG) Log.d(TAG, "onGlobalLayout()")
-                    if (MyDebug.LOG) Log.d(
+                    Logger.d(TAG, "onGlobalLayout()")
+                    Logger.d(
                         TAG,
                         "time after global layout: " + (System.currentTimeMillis() - time_s)
                     )
                     //layoutUI(true)
-                    if (MyDebug.LOG) Log.d(
+                    Logger.d(
                         TAG,
                         "time after layoutUI: " + (System.currentTimeMillis() - time_s)
                     )
@@ -1548,14 +1549,14 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             }
         )
 
-        if (MyDebug.LOG) Log.d(
+        Logger.d(
             TAG,
             "time to create popup: " + (System.currentTimeMillis() - time_s)
         )
     }
 
     private fun initRemoteControlForPopup() {
-        if (MyDebug.LOG) Log.d(TAG, "initRemoteControlForPopup")
+        Logger.d(TAG, "initRemoteControlForPopup")
         if (popupIsOpen()) { // just in case
             // For remote control, we want to highlight lines and icons on the popup view
             // so that we can control those just with the up/down buttons and "OK"
@@ -1567,7 +1568,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     private fun clearRemoteControlForPopup() {
-        if (MyDebug.LOG) Log.d(TAG, "clearRemoteControlForPopup")
+        Logger.d(TAG, "clearRemoteControlForPopup")
         if (popupIsOpen() && remote_control_mode) {
             remote_control_mode = false
 
@@ -1580,7 +1581,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
             var v = inside.getChildAt(mPopupLine)
             if (v.isShown && v is LinearLayout) {
-                if (MyDebug.LOG) Log.d(TAG, "reset " + mPopupLine + "th view: " + v)
+                Logger.d(TAG, "reset " + mPopupLine + "th view: " + v)
                 v.setBackgroundColor(Color.TRANSPARENT)
                 v.alpha = 1f
             }
@@ -1594,7 +1595,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (MyDebug.LOG) Log.d(TAG, "onKeyDown: $keyCode")
+        Logger.d(TAG, "onKeyDown: $keyCode")
         when (keyCode) {
             KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_MEDIA_STOP -> {
                 if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) keydown_volume_up = true
@@ -1621,7 +1622,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
                     "volume_focus" -> {
                         if (keydown_volume_up && keydown_volume_down) {
-                            if (MyDebug.LOG) Log.d(
+                            Logger.d(
                                 TAG,
                                 "take photo rather than focus, as both volume keys are down"
                             )
@@ -1636,7 +1637,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                             // important not to repeatedly request focus, even though main_activity.getPreview().requestAutoFocus() will cancel, as causes problem if key is held down (e.g., flash gets stuck on)
                             // also check DownTime vs EventTime to prevent repeated focusing whilst the key is held down
                             if (event.downTime == event.eventTime && !mainActivity.preview!!.isFocusWaiting) {
-                                if (MyDebug.LOG) Log.d(TAG, "request focus due to volume key")
+                                Logger.d(TAG, "request focus due to volume key")
                                 mainActivity.preview!!.requestAutoFocus()
                             }
                         }
@@ -1726,7 +1727,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                     // also check DownTime vs EventTime to prevent repeated focusing whilst the key is held down - see https://sourceforge.net/p/opencamera/tickets/174/ ,
                     // or same issue above for volume key focus
                     if (event.downTime == event.eventTime && !mainActivity.preview!!.isFocusWaiting) {
-                        if (MyDebug.LOG) Log.d(TAG, "request focus due to focus key")
+                        Logger.d(TAG, "request focus due to focus key")
                         mainActivity.preview!!.requestAutoFocus()
                     }
                     return true
@@ -1735,7 +1736,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
             KeyEvent.KEYCODE_FOCUS -> {
                 if (event.downTime == event.eventTime && !mainActivity.preview!!.isFocusWaiting) {
-                    if (MyDebug.LOG) Log.d(TAG, "request focus due to focus key")
+                    Logger.d(TAG, "request focus due to focus key")
                     mainActivity.preview!!.requestAutoFocus()
                 }
                 return true
@@ -1793,7 +1794,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun onKeyUp(keyCode: Int, event: KeyEvent?) {
-        if (MyDebug.LOG) Log.d(TAG, "onKeyUp: $keyCode")
+        Logger.d(TAG, "onKeyUp: $keyCode")
         if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) keydown_volume_up = false
         else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) keydown_volume_down = false
     }
@@ -1801,7 +1802,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     /** If the exposure menu is open, selects a current line or option. Else does nothing.
      */
     fun commandMenuExposure() {
-        if (MyDebug.LOG) Log.d(TAG, "commandMenuExposure")
+        Logger.d(TAG, "commandMenuExposure")
         if (this.isExposureUIOpen) {
             if (this.isSelectingExposureUIElement) {
                 // Close Exposure UI if new press on MENU
@@ -1817,7 +1818,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     /** If the popup menu is open, selects a current line or option. Else does nothing.
      */
     fun commandMenuPopup() {
-        if (MyDebug.LOG) Log.d(TAG, "commandMenuPopup")
+        Logger.d(TAG, "commandMenuPopup")
         if (popupIsOpen()) {
             if (selectingIcons()) {
                 clickSelectedIcon()
@@ -1844,7 +1845,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         alertDialog.setNegativeButton(
             R.string.dont_show_again
         ) { dialog, which ->
-            if (MyDebug.LOG) Log.d(TAG, "user clicked dont_show_again for info dialog")
+            Logger.d(TAG, "user clicked dont_show_again for info dialog")
             val sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(mainActivity)
             val editor = sharedPreferences.edit()
@@ -1857,7 +1858,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         val alert = alertDialog.create()
         // AlertDialog.Builder.setOnDismissListener() requires API level 17, so do it this way instead
         alert.setOnDismissListener {
-            if (MyDebug.LOG) Log.d(TAG, "info dialog dismissed")
+            Logger.d(TAG, "info dialog dismissed")
             //main_activity.setWindowFlagsForCamera();
             //main_activity.showPreview(true);
         }

@@ -3,6 +3,7 @@ package com.ssolstice.camera.manual.ui;
 import com.ssolstice.camera.manual.MyDebug;
 import com.ssolstice.camera.manual.R;
 import com.ssolstice.camera.manual.StorageUtils;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,7 +17,9 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
+
 import androidx.annotation.NonNull;
+
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
@@ -64,18 +67,18 @@ public class FolderChooserDialog extends DialogFragment {
         @NonNull
         @Override
         public String toString() {
-            if( override_name != null )
+            if (override_name != null)
                 return override_name;
-            if( file.isDirectory() )
+            if (file.isDirectory())
                 return file.getName() + File.separator;
             return file.getName();
         }
 
         @Override
         public int compareTo(@NonNull FileWrapper o) {
-            if( this.sort_order < o.sort_order )
+            if (this.sort_order < o.sort_order)
                 return -1;
-            else if( this.sort_order > o.sort_order )
+            else if (this.sort_order > o.sort_order)
                 return 1;
             return this.file.getName().toLowerCase(Locale.US).compareTo(o.getFile().getName().toLowerCase(Locale.US));
         }
@@ -83,10 +86,10 @@ public class FolderChooserDialog extends DialogFragment {
         @Override
         public boolean equals(Object o) {
             // important to override equals(), since we're overriding compareTo()
-            if( !(o instanceof FileWrapper) )
+            if (!(o instanceof FileWrapper))
                 return false;
-            FileWrapper that = (FileWrapper)o;
-            if( this.sort_order != that.sort_order )
+            FileWrapper that = (FileWrapper) o;
+            if (this.sort_order != that.sort_order)
                 return false;
             return this.file.getName().toLowerCase(Locale.US).equals(that.getFile().getName().toLowerCase(Locale.US));
         }
@@ -104,27 +107,21 @@ public class FolderChooserDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onCreateDialog");
-        if( MyDebug.LOG )
-            Log.d(TAG, "start in folder: " + start_folder);
+        Logger.INSTANCE.d(TAG, "onCreateDialog");
+        Logger.INSTANCE.d(TAG, "start in folder: " + start_folder);
 
         list = new ListView(getActivity());
         list.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "onItemClick: " + position);
+                Logger.INSTANCE.d(TAG, "onItemClick: " + position);
                 FileWrapper file_wrapper = (FileWrapper) parent.getItemAtPosition(position);
-                if( MyDebug.LOG )
-                    Log.d(TAG, "clicked: " + file_wrapper.toString());
+                Logger.INSTANCE.d(TAG, "clicked: " + file_wrapper.toString());
                 File file = file_wrapper.getFile();
-                if( MyDebug.LOG )
-                    Log.d(TAG, "file: " + file.toString());
-                if( file.isDirectory() ) {
+                Logger.INSTANCE.d(TAG, "file: " + file.toString());
+                if (file.isDirectory()) {
                     refreshList(file);
-                }
-                else if( !mode_folder && file.isFile() ) {
+                } else if (!mode_folder && file.isFile()) {
                     chosen_file = file.getAbsolutePath();
                     folder_dialog.dismiss();
                 }
@@ -134,10 +131,10 @@ public class FolderChooserDialog extends DialogFragment {
         AlertDialog.Builder folder_dialog_builder = new AlertDialog.Builder(getActivity())
                 //.setIcon(R.drawable.alert_dialog_icon)
                 .setView(list);
-        if( mode_folder ) {
+        if (mode_folder) {
             folder_dialog_builder.setPositiveButton(android.R.string.ok, null); // we set the listener in onShowListener, so we can prevent the dialog from closing (if chosen folder isn't writable)
         }
-        if( show_new_folder_button ) {
+        if (show_new_folder_button) {
             folder_dialog_builder.setNeutralButton(R.string.new_folder, null); // we set the listener in onShowListener, so we can prevent the dialog from closing
         }
         folder_dialog_builder.setNegativeButton(android.R.string.cancel, null);
@@ -146,26 +143,24 @@ public class FolderChooserDialog extends DialogFragment {
         folder_dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog_interface) {
-                if( mode_folder ) {
+                if (mode_folder) {
                     Button b_positive = folder_dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                     b_positive.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if( MyDebug.LOG )
-                                Log.d(TAG, "choose folder: " + current_folder.toString());
-                            if( useFolder() ) {
+                            Logger.INSTANCE.d(TAG, "choose folder: " + current_folder.toString());
+                            if (useFolder()) {
                                 folder_dialog.dismiss();
                             }
                         }
                     });
                 }
-                if( show_new_folder_button ) {
+                if (show_new_folder_button) {
                     Button b_neutral = folder_dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
                     b_neutral.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if( MyDebug.LOG )
-                                Log.d(TAG, "new folder in: " + current_folder.toString());
+                            Logger.INSTANCE.d(TAG, "new folder in: " + current_folder.toString());
                             newFolder();
                         }
                     });
@@ -173,29 +168,24 @@ public class FolderChooserDialog extends DialogFragment {
             }
         });
 
-        if( !start_folder.exists() ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "create new folder" + start_folder);
-            if( !start_folder.mkdirs() ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "failed to create new folder");
+        if (!start_folder.exists()) {
+            Logger.INSTANCE.d(TAG, "create new folder" + start_folder);
+            if (!start_folder.mkdirs()) {
+                Logger.INSTANCE.d(TAG, "failed to create new folder");
                 // don't do anything yet, this is handled below
             }
         }
         refreshList(start_folder);
-        if( !canWrite() ) {
+        if (!canWrite()) {
             // see testFolderChooserInvalid()
-            if( MyDebug.LOG )
-                Log.d(TAG, "failed to read folder");
+            Logger.INSTANCE.d(TAG, "failed to read folder");
 
-            if( show_dcim_shortcut ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "fall back to DCIM");
+            if (show_dcim_shortcut) {
+                Logger.INSTANCE.d(TAG, "fall back to DCIM");
                 // note that we reset to DCIM rather than DCIM/ManualCamera, just to increase likelihood of getting back to a valid state
                 refreshList(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM));
-                if( current_folder == null ) {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "can't even read DCIM?!");
+                if (current_folder == null) {
+                    Logger.INSTANCE.d(TAG, "can't even read DCIM?!");
                     refreshList(new File("/"));
                 }
             }
@@ -208,8 +198,7 @@ public class FolderChooserDialog extends DialogFragment {
     }
 
     public void setMaxParent(File max_parent) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "setMaxParent: " + max_parent);
+        Logger.INSTANCE.d(TAG, "setMaxParent: " + max_parent);
         this.max_parent = max_parent;
     }
 
@@ -230,59 +219,54 @@ public class FolderChooserDialog extends DialogFragment {
     }
 
     private void refreshList(File new_folder) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "refreshList: " + new_folder);
-        if( new_folder == null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "refreshList: null folder");
+        Logger.INSTANCE.d(TAG, "refreshList: " + new_folder);
+        if (new_folder == null) {
+            Logger.INSTANCE.d(TAG, "refreshList: null folder");
             return;
         }
-        File [] files = null;
+        File[] files = null;
         // try/catch just in case?
         try {
             files = new_folder.listFiles();
-        }
-        catch(Exception e) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "exception reading folder");
+        } catch (Exception e) {
+            Logger.INSTANCE.d(TAG, "exception reading folder");
             e.printStackTrace();
         }
         // n.b., files may be null if no files could be found in the folder (or we can't read) - but should still allow the user
         // to view this folder (so the user can go to parent folders which might be readable again)
         List<FileWrapper> listed_files = new ArrayList<>();
-        if( new_folder.getParentFile() != null ) {
-            if( max_parent != null && max_parent.equals(new_folder) ) {
+        if (new_folder.getParentFile() != null) {
+            if (max_parent != null && max_parent.equals(new_folder)) {
                 // don't show parent option
-            }
-            else {
+            } else {
                 listed_files.add(new FileWrapper(new_folder.getParentFile(), getResources().getString(R.string.parent_folder), 0));
             }
         }
-        if( show_dcim_shortcut ) {
+        if (show_dcim_shortcut) {
             File default_folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-            if( !default_folder.equals(new_folder) && !default_folder.equals(new_folder.getParentFile()) )
+            if (!default_folder.equals(new_folder) && !default_folder.equals(new_folder.getParentFile()))
                 listed_files.add(new FileWrapper(default_folder, null, 1));
         }
-        if( files != null ) {
-            for(File file : files) {
+        if (files != null) {
+            for (File file : files) {
                 boolean accept = false;
-                if( file.isDirectory() )
+                if (file.isDirectory())
                     accept = true;
-                else if( !mode_folder && file.isFile() ) {
+                else if (!mode_folder && file.isFile()) {
                     accept = true;
-                    if( extension != null ) {
+                    if (extension != null) {
                         String name = file.getName();
                         int index = name.lastIndexOf('.');
-                        if( index != -1 ) {
+                        if (index != -1) {
                             String ext = name.substring(index).toLowerCase();
-                            if( !ext.equals(extension) ) {
+                            if (!ext.equals(extension)) {
                                 accept = false;
                             }
                         }
                     }
                 }
 
-                if( accept ) {
+                if (accept) {
                     int sort_order = file.isDirectory() ? 2 : 3;
                     listed_files.add(new FileWrapper(file, null, sort_order));
                 }
@@ -300,37 +284,31 @@ public class FolderChooserDialog extends DialogFragment {
 
     private boolean canWrite() {
         try {
-            if( this.current_folder != null && this.current_folder.canWrite() )
+            if (this.current_folder != null && this.current_folder.canWrite())
                 return true;
-        }
-        catch(Exception e) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "exception in canWrite()");
+        } catch (Exception e) {
+            Logger.INSTANCE.d(TAG, "exception in canWrite()");
         }
         return false;
     }
 
     private boolean useFolder() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "useFolder");
-        if( current_folder == null )
+        Logger.INSTANCE.d(TAG, "useFolder");
+        if (current_folder == null)
             return false;
-        if( canWrite() ) {
+        if (canWrite()) {
             String new_save_location = current_folder.getAbsolutePath();
-            if( this.show_dcim_shortcut ) {
+            if (this.show_dcim_shortcut) {
                 File base_folder = StorageUtils.getBaseFolder();
-                if( current_folder.getParentFile() != null && current_folder.getParentFile().equals(base_folder) ) {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "parent folder is base folder");
+                if (current_folder.getParentFile() != null && current_folder.getParentFile().equals(base_folder)) {
+                    Logger.INSTANCE.d(TAG, "parent folder is base folder");
                     new_save_location = current_folder.getName();
                 }
             }
-            if( MyDebug.LOG )
-                Log.d(TAG, "new_save_location: " + new_save_location);
+            Logger.INSTANCE.d(TAG, "new_save_location: " + new_save_location);
             chosen_folder = new_save_location;
             return true;
-        }
-        else {
+        } else {
             Toast.makeText(getActivity(), R.string.cant_write_folder, Toast.LENGTH_SHORT).show();
         }
         return false;
@@ -356,8 +334,8 @@ public class FolderChooserDialog extends DialogFragment {
 
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            for(int i=start;i<end;i++) {
-                if( disallowed.indexOf( source.charAt(i) ) != -1 ) {
+            for (int i = start; i < end; i++) {
+                if (disallowed.indexOf(source.charAt(i)) != -1) {
                     return "";
                 }
             }
@@ -366,11 +344,10 @@ public class FolderChooserDialog extends DialogFragment {
     }
 
     private void newFolder() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "newFolder");
-        if( current_folder == null )
+        Logger.INSTANCE.d(TAG, "newFolder");
+        if (current_folder == null)
             return;
-        if( canWrite() ) {
+        if (canWrite()) {
             final View dialog_view = LayoutInflater.from(getActivity()).inflate(R.layout.alertdialog_edittext, null);
             final EditText edit_text = dialog_view.findViewById(R.id.edit_text);
 
@@ -389,34 +366,25 @@ public class FolderChooserDialog extends DialogFragment {
                     .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if( edit_text.getText().length() == 0 ) {
+                            if (edit_text.getText().length() == 0) {
                                 // do nothing
-                            }
-                            else {
+                            } else {
                                 try {
                                     String new_folder_name = current_folder.getAbsolutePath() + File.separator + edit_text.getText().toString();
-                                    if( MyDebug.LOG )
-                                        Log.d(TAG, "create new folder: " + new_folder_name);
+                                    Logger.INSTANCE.d(TAG, "create new folder: " + new_folder_name);
                                     File new_folder = new File(new_folder_name);
-                                    if( new_folder.exists() ) {
-                                        if( MyDebug.LOG )
-                                            Log.d(TAG, "folder already exists");
+                                    if (new_folder.exists()) {
+                                        Logger.INSTANCE.d(TAG, "folder already exists");
                                         Toast.makeText(getActivity(), R.string.folder_exists, Toast.LENGTH_SHORT).show();
-                                    }
-                                    else if( new_folder.mkdirs() ) {
-                                        if( MyDebug.LOG )
-                                            Log.d(TAG, "created new folder");
+                                    } else if (new_folder.mkdirs()) {
+                                        Logger.INSTANCE.d(TAG, "created new folder");
                                         refreshList(current_folder);
-                                    }
-                                    else {
-                                        if( MyDebug.LOG )
-                                            Log.d(TAG, "failed to create new folder");
+                                    } else {
+                                        Logger.INSTANCE.d(TAG, "failed to create new folder");
                                         Toast.makeText(getActivity(), R.string.failed_create_folder, Toast.LENGTH_SHORT).show();
                                     }
-                                }
-                                catch(Exception e) {
-                                    if( MyDebug.LOG )
-                                        Log.d(TAG, "exception trying to create new folder");
+                                } catch (Exception e) {
+                                    Logger.INSTANCE.d(TAG, "exception trying to create new folder");
                                     e.printStackTrace();
                                     Toast.makeText(getActivity(), R.string.failed_create_folder, Toast.LENGTH_SHORT).show();
                                 }
@@ -426,8 +394,7 @@ public class FolderChooserDialog extends DialogFragment {
                     .setNegativeButton(android.R.string.cancel, null)
                     .create();
             dialog.show();
-        }
-        else {
+        } else {
             Toast.makeText(getActivity(), R.string.cant_write_folder, Toast.LENGTH_SHORT).show();
         }
     }

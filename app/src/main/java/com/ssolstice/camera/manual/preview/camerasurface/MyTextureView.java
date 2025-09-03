@@ -4,6 +4,7 @@ import com.ssolstice.camera.manual.MyDebug;
 import com.ssolstice.camera.manual.cameracontroller.CameraController;
 import com.ssolstice.camera.manual.cameracontroller.CameraControllerException;
 import com.ssolstice.camera.manual.preview.Preview;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,13 +21,13 @@ public class MyTextureView extends TextureView implements CameraSurface {
     private static final String TAG = "MyTextureView";
 
     private final Preview preview;
-    private final int [] measure_spec = new int[2];
+    private final int[] measure_spec = new int[2];
 
     public MyTextureView(Context context, Preview preview) {
         super(context);
         this.preview = preview;
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "new MyTextureView");
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "new MyTextureView");
         }
 
         // Install a TextureView.SurfaceTextureListener so we get notified when the
@@ -41,14 +42,11 @@ public class MyTextureView extends TextureView implements CameraSurface {
 
     @Override
     public void setPreviewDisplay(CameraController camera_controller) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "setPreviewDisplay");
+        Logger.INSTANCE.d(TAG, "setPreviewDisplay");
         try {
             camera_controller.setPreviewTexture(this);
-        }
-        catch(CameraControllerException e) {
-            if( MyDebug.LOG )
-                Log.e(TAG, "Failed to set preview display: " + e.getMessage());
+        } catch (CameraControllerException e) {
+            Log.e(TAG, "Failed to set preview display: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -71,8 +69,7 @@ public class MyTextureView extends TextureView implements CameraSurface {
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onMeasure: " + widthSpec + " x " + heightSpec);
+        Logger.INSTANCE.d(TAG, "onMeasure: " + widthSpec + " x " + heightSpec);
         preview.getMeasureSpec(measure_spec, widthSpec, heightSpec);
         super.onMeasure(measure_spec[0], measure_spec[1]);
     }

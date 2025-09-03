@@ -8,6 +8,7 @@ import android.util.SizeF;
  */
 public abstract class CameraControllerManager {
     public abstract int getNumberOfCameras();
+
     /** Returns whether the supplied cameraId is front, back or external.
      */
     public abstract CameraController.Facing getFacing(int cameraId);

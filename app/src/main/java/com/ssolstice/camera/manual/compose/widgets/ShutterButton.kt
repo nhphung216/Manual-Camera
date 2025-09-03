@@ -1,10 +1,13 @@
 package com.ssolstice.camera.manual.compose.widgets
 
+import android.view.MotionEvent
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,23 +15,31 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.dp
 import com.ssolstice.camera.manual.compose.RecordColor
 import com.ssolstice.camera.manual.compose.WhiteColor
 
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ShutterButton(
     isPhotoMode: Boolean,
     isRecording: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    onLongPress: () -> Unit
+    onLongClick: () -> Unit,
+    onActionUp: () -> Unit
 ) {
     val innerColor = if (isPhotoMode) {
         WhiteColor
@@ -41,25 +52,40 @@ fun ShutterButton(
         animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy)
     )
 
+    var isLongPress by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
             .size(80.dp)
             .scale(scale)
+            // Long click + normal click
+            .combinedClickable(onClick = {
+                if (!isLongPress) {
+                    onClick()
+                }
+                isLongPress = false
+            }, onLongClick = {
+                onLongClick()
+                isLongPress = true
+            })
             .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = { onClick() },
-                    onLongPress = {
-                        if (isPhotoMode) onLongPress()
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        when {
+                            event.changes.any { it.changedToUpIgnoreConsumed() } -> {
+                                onActionUp()
+                                isLongPress = false
+                            }
+                        }
                     }
-                )
-            },
-        contentAlignment = Alignment.Center
+                }
+            }, contentAlignment = Alignment.Center
     ) {
         // Outer ring
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawCircle(
-                color = WhiteColor,
-                style = Stroke(width = 4.dp.toPx())
+                color = WhiteColor, style = Stroke(width = 4.dp.toPx())
             )
         }
 

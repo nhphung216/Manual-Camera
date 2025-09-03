@@ -44,7 +44,7 @@ public class PreferenceKeys {
     public static final String CameraAPIPreferenceKey = "preference_camera_api";
 
     private static String getCameraIDKey(int cameraId, String cameraIdSPhysical) {
-        if( cameraIdSPhysical != null )
+        if (cameraIdSPhysical != null)
             return cameraId + "_" + cameraIdSPhysical;
         else
             return String.valueOf(cameraId);
@@ -335,7 +335,7 @@ public class PreferenceKeys {
     public static String getVideoFPSPreferenceKey(int cameraId, String cameraIdSPhysical) {
         // for cameraId==0 and cameraIdSPhysical==null, we return preference_video_fps instead of preference_video_fps_0, for
         // backwards compatibility for people upgrading
-        return "preference_video_fps" + ((cameraId==0 && cameraIdSPhysical==null) ? "" : ("_"+getCameraIDKey(cameraId, cameraIdSPhysical)));
+        return "preference_video_fps" + ((cameraId == 0 && cameraIdSPhysical == null) ? "" : ("_" + getCameraIDKey(cameraId, cameraIdSPhysical)));
     }
 
     public static String getVideoCaptureRatePreferenceKey(int cameraId, String cameraIdSPhysical) {
@@ -389,5 +389,5 @@ public class PreferenceKeys {
     public static final String ShutterSoundPreferenceKey = "preference_shutter_sound";
 
     public static final String ImmersiveModePreferenceKey = "preference_immersive_mode";
-    public static final String AddYPRToComments="preference_comment_ypr";
+    public static final String AddYPRToComments = "preference_comment_ypr";
 }

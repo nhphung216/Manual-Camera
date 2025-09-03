@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.ssolstice.camera.manual.ui.MyEditTextPreference;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import java.util.Locale;
 
@@ -21,7 +22,7 @@ public class PreferenceSubPhoto extends PreferenceSubScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate");
+        Logger.INSTANCE.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_sub_photo);
 
@@ -110,8 +111,7 @@ public class PreferenceSubPhoto extends PreferenceSubScreen {
         {
             // remove preference_category_photo_debugging category if empty (which will be the case for old api)
             PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_photo_debugging");
-            if (MyDebug.LOG)
-                Log.d(TAG, "preference_category_photo_debugging children: " + pg.getPreferenceCount());
+            Logger.INSTANCE.d(TAG, "preference_category_photo_debugging children: " + pg.getPreferenceCount());
             if (pg.getPreferenceCount() == 0) {
                 PreferenceGroup parent = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
                 parent.removePreference(pg);
@@ -132,7 +132,7 @@ public class PreferenceSubPhoto extends PreferenceSubScreen {
             }
         }
 
-        Log.d(TAG, "onCreate done");
+        Logger.INSTANCE.d(TAG, "onCreate done");
     }
 
     private void updatePreferenceSummaries(PreferenceGroup group, SharedPreferences sharedPreferences) {

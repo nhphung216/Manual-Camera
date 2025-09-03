@@ -4,6 +4,8 @@ import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
+import com.ssolstice.camera.manual.utils.Logger;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -27,8 +29,8 @@ public class TextFormatter {
      */
     public static String getDateString(String preference_stamp_dateformat, Date date) {
         String date_stamp = "";
-        if( !preference_stamp_dateformat.equals("preference_stamp_dateformat_none") ) {
-            switch(preference_stamp_dateformat) {
+        if (!preference_stamp_dateformat.equals("preference_stamp_dateformat_none")) {
+            switch (preference_stamp_dateformat) {
                 case "preference_stamp_dateformat_yyyymmdd":
                     // use dashes instead of slashes - this should follow https://en.wikipedia.org/wiki/ISO_8601
                     date_stamp = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
@@ -52,8 +54,8 @@ public class TextFormatter {
      */
     public static String getTimeString(String preference_stamp_timeformat, Date date) {
         String time_stamp = "";
-        if( !preference_stamp_timeformat.equals("preference_stamp_timeformat_none") ) {
-            switch(preference_stamp_timeformat) {
+        if (!preference_stamp_timeformat.equals("preference_stamp_timeformat_none")) {
+            switch (preference_stamp_timeformat) {
                 case "preference_stamp_timeformat_12hour":
                     time_stamp = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault()).format(date);
                     break;
@@ -71,7 +73,7 @@ public class TextFormatter {
     private String getDistanceString(double distance, String preference_units_distance) {
         double converted_distance = distance;
         String units = context.getResources().getString(R.string.metres_abbreviation);
-        if( preference_units_distance.equals("preference_units_distance_ft") ) {
+        if (preference_units_distance.equals("preference_units_distance_ft")) {
             converted_distance = 3.28084 * distance;
             units = context.getResources().getString(R.string.feet_abbreviation);
         }
@@ -84,28 +86,26 @@ public class TextFormatter {
      */
     public String getGPSString(String preference_stamp_gpsformat, String preference_units_distance, boolean store_location, Location location, boolean store_geo_direction, double geo_direction) {
         String gps_stamp = "";
-        if( !preference_stamp_gpsformat.equals("preference_stamp_gpsformat_none") ) {
-            if( store_location ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "location: " + location);
-                if( preference_stamp_gpsformat.equals("preference_stamp_gpsformat_dms") )
+        if (!preference_stamp_gpsformat.equals("preference_stamp_gpsformat_none")) {
+            if (store_location) {
+                Logger.INSTANCE.d(TAG, "location: " + location);
+                if (preference_stamp_gpsformat.equals("preference_stamp_gpsformat_dms"))
                     gps_stamp += LocationSupplier.locationToDMS(location.getLatitude()) + ", " + LocationSupplier.locationToDMS(location.getLongitude());
                 else
                     gps_stamp += Location.convert(location.getLatitude(), Location.FORMAT_DEGREES) + ", " + Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
-                if( location.hasAltitude() ) {
+                if (location.hasAltitude()) {
                     gps_stamp += ", " + getDistanceString(location.getAltitude(), preference_units_distance);
                 }
             }
-            if( store_geo_direction ) {
-                float geo_angle = (float)Math.toDegrees(geo_direction);
-                if( geo_angle < 0.0f ) {
+            if (store_geo_direction) {
+                float geo_angle = (float) Math.toDegrees(geo_direction);
+                if (geo_angle < 0.0f) {
                     geo_angle += 360.0f;
                 }
-                if( MyDebug.LOG )
-                    Log.d(TAG, "geo_angle: " + geo_angle);
-                if( gps_stamp.length() > 0 )
+                Logger.INSTANCE.d(TAG, "geo_angle: " + geo_angle);
+                if (gps_stamp.length() > 0)
                     gps_stamp += ", ";
-                gps_stamp += String.valueOf(Math.round(geo_angle)) + (char)0x00B0;
+                gps_stamp += String.valueOf(Math.round(geo_angle)) + (char) 0x00B0;
             }
         }
         // don't log gps_stamp, in case of privacy!
@@ -113,10 +113,10 @@ public class TextFormatter {
     }
 
     public static String formatTimeMS(long time_ms) {
-        int ms = (int) (time_ms) % 1000 ;
-        int seconds = (int) (time_ms / 1000) % 60 ;
-        int minutes = (int) ((time_ms / (1000*60)) % 60);
-        int hours   = (int) ((time_ms / (1000*60*60)));
+        int ms = (int) (time_ms) % 1000;
+        int seconds = (int) (time_ms / 1000) % 60;
+        int minutes = (int) ((time_ms / (1000 * 60)) % 60);
+        int hours = (int) ((time_ms / (1000 * 60 * 60)));
         return String.format(Locale.getDefault(), "%02d:%02d:%02d,%03d", hours, minutes, seconds, ms);
     }
 

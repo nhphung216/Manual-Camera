@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.ssolstice.camera.manual.ui.MyEditTextPreference;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import java.util.Locale;
 
@@ -21,8 +22,7 @@ public class PreferenceSubVideo extends PreferenceSubScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (MyDebug.LOG)
-            Log.d(TAG, "onCreate");
+        Logger.INSTANCE.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_sub_video);
         setupDependencies();
@@ -37,7 +37,7 @@ public class PreferenceSubVideo extends PreferenceSubScreen {
             }
         }
 
-        if (MyDebug.LOG) Log.d(TAG, "onCreate done");
+        Logger.INSTANCE.d(TAG, "onCreate done");
     }
 
     private void updatePreferenceSummaries(PreferenceGroup group, SharedPreferences sharedPreferences) {
@@ -111,8 +111,7 @@ public class PreferenceSubVideo extends PreferenceSubScreen {
                         using_saf = true;
                     }
                 }
-                if (MyDebug.LOG)
-                    Log.d(TAG, "using_saf: " + using_saf);
+                Logger.INSTANCE.d(TAG, "using_saf: " + using_saf);
 
                 //pref.setDependency("preference_using_saf");
                 if (using_saf) {
@@ -128,8 +127,7 @@ public class PreferenceSubVideo extends PreferenceSubScreen {
         Preference dependent = findPreference("preference_video_profile_gamma");
         if (dependent != null) { // just in case
             boolean enable_dependent = "gamma".equals(newValue);
-            if (MyDebug.LOG)
-                Log.d(TAG, "clicked video log: " + newValue + " enable_dependent: " + enable_dependent);
+            Logger.INSTANCE.d(TAG, "clicked video log: " + newValue + " enable_dependent: " + enable_dependent);
             dependent.setEnabled(enable_dependent);
         }
     }

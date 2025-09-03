@@ -18,6 +18,7 @@ import com.ssolstice.camera.manual.MyApplicationInterface.VideoMode
 import com.ssolstice.camera.manual.PreferenceKeys
 import com.ssolstice.camera.manual.R
 import com.ssolstice.camera.manual.billing.BillingManager
+import com.ssolstice.camera.manual.utils.AnalyticsLogger
 import com.ssolstice.camera.manual.models.CameraControlModel
 import com.ssolstice.camera.manual.models.ControlOptionModel
 import com.ssolstice.camera.manual.models.OptionRes
@@ -37,11 +38,24 @@ import kotlin.math.max
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
-    private val sharedPrefManager: SharedPrefManager
+    private val sharedPrefManager: SharedPrefManager,
+    private val analyticsLogger: AnalyticsLogger
 ) : ViewModel() {
 
     companion object {
         private const val TAG = "CameraViewModel"
+    }
+
+    fun logFeatureUsed(featureName: String?) {
+        featureName?.let { analyticsLogger.logFeatureUsed(featureName) }
+    }
+
+    fun logViewClicked(viewName: String) {
+        analyticsLogger.logViewClicked(viewName)
+    }
+
+    fun logCustom(eventName: String, params: Map<String, String>) {
+        analyticsLogger.logCustom(eventName, params)
     }
 
     fun savePhotoModesToDb(modes: ArrayList<PhotoModeUiModel>) {
@@ -212,6 +226,8 @@ class CameraViewModel @Inject constructor(
         preview: Preview,
         item: SettingItemModel
     ) {
+        logFeatureUsed("setResolutionSelected ${item.id}")
+
         _resolutionSelected.value = item
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         sharedPreferences.edit {
@@ -231,14 +247,16 @@ class CameraViewModel @Inject constructor(
         preview: Preview, item: SettingItemModel
     ) {
         Log.e(TAG, "setFlashSelected: $item")
+        logFeatureUsed("setFlashSelected ${item.id}")
         _flashSelected.value = item
         preview.updateFlash(item.id)
     }
 
     fun setRawSelected(
-        activity: MainActivity, preview: Preview, item: SettingItemModel
+        activity: MainActivity, item: SettingItemModel
     ) {
         Log.e(TAG, "setRawSelected: $item")
+        logFeatureUsed("setRawSelected ${item.id}")
         _rawSelected.value = item
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -255,6 +273,7 @@ class CameraViewModel @Inject constructor(
         activity: MainActivity, item: SettingItemModel
     ) {
         Log.e(TAG, "setRepeatSelected: $item")
+        logFeatureUsed("setRepeatSelected ${item.id}")
         _repeatSelected.value = item
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         sharedPreferences.edit {
@@ -266,6 +285,7 @@ class CameraViewModel @Inject constructor(
         activity: MainActivity, item: SettingItemModel
     ) {
         Log.e(TAG, "setTimerSelected: $item")
+        logFeatureUsed("setTimerSelected ${item.id}")
         _timerSelected.value = item
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         sharedPreferences.edit {
@@ -279,6 +299,7 @@ class CameraViewModel @Inject constructor(
         preview: Preview,
         item: SettingItemModel
     ) {
+        logFeatureUsed("setSpeedSelected ${item.id}")
         _speedSelected.value = item
         applySpeedSelectedPreview(activity, applicationInterface, preview, item.id.toFloat())
     }
@@ -513,7 +534,7 @@ class CameraViewModel @Inject constructor(
                 icon = rawIcons[index]
             )
             if (model.selected) setRawSelected(
-                activity, preview, model
+                activity, model
             )
             model
         }.toMutableList()
@@ -988,6 +1009,7 @@ class CameraViewModel @Inject constructor(
     val captureRate: StateFlow<Float> = _captureRate
 
     fun setCaptureRate(rate: Float) {
+        logFeatureUsed("setCaptureRate $rate")
         _captureRate.value = rate
     }
 
@@ -998,6 +1020,7 @@ class CameraViewModel @Inject constructor(
     val currentVideoMode: StateFlow<VideoModeUiModel> = _currentVideoMode
 
     fun setVideoModeSelected(newMode: VideoModeUiModel) {
+        logFeatureUsed("setVideoModeSelected ${newMode.mode.name}")
         _currentVideoMode.value = newMode
         _videoModes.value = _videoModes.value.map { it.copy(selected = it.mode == newMode.mode) }
     }
@@ -1006,6 +1029,7 @@ class CameraViewModel @Inject constructor(
     val selectedPhotoOption: StateFlow<OptionRes> = _selectedPhotoOption
 
     fun setSelectedPhotoOption(act: MainActivity, preview: Preview, option: OptionRes) {
+        logFeatureUsed("setSelectedPhotoOption ${option.text}")
         _selectedPhotoOption.value = option
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(act)

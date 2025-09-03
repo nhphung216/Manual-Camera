@@ -9,6 +9,8 @@ import android.hardware.SensorManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.ssolstice.camera.manual.utils.Logger;
+
 /** Handles magnetic sensor.
  */
 class MagneticSensor {
@@ -28,16 +30,12 @@ class MagneticSensor {
     }
 
     void initSensor(final SensorManager mSensorManager) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "initSensor");
-        if( mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "found magnetic sensor");
+        Logger.INSTANCE.d(TAG, "initSensor");
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
+            Logger.INSTANCE.d(TAG, "found magnetic sensor");
             mSensorMagnetic = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        }
-        else {
-            if( MyDebug.LOG )
-                Log.d(TAG, "no support for magnetic sensor");
+        } else {
+            Logger.INSTANCE.d(TAG, "no support for magnetic sensor");
         }
     }
 
@@ -49,26 +47,19 @@ class MagneticSensor {
      */
     void registerMagneticListener(final SensorManager mSensorManager) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(main_activity);
-        if( !magneticListenerIsRegistered ) {
-            if( needsMagneticSensor(sharedPreferences) ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "register magneticListener");
+        if (!magneticListenerIsRegistered) {
+            if (needsMagneticSensor(sharedPreferences)) {
+                Logger.INSTANCE.d(TAG, "register magneticListener");
                 mSensorManager.registerListener(magneticListener, mSensorMagnetic, SensorManager.SENSOR_DELAY_NORMAL);
                 magneticListenerIsRegistered = true;
+            } else {
+                Logger.INSTANCE.d(TAG, "don't register magneticListener as not needed");
             }
-            else {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "don't register magneticListener as not needed");
-            }
-        }
-        else {
-            if( needsMagneticSensor(sharedPreferences) ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "magneticListener already registered");
-            }
-            else {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "magneticListener already registered but no longer needed");
+        } else {
+            if (needsMagneticSensor(sharedPreferences)) {
+                Logger.INSTANCE.d(TAG, "magneticListener already registered");
+            } else {
+                Logger.INSTANCE.d(TAG, "magneticListener already registered but no longer needed");
                 mSensorManager.unregisterListener(magneticListener);
                 magneticListenerIsRegistered = false;
             }
@@ -78,15 +69,12 @@ class MagneticSensor {
     /** Unregisters the magnetic sensor, if it was registered.
      */
     void unregisterMagneticListener(final SensorManager mSensorManager) {
-        if( magneticListenerIsRegistered ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "unregister magneticListener");
+        if (magneticListenerIsRegistered) {
+            Logger.INSTANCE.d(TAG, "unregister magneticListener");
             mSensorManager.unregisterListener(magneticListener);
             magneticListenerIsRegistered = false;
-        }
-        else {
-            if( MyDebug.LOG )
-                Log.d(TAG, "magneticListener wasn't registered");
+        } else {
+            Logger.INSTANCE.d(TAG, "magneticListener wasn't registered");
         }
     }
 
@@ -94,8 +82,7 @@ class MagneticSensor {
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "magneticListener.onAccuracyChanged: " + accuracy);
+            Logger.INSTANCE.d(TAG, "magneticListener.onAccuracyChanged: " + accuracy);
             //accuracy = SensorManager.SENSOR_STATUS_ACCURACY_LOW; // test
             MagneticSensor.this.magnetic_accuracy = accuracy;
             setMagneticAccuracyDialogText(); // update if a dialog is already open for this
@@ -119,11 +106,10 @@ class MagneticSensor {
     };
 
     private void setMagneticAccuracyDialogText() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "setMagneticAccuracyDialogText()");
-        if( magnetic_accuracy_dialog != null ) {
+        Logger.INSTANCE.d(TAG, "setMagneticAccuracyDialogText()");
+        if (magnetic_accuracy_dialog != null) {
             String message = main_activity.getResources().getString(R.string.magnetic_accuracy_info) + " ";
-            switch( magnetic_accuracy ) {
+            switch (magnetic_accuracy) {
                 case SensorManager.SENSOR_STATUS_UNRELIABLE:
                     message += main_activity.getResources().getString(R.string.accuracy_unreliable);
                     break;
@@ -140,8 +126,7 @@ class MagneticSensor {
                     message += main_activity.getResources().getString(R.string.accuracy_unknown);
                     break;
             }
-            if( MyDebug.LOG )
-                Log.d(TAG, "message: " + message);
+            Logger.INSTANCE.d(TAG, "message: " + message);
             magnetic_accuracy_dialog.setMessage(message);
         }
     }
@@ -152,41 +137,27 @@ class MagneticSensor {
      *  the dialog if so.
      */
     void checkMagneticAccuracy() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "checkMagneticAccuracy(): " + magnetic_accuracy);
-        if( magnetic_accuracy != SensorManager.SENSOR_STATUS_UNRELIABLE && magnetic_accuracy != SensorManager.SENSOR_STATUS_ACCURACY_LOW ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "accuracy is good enough (or accuracy not yet known)");
-        }
-        else if( shown_magnetic_accuracy_dialog ) {
+        Logger.INSTANCE.d(TAG, "checkMagneticAccuracy(): " + magnetic_accuracy);
+        if (magnetic_accuracy != SensorManager.SENSOR_STATUS_UNRELIABLE && magnetic_accuracy != SensorManager.SENSOR_STATUS_ACCURACY_LOW) {
+            Logger.INSTANCE.d(TAG, "accuracy is good enough (or accuracy not yet known)");
+        } else if (shown_magnetic_accuracy_dialog) {
             // if we've shown the dialog since application start, then don't show again even if the user didn't click to not show again
-            if( MyDebug.LOG )
-                Log.d(TAG, "already shown_magnetic_accuracy_dialog");
-        }
-        else if( main_activity.getPreview().isTakingPhotoOrOnTimer() || main_activity.getPreview().isVideoRecording() ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "don't disturb whilst taking photo, on timer, or recording video");
-        }
-        else if( main_activity.isCameraInBackground() ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "don't show magnetic accuracy dialog due to camera in background");
+            Logger.INSTANCE.d(TAG, "already shown_magnetic_accuracy_dialog");
+        } else if (main_activity.getPreview().isTakingPhotoOrOnTimer() || main_activity.getPreview().isVideoRecording()) {
+            Logger.INSTANCE.d(TAG, "don't disturb whilst taking photo, on timer, or recording video");
+        } else if (main_activity.isCameraInBackground()) {
+            Logger.INSTANCE.d(TAG, "don't show magnetic accuracy dialog due to camera in background");
             // don't want to show dialog if another is open, or in settings, etc
-        }
-        else {
+        } else {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(main_activity);
-            if( !needsMagneticSensor(sharedPreferences) ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "don't need magnetic sensor");
+            if (!needsMagneticSensor(sharedPreferences)) {
+                Logger.INSTANCE.d(TAG, "don't need magnetic sensor");
                 // note, we shouldn't set shown_magnetic_accuracy_dialog to true here, otherwise we won't pick up if the user enables one of these options
-            }
-            else if( sharedPreferences.contains(PreferenceKeys.MagneticAccuracyPreferenceKey) ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "user selected to no longer show the dialog");
+            } else if (sharedPreferences.contains(PreferenceKeys.MagneticAccuracyPreferenceKey)) {
+                Logger.INSTANCE.d(TAG, "user selected to no longer show the dialog");
                 shown_magnetic_accuracy_dialog = true; // also set this flag, so future calls to checkMagneticAccuracy() will exit without needing to get/read the SharedPreferences
-            }
-            else {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "show dialog for magnetic accuracy");
+            } else {
+                Logger.INSTANCE.d(TAG, "show dialog for magnetic accuracy");
                 shown_magnetic_accuracy_dialog = true;
                 magnetic_accuracy_dialog = main_activity.getMainUI().showInfoDialog(R.string.magnetic_accuracy_title, 0, PreferenceKeys.MagneticAccuracyPreferenceKey);
                 setMagneticAccuracyDialogText();
@@ -197,10 +168,10 @@ class MagneticSensor {
     /* Whether the user preferences indicate that we need the magnetic sensor to be enabled.
      */
     private boolean needsMagneticSensor(SharedPreferences sharedPreferences) {
-        if( main_activity.getApplicationInterface().getGeodirectionPref() ||
+        if (main_activity.getApplicationInterface().getGeodirectionPref() ||
                 sharedPreferences.getBoolean(PreferenceKeys.AddYPRToComments, false) ||
                 sharedPreferences.getBoolean(PreferenceKeys.ShowGeoDirectionLinesPreferenceKey, false) ||
-                sharedPreferences.getBoolean(PreferenceKeys.ShowGeoDirectionPreferenceKey, false) ) {
+                sharedPreferences.getBoolean(PreferenceKeys.ShowGeoDirectionPreferenceKey, false)) {
             return true;
         }
         return false;

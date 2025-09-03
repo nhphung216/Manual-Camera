@@ -7,6 +7,8 @@ import android.app.KeyguardManager;
 import android.os.Build;
 import android.util.Log;
 
+import com.ssolstice.camera.manual.utils.Logger;
+
 public class KeyguardUtils {
     private static final String TAG = "KeyguardUtils";
 
@@ -20,11 +22,9 @@ public class KeyguardUtils {
             keyguardManager.requestDismissKeyguard(activity, new KeyguardManager.KeyguardDismissCallback() {
                 @Override
                 public void onDismissSucceeded() {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "onDismissSucceeded");
+                    Logger.INSTANCE.d(TAG, "onDismissSucceeded");
                     callback.run();
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "onDismissSucceeded: after callback run");
+                    Logger.INSTANCE.d(TAG, "onDismissSucceeded: after callback run");
                 }
             });
         } else {

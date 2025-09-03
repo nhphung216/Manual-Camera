@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.ssolstice.camera.manual.cameracontroller.CameraController;
 import com.ssolstice.camera.manual.MyDebug;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,26 +51,25 @@ public class VideoQualityHandler {
      *                   videoFrameWidth, videoFrameHeight in the profile returned by CamcorderProfile.get()).
      */
     public void initialiseVideoQualityFromProfiles(List<Integer> profiles, List<Dimension2D> dimensions) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "initialiseVideoQualityFromProfiles()");
+        Logger.INSTANCE.d(TAG, "initialiseVideoQualityFromProfiles()");
         video_quality = new ArrayList<>();
         boolean[] done_video_size = null;
-        if( video_sizes != null ) {
+        if (video_sizes != null) {
             done_video_size = new boolean[video_sizes.size()];
-            for(int i=0;i<video_sizes.size();i++)
+            for (int i = 0; i < video_sizes.size(); i++)
                 done_video_size[i] = false;
         }
-        if( profiles.size() != dimensions.size() ) {
-            Log.e(TAG, "profiles and dimensions have unequal sizes");
+        if (profiles.size() != dimensions.size()) {
+            Logger.INSTANCE.e(TAG, "profiles and dimensions have unequal sizes");
             throw new RuntimeException(); // this is a programming error
         }
-        for(int i=0;i<profiles.size();i++) {
+        for (int i = 0; i < profiles.size(); i++) {
             Dimension2D dim = dimensions.get(i);
             addVideoResolutions(done_video_size, profiles.get(i), dim.width, dim.height);
         }
-        if( MyDebug.LOG ) {
-            for(int i=0;i<video_quality.size();i++) {
-                Log.d(TAG, "supported video quality: " + video_quality.get(i));
+        if (MyDebug.LOG) {
+            for (int i = 0; i < video_quality.size(); i++) {
+                Logger.INSTANCE.d(TAG, "supported video quality: " + video_quality.get(i));
             }
         }
     }
@@ -85,76 +85,66 @@ public class VideoQualityHandler {
     }
 
     public void sortVideoSizes() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "sortVideoSizes()");
+        Logger.INSTANCE.d(TAG, "sortVideoSizes()");
         Collections.sort(this.video_sizes, new SortVideoSizesComparator());
-        if( MyDebug.LOG ) {
-            for(CameraController.Size size : video_sizes) {
-                Log.d(TAG, "    supported video size: " + size.width + ", " + size.height);
+        if (MyDebug.LOG) {
+            for (CameraController.Size size : video_sizes) {
+                Logger.INSTANCE.d(TAG, "    supported video size: " + size.width + ", " + size.height);
             }
         }
     }
 
     private void addVideoResolutions(boolean[] done_video_size, int base_profile, int min_resolution_w, int min_resolution_h) {
-        if( video_sizes == null ) {
+        if (video_sizes == null) {
             return;
         }
-        if( MyDebug.LOG )
-            Log.d(TAG, "profile " + base_profile + " is resolution " + min_resolution_w + " x " + min_resolution_h);
-        for(int i=0;i<video_sizes.size();i++) {
-            if( done_video_size[i] )
+        Logger.INSTANCE.d(TAG, "profile " + base_profile + " is resolution " + min_resolution_w + " x " + min_resolution_h);
+        for (int i = 0; i < video_sizes.size(); i++) {
+            if (done_video_size[i])
                 continue;
             CameraController.Size size = video_sizes.get(i);
-            if( size.width == min_resolution_w && size.height == min_resolution_h ) {
+            if (size.width == min_resolution_w && size.height == min_resolution_h) {
                 String str = String.valueOf(base_profile);
                 video_quality.add(str);
                 done_video_size[i] = true;
-                if( MyDebug.LOG )
-                    Log.d(TAG, "added: " + i + ":"+ str + " " + size.width + "x" + size.height);
-            }
-            else if( base_profile == CamcorderProfile.QUALITY_LOW || size.width * size.height >= min_resolution_w*min_resolution_h ) {
+                Logger.INSTANCE.d(TAG, "added: " + i + ":" + str + " " + size.width + "x" + size.height);
+            } else if (base_profile == CamcorderProfile.QUALITY_LOW || size.width * size.height >= min_resolution_w * min_resolution_h) {
                 String str = base_profile + "_r" + size.width + "x" + size.height;
                 video_quality.add(str);
                 done_video_size[i] = true;
-                if( MyDebug.LOG )
-                    Log.d(TAG, "added: " + i + ":" + str);
+                Logger.INSTANCE.d(TAG, "added: " + i + ":" + str);
             }
         }
     }
 
     public List<String> getSupportedVideoQuality() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "getSupportedVideoQuality");
+        Logger.INSTANCE.d(TAG, "getSupportedVideoQuality");
         return this.video_quality;
     }
 
     int getCurrentVideoQualityIndex() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "getCurrentVideoQualityIndex");
+        Logger.INSTANCE.d(TAG, "getCurrentVideoQualityIndex");
         return this.current_video_quality;
     }
 
     void setCurrentVideoQualityIndex(int current_video_quality) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "setCurrentVideoQualityIndex: " + current_video_quality);
+        Logger.INSTANCE.d(TAG, "setCurrentVideoQualityIndex: " + current_video_quality);
         this.current_video_quality = current_video_quality;
     }
 
     public String getCurrentVideoQuality() {
-        if( current_video_quality == -1 )
+        if (current_video_quality == -1)
             return null;
         return video_quality.get(current_video_quality);
     }
 
     public List<CameraController.Size> getSupportedVideoSizes() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "getSupportedVideoSizes");
+        Logger.INSTANCE.d(TAG, "getSupportedVideoSizes");
         return this.video_sizes;
     }
 
     public List<CameraController.Size> getSupportedVideoSizesHighSpeed() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "getSupportedVideoSizesHighSpeed");
+        Logger.INSTANCE.d(TAG, "getSupportedVideoSizesHighSpeed");
         return this.video_sizes_high_speed;
     }
 
@@ -172,17 +162,16 @@ public class VideoQualityHandler {
     }
 
     CameraController.Size findVideoSizeForFrameRate(int width, int height, double fps, boolean return_closest) {
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "findVideoSizeForFrameRate");
-            Log.d(TAG, "width: " + width);
-            Log.d(TAG, "height: " + height);
-            Log.d(TAG, "fps: " + fps);
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "findVideoSizeForFrameRate");
+            Logger.INSTANCE.d(TAG, "width: " + width);
+            Logger.INSTANCE.d(TAG, "height: " + height);
+            Logger.INSTANCE.d(TAG, "fps: " + fps);
         }
         CameraController.Size requested_size = new CameraController.Size(width, height);
         CameraController.Size best_video_size = CameraController.CameraFeatures.findSize(this.getSupportedVideoSizes(), requested_size, fps, return_closest);
-        if( best_video_size == null && this.getSupportedVideoSizesHighSpeed() != null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "need to check high speed sizes");
+        if (best_video_size == null && this.getSupportedVideoSizesHighSpeed() != null) {
+            Logger.INSTANCE.d(TAG, "need to check high speed sizes");
             // check high speed
             best_video_size = CameraController.CameraFeatures.findSize(this.getSupportedVideoSizesHighSpeed(), requested_size, fps, return_closest);
         }
@@ -191,8 +180,8 @@ public class VideoQualityHandler {
 
     private static CameraController.Size getMaxVideoSize(List<CameraController.Size> sizes) {
         int max_width = -1, max_height = -1;
-        for(CameraController.Size size : sizes) {
-            if( max_width == -1 || size.width*size.height > max_width*max_height ) {
+        for (CameraController.Size size : sizes) {
+            if (max_width == -1 || size.width * size.height > max_width * max_height) {
                 max_width = size.width;
                 max_height = size.height;
             }

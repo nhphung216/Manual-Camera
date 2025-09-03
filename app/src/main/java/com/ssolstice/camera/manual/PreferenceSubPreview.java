@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.ssolstice.camera.manual.ui.ArraySeekBarPreference;
 import com.ssolstice.camera.manual.ui.MyEditTextPreference;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import java.util.Locale;
 
@@ -21,19 +22,19 @@ public class PreferenceSubPreview extends PreferenceSubScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (MyDebug.LOG) Log.d(TAG, "onCreate");
+        Logger.INSTANCE.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_sub_preview);
 
         final Bundle bundle = getArguments();
 
         final boolean using_android_l = bundle.getBoolean("using_android_l");
-        if (MyDebug.LOG) Log.d(TAG, "using_android_l: " + using_android_l);
+        Logger.INSTANCE.d(TAG, "using_android_l: " + using_android_l);
 
         {
             ListPreference pref = (ListPreference) findPreference("preference_ghost_image");
             pref.setOnPreferenceChangeListener((arg0, newValue) -> {
-                if (MyDebug.LOG) Log.d(TAG, "clicked ghost image: " + newValue);
+                Logger.INSTANCE.d(TAG, "clicked ghost image: " + newValue);
                 if (newValue.equals("preference_ghost_image_selected")) {
                     MainActivity main_activity = (MainActivity) PreferenceSubPreview.this.getActivity();
                     main_activity.openGhostImageChooserDialogSAF(true);
@@ -74,7 +75,7 @@ public class PreferenceSubPreview extends PreferenceSubScreen {
             }
         }
 
-        if (MyDebug.LOG) Log.d(TAG, "onCreate done");
+        Logger.INSTANCE.d(TAG, "onCreate done");
     }
 
     private void updatePreferenceSummaries(PreferenceGroup group, SharedPreferences sharedPreferences) {

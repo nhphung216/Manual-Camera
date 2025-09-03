@@ -37,7 +37,11 @@ fun WhiteBalanceSlider(
 ) {
     var sliderPosition by remember { mutableFloatStateOf(value) }
 
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
         // Hiển thị giá trị Kelvin
         Text(
             text = "${sliderPosition.toInt()} K",
@@ -54,7 +58,8 @@ fun WhiteBalanceSlider(
                 .pointerInput(Unit) {
                     detectTapGestures { offset ->
                         val percent = (offset.x / size.width).coerceIn(0f, 1f)
-                        val newValue = valueRange.start + percent * (valueRange.endInclusive - valueRange.start)
+                        val newValue =
+                            valueRange.start + percent * (valueRange.endInclusive - valueRange.start)
                         sliderPosition = newValue
                         onValueChange(newValue)
                     }
@@ -74,7 +79,8 @@ fun WhiteBalanceSlider(
                 )
 
                 // Vẽ thumb (nút)
-                val percent = (sliderPosition - valueRange.start) / (valueRange.endInclusive - valueRange.start)
+                val percent =
+                    (sliderPosition - valueRange.start) / (valueRange.endInclusive - valueRange.start)
                 val thumbX = percent * size.width
                 drawCircle(
                     color = Color.White,

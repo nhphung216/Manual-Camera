@@ -14,7 +14,10 @@ import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+
 import android.util.Log;
+
+import com.ssolstice.camera.manual.utils.Logger;
 
 /** Handles listening for GPS location (both coarse and fine).
  */
@@ -23,7 +26,7 @@ public class LocationSupplier {
 
     private final Context context;
     private final LocationManager locationManager;
-    private MyLocationListener [] locationListeners;
+    private MyLocationListener[] locationListeners;
     private volatile boolean test_force_no_location; // if true, always return null location; must be volatile for test project setting the state
 
     private Location cached_location;
@@ -31,16 +34,15 @@ public class LocationSupplier {
 
     LocationSupplier(Context context) {
         this.context = context;
-        locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
     private Location getCachedLocation() {
-        if( cached_location != null ) {
+        if (cached_location != null) {
             long time_ms = System.currentTimeMillis();
-            if( time_ms <= cached_location_ms + 20000 ) {
+            if (time_ms <= cached_location_ms + 20000) {
                 return cached_location;
-            }
-            else {
+            } else {
                 cached_location = null;
             }
         }
@@ -52,17 +54,15 @@ public class LocationSupplier {
      *  coarse location overriding a better fine location.
      */
     private void cacheLocation() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "cacheLocation");
+        Logger.INSTANCE.d(TAG, "cacheLocation");
         Location location = getLocation();
-        if( location == null ) {
+        if (location == null) {
             // this isn't an error as it can happen that we receive a call to onLocationChanged() after
             // having freed the location listener (possibly because LocationManager had already queued
             // a call to onLocationChanged?
             // we should not set cached_location to null in such cases
-            Log.d(TAG, "### asked to cache location when location not available");
-        }
-        else {
+            Logger.INSTANCE.d(TAG, "### asked to cache location when location not available");
+        } else {
             cached_location = new Location(location);
             cached_location_ms = System.currentTimeMillis();
         }
@@ -90,25 +90,25 @@ public class LocationSupplier {
      * @return Returns null if location not available.
      */
     public Location getLocation(LocationInfo locationInfo) {
-        if( locationInfo != null )
+        if (locationInfo != null)
             locationInfo.location_was_cached = false; // init
 
-        if( locationListeners == null ) {
+        if (locationListeners == null) {
             // if we have disabled location listening, then don't return a cached location anyway -
             // in theory, callers should have already checked for user permission/setting before calling
             // getLocation(), but just in case we didn't, don't want to return a cached location
             return null;
         }
-        if( test_force_no_location )
+        if (test_force_no_location)
             return null;
         // location listeners should be stored in order best to worst
-        for(MyLocationListener locationListener : locationListeners) {
+        for (MyLocationListener locationListener : locationListeners) {
             Location location = locationListener.getLocation();
-            if( location != null )
+            if (location != null)
                 return location;
         }
         Location location = getCachedLocation();
-        if( location != null && locationInfo != null )
+        if (location != null && locationInfo != null)
             locationInfo.location_was_cached = true;
         return location;
     }
@@ -122,14 +122,13 @@ public class LocationSupplier {
         }
 
         public void onLocationChanged(@NonNull Location location) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "onLocationChanged");
+            Logger.INSTANCE.d(TAG, "onLocationChanged");
             this.test_has_received_location = true;
             // Android camera source claims we need to check lat/long != 0.0d
             // also check for not being null just in case - had a nullpointerexception on Google Play!
-            if( location != null && ( location.getLatitude() != 0.0d || location.getLongitude() != 0.0d ) ) {
-                if( MyDebug.LOG ) {
-                    Log.d(TAG, "received location");
+            if (location != null && (location.getLatitude() != 0.0d || location.getLongitude() != 0.0d)) {
+                if (MyDebug.LOG) {
+                    Logger.INSTANCE.d(TAG, "received location");
                     // don't log location, in case of privacy!
                 }
                 this.location = location;
@@ -138,15 +137,14 @@ public class LocationSupplier {
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            switch( status ) {
+            switch (status) {
                 case LocationProvider.OUT_OF_SERVICE:
-                case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                {
-                    if( MyDebug.LOG ) {
-                        if( status == LocationProvider.OUT_OF_SERVICE )
-                            Log.d(TAG, "location provider out of service");
-                        else if( status == LocationProvider.TEMPORARILY_UNAVAILABLE )
-                            Log.d(TAG, "location provider temporarily unavailable");
+                case LocationProvider.TEMPORARILY_UNAVAILABLE: {
+                    if (MyDebug.LOG) {
+                        if (status == LocationProvider.OUT_OF_SERVICE)
+                            Logger.INSTANCE.d(TAG, "location provider out of service");
+                        else if (status == LocationProvider.TEMPORARILY_UNAVAILABLE)
+                            Logger.INSTANCE.d(TAG, "location provider temporarily unavailable");
                     }
                     this.location = null;
                     this.test_has_received_location = false;
@@ -162,8 +160,7 @@ public class LocationSupplier {
         }
 
         public void onProviderDisabled(@NonNull String provider) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "onProviderDisabled");
+            Logger.INSTANCE.d(TAG, "onProviderDisabled");
             this.location = null;
             this.test_has_received_location = false;
             cached_location = null;
@@ -176,13 +173,12 @@ public class LocationSupplier {
      *         permission!
      */
     boolean setupLocationListener() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "setupLocationListener");
+        Logger.INSTANCE.d(TAG, "setupLocationListener");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         // Define a listener that responds to location updates
         // we only set it up if store_location is true, important for privacy and unnecessary battery use
         boolean store_location = sharedPreferences.getBoolean(PreferenceKeys.LocationPreferenceKey, false);
-        if( store_location && locationListeners == null ) {
+        if (store_location && locationListeners == null) {
             // Note, ContextCompat.checkSelfPermission is meant to handle being called on any Android version, i.e., pre
             // Android Marshmallow it should return true as permissions are set an installation, and can't be switched off by
             // the user. However on Galaxy Nexus Android 4.3 and Nexus 7 (2013) Android 5.1.1, ACCESS_COARSE_LOCATION returns
@@ -190,28 +186,25 @@ public class LocationSupplier {
             // checking behaviour for earlier devices.
             boolean has_coarse_location_permission;
             boolean has_fine_location_permission;
-            if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "check for location permissions");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Logger.INSTANCE.d(TAG, "check for location permissions");
                 has_coarse_location_permission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
                 has_fine_location_permission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-                if( MyDebug.LOG ) {
-                    Log.d(TAG, "has_coarse_location_permission? " + has_coarse_location_permission);
-                    Log.d(TAG, "has_fine_location_permission? " + has_fine_location_permission);
+                if (MyDebug.LOG) {
+                    Logger.INSTANCE.d(TAG, "has_coarse_location_permission? " + has_coarse_location_permission);
+                    Logger.INSTANCE.d(TAG, "has_fine_location_permission? " + has_fine_location_permission);
                 }
                 //has_coarse_location_permission = false; // test
                 //has_fine_location_permission = false; // test
                 // require at least one permission to be present
                 // will be important for Android 12+ where user can grant only coarse permission - we still
                 // want to support geotagging in such cases
-                if( !has_coarse_location_permission && !has_fine_location_permission ) {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "location permission not available");
+                if (!has_coarse_location_permission && !has_fine_location_permission) {
+                    Logger.INSTANCE.d(TAG, "location permission not available");
                     // return false, which tells caller to request permission - we'll call this function again if permission is granted
                     return false;
                 }
-            }
-            else {
+            } else {
                 // permissions always available pre-Android 6
                 has_coarse_location_permission = true;
                 has_fine_location_permission = true;
@@ -224,26 +217,19 @@ public class LocationSupplier {
             // location listeners should be stored in order best to worst
             // also see https://sourceforge.net/p/opencamera/tickets/1/ - need to check provider is available
             // now also need to check for permissions - need to support devices that might have one but not both of fine and coarse permissions supplied
-            if( has_coarse_location_permission && locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER) ) {
+            if (has_coarse_location_permission && locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListeners[1]);
-                if( MyDebug.LOG )
-                    Log.d(TAG, "created coarse (network) location listener");
+                Logger.INSTANCE.d(TAG, "created coarse (network) location listener");
+            } else {
+                Logger.INSTANCE.d(TAG, "don't have a NETWORK_PROVIDER");
             }
-            else {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "don't have a NETWORK_PROVIDER");
-            }
-            if( has_fine_location_permission && locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER) ) {
+            if (has_fine_location_permission && locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListeners[0]);
-                if( MyDebug.LOG )
-                    Log.d(TAG, "created fine (gps) location listener");
+                Logger.INSTANCE.d(TAG, "created fine (gps) location listener");
+            } else {
+                Logger.INSTANCE.d(TAG, "don't have a GPS_PROVIDER");
             }
-            else {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "don't have a GPS_PROVIDER");
-            }
-        }
-        else if( !store_location ) {
+        } else if (!store_location) {
             freeLocationListeners();
         }
         // important to return true even if we didn't set up decide the location listeners - as
@@ -253,44 +239,40 @@ public class LocationSupplier {
     }
 
     void freeLocationListeners() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "freeLocationListeners");
-        if( locationListeners != null ) {
-            if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
+        Logger.INSTANCE.d(TAG, "freeLocationListeners");
+        if (locationListeners != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Android Lint claims we need location permission for LocationManager.removeUpdates().
                 // also see http://stackoverflow.com/questions/32715189/location-manager-remove-updates-permission
-                if( MyDebug.LOG )
-                    Log.d(TAG, "check for location permissions");
+                Logger.INSTANCE.d(TAG, "check for location permissions");
                 boolean has_coarse_location_permission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
                 boolean has_fine_location_permission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-                if( MyDebug.LOG ) {
-                    Log.d(TAG, "has_coarse_location_permission? " + has_coarse_location_permission);
-                    Log.d(TAG, "has_fine_location_permission? " + has_fine_location_permission);
+                if (MyDebug.LOG) {
+                    Logger.INSTANCE.d(TAG, "has_coarse_location_permission? " + has_coarse_location_permission);
+                    Logger.INSTANCE.d(TAG, "has_fine_location_permission? " + has_fine_location_permission);
                 }
                 // require at least one permission to be present
-                if( !has_coarse_location_permission && !has_fine_location_permission ) {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "location permission not available");
+                if (!has_coarse_location_permission && !has_fine_location_permission) {
+                    Logger.INSTANCE.d(TAG, "location permission not available");
                     return;
                 }
             }
-            for(int i=0;i<locationListeners.length;i++) {
+            for (int i = 0; i < locationListeners.length; i++) {
                 locationManager.removeUpdates(locationListeners[i]);
                 locationListeners[i] = null;
             }
             locationListeners = null;
-            if( MyDebug.LOG )
-                Log.d(TAG, "location listeners now freed");
+            Logger.INSTANCE.d(TAG, "location listeners now freed");
         }
     }
 
     // for testing:
 
     public boolean testHasReceivedLocation() {
-        if( locationListeners == null )
+        if (locationListeners == null)
             return false;
-        for(MyLocationListener locationListener : locationListeners) {
-            if( locationListener.test_has_received_location )
+        for (MyLocationListener locationListener : locationListeners) {
+            if (locationListener.test_has_received_location)
                 return true;
         }
         return false;
@@ -304,12 +286,12 @@ public class LocationSupplier {
      *  If we want to assert that they are turned off, then use noLocationListeners.
      */
     public boolean hasLocationListeners() {
-        if( this.locationListeners == null )
+        if (this.locationListeners == null)
             return false;
-        if( this.locationListeners.length != 2 )
+        if (this.locationListeners.length != 2)
             return false;
-        for(MyLocationListener locationListener : locationListeners) {
-            if( locationListener == null )
+        for (MyLocationListener locationListener : locationListeners) {
+            if (locationListener == null)
                 return false;
         }
         return true;
@@ -322,7 +304,7 @@ public class LocationSupplier {
      *  up that we did set some location listeners up).
      */
     public boolean noLocationListeners() {
-        if( this.locationListeners == null )
+        if (this.locationListeners == null)
             return true;
         return false;
     }
@@ -330,23 +312,23 @@ public class LocationSupplier {
     public static String locationToDMS(double coord) {
         String sign = (coord < 0.0) ? "-" : "";
         coord = Math.abs(coord);
-        int intPart = (int)coord;
-        boolean is_zero = (intPart==0);
+        int intPart = (int) coord;
+        boolean is_zero = (intPart == 0);
         String degrees = String.valueOf(intPart);
         double mod = coord - intPart;
 
         coord = mod * 60;
-        intPart = (int)coord;
-        is_zero = is_zero && (intPart==0);
+        intPart = (int) coord;
+        is_zero = is_zero && (intPart == 0);
         mod = coord - intPart;
         String minutes = String.valueOf(intPart);
 
         coord = mod * 60;
-        intPart = (int)coord;
-        is_zero = is_zero && (intPart==0);
+        intPart = (int) coord;
+        is_zero = is_zero && (intPart == 0);
         String seconds = String.valueOf(intPart);
 
-        if( is_zero ) {
+        if (is_zero) {
             // so we don't show -ve for coord that is -ve but smaller than 1"
             sign = "";
         }

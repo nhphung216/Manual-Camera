@@ -111,7 +111,7 @@ fun CameraSettings(
 ) {
     Column(
         modifier = modifier
-            .clickable{}
+            .clickable {}
             .fillMaxWidth()
             .background(Color(0xF0000000))
             .padding(top = 16.dp)
@@ -124,8 +124,8 @@ fun CameraSettings(
         ) {
             Text(
                 stringResource(if (isPhotoMode) R.string.photo_settings else R.string.video_settings),
-                style = MaterialTheme.typography.titleLarge,
-                color = colorMain(),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                color = Color.White,
                 modifier = Modifier.align(Alignment.CenterStart)
             )
             Icon(

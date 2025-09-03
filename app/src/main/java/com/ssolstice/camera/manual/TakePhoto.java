@@ -6,6 +6,8 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ssolstice.camera.manual.utils.Logger;
+
 /** Entry Activity for the "take photo" widget (see MyWidgetProviderTakePhoto).
  *  This redirects to MainActivity, but uses an intent extra/bundle to pass the
  *  "take photo" request.
@@ -20,8 +22,7 @@ public class TakePhoto extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onCreate");
+        Logger.INSTANCE.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
         Intent intent = new Intent(this, MainActivity.class);
@@ -29,14 +30,12 @@ public class TakePhoto extends AppCompatActivity {
         //intent.putExtra(TAKE_PHOTO, true);
         TakePhoto.TAKE_PHOTO = true;
         this.startActivity(intent);
-        if( MyDebug.LOG )
-            Log.d(TAG, "finish");
+        Logger.INSTANCE.d(TAG, "finish");
         this.finish();
     }
 
     protected void onResume() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onResume");
+        Logger.INSTANCE.d(TAG, "onResume");
         super.onResume();
     }
 }

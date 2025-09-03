@@ -63,6 +63,7 @@ import kotlin.math.sqrt
 import kotlin.math.tan
 import androidx.core.view.isVisible
 import androidx.core.graphics.toColorInt
+import com.ssolstice.camera.manual.utils.Logger
 
 class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicationInterface) {
 
@@ -174,7 +175,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         val handler: Handler = Handler(Looper.getMainLooper())
 
         override fun run() {
-            if (MyDebug.LOG) Log.d(TAG, "free_memory_runnable: run")
+            Logger.d(TAG, "free_memory_runnable: run")
             val free_mb = mainActivity.storageUtils!!.freeMemory()
             if (free_mb >= 0) {
                 val new_free_memory_gb = free_mb / 1024.0f
@@ -195,17 +196,17 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         /** Runs on UI thread, after background work is complete.
          */
         private fun onPostExecute(has_new_free_memory: Boolean, new_free_memory_gb: Float) {
-            if (MyDebug.LOG) Log.d(TAG, "free_memory_runnable: onPostExecute")
+            Logger.d(TAG, "free_memory_runnable: onPostExecute")
             if (free_memory_future != null && free_memory_future!!.isCancelled()) {
-                if (MyDebug.LOG) Log.d(TAG, "was cancelled")
+                Logger.d(TAG, "was cancelled")
                 free_memory_future = null
                 return
             }
 
             if (MyDebug.LOG) {
-                Log.d(TAG, "has_new_free_memory: " + has_new_free_memory)
-                Log.d(TAG, "free_memory_gb: " + free_memory_gb)
-                Log.d(TAG, "new_free_memory_gb: " + new_free_memory_gb)
+                Logger.d(TAG, "has_new_free_memory: " + has_new_free_memory)
+                Logger.d(TAG, "free_memory_gb: " + free_memory_gb)
+                Logger.d(TAG, "new_free_memory_gb: " + new_free_memory_gb)
             }
             if (has_new_free_memory && abs(new_free_memory_gb - free_memory_gb) > 0.001f) {
                 free_memory_gb = new_free_memory_gb
@@ -336,7 +337,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     private var OSDLine2: String? = null
 
     init {
-        if (MyDebug.LOG) Log.d(TAG, "DrawPreview")
+        Logger.d(TAG, "DrawPreview")
         this.mainActivity = mainActivity
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         this.applicationInterface = applicationInterface
@@ -436,9 +437,9 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     }
 
     fun onDestroy() {
-        if (MyDebug.LOG) Log.d(TAG, "onDestroy")
+        Logger.d(TAG, "onDestroy")
         if (free_memory_future != null) {
-            if (MyDebug.LOG) Log.d(TAG, "cancel free_memory_future")
+            Logger.d(TAG, "cancel free_memory_future")
             free_memory_future!!.cancel(true)
         }
         // clean up just in case
@@ -569,7 +570,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         rotation =
             (rotation % 360 + 360) % 360 // version of (rotation % 360) that work if rotation is -ve
         /*if( MyDebug.LOG )
-            Log.d(TAG, "    mod rotation: " + rotation);*/
+            Logger.d(TAG, "    mod rotation: " + rotation);*/
         // undo annoying behaviour that getLocationOnScreen takes the rotation into account
         if (system_orientation_portrait) {
             if (rotation == 180 || rotation == 270) {
@@ -587,13 +588,13 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
      * and when ghosting the last image.
      */
     fun updateThumbnail(thumbnail: Bitmap?, is_video: Boolean, want_thumbnail_animation: Boolean) {
-        if (MyDebug.LOG) Log.d(TAG, "updateThumbnail")
+        Logger.d(TAG, "updateThumbnail")
         if (want_thumbnail_animation && applicationInterface.thumbnailAnimationPref) {
-            if (MyDebug.LOG) Log.d(TAG, "thumbnail_anim started")
+            Logger.d(TAG, "thumbnail_anim started")
             thumbnail_anim = true
             thumbnail_anim_start_ms = System.currentTimeMillis()
             test_thumbnail_anim_count++
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "test_thumbnail_anim_count is now: " + test_thumbnail_anim_count
             )
@@ -615,22 +616,22 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     /** Displays the thumbnail as a fullscreen image (used for pause preview option).
      */
     fun showLastImage() {
-        if (MyDebug.LOG) Log.d(TAG, "showLastImage")
+        Logger.d(TAG, "showLastImage")
         this.show_last_image = true
     }
 
     fun clearLastImage() {
-        if (MyDebug.LOG) Log.d(TAG, "clearLastImage")
+        Logger.d(TAG, "clearLastImage")
         this.show_last_image = false
     }
 
     fun allowGhostImage() {
-        if (MyDebug.LOG) Log.d(TAG, "allowGhostImage")
+        Logger.d(TAG, "allowGhostImage")
         if (last_thumbnail != null) this.allow_ghost_last_image = true
     }
 
     fun clearGhostImage() {
-        if (MyDebug.LOG) Log.d(TAG, "clearGhostImage")
+        Logger.d(TAG, "clearGhostImage")
         this.allow_ghost_last_image = false
     }
 
@@ -649,17 +650,17 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     }
 
     fun turnFrontScreenFlashOn() {
-        if (MyDebug.LOG) Log.d(TAG, "turnFrontScreenFlashOn")
+        Logger.d(TAG, "turnFrontScreenFlashOn")
         front_screen_flash = true
     }
 
     fun onCaptureStarted() {
-        if (MyDebug.LOG) Log.d(TAG, "onCaptureStarted")
+        Logger.d(TAG, "onCaptureStarted")
         capture_started = true
     }
 
     fun onContinuousFocusMove(start: Boolean) {
-        if (MyDebug.LOG) Log.d(TAG, "onContinuousFocusMove: " + start)
+        Logger.d(TAG, "onContinuousFocusMove: " + start)
         if (start) {
             if (!continuous_focus_moving) { // don't restart the animation if already in motion
                 continuous_focus_moving = true
@@ -670,7 +671,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     }
 
     fun clearContinuousFocusMove() {
-        if (MyDebug.LOG) Log.d(TAG, "clearContinuousFocusMove")
+        Logger.d(TAG, "clearContinuousFocusMove")
         if (continuous_focus_moving) {
             continuous_focus_moving = false
             continuous_focus_moving_ms = 0
@@ -699,10 +700,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
      * should be used when the settings may have changed.
      */
     fun updateSettings() {
-        if (MyDebug.LOG) Log.d(TAG, "updateSettings")
+        Logger.d(TAG, "updateSettings")
 
         photoMode = applicationInterface.photoMode
-        if (MyDebug.LOG) Log.d(TAG, "photoMode: $photoMode")
+        Logger.d(TAG, "photoMode: $photoMode")
 
         show_time_pref = sharedPreferences.getBoolean(PreferenceKeys.ShowTimePreferenceKey, true)
         // reset in case user changes the preference:
@@ -780,7 +781,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         if (ghost_image_pref == "preference_ghost_image_selected") {
             val new_ghost_selected_image_pref: String =
                 sharedPreferences.getString(PreferenceKeys.GhostSelectedImageSAFPreferenceKey, "")!!
-            if (MyDebug.LOG) Log.d(
+            Logger.d(
                 TAG,
                 "new_ghost_selected_image_pref: " + new_ghost_selected_image_pref
             )
@@ -789,7 +790,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 mainActivity.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager?
             val is_locked =
                 keyguard_manager != null && keyguard_manager.inKeyguardRestrictedInputMode()
-            if (MyDebug.LOG) Log.d(TAG, "is_locked?: " + is_locked)
+            Logger.d(TAG, "is_locked?: " + is_locked)
 
             if (is_locked) {
                 // don't show selected image when device locked, as this could be a security flaw
@@ -799,7 +800,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     ghost_selected_image_pref = "" // so we'll load the bitmap again when unlocked
                 }
             } else if (new_ghost_selected_image_pref != ghost_selected_image_pref) {
-                if (MyDebug.LOG) Log.d(TAG, "ghost_selected_image_pref has changed")
+                Logger.d(TAG, "ghost_selected_image_pref has changed")
                 ghost_selected_image_pref = new_ghost_selected_image_pref
                 if (ghost_selected_image_bitmap != null) {
                     ghost_selected_image_bitmap!!.recycle()
@@ -903,7 +904,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
     private fun updateCachedViewAngles(time_ms: Long) {
         if (last_view_angles_time == 0L || time_ms > last_view_angles_time + 10000) {
-            if (MyDebug.LOG) Log.d(TAG, "update cached view angles")
+            Logger.d(TAG, "update cached view angles")
             // don't call this too often, for UI performance
             // note that updateSettings will force the time to reset anyway, but we check every so often
             // again just in case...
@@ -919,7 +920,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
      */
     @Throws(IOException::class)
     private fun loadBitmap(uri: Uri): Bitmap {
-        if (MyDebug.LOG) Log.d(TAG, "loadBitmap: " + uri)
+        Logger.d(TAG, "loadBitmap: " + uri)
         var bitmap: Bitmap?
         try {
             //bitmap = MediaStore.Images.Media.getBitmap(main_activity.getContentResolver(), uri);
@@ -943,10 +944,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     val ratio = ceil(image_size.toDouble() / display_size).toInt()
                     sample_size = Integer.highestOneBit(ratio)
                     if (MyDebug.LOG) {
-                        Log.d(TAG, "display_size: " + display_size)
-                        Log.d(TAG, "image_size: " + image_size)
-                        Log.d(TAG, "ratio: " + ratio)
-                        Log.d(TAG, "sample_size: " + sample_size)
+                        Logger.d(TAG, "display_size: " + display_size)
+                        Logger.d(TAG, "image_size: " + image_size)
+                        Logger.d(TAG, "ratio: " + ratio)
+                        Logger.d(TAG, "sample_size: " + sample_size)
                     }
                 } else {
                     if (MyDebug.LOG) Log.e(TAG, "failed to obtain width/height of bitmap")
@@ -960,8 +961,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             bitmap = BitmapFactory.decodeStream(input, null, options)
             if (input != null) input.close()
             if (MyDebug.LOG && bitmap != null) {
-                Log.d(TAG, "bitmap width: " + bitmap.getWidth())
-                Log.d(TAG, "bitmap height: " + bitmap.getHeight())
+                Logger.d(TAG, "bitmap width: " + bitmap.getWidth())
+                Logger.d(TAG, "bitmap height: " + bitmap.getHeight())
             }
         } catch (e: Exception) {
             // Although Media.getBitmap() is documented as only throwing FileNotFoundException, IOException
@@ -1398,10 +1399,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     }
                     if (abs(preview_aspect_ratio - crop_ratio) > 1.0e-5) {
                         /*if( MyDebug.LOG ) {
-                            Log.d(TAG, "crop_ratio: " + crop_ratio);
-                            Log.d(TAG, "preview_aspect_ratio: " + preview_aspect_ratio);
-                            Log.d(TAG, "canvas width: " + canvas.getWidth());
-                            Log.d(TAG, "canvas height: " + canvas.getHeight());
+                            Logger.d(TAG, "crop_ratio: " + crop_ratio);
+                            Logger.d(TAG, "preview_aspect_ratio: " + preview_aspect_ratio);
+                            Logger.d(TAG, "canvas width: " + canvas.getWidth());
+                            Logger.d(TAG, "canvas height: " + canvas.getHeight());
                         }*/
                         p.setStyle(Paint.Style.FILL)
                         p.setColor(Color.rgb(0, 0, 0))
@@ -1514,20 +1515,20 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             // also possibly related https://code.google.com/p/android/issues/detail?id=181201
             //int height = applicationInterface.drawTextWithBackground(canvas, p, current_time_string, Color.WHITE, Color.BLACK, location_x, location_y, MyApplicationInterface.Alignment.ALIGNMENT_TOP);
             if (text_bounds_time == null) {
-                if (MyDebug.LOG) Log.d(TAG, "compute text_bounds_time")
+                Logger.d(TAG, "compute text_bounds_time")
                 text_bounds_time = Rect()
                 // better to not use a fixed string like "00:00:00" as don't want to make assumptions - e.g., in 12 hour format we'll have the appended am/pm to account for!
                 val calendar = Calendar.getInstance()
                 calendar.set(100, 0, 1, 10, 59, 59)
                 val bounds_time_string = dateFormatTimeInstance!!.format(calendar.getTime())
-                if (MyDebug.LOG) Log.d(TAG, "bounds_time_string:" + bounds_time_string)
+                Logger.d(TAG, "bounds_time_string:" + bounds_time_string)
                 p.getTextBounds(bounds_time_string, 0, bounds_time_string.length, text_bounds_time)
             }
             first_line_xshift += text_bounds_time!!.width() + gap_x
             var height = applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
-                current_time_string?:"",
+                current_time_string ?: "",
                 Color.WHITE,
                 Color.BLACK,
                 location_x,
@@ -1550,7 +1551,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 last_camera_id_time = time_ms
             }
             if (text_bounds_camera_id == null) {
-                if (MyDebug.LOG) Log.d(TAG, "compute text_bounds_camera_id")
+                Logger.d(TAG, "compute text_bounds_camera_id")
                 text_bounds_camera_id = Rect()
                 p.getTextBounds(
                     camera_id_string,
@@ -1564,7 +1565,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             var height = applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
-                camera_id_string?:"",
+                camera_id_string ?: "",
                 Color.WHITE,
                 Color.BLACK,
                 xpos,
@@ -1598,7 +1599,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             if (free_memory_gb >= 0.0f && free_memory_gb_string != null) {
                 //int height = applicationInterface.drawTextWithBackground(canvas, p, free_memory_gb_string, Color.WHITE, Color.BLACK, location_x, location_y, MyApplicationInterface.Alignment.ALIGNMENT_TOP);
                 if (text_bounds_free_memory == null) {
-                    if (MyDebug.LOG) Log.d(TAG, "compute text_bounds_free_memory")
+                    Logger.d(TAG, "compute text_bounds_free_memory")
                     text_bounds_free_memory = Rect()
                     p.getTextBounds(
                         free_memory_gb_string,
@@ -1610,7 +1611,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 var height = applicationInterface.drawTextWithBackground(
                     canvas,
                     p,
-                    free_memory_gb_string?:"",
+                    free_memory_gb_string ?: "",
                     Color.WHITE,
                     Color.BLACK,
                     location_x,
@@ -1636,7 +1637,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
-                OSDLine1?:"",
+                OSDLine1 ?: "",
                 Color.WHITE,
                 Color.BLACK,
                 location_x,
@@ -1650,7 +1651,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
-                OSDLine2?:"",
+                OSDLine2 ?: "",
                 Color.WHITE,
                 Color.BLACK,
                 location_x,
@@ -1719,7 +1720,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 var height = applicationInterface.drawTextWithBackground(
                     canvas,
                     p,
-                    iso_exposure_string?:"",
+                    iso_exposure_string ?: "",
                     text_color,
                     Color.BLACK,
                     location_x,
@@ -2025,7 +2026,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     )
 
                     /*if( MyDebug.LOG )
-						Log.d(TAG, "alpha: " + alpha);*/
+						Logger.d(TAG, "alpha: " + alpha);*/
                     p.setStyle(Paint.Style.FILL)
                     p.setColor(Color.BLACK)
                     p.setAlpha((64 * alpha).toInt())
@@ -2053,7 +2054,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 val histogram = preview.getHistogram()
                 if (histogram != null) {
                     /*if( MyDebug.LOG )
-						Log.d(TAG, "histogram length: " + histogram.length);*/
+						Logger.d(TAG, "histogram length: " + histogram.length);*/
                     val histogram_width =
                         (histogram_width_dp * scale_dp + 0.5f).toInt() // convert dps to pixels
                     val histogram_height =
@@ -2147,7 +2148,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         }*/
 
         /*if( MyDebug.LOG )
-			Log.d(TAG, "drawHistogramChannel, time before creating path: " + (System.currentTimeMillis() - debug_time));*/
+			Logger.d(TAG, "drawHistogramChannel, time before creating path: " + (System.currentTimeMillis() - debug_time));*/
 
         path.reset()
         path.moveTo(icon_dest.left.toFloat(), icon_dest.bottom.toFloat())
@@ -2160,10 +2161,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         path.lineTo(icon_dest.right.toFloat(), icon_dest.bottom.toFloat())
         path.close()
         /*if( MyDebug.LOG )
-			Log.d(TAG, "drawHistogramChannel, time after creating path: " + (System.currentTimeMillis() - debug_time));*/
+			Logger.d(TAG, "drawHistogramChannel, time after creating path: " + (System.currentTimeMillis() - debug_time));*/
         canvas.drawPath(path, p)
         /*if( MyDebug.LOG )
-			Log.d(TAG, "drawHistogramChannel, time before drawing path: " + (System.currentTimeMillis() - debug_time));*/
+			Logger.d(TAG, "drawHistogramChannel, time before drawing path: " + (System.currentTimeMillis() - debug_time));*/
     }
 
     /** This includes drawing of the UI that requires the canvas to be rotated according to the preview's
@@ -2234,10 +2235,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     max_x -= (2.5 * gap_y).toInt()
                 }
                 /*if( MyDebug.LOG ) {
-					Log.d(TAG, "root view right: " + preview.getView().getRootView().getRight());
-					Log.d(TAG, "diff_x: " + diff_x);
-					Log.d(TAG, "canvas.width/2 + diff_x: " + (canvas.width/2+diff_x));
-					Log.d(TAG, "max_x: " + max_x);
+					Logger.d(TAG, "root view right: " + preview.getView().getRootView().getRight());
+					Logger.d(TAG, "diff_x: " + diff_x);
+					Logger.d(TAG, "canvas.width/2 + diff_x: " + (canvas.width/2+diff_x));
+					Logger.d(TAG, "max_x: " + max_x);
 				}*/
                 if (mid_x + diff_x > max_x) {
                     // in case goes off the size of the canvas, for "black bar" cases (when preview aspect ratio < screen aspect ratio)
@@ -2288,7 +2289,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 if (angle_string == null || time_ms > this.last_angle_string_time + 500) {
                     // update cached string
                     /*if( MyDebug.LOG )
-						Log.d(TAG, "update angle_string: " + angle_string);*/
+						Logger.d(TAG, "update angle_string: " + angle_string);*/
                     last_angle_string_time = time_ms
                     val number_string: String = formatLevelAngle(level_angle)
                     //String number_string = "" + level_angle;
@@ -2298,7 +2299,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 }
                 //applicationInterface.drawTextWithBackground(canvas, p, angle_string, color, Color.BLACK, canvas.width / 2 + pixels_offset_x, text_base_y, MyApplicationInterface.Alignment.ALIGNMENT_BOTTOM, ybounds_text, true);
                 if (text_bounds_angle_single == null) {
-                    if (MyDebug.LOG) Log.d(TAG, "compute text_bounds_angle_single")
+                    Logger.d(TAG, "compute text_bounds_angle_single")
                     text_bounds_angle_single = Rect()
                     val bounds_angle_string = "-9.0" + 0x00B0.toChar()
                     p.getTextBounds(
@@ -2309,7 +2310,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     )
                 }
                 if (text_bounds_angle_double == null) {
-                    if (MyDebug.LOG) Log.d(TAG, "compute text_bounds_angle_double")
+                    Logger.d(TAG, "compute text_bounds_angle_double")
                     text_bounds_angle_double = Rect()
                     val bounds_angle_string = "-45.0" + 0x00B0.toChar()
                     p.getTextBounds(
@@ -2322,7 +2323,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 applicationInterface.drawTextWithBackground(
                     canvas,
                     p,
-                    angle_string?:"",
+                    angle_string ?: "",
                     color,
                     Color.BLACK,
                     canvas.width / 2 + pixels_offset_x,
@@ -2367,7 +2368,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             }
             if (preview.isOnTimer()) {
                 val remaining_time = (preview.timerEndTime - time_ms + 999) / 1000
-                if (MyDebug.LOG) Log.d(TAG, "remaining_time: " + remaining_time)
+                Logger.d(TAG, "remaining_time: " + remaining_time)
                 if (remaining_time > 0) {
                     p.textSize = 42 * scale_font + 0.5f // convert dps to pixels
                     p.textAlign = Paint.Align.CENTER
@@ -2392,7 +2393,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 val video_time = preview.getVideoTime(false)
                 val time_s = getTimeStringFromSeconds(video_time / 1000)
                 /*if( MyDebug.LOG )
-					Log.d(TAG, "video_time: " + video_time + " " + time_s);*/
+					Logger.d(TAG, "video_time: " + video_time + " " + time_s);*/
                 p.textSize = 14 * scale_font + 0.5f // convert dps to pixels
                 p.textAlign = Paint.Align.CENTER
                 var pixels_offset_y = 2 * text_y // avoid overwriting the zoom
@@ -2442,7 +2443,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                         last_video_max_amp_time = time_ms
                         if (MyDebug.LOG) {
                             if (video_max_amp > 30000) {
-                                Log.d(TAG, "max_amp: " + video_max_amp)
+                                Logger.d(TAG, "max_amp: " + video_max_amp)
                             }
                             if (video_max_amp > 32767) {
                                 Log.e(TAG, "video_max_amp greater than max: " + video_max_amp)
@@ -2605,8 +2606,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             }
         } else if (camera_controller == null) {
             /*if( MyDebug.LOG ) {
-				Log.d(TAG, "no camera!");
-				Log.d(TAG, "width " + canvas.width + " height " + canvas.getHeight());
+				Logger.d(TAG, "no camera!");
+				Logger.d(TAG, "width " + canvas.width + " height " + canvas.getHeight());
 			}*/
             p.color = Color.WHITE
             p.textSize = 14 * scale_font + 0.5f // convert dps to pixels
@@ -2661,7 +2662,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             if (last_top_icon_shift_time == 0L || time_ms > last_top_icon_shift_time + 1000) {
                 // avoid computing every time, due to cost of calling View.getLocationOnScreen()
                 /*if( MyDebug.LOG )
-                    Log.d(TAG, "update cached top_icon_shift");*/
+                    Logger.d(TAG, "update cached top_icon_shift");*/
                 var top_margin = getViewOnScreenX(top_icon)
                 if (system_orientation == SystemOrientation.LANDSCAPE) top_margin += top_icon.width
                 else if (system_orientation == SystemOrientation.PORTRAIT) top_margin += top_icon.height
@@ -2676,10 +2677,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     -this.top_icon_shift
 
                 /*if( MyDebug.LOG ) {
-                    Log.d(TAG, "top_icon.getRotation(): " + top_icon.getRotation());
-                    Log.d(TAG, "preview_left: " + preview_left);
-                    Log.d(TAG, "top_margin: " + top_margin);
-                    Log.d(TAG, "top_icon_shift: " + top_icon_shift);
+                    Logger.d(TAG, "top_icon.getRotation(): " + top_icon.getRotation());
+                    Logger.d(TAG, "preview_left: " + preview_left);
+                    Logger.d(TAG, "top_margin: " + top_margin);
+                    Logger.d(TAG, "top_icon_shift: " + top_icon_shift);
                 }*/
                 last_top_icon_shift_time = time_ms
             }
@@ -2710,7 +2711,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 //            if (focus_seekbars_margin_left == -1 || new_focus_seekbars_margin_left != focus_seekbars_margin_left) {
 //                // we check whether focus_seekbars_margin_left has changed, in case there is a performance cost for setting layoutparams
 //                this.focus_seekbars_margin_left = new_focus_seekbars_margin_left
-//                if (MyDebug.LOG) Log.d(
+//                Logger.d(
 //                    TAG,
 //                    "set focus_seekbars_margin_left to " + focus_seekbars_margin_left
 //                )
@@ -2782,7 +2783,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 has_battery_frac = true
                 battery_frac = battery_level / battery_scale.toFloat()
                 last_battery_time = time_ms
-                if (MyDebug.LOG) Log.d(
+                Logger.d(
                     TAG,
                     "Battery status is $battery_level / $battery_scale : $battery_frac"
                 )
@@ -2876,12 +2877,12 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 else -> {}
             }
             /*if( MyDebug.LOG ) {
-                Log.d(TAG, "system_orientation: " + system_orientation);
-                Log.d(TAG, "rotation: " + rotation);
+                Logger.d(TAG, "system_orientation: " + system_orientation);
+                Logger.d(TAG, "rotation: " + rotation);
             }*/
             /*if( MyDebug.LOG ) {
-				Log.d(TAG, "orig_level_angle: " + preview.getOrigLevelAngle());
-				Log.d(TAG, "angle: " + angle);
+				Logger.d(TAG, "orig_level_angle: " + preview.getOrigLevelAngle());
+				Logger.d(TAG, "angle: " + angle);
 			}*/
             val cx = canvas.width / 2
             val cy = canvas.height / 2
@@ -2989,16 +2990,16 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             val angle_scale_y =
                 (canvas.height / (2.0 * tan(Math.toRadians((camera_angle_y / 2.0))))).toFloat()
             /*if( MyDebug.LOG ) {
-				Log.d(TAG, "camera_angle_x: " + camera_angle_x);
-				Log.d(TAG, "camera_angle_y: " + camera_angle_y);
-				Log.d(TAG, "angle_scale_x: " + angle_scale_x);
-				Log.d(TAG, "angle_scale_y: " + angle_scale_y);
-				Log.d(TAG, "angle_scale_x/scale: " + angle_scale_x/scale);
-				Log.d(TAG, "angle_scale_y/scale: " + angle_scale_y/scale);
+				Logger.d(TAG, "camera_angle_x: " + camera_angle_x);
+				Logger.d(TAG, "camera_angle_y: " + camera_angle_y);
+				Logger.d(TAG, "angle_scale_x: " + angle_scale_x);
+				Logger.d(TAG, "angle_scale_y: " + angle_scale_y);
+				Logger.d(TAG, "angle_scale_x/scale: " + angle_scale_x/scale);
+				Logger.d(TAG, "angle_scale_y/scale: " + angle_scale_y/scale);
 			}*/
             /*if( MyDebug.LOG ) {
-				Log.d(TAG, "has_pitch_angle?: " + has_pitch_angle);
-				Log.d(TAG, "show_pitch_lines?: " + show_pitch_lines);
+				Logger.d(TAG, "has_pitch_angle?: " + has_pitch_angle);
+				Logger.d(TAG, "show_pitch_lines?: " + show_pitch_lines);
 			}*/
             var angle_scale =
                 sqrt((angle_scale_x * angle_scale_x + angle_scale_y * angle_scale_y).toDouble()).toFloat()
@@ -3017,8 +3018,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                         val pitch_distance =
                             angle_scale * tan(Math.toRadians(this_angle)).toFloat() // angle_scale is already in pixels rather than dps
                         /*if( MyDebug.LOG ) {
-							Log.d(TAG, "pitch_angle: " + pitch_angle);
-							Log.d(TAG, "pitch_distance_dp: " + pitch_distance_dp);
+							Logger.d(TAG, "pitch_angle: " + pitch_angle);
+							Logger.d(TAG, "pitch_distance_dp: " + pitch_distance_dp);
 						}*/
                         p.setColor(Color.WHITE)
                         p.setTextAlign(Paint.Align.LEFT)
@@ -3068,9 +3069,9 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 while (longitude_angle < 360) {
                     var this_angle = (longitude_angle - geo_angle).toDouble()
                     /*if( MyDebug.LOG ) {
-						Log.d(TAG, "longitude_angle: " + longitude_angle);
-						Log.d(TAG, "geo_angle: " + geo_angle);
-						Log.d(TAG, "this_angle: " + this_angle);
+						Logger.d(TAG, "longitude_angle: " + longitude_angle);
+						Logger.d(TAG, "geo_angle: " + geo_angle);
+						Logger.d(TAG, "this_angle: " + this_angle);
 					}*/
                     // normalise to be in interval [0, 360)
                     while (this_angle >= 360.0) this_angle -= 360.0
@@ -3079,7 +3080,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     if (this_angle > 180.0) this_angle = -(360.0 - this_angle)
                     if (abs(this_angle) < 90.0) {
                         /*if( MyDebug.LOG ) {
-							Log.d(TAG, "this_angle is now: " + this_angle);
+							Logger.d(TAG, "this_angle is now: " + this_angle);
 						}*/
                         val geo_distance =
                             angle_scale * tan(Math.toRadians(this_angle)).toFloat() // angle_scale is already in pixels rather than dps
@@ -3199,7 +3200,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             val time = time_ms - this.thumbnail_anim_start_ms
             val duration: Long = 500
             if (time > duration) {
-                if (MyDebug.LOG) Log.d(TAG, "thumbnail_anim finished")
+                Logger.d(TAG, "thumbnail_anim finished")
                 this.thumbnail_anim = false
             } else {
                 thumbnail_anim_src_rect.left = 0f
@@ -3267,7 +3268,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             val dt = time_ms - continuous_focus_moving_ms
             val length: Long = 1000
             /*if( MyDebug.LOG )
-				Log.d(TAG, "continuous focus moving, dt: " + dt);*/
+				Logger.d(TAG, "continuous focus moving, dt: " + dt);*/
             if (dt <= length) {
                 val frac = (dt.toFloat()) / length.toFloat()
                 val pos_x = canvas.width / 2.0f
@@ -3283,8 +3284,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     radius = (1.0f - alpha) * max_radius + alpha * min_radius
                 }
                 /*if( MyDebug.LOG ) {
-					Log.d(TAG, "dt: " + dt);
-					Log.d(TAG, "radius: " + radius);
+					Logger.d(TAG, "dt: " + dt);
+					Logger.d(TAG, "radius: " + radius);
 				}*/
                 p.setColor(Color.WHITE)
                 p.setStyle(Paint.Style.STROKE)
@@ -3394,12 +3395,12 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     }
 
     fun setCoverPreview(cover_preview: Boolean) {
-        if (MyDebug.LOG) Log.d(TAG, "setCoverPreview: " + cover_preview)
+        Logger.d(TAG, "setCoverPreview: " + cover_preview)
         this.cover_preview = cover_preview
     }
 
     fun setDimPreview(on: Boolean) {
-        if (MyDebug.LOG) Log.d(TAG, "setDimPreview: " + on)
+        Logger.d(TAG, "setDimPreview: " + on)
         if (on) {
             this.dim_preview = DimPreview.DIM_PREVIEW_ON
         } else if (this.dim_preview == DimPreview.DIM_PREVIEW_ON) {
@@ -3413,14 +3414,14 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
     fun onDrawPreview(canvas: Canvas) {
         /*if( MyDebug.LOG )
-			Log.d(TAG, "onDrawPreview");*/
+			Logger.d(TAG, "onDrawPreview");*/
         /*if( MyDebug.LOG )
-			Log.d(TAG, "onDrawPreview hardware accelerated: " + canvas.isHardwareAccelerated());*/
+			Logger.d(TAG, "onDrawPreview hardware accelerated: " + canvas.isHardwareAccelerated());*/
 
         val time_ms = System.currentTimeMillis()
 
         if (!has_settings) {
-            if (MyDebug.LOG) Log.d(TAG, "onDrawPreview: need to update settings")
+            Logger.d(TAG, "onDrawPreview: need to update settings")
             updateSettings()
         }
         val preview = mainActivity.preview
@@ -3467,7 +3468,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             if (cover_preview) {
                 // see if we have received a frame yet
                 if (camera_is_active) {
-                    if (MyDebug.LOG) Log.d(TAG, "no longer need to cover preview")
+                    Logger.d(TAG, "no longer need to cover preview")
                     cover_preview = false
                 }
             }
@@ -3491,9 +3492,9 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 frac = min(frac, 1.0f)
                 val alpha = (frac * 127).toInt()
                 /*if( MyDebug.LOG ) {
-                    Log.d(TAG, "time diff: " + (time_now - camera_inactive_time_ms));
-                    Log.d(TAG, "    frac: " + frac);
-                    Log.d(TAG, "    alpha: " + alpha);
+                    Logger.d(TAG, "time diff: " + (time_now - camera_inactive_time_ms));
+                    Logger.d(TAG, "    frac: " + frac);
+                    Logger.d(TAG, "    alpha: " + alpha);
                 }*/
                 p.setColor(Color.BLACK)
                 p.setAlpha(alpha)
@@ -3792,7 +3793,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
         /*if( MyDebug.LOG ) {
             long time_taken = System.currentTimeMillis() - time_ms;
-            Log.d(TAG, "onDrawPreview time: " + time_taken);
+            Logger.d(TAG, "onDrawPreview time: " + time_taken);
         }*/
     }
 
@@ -3817,8 +3818,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         last_image_dst_rect.right = canvas.width.toFloat()
         last_image_dst_rect.bottom = canvas.height.toFloat()
         /*if( MyDebug.LOG ) {
-			Log.d(TAG, "thumbnail: " + bitmap.width + " x " + bitmap.getHeight());
-			Log.d(TAG, "canvas: " + canvas.width + " x " + canvas.getHeight());
+			Logger.d(TAG, "thumbnail: " + bitmap.width + " x " + bitmap.getHeight());
+			Logger.d(TAG, "canvas: " + canvas.width + " x " + canvas.getHeight());
 		}*/
         last_image_matrix.setRectToRect(
             last_image_src_rect,

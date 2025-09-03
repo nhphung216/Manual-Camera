@@ -44,13 +44,16 @@ fun CaptureCameraControls(
     galleryBitmap: android.graphics.Bitmap? = null,
     openGallery: () -> Unit = {},
     takePhoto: () -> Unit = {},
+    takeLongPhoto: () -> Unit = {},
+    takePhotoButtonLongClickCancelled: () -> Unit = {},
     takePhotoVideoSnapshot: () -> Unit = {},
     pauseVideo: () -> Unit = {},
     switchCamera: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth().padding(vertical = 8.dp),
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -98,8 +101,11 @@ fun CaptureCameraControls(
             onClick = {
                 takePhoto()
             },
-            onLongPress = {
-                takePhoto()
+            onLongClick = {
+                takeLongPhoto()
+            },
+            onActionUp = {
+                takePhotoButtonLongClickCancelled()
             }
         )
 

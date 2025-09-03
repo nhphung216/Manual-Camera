@@ -2,6 +2,7 @@ package com.ssolstice.camera.manual.cameracontroller;
 
 import com.ssolstice.camera.manual.MyDebug;
 import com.ssolstice.camera.manual.R;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -25,17 +26,15 @@ public class CameraControllerManager2 extends CameraControllerManager {
 
     @Override
     public int getNumberOfCameras() {
-        CameraManager manager = (CameraManager)context.getSystemService(Context.CAMERA_SERVICE);
+        CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         try {
             return manager.getCameraIdList().length;
-        }
-        catch(Throwable e) {
+        } catch (Throwable e) {
             // in theory we should only get CameraAccessException, but Google Play shows we can get a variety of exceptions
             // from some devices, e.g., AssertionError, IllegalArgumentException, RuntimeException, so just catch everything!
             // We don't want users to experience a crash just because of buggy camera2 drivers - instead the user can switch
             // back to old camera API.
-            if( MyDebug.LOG )
-                Log.e(TAG, "exception trying to get camera ids");
+            Log.e(TAG, "exception trying to get camera ids");
             e.printStackTrace();
         }
         return 0;
@@ -43,11 +42,11 @@ public class CameraControllerManager2 extends CameraControllerManager {
 
     @Override
     public CameraController.Facing getFacing(int cameraId) {
-        CameraManager manager = (CameraManager)context.getSystemService(Context.CAMERA_SERVICE);
+        CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         try {
             String cameraIdS = manager.getCameraIdList()[cameraId];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraIdS);
-            switch( characteristics.get(CameraCharacteristics.LENS_FACING) ) {
+            switch (characteristics.get(CameraCharacteristics.LENS_FACING)) {
                 case CameraMetadata.LENS_FACING_FRONT:
                     return CameraController.Facing.FACING_FRONT;
                 case CameraMetadata.LENS_FACING_BACK:
@@ -56,14 +55,12 @@ public class CameraControllerManager2 extends CameraControllerManager {
                     return CameraController.Facing.FACING_EXTERNAL;
             }
             Log.e(TAG, "unknown camera_facing: " + characteristics.get(CameraCharacteristics.LENS_FACING));
-        }
-        catch(Throwable e) {
+        } catch (Throwable e) {
             // in theory we should only get CameraAccessException, but Google Play shows we can get a variety of exceptions
             // from some devices, e.g., AssertionError, IllegalArgumentException, RuntimeException, so just catch everything!
             // We don't want users to experience a crash just because of buggy camera2 drivers - instead the user can switch
             // back to old camera API.
-            if( MyDebug.LOG )
-                Log.e(TAG, "exception trying to get camera characteristics");
+            Log.e(TAG, "exception trying to get camera characteristics");
             e.printStackTrace();
         }
         return CameraController.Facing.FACING_UNKNOWN;
@@ -71,16 +68,14 @@ public class CameraControllerManager2 extends CameraControllerManager {
 
     @Override
     public String getDescription(Context context, int cameraId) {
-        CameraManager manager = (CameraManager)context.getSystemService(Context.CAMERA_SERVICE);
+        CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         String description = null;
         try {
             String cameraIdS = manager.getCameraIdList()[cameraId];
             description = getDescription(null, context, cameraIdS, true, false);
-        }
-        catch(Throwable e) {
+        } catch (Throwable e) {
             // see note under isFrontFacing() why we catch anything, not just CameraAccessException
-            if( MyDebug.LOG )
-                Log.e(TAG, "exception trying to get camera characteristics");
+            Log.e(TAG, "exception trying to get camera characteristics");
             e.printStackTrace();
         }
         return description;
@@ -89,18 +84,17 @@ public class CameraControllerManager2 extends CameraControllerManager {
     @Override
     public String getDescription(CameraInfo info, Context context, String cameraIdS, boolean include_type, boolean include_angles) {
         long debug_time = 0;
-        if( MyDebug.LOG ) {
+        if (MyDebug.LOG) {
             debug_time = System.currentTimeMillis();
         }
-        CameraManager manager = (CameraManager)context.getSystemService(Context.CAMERA_SERVICE);
+        CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         String description = "";
         try {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraIdS);
-            if( MyDebug.LOG )
-                Log.d(TAG, "getDescription: time after getCameraCharacteristics: " + (System.currentTimeMillis() - debug_time));
+            Logger.INSTANCE.d(TAG, "getDescription: time after getCameraCharacteristics: " + (System.currentTimeMillis() - debug_time));
 
-            if( include_type ) {
-                switch( characteristics.get(CameraCharacteristics.LENS_FACING) ) {
+            if (include_type) {
+                switch (characteristics.get(CameraCharacteristics.LENS_FACING)) {
                     case CameraMetadata.LENS_FACING_FRONT:
                         description = context.getResources().getString(R.string.front_camera);
                         break;
@@ -117,34 +111,30 @@ public class CameraControllerManager2 extends CameraControllerManager {
             }
 
             SizeF view_angle = CameraControllerManager2.computeViewAngles(characteristics);
-            if( info != null )
+            if (info != null)
                 info.view_angle = view_angle;
-            if( MyDebug.LOG )
-                Log.d(TAG, "getDescription: time after computeViewAngles: " + (System.currentTimeMillis() - debug_time));
-            if( view_angle.getWidth() > 90.5f ) {
+            Logger.INSTANCE.d(TAG, "getDescription: time after computeViewAngles: " + (System.currentTimeMillis() - debug_time));
+            if (view_angle.getWidth() > 90.5f) {
                 // count as ultra-wide
-                if( description.length() > 0 )
+                if (description.length() > 0)
                     description += ", ";
                 description += context.getResources().getString(R.string.ultrawide);
-            }
-            else if( view_angle.getWidth() < 29.5f ) {
+            } else if (view_angle.getWidth() < 29.5f) {
                 // count as telephoto
                 // Galaxy S24+ telephoto is 29x22 degrees
-                if( description.length() > 0 )
+                if (description.length() > 0)
                     description += ", ";
                 description += context.getResources().getString(R.string.telephoto);
             }
 
-            if( include_angles ) {
-                if( description.length() > 0 )
+            if (include_angles) {
+                if (description.length() > 0)
                     description += ", ";
-                description += ((int)(view_angle.getWidth()+0.5f)) + String.valueOf((char)0x00B0) + " x " + ((int)(view_angle.getHeight()+0.5f)) + (char) 0x00B0;
+                description += ((int) (view_angle.getWidth() + 0.5f)) + String.valueOf((char) 0x00B0) + " x " + ((int) (view_angle.getHeight() + 0.5f)) + (char) 0x00B0;
             }
-        }
-        catch(Throwable e) {
+        } catch (Throwable e) {
             // see note under isFrontFacing() why we catch anything, not just CameraAccessException
-            if( MyDebug.LOG )
-                Log.e(TAG, "exception trying to get camera characteristics");
+            Log.e(TAG, "exception trying to get camera characteristics");
             e.printStackTrace();
         }
         return description;
@@ -160,11 +150,11 @@ public class CameraControllerManager2 extends CameraControllerManager {
         Rect active_size = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
         SizeF physical_size = characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
         android.util.Size pixel_size = characteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE);
-        float [] focal_lengths = characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
-        if( active_size == null || physical_size == null || pixel_size == null || focal_lengths == null || focal_lengths.length == 0 ) {
+        float[] focal_lengths = characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
+        if (active_size == null || physical_size == null || pixel_size == null || focal_lengths == null || focal_lengths.length == 0) {
             // in theory this should never happen according to the documentation, but I've had a report of physical_size (SENSOR_INFO_PHYSICAL_SIZE)
             // being null on an EXTERNAL Camera2 device, see https://sourceforge.net/p/opencamera/tickets/754/
-            if( MyDebug.LOG ) {
+            if (MyDebug.LOG) {
                 Log.e(TAG, "can't get camera view angles");
             }
             // fall back to a default
@@ -172,15 +162,15 @@ public class CameraControllerManager2 extends CameraControllerManager {
         }
         //camera_features.view_angle_x = (float)Math.toDegrees(2.0 * Math.atan2(physical_size.getWidth(), (2.0 * focal_lengths[0])));
         //camera_features.view_angle_y = (float)Math.toDegrees(2.0 * Math.atan2(physical_size.getHeight(), (2.0 * focal_lengths[0])));
-        float frac_x = ((float)active_size.width())/(float)pixel_size.getWidth();
-        float frac_y = ((float)active_size.height())/(float)pixel_size.getHeight();
-        float view_angle_x = (float)Math.toDegrees(2.0 * Math.atan2(physical_size.getWidth() * frac_x, (2.0 * focal_lengths[0])));
-        float view_angle_y = (float)Math.toDegrees(2.0 * Math.atan2(physical_size.getHeight() * frac_y, (2.0 * focal_lengths[0])));
-        if( MyDebug.LOG ) {
-            Log.d(TAG, "frac_x: " + frac_x);
-            Log.d(TAG, "frac_y: " + frac_y);
-            Log.d(TAG, "view_angle_x: " + view_angle_x);
-            Log.d(TAG, "view_angle_y: " + view_angle_y);
+        float frac_x = ((float) active_size.width()) / (float) pixel_size.getWidth();
+        float frac_y = ((float) active_size.height()) / (float) pixel_size.getHeight();
+        float view_angle_x = (float) Math.toDegrees(2.0 * Math.atan2(physical_size.getWidth() * frac_x, (2.0 * focal_lengths[0])));
+        float view_angle_y = (float) Math.toDegrees(2.0 * Math.atan2(physical_size.getHeight() * frac_y, (2.0 * focal_lengths[0])));
+        if (MyDebug.LOG) {
+            Logger.INSTANCE.d(TAG, "frac_x: " + frac_x);
+            Logger.INSTANCE.d(TAG, "frac_y: " + frac_y);
+            Logger.INSTANCE.d(TAG, "view_angle_x: " + view_angle_x);
+            Logger.INSTANCE.d(TAG, "view_angle_y: " + view_angle_y);
         }
         return new SizeF(view_angle_x, view_angle_y);
     }
@@ -192,39 +182,39 @@ public class CameraControllerManager2 extends CameraControllerManager {
      */
     static boolean isHardwareLevelSupported(CameraCharacteristics c, int requiredLevel) {
         int deviceLevel = c.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
-        if( MyDebug.LOG ) {
+        if (MyDebug.LOG) {
             switch (deviceLevel) {
                 case CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY:
-                    Log.d(TAG, "Camera has LEGACY Camera2 support");
+                    Logger.INSTANCE.d(TAG, "Camera has LEGACY Camera2 support");
                     break;
                 case CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_EXTERNAL:
-                    Log.d(TAG, "Camera has EXTERNAL Camera2 support");
+                    Logger.INSTANCE.d(TAG, "Camera has EXTERNAL Camera2 support");
                     break;
                 case CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED:
-                    Log.d(TAG, "Camera has LIMITED Camera2 support");
+                    Logger.INSTANCE.d(TAG, "Camera has LIMITED Camera2 support");
                     break;
                 case CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_FULL:
-                    Log.d(TAG, "Camera has FULL Camera2 support");
+                    Logger.INSTANCE.d(TAG, "Camera has FULL Camera2 support");
                     break;
                 case CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_3:
-                    Log.d(TAG, "Camera has Level 3 Camera2 support");
+                    Logger.INSTANCE.d(TAG, "Camera has Level 3 Camera2 support");
                     break;
                 default:
-                    Log.d(TAG, "Camera has unknown Camera2 support: " + deviceLevel);
+                    Logger.INSTANCE.d(TAG, "Camera has unknown Camera2 support: " + deviceLevel);
                     break;
             }
         }
 
         // need to treat legacy and external as special cases; otherwise can then use numerical comparison
 
-        if( deviceLevel == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY ) {
+        if (deviceLevel == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY) {
             return requiredLevel == deviceLevel;
         }
 
-        if( deviceLevel == CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_EXTERNAL ) {
+        if (deviceLevel == CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_EXTERNAL) {
             deviceLevel = CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED;
         }
-        if( requiredLevel == CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_EXTERNAL ) {
+        if (requiredLevel == CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_EXTERNAL) {
             requiredLevel = CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED;
         }
 
@@ -235,20 +225,18 @@ public class CameraControllerManager2 extends CameraControllerManager {
      * This returns whether the specified camera has at least LIMITED support.
      */
     public boolean allowCamera2Support(int cameraId) {
-        CameraManager manager = (CameraManager)context.getSystemService(Context.CAMERA_SERVICE);
+        CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         try {
             String cameraIdS = manager.getCameraIdList()[cameraId];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraIdS);
             //return isHardwareLevelSupported(characteristics, CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY);
             return isHardwareLevelSupported(characteristics, CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED);
-        }
-        catch(Throwable e) {
+        } catch (Throwable e) {
             // in theory we should only get CameraAccessException, but Google Play shows we can get a variety of exceptions
             // from some devices, e.g., AssertionError, IllegalArgumentException, RuntimeException, so just catch everything!
             // We don't want users to experience a crash just because of buggy camera2 drivers - instead the user can switch
             // back to old camera API.
-            if( MyDebug.LOG )
-                Log.e(TAG, "exception trying to get camera characteristics");
+            Log.e(TAG, "exception trying to get camera characteristics");
             e.printStackTrace();
         }
         return false;

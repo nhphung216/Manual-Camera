@@ -1,6 +1,7 @@
 package com.ssolstice.camera.manual.remotecontrol;
 
 import com.ssolstice.camera.manual.MyDebug;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import android.Manifest;
 import android.app.Service;
@@ -19,6 +20,7 @@ import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+
 import androidx.core.content.ContextCompat;
 
 import android.util.Log;
@@ -81,10 +83,9 @@ public class BluetoothLeService extends Service {
      * Android BLE stack and API (just knowing the MAC is not enough on
      * many phones).*/
     private void triggerScan() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "triggerScan");
+        Logger.INSTANCE.d(TAG, "triggerScan");
 
-        if( !is_bound ) {
+        if (!is_bound) {
             // Don't allow calls to startLeScan() (which requires location permission) when service
             // not bound, as application may be in background!
             // In theory this shouldn't be needed here, as we also check is_bound in connect(), but
@@ -94,8 +95,8 @@ public class BluetoothLeService extends Service {
         }
 
         // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
-        if( DeviceScanner.useAndroid12BluetoothPermissions() ) {
-            if( ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ) {
+        if (DeviceScanner.useAndroid12BluetoothPermissions()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
                 Log.e(TAG, "bluetooth scan permission not granted!");
                 return;
             }
@@ -106,8 +107,8 @@ public class BluetoothLeService extends Service {
             @Override
             public void run() {
                 // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
-                if( DeviceScanner.useAndroid12BluetoothPermissions() ) {
-                    if( ContextCompat.checkSelfPermission(BluetoothLeService.this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ) {
+                if (DeviceScanner.useAndroid12BluetoothPermissions()) {
+                    if (ContextCompat.checkSelfPermission(BluetoothLeService.this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
                         Log.e(TAG, "bluetooth scan permission not granted!");
                         return;
                     }
@@ -119,8 +120,7 @@ public class BluetoothLeService extends Service {
     }
 
     public void setRemoteDeviceType(String remote_device_type) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "Setting remote type: " + remote_device_type);
+        Logger.INSTANCE.d(TAG, "Setting remote type: " + remote_device_type);
         this.remote_device_type = remote_device_type;
     }
 
@@ -128,41 +128,39 @@ public class BluetoothLeService extends Service {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             String intentAction;
-            if( newState == BluetoothProfile.STATE_CONNECTED ) {
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
                 intentAction = ACTION_GATT_CONNECTED;
                 broadcastUpdate(intentAction);
-                if( MyDebug.LOG ) {
-                    Log.d(TAG, "Connected to GATT server, call discoverServices()");
+                if (MyDebug.LOG) {
+                    Logger.INSTANCE.d(TAG, "Connected to GATT server, call discoverServices()");
                 }
 
                 // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
                 boolean has_bluetooth_permission = true;
-                if( DeviceScanner.useAndroid12BluetoothPermissions() ) {
-                    if( ContextCompat.checkSelfPermission(BluetoothLeService.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ) {
+                if (DeviceScanner.useAndroid12BluetoothPermissions()) {
+                    if (ContextCompat.checkSelfPermission(BluetoothLeService.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                         Log.e(TAG, "bluetooth scan permission not granted!");
                         has_bluetooth_permission = false;
                     }
                 }
 
-                if( has_bluetooth_permission ) {
+                if (has_bluetooth_permission) {
                     bluetoothGatt.discoverServices();
                 }
 
                 currentDepth = -1;
                 currentTemp = -1;
 
-            }
-            else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 intentAction = ACTION_GATT_DISCONNECTED;
-                if( MyDebug.LOG )
-                    Log.d(TAG, "Disconnected from GATT server, reattempting every 5 seconds.");
+                Logger.INSTANCE.d(TAG, "Disconnected from GATT server, reattempting every 5 seconds.");
                 broadcastUpdate(intentAction);
                 attemptReconnect();
             }
         }
 
         void attemptReconnect() {
-            if( !is_bound ) {
+            if (!is_bound) {
                 // We check is_bound in connect() itself, but seems pointless to even try if we
                 // know the service is unbound (and if it's later bound again, we'll try connecting
                 // again anyway without needing this).
@@ -172,8 +170,7 @@ public class BluetoothLeService extends Service {
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 public void run() {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "Attempting to reconnect to remote.");
+                    Logger.INSTANCE.d(TAG, "Attempting to reconnect to remote.");
                     connect(device_address);
                 }
             }, 5000);
@@ -181,27 +178,24 @@ public class BluetoothLeService extends Service {
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            if( status == BluetoothGatt.GATT_SUCCESS ) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
                 subscribeToServices();
-            }
-            else {
-                if( MyDebug.LOG )
-                    Log.d(TAG, "onServicesDiscovered received: " + status);
+            } else {
+                Logger.INSTANCE.d(TAG, "onServicesDiscovered received: " + status);
             }
         }
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            if( status == BluetoothGatt.GATT_SUCCESS ) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
             }
         }
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            if( MyDebug.LOG )
-                Log.d(TAG,"Got notification");
+            Logger.INSTANCE.d(TAG, "Got notification");
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
         }
 
@@ -209,7 +203,7 @@ public class BluetoothLeService extends Service {
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             // We need to wait for this callback before enabling the next notification in case we
             // have several in our list
-            if( !charsToSubscribe.isEmpty() ) {
+            if (!charsToSubscribe.isEmpty()) {
                 setCharacteristicNotification(charsToSubscribe.remove(0), true);
             }
         }
@@ -226,7 +220,7 @@ public class BluetoothLeService extends Service {
         List<UUID> mCharacteristicsWanted;
 
         //noinspection SwitchStatementWithTooFewBranches
-        switch( remote_device_type ) {
+        switch (remote_device_type) {
             case "preference_remote_type_kraken":
                 mCharacteristicsWanted = KrakenGattAttributes.getDesiredCharacteristics();
                 break;
@@ -235,14 +229,13 @@ public class BluetoothLeService extends Service {
                 break;
         }
 
-        for(BluetoothGattService gattService : gattServices) {
+        for (BluetoothGattService gattService : gattServices) {
             List<BluetoothGattCharacteristic> gattCharacteristics =
                     gattService.getCharacteristics();
-            for(BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
+            for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
                 UUID uuid = gattCharacteristic.getUuid();
-                if( mCharacteristicsWanted.contains(uuid) ) {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "Found characteristic to subscribe to: " + uuid);
+                if (mCharacteristicsWanted.contains(uuid)) {
+                    Logger.INSTANCE.d(TAG, "Found characteristic to subscribe to: " + uuid);
                     charsToSubscribe.add(gattCharacteristic);
                 }
             }
@@ -261,40 +254,33 @@ public class BluetoothLeService extends Service {
         final int format_uint16 = BluetoothGattCharacteristic.FORMAT_UINT16;
         int remoteCommand = -1;
 
-        if( KrakenGattAttributes.KRAKEN_BUTTONS_CHARACTERISTIC.equals(uuid) ) {
-            if( MyDebug.LOG )
-                Log.d(TAG,"Got Kraken button press");
-            final int buttonCode= characteristic.getIntValue(format_uint8, 0);
-            if( MyDebug.LOG )
-                Log.d(TAG, String.format("Received Button press: %d", buttonCode));
+        if (KrakenGattAttributes.KRAKEN_BUTTONS_CHARACTERISTIC.equals(uuid)) {
+            Logger.INSTANCE.d(TAG, "Got Kraken button press");
+            final int buttonCode = characteristic.getIntValue(format_uint8, 0);
+            Logger.INSTANCE.d(TAG, String.format("Received Button press: %d", buttonCode));
             // Note: we stay at a fairly generic level here and will manage variants
             // on the various button actions in MainActivity, because those will change depending
             // on the current state of the app, and we don't want to know anything about that state
             // from the Bluetooth LE service
             // TODO: update to remove all those tests and just forward buttonCode since value is identical
             //       but this is more readable if we want to implement other drivers
-            if( buttonCode == 32 ) {
+            if (buttonCode == 32) {
                 // Shutter press
                 remoteCommand = COMMAND_SHUTTER;
-            }
-            else if( buttonCode == 16 ) {
+            } else if (buttonCode == 16) {
                 // "Mode" button: either "back" action or "Photo/Camera" switch
                 remoteCommand = COMMAND_MODE;
-            }
-            else if( buttonCode == 48 ) {
+            } else if (buttonCode == 48) {
                 // "Menu" button
                 remoteCommand = COMMAND_MENU;
-            }
-            else if( buttonCode == 97 ) {
+            } else if (buttonCode == 97) {
                 // AF/MF button
                 remoteCommand = COMMAND_AFMF;
-            }
-            else if( buttonCode == 96 ) {
+            } else if (buttonCode == 96) {
                 // Long press on MF/AF button.
                 // Note: the camera issues button code 97 first, then
                 // 96 after one second of continuous press
-            }
-            else if( buttonCode == 64 ) {
+            } else if (buttonCode == 64) {
                 // Up button
                 remoteCommand = COMMAND_UP;
             } else if (buttonCode == 80) {
@@ -302,13 +288,12 @@ public class BluetoothLeService extends Service {
                 remoteCommand = COMMAND_DOWN;
             }
             // Only send forward if we have something to say
-            if( remoteCommand > -1 ) {
+            if (remoteCommand > -1) {
                 final Intent intent = new Intent(ACTION_REMOTE_COMMAND);
                 intent.putExtra(EXTRA_DATA, remoteCommand);
                 sendBroadcast(intent);
             }
-        }
-        else if( KrakenGattAttributes.KRAKEN_SENSORS_CHARACTERISTIC.equals(uuid) ) {
+        } else if (KrakenGattAttributes.KRAKEN_SENSORS_CHARACTERISTIC.equals(uuid)) {
             // The housing returns four bytes.
             // Byte 0-1: depth = (Byte 0 + Byte 1 << 8) / 10 / density
             // Byte 2-3: temperature = (Byte 2 + Byte 3 << 8) / 10
@@ -320,14 +305,13 @@ public class BluetoothLeService extends Service {
             double temperature = characteristic.getIntValue(format_uint16, 2) / 10.0;
             double depth = characteristic.getIntValue(format_uint16, 0) / 10.0;
 
-            if( temperature == currentTemp && depth == currentDepth )
+            if (temperature == currentTemp && depth == currentDepth)
                 return;
 
             currentDepth = depth;
             currentTemp = temperature;
 
-            if( MyDebug.LOG )
-                Log.d(TAG, "Got new Kraken sensor reading. Temperature: " + temperature + " Depth:" + depth);
+            Logger.INSTANCE.d(TAG, "Got new Kraken sensor reading. Temperature: " + temperature + " Depth:" + depth);
 
             final Intent intent = new Intent(ACTION_SENSOR_VALUE);
             intent.putExtra(SENSOR_TEMPERATURE, temperature);
@@ -347,15 +331,13 @@ public class BluetoothLeService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onBind");
+        Logger.INSTANCE.d(TAG, "onBind");
         return mBinder;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "onUnbind");
+        Logger.INSTANCE.d(TAG, "onUnbind");
         this.is_bound = false;
         close();
         return super.onUnbind(intent);
@@ -364,24 +346,23 @@ public class BluetoothLeService extends Service {
     /** Only call this after service is bound (from ServiceConnection.onServiceConnected())!
      */
     public boolean initialize() {
-        if( MyDebug.LOG )
-            Log.d(TAG, "initialize");
+        Logger.INSTANCE.d(TAG, "initialize");
 
         // in theory we'd put this in onBind(), to be more symmetric with onUnbind() where we
         // set to false - but unclear whether onBind() is always called before
         // ServiceConnection.onServiceConnected().
         this.is_bound = true;
 
-        if( bluetoothManager == null ) {
+        if (bluetoothManager == null) {
             bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-            if( bluetoothManager == null ) {
+            if (bluetoothManager == null) {
                 Log.e(TAG, "Unable to initialize BluetoothManager.");
                 return false;
             }
         }
 
         bluetoothAdapter = bluetoothManager.getAdapter();
-        if( bluetoothAdapter == null ) {
+        if (bluetoothAdapter == null) {
             Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
             return false;
         }
@@ -389,20 +370,15 @@ public class BluetoothLeService extends Service {
         return true;
     }
 
-	public boolean connect(final String address) {
-        if( MyDebug.LOG )
-            Log.d(TAG, "connect: " + address);
-        if( bluetoothAdapter == null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "bluetoothAdapter is null");
+    public boolean connect(final String address) {
+        Logger.INSTANCE.d(TAG, "connect: " + address);
+        if (bluetoothAdapter == null) {
+            Logger.INSTANCE.d(TAG, "bluetoothAdapter is null");
             return false;
-        }
-        else if( address == null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "address is null");
+        } else if (address == null) {
+            Logger.INSTANCE.d(TAG, "address is null");
             return false;
-        }
-        else if( !is_bound ) {
+        } else if (!is_bound) {
             // Don't allow calls to startLeScan() via triggerScan() (which requires location
             // permission) when service not bound, as application may be in background!
             // And it doesn't seem sensible to even allow connecting if service not bound.
@@ -414,8 +390,8 @@ public class BluetoothLeService extends Service {
         }
 
         // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
-        if( DeviceScanner.useAndroid12BluetoothPermissions() ) {
-            if( ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ) {
+        if (DeviceScanner.useAndroid12BluetoothPermissions()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 Log.e(TAG, "bluetooth scan permission not granted!");
                 return false;
             }
@@ -427,7 +403,7 @@ public class BluetoothLeService extends Service {
             handler.postDelayed(new Runnable() {
                 public void run() {
                     if( MyDebug.LOG )
-                        Log.d(TAG, "trying connect again from postdelayed");
+                        Logger.INSTANCE.d(TAG, "trying connect again from postdelayed");
                     connect(address);
                 }
             }, 1000);
@@ -436,25 +412,23 @@ public class BluetoothLeService extends Service {
         if( address.equals("undefined") ) {
             // test - only needed if we've hacked BluetoothRemoteControl.remoteEnabled() to not check for being undefined
             if( MyDebug.LOG )
-                Log.d(TAG, "address is undefined");
+                Logger.INSTANCE.d(TAG, "address is undefined");
             return false;
         }*/
 
-        if( address.equals(device_address) && bluetoothGatt != null ) {
+        if (address.equals(device_address) && bluetoothGatt != null) {
             bluetoothGatt.disconnect();
             bluetoothGatt.close();
             bluetoothGatt = null;
         }
 
         final BluetoothDevice device = bluetoothAdapter.getRemoteDevice(address);
-        if( device == null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "device not found");
+        if (device == null) {
+            Logger.INSTANCE.d(TAG, "device not found");
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    if( MyDebug.LOG )
-                        Log.d(TAG, "attempt to connect to remote");
+                    Logger.INSTANCE.d(TAG, "attempt to connect to remote");
                     connect(address);
                 }
             }, 5000);
@@ -470,16 +444,16 @@ public class BluetoothLeService extends Service {
         bluetoothGatt = device.connectGatt(this, true, mGattCallback);
         device_address = address;
         return true;
-	}
+    }
 
     private void close() {
-        if( bluetoothGatt == null ) {
+        if (bluetoothGatt == null) {
             return;
         }
 
         // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
-        if( DeviceScanner.useAndroid12BluetoothPermissions() ) {
-            if( ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ) {
+        if (DeviceScanner.useAndroid12BluetoothPermissions()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 Log.e(TAG, "bluetooth scan permission not granted!");
                 return;
             }
@@ -490,20 +464,17 @@ public class BluetoothLeService extends Service {
     }
 
     private void setCharacteristicNotification(BluetoothGattCharacteristic characteristic, boolean enabled) {
-        if( bluetoothAdapter == null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "bluetoothAdapter is null");
+        if (bluetoothAdapter == null) {
+            Logger.INSTANCE.d(TAG, "bluetoothAdapter is null");
             return;
-        }
-        else if( bluetoothGatt == null ) {
-            if( MyDebug.LOG )
-                Log.d(TAG, "bluetoothGatt is null");
+        } else if (bluetoothGatt == null) {
+            Logger.INSTANCE.d(TAG, "bluetoothGatt is null");
             return;
         }
 
         // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
-        if( DeviceScanner.useAndroid12BluetoothPermissions() ) {
-            if( ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED ) {
+        if (DeviceScanner.useAndroid12BluetoothPermissions()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 Log.e(TAG, "bluetooth scan permission not granted!");
                 return;
             }
@@ -511,10 +482,9 @@ public class BluetoothLeService extends Service {
 
         String uuid = characteristic.getUuid().toString();
         bluetoothGatt.setCharacteristicNotification(characteristic, enabled);
-        if( enabled ) {
+        if (enabled) {
             subscribed_characteristics.put(uuid, characteristic);
-        }
-        else {
+        } else {
             subscribed_characteristics.remove(uuid);
         }
 
@@ -524,7 +494,7 @@ public class BluetoothLeService extends Service {
     }
 
     private List<BluetoothGattService> getSupportedGattServices() {
-        if( bluetoothGatt == null )
+        if (bluetoothGatt == null)
             return null;
 
         return bluetoothGatt.getServices();

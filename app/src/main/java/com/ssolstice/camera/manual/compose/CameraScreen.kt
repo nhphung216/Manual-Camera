@@ -40,6 +40,7 @@ import com.ssolstice.camera.manual.compose.widgets.VideoModeSelector
 import com.ssolstice.camera.manual.models.OptionRes
 import com.ssolstice.camera.manual.models.PhotoModeUiModel
 import com.ssolstice.camera.manual.models.VideoModeUiModel
+import com.ssolstice.camera.manual.utils.Logger
 
 val photoModes = listOf(
     PhotoModeUiModel(
@@ -111,19 +112,19 @@ fun CameraPreview() {
 
         photoModes = photoModes,
         onChangePhotoMode = {
-            Log.d("CameraPreview", "onChangePhotoMode: $it")
+            Logger.d("CameraPreview", "onChangePhotoMode: $it")
         },
         currentPhotoMode = photoModes[0],
 
         videoModes = videoModes,
         onChangeVideoMode = {
-            Log.d("CameraPreview", "onChangeVideoMode: $it")
+            Logger.d("CameraPreview", "onChangeVideoMode: $it")
         },
 
         currentVideoMode = videoModes[0],
         captureRate = 0.25f,
         onCaptureRateSelected = {
-            Log.d("CameraPreview", "onCaptureRateSelected: $it")
+            Logger.d("CameraPreview", "onCaptureRateSelected: $it")
         }
     )
 }
@@ -140,6 +141,8 @@ fun CameraScreen(
     onOpenGallery: () -> Unit = {},
     onTogglePhotoVideoMode: () -> Unit = {},
     onTakePhoto: () -> Unit = {},
+    onTakeLongPhoto: () -> Unit = {},
+    takePhotoButtonLongClickCancelled: () -> Unit = {},
     onTakePhotoVideoSnapshot: () -> Unit = {},
     onPauseVideo: () -> Unit = {},
     onSwitchCamera: () -> Unit = {},
@@ -189,6 +192,8 @@ fun CameraScreen(
             galleryBitmap = galleryBitmap,
             openGallery = { onOpenGallery() },
             takePhoto = { onTakePhoto() },
+            takeLongPhoto = { onTakeLongPhoto() },
+            takePhotoButtonLongClickCancelled = { takePhotoButtonLongClickCancelled() },
             takePhotoVideoSnapshot = { onTakePhotoVideoSnapshot() },
             pauseVideo = { onPauseVideo() },
             switchCamera = { onSwitchCamera() },
@@ -216,7 +221,7 @@ fun CameraScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = if(!isPhotoMode) Icons.Default.VideoSettings else Icons.Default.SettingsApplications,
+                imageVector = if (!isPhotoMode) Icons.Default.VideoSettings else Icons.Default.SettingsApplications,
                 contentDescription = null,
                 tint = WhiteColor,
                 modifier = Modifier
