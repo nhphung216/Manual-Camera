@@ -5,5 +5,6 @@
 
     <!-- used for the on-screen icons, e.g., Settings etc -->
 	<dimen name="onscreen_button_size">46dp</dimen>
+	<dimen name="onscreen_button_size_small">24dp</dimen>
 	<dimen name="onscreen_button_padding">10dp</dimen>
 </resources>

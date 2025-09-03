@@ -2255,7 +2255,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
             if (avoid_ui) {
                 // avoid parts of the UI
-                var view = mainActivity.binding.focusSeekbar
+                var view = mainActivity.binding.focusBracketingSourceDistanceSeekbar
                 if (view.isVisible) {
                     text_base_y -= view.height
                 }

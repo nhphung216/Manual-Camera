@@ -464,6 +464,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             this.storageUtils!!.getSaveLocation()
         )
         checkSaveLocations()
+
         if (applicationInterface!!.storageUtils.isUsingSAF()) {
             if (MyDebug.LOG) Log.d(TAG, "create new SaveLocationHistory for SAF")
             this.saveLocationHistorySAF = SaveLocationHistory(
@@ -481,7 +482,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
 
         // accelerometer sensor (for device orientation)
-        if (mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+        if (mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             if (MyDebug.LOG) Log.d(TAG, "found accelerometer")
             mSensorAccelerometer = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         } else {
@@ -493,7 +494,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         )
 
         // magnetic sensor (for compass direction)
-        magneticSensor!!.initSensor(mSensorManager)
+        magneticSensor?.initSensor(mSensorManager)
         if (MyDebug.LOG) Log.d(
             TAG,
             "onCreate: time after creating magnetic sensor: " + (System.currentTimeMillis() - debug_time)
@@ -598,7 +599,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // however).
 
         binding.zoom.visibility = View.GONE
-        binding.zoomSeekbar.visibility = View.INVISIBLE
+        binding.zoomSeekbar.visibility = View.GONE
 
         // initialise state of on-screen icons
         mainUI?.updateOnScreenIcons()
@@ -812,17 +813,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         }
                     }
                 }
-
-//                BackHandler {
-//                    if (showCameraSettings.value) {
-//                        showCameraSettings.value = false
-//                    } else if (showCameraControls.value) {
-//                        showCameraControls.value = false
-//                    } else {
-//                        val settings_is_open = settingsIsOpen()
-//                        activity.finish()
-//                    }
-//                }
 
                 Box {
                     CameraScreen(
@@ -1220,6 +1210,23 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                 updateForSettings(true, "Reset All")
                             },
                         )
+                    }
+                }
+
+                BackHandler {
+                    val preferenceFragment = getFragmentManager()
+                        .findFragmentByTag("PREFERENCE_FRAGMENT") as MyPreferenceFragment?
+                    if (preferenceFragment != null && preferenceFragment.isVisible) {
+                        getFragmentManager().beginTransaction()
+                            .hide(preferenceFragment)
+                            .commit()
+                        activity.settingsClosing()
+                    } else if (showCameraSettings.value) {
+                        showCameraSettings.value = false
+                    } else if (showCameraControls.value) {
+                        showCameraControls.value = false
+                    } else {
+                        activity.finish()
                     }
                 }
             }
@@ -2012,7 +2019,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun changeFocusDistance(change: Int, isTargetDistance: Boolean) {
         mainUI?.changeSeekbar(
-            if (isTargetDistance) R.id.focus_bracketing_target_seekbar else R.id.focus_seekbar,
+            if (isTargetDistance) R.id.focus_bracketing_target_seekbar else R.id.focus_bracketing_source_distance_seekbar,
             change
         )
     }
@@ -2037,9 +2044,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         // this is intentionally true, not false, as the uncovering happens in DrawPreview when we receive frames from the camera after it's opened
         // (this should already have been set from the call in onPause(), but we set it here again just in case)
-        applicationInterface!!.drawPreview?.setCoverPreview(true)
+        applicationInterface?.drawPreview?.setCoverPreview(true)
 
-        applicationInterface!!.drawPreview?.clearDimPreview() // shouldn't be needed, but just in case the dim preview flag got set somewhere
+        applicationInterface?.drawPreview?.clearDimPreview() // shouldn't be needed, but just in case the dim preview flag got set somewhere
 
         cancelImageSavingNotification()
 
@@ -2047,32 +2054,30 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         // Note that we do it here rather than customising the theme's android:windowBackground, so this doesn't affect other views - in particular, the MyPreferenceFragment settings
         window.decorView.rootView.setBackgroundColor(Color.BLACK)
 
-        if (edgeToEdgeMode && Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (edgeToEdgeMode) {
             // needed on Android 15, otherwise the navigation bar is not transparent
-            getWindow().setNavigationBarContrastEnforced(false)
+            window.isNavigationBarContrastEnforced = false
         }
 
         registerDisplayListener()
 
-        mSensorManager!!.registerListener(
+        mSensorManager?.registerListener(
             accelerometerListener, mSensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL
         )
-        magneticSensor!!.registerMagneticListener(mSensorManager)
-        if (orientationEventListener != null) {
-            orientationEventListener!!.enable()
-        }
+        magneticSensor?.registerMagneticListener(mSensorManager)
+        orientationEventListener?.enable()
+
         window.decorView.addOnLayoutChangeListener(layoutChangeListener)
 
         // if BLE remote control is enabled, then start the background BLE service
         bluetoothRemoteControl!!.startRemoteControl()
 
-        //speechControl.initSpeechRecognizer();
         initLocation()
         initGyroSensors()
-        applicationInterface!!.imageSaver?.onResume()
-        soundPoolManager!!.initSound()
-        soundPoolManager!!.loadSound(R.raw.mybeep)
-        soundPoolManager!!.loadSound(R.raw.mybeep_hi)
+        applicationInterface?.imageSaver?.onResume()
+        soundPoolManager?.initSound()
+        soundPoolManager?.loadSound(R.raw.mybeep)
+        soundPoolManager?.loadSound(R.raw.mybeep_hi)
 
         resetCachedSystemOrientation() // just in case?
 
@@ -2129,35 +2134,33 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             val cameraId = applicationInterface!!.cameraIdPref
             val cameraIdSPhysical = applicationInterface!!.cameraIdSPhysicalPref
             if (cameraId > 0 || cameraIdSPhysical != null) {
-                val camera_controller_manager = preview?.cameraControllerManager
-                val front_facing = camera_controller_manager?.getFacing(cameraId)
-                if (MyDebug.LOG) Log.d(TAG, "front_facing: $front_facing")
-                if ((camera_controller_manager?.getNumberOfCameras()
+                val cameraControllerManager = preview?.cameraControllerManager
+                val frontFacing = cameraControllerManager?.getFacing(cameraId)
+                if (MyDebug.LOG) Log.d(TAG, "front_facing: $frontFacing")
+                if ((cameraControllerManager?.getNumberOfCameras()
                         ?: 0) > 2 || cameraIdSPhysical != null
                 ) {
-                    var camera_is_default = true
-                    if (cameraIdSPhysical != null) camera_is_default = false
+                    var cameraIsDefault = true
+                    if (cameraIdSPhysical != null) cameraIsDefault = false
                     var i = 0
-                    while (i < cameraId && camera_is_default) {
-                        val that_front_facing = camera_controller_manager?.getFacing(i)
+                    while (i < cameraId && cameraIsDefault) {
+                        val thatFrontFacing = cameraControllerManager?.getFacing(i)
                         if (MyDebug.LOG) Log.d(
-                            TAG, "camera $i that_front_facing: $that_front_facing"
+                            TAG, "camera $i that_front_facing: $thatFrontFacing"
                         )
-                        if (that_front_facing == front_facing) {
+                        if (thatFrontFacing == frontFacing) {
                             // found an earlier camera with same front/back facing
-                            camera_is_default = false
+                            cameraIsDefault = false
                         }
                         i++
                     }
-                    if (MyDebug.LOG) Log.d(TAG, "camera_is_default: $camera_is_default")
-                    if (!camera_is_default) {
+                    if (MyDebug.LOG) Log.d(TAG, "camera_is_default: $cameraIsDefault")
+                    if (!cameraIsDefault) {
                         this.pushCameraIdToast(cameraId, cameraIdSPhysical)
                     }
                 }
             }
         }
-
-//        pushSwitchedCamera = false // just in case
 
         if (MyDebug.LOG) {
             Log.d(
@@ -2195,7 +2198,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         window.decorView.removeOnLayoutChangeListener(layoutChangeListener)
         bluetoothRemoteControl!!.stopRemoteControl()
         freeAudioListener(false)
-        //speechControl.stopSpeechRecognizer();
         applicationInterface!!.locationSupplier.freeLocationListeners()
         applicationInterface!!.stopPanorama(true) // in practice not needed as we should stop panorama when camera is closed, but good to do it explicitly here, before disabling the gyro sensors
         applicationInterface!!.gyroSensor.disableSensors()
@@ -2227,7 +2229,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     private inner class MyDisplayListener : DisplayListener {
-        private var old_rotation: Int
+        private var oldRotation: Int
 
         init {
             val rotation = this@MainActivity.windowManager.defaultDisplay.rotation
@@ -2235,7 +2237,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 Log.d(TAG, "MyDisplayListener")
                 Log.d(TAG, "rotation: $rotation")
             }
-            old_rotation = rotation
+            oldRotation = rotation
         }
 
         override fun onDisplayAdded(displayId: Int) {
@@ -2249,16 +2251,20 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             if (MyDebug.LOG) {
                 Log.d(TAG, "onDisplayChanged: $displayId")
                 Log.d(TAG, "rotation: $rotation")
-                Log.d(TAG, "old_rotation: $old_rotation")
+                Log.d(TAG, "old_rotation: $oldRotation")
             }
-            if ((rotation == Surface.ROTATION_0 && old_rotation == Surface.ROTATION_180) || (rotation == Surface.ROTATION_180 && old_rotation == Surface.ROTATION_0) || (rotation == Surface.ROTATION_90 && old_rotation == Surface.ROTATION_270) || (rotation == Surface.ROTATION_270 && old_rotation == Surface.ROTATION_90)) {
+            if ((rotation == Surface.ROTATION_0 && oldRotation == Surface.ROTATION_180)
+                || (rotation == Surface.ROTATION_180 && oldRotation == Surface.ROTATION_0)
+                || (rotation == Surface.ROTATION_90 && oldRotation == Surface.ROTATION_270)
+                || (rotation == Surface.ROTATION_270 && oldRotation == Surface.ROTATION_90)
+            ) {
                 if (MyDebug.LOG) Log.d(
                     TAG, "onDisplayChanged: switched between landscape and reverse orientation"
                 )
                 onSystemOrientationChanged()
             }
 
-            old_rotation = rotation
+            oldRotation = rotation
         }
     }
 
@@ -2312,14 +2318,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             } else {
                 if (hasOldSystemOrientation) {
                     // handle rotation animation
-                    var start_rotation: Int =
+                    var startRotation: Int =
                         getRotationFromSystemOrientation(oldSystemOrientation) - getRotationFromSystemOrientation(
                             newSystemOrientation
                         )
-                    if (MyDebug.LOG) Log.d(TAG, "start_rotation: " + start_rotation)
-                    if (start_rotation < -180) start_rotation += 360
-                    else if (start_rotation > 180) start_rotation -= 360
-                    mainUI?.layoutUIWithRotation(start_rotation.toFloat())
+                    if (MyDebug.LOG) Log.d(TAG, "start_rotation: $startRotation")
+                    if (startRotation < -180) startRotation += 360
+                    else if (startRotation > 180) startRotation -= 360
+                    mainUI?.layoutUIWithRotation(startRotation.toFloat())
                 }
                 applicationInterface!!.drawPreview?.updateSettings()
 
@@ -2358,7 +2364,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     result = SystemOrientation.LANDSCAPE
                     run {
-                        val rotation = windowManager.getDefaultDisplay().rotation
+                        val rotation = windowManager.defaultDisplay.rotation
                         if (MyDebug.LOG) Log.d(
                             TAG, "rotation: $rotation"
                         )
@@ -2419,7 +2425,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             Log.d(TAG, "getDisplayRotationDegrees");
             Log.d(TAG, "prefer_later: " + prefer_later);
         }*/
-        if (lockToLandscape || preferLater) {
+        if (preferLater) {
             return windowManager.defaultDisplay.rotation
         }
         // we cache to reduce effect of annoying problem where rotation changes shortly before the
@@ -2454,15 +2460,15 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         } else if (supportsFastBurst()) {
             // need to check whether fast burst is supported (including for the current resolution),
             // in case we're in Standard photo mode
-            val current_size = preview?.getCurrentPictureSize()
-            if (current_size != null && current_size.supports_burst) {
-                val photo_mode = applicationInterface!!.photoMode
-                if (photo_mode == PhotoMode.Standard && applicationInterface!!.isRawOnly(photo_mode)) {
+            val currentSize = preview?.getCurrentPictureSize()
+            if (currentSize != null && currentSize.supports_burst) {
+                val photoMode = applicationInterface!!.photoMode
+                if (photoMode == PhotoMode.Standard && applicationInterface!!.isRawOnly(photoMode)) {
                     if (MyDebug.LOG) Log.d(TAG, "fast burst not supported in RAW-only mode")
                     // in JPEG+RAW mode, a continuous fast burst will only produce JPEGs which is fine; but in RAW only mode,
                     // no images at all would be saved! (Or we could switch to produce JPEGs anyway, but this seems misleading
                     // in RAW only mode.)
-                } else if (photo_mode == PhotoMode.Standard || photo_mode == PhotoMode.FastBurst) {
+                } else if (photoMode == PhotoMode.Standard || photoMode == PhotoMode.FastBurst) {
                     this.takePicturePressed(false, true)
                     return true
                 }
@@ -2595,7 +2601,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         this.closePopup()
 
-        var value = applicationInterface!!.stampPref == "preference_stamp_yes"
+        var value = applicationInterface?.stampPref == "preference_stamp_yes"
         value = !value
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.edit {
@@ -2614,7 +2620,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun clickedFocusPeaking() {
         if (MyDebug.LOG) Log.d(TAG, "clickedFocusPeaking")
-        var value = applicationInterface!!.focusPeakingPref
+        var value = applicationInterface?.focusPeakingPref ?: false
         value = !value
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -2631,7 +2637,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun clickedAutoLevel() {
         if (MyDebug.LOG) Log.d(TAG, "clickedAutoLevel")
-        var value = applicationInterface!!.autoStabilisePref
+        var value = applicationInterface?.autoStabilisePref ?: false
         value = !value
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -5001,8 +5007,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         var uri = applicationInterface!!.storageUtils.getLastMediaScanned()
         var is_raw = uri != null && applicationInterface!!.storageUtils.getLastMediaScannedIsRaw()
         if (MyDebug.LOG && uri != null) {
-            Log.d(TAG, "found cached most recent uri: " + uri)
-            Log.d(TAG, "    is_raw: " + is_raw)
+            Log.d(TAG, "found cached most recent uri: $uri")
+            Log.d(TAG, "    is_raw: $is_raw")
         }
         if (uri == null) {
             if (MyDebug.LOG) Log.d(TAG, "go to latest media")
@@ -5013,9 +5019,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     Log.d(TAG, "filename: " + media.filename)
                 }
                 uri = media.getMediaStoreUri(this)
-                if (MyDebug.LOG) Log.d(TAG, "media uri:" + uri)
+                if (MyDebug.LOG) Log.d(TAG, "media uri:$uri")
                 is_raw = media.filename != null && StorageUtils.filenameIsRaw(media.filename)
-                if (MyDebug.LOG) Log.d(TAG, "is_raw:" + is_raw)
+                if (MyDebug.LOG) Log.d(TAG, "is_raw:$is_raw")
             }
         }
 
@@ -5024,7 +5030,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             // note, with scoped storage this isn't reliable when using SAF - since we don't actually have permission to access mediastore URIs that
             // were created via Storage Access Framework, even though ManualCamera was the application that saved them(!)
             try {
-                val cr = getContentResolver()
+                val cr = contentResolver
                 val pfd = cr.openFileDescriptor(uri, "r")
                 if (pfd == null) {
                     if (MyDebug.LOG) Log.d(TAG, "uri no longer exists (1): " + uri)
@@ -5147,28 +5153,27 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
      * (as opened with openFolderChooserDialogSAF()).
      */
     public override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        if (MyDebug.LOG) Log.d(TAG, "onActivityResult: " + requestCode)
+        if (MyDebug.LOG) Log.d(TAG, "onActivityResult: $requestCode")
 
         super.onActivityResult(requestCode, resultCode, resultData)
 
         when (requestCode) {
             CHOOSE_SAVE_FOLDER_SAF_CODE -> {
                 if (resultCode == RESULT_OK && resultData != null) {
-                    val treeUri = resultData.getData()
-                    if (MyDebug.LOG) Log.d(TAG, "returned treeUri: " + treeUri)
+                    val treeUri = resultData.data
+                    if (MyDebug.LOG) Log.d(TAG, "returned treeUri: $treeUri")
                     // see https://developer.android.com/training/data-storage/shared/documents-files#persist-permissions :
                     val takeFlags =
-                        resultData.getFlags() and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                    try {/*if( true )
-						throw new SecurityException(); // test*/
-                        getContentResolver().takePersistableUriPermission(treeUri!!, takeFlags)
+                        resultData.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    try {
+                        contentResolver.takePersistableUriPermission(treeUri!!, takeFlags)
 
                         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-                        val editor = sharedPreferences.edit()
-                        editor.putString(
-                            PreferenceKeys.SaveLocationSAFPreferenceKey, treeUri.toString()
-                        )
-                        editor.apply()
+                        sharedPreferences.edit {
+                            putString(
+                                PreferenceKeys.SaveLocationSAFPreferenceKey, treeUri.toString()
+                            )
+                        }
 
                         if (MyDebug.LOG) Log.d(TAG, "update folder history for saf")
                         updateFolderHistorySAF(treeUri.toString())
@@ -5189,11 +5194,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         val uri: String = sharedPreferences.getString(
                             PreferenceKeys.SaveLocationSAFPreferenceKey, ""
                         )!!
-                        if (uri.length == 0) {
+                        if (uri.isEmpty()) {
                             if (MyDebug.LOG) Log.d(TAG, "no SAF save location was set")
-                            val editor = sharedPreferences.edit()
-                            editor.putBoolean(PreferenceKeys.UsingSAFPreferenceKey, false)
-                            editor.apply()
+                            sharedPreferences.edit {
+                                putBoolean(PreferenceKeys.UsingSAFPreferenceKey, false)
+                            }
                         }
                     }
                 } else {
@@ -5203,11 +5208,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     val uri: String = sharedPreferences.getString(
                         PreferenceKeys.SaveLocationSAFPreferenceKey, ""
                     )!!
-                    if (uri.length == 0) {
+                    if (uri.isEmpty()) {
                         if (MyDebug.LOG) Log.d(TAG, "no SAF save location was set")
-                        val editor = sharedPreferences.edit()
-                        editor.putBoolean(PreferenceKeys.UsingSAFPreferenceKey, false)
-                        editor.apply()
+                        sharedPreferences.edit {
+                            putBoolean(PreferenceKeys.UsingSAFPreferenceKey, false)
+                        }
                         preview?.showToast(null, R.string.saf_cancelled)
                     }
                 }
@@ -5220,22 +5225,23 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
             CHOOSE_GHOST_IMAGE_SAF_CODE -> {
                 if (resultCode == RESULT_OK && resultData != null) {
-                    val fileUri = resultData.getData()
-                    if (MyDebug.LOG) Log.d(TAG, "returned single fileUri: " + fileUri)
+                    val fileUri = resultData.data
+                    if (MyDebug.LOG) Log.d(TAG, "returned single fileUri: $fileUri")
                     // persist permission just in case?
                     val takeFlags =
-                        (resultData.getFlags() and (Intent.FLAG_GRANT_READ_URI_PERMISSION))
+                        (resultData.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION))
                     try {/*if( true )
 						throw new SecurityException(); // test*/
                         // Check for the freshest data.
-                        getContentResolver().takePersistableUriPermission(fileUri!!, takeFlags)
+                        contentResolver.takePersistableUriPermission(fileUri!!, takeFlags)
 
                         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-                        val editor = sharedPreferences.edit()
-                        editor.putString(
-                            PreferenceKeys.GhostSelectedImageSAFPreferenceKey, fileUri.toString()
-                        )
-                        editor.apply()
+                        sharedPreferences.edit {
+                            putString(
+                                PreferenceKeys.GhostSelectedImageSAFPreferenceKey,
+                                fileUri.toString()
+                            )
+                        }
                     } catch (e: SecurityException) {
                         Log.e(TAG, "SecurityException failed to take permission")
                         e.printStackTrace()
@@ -5247,11 +5253,12 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         )!!
                         if (uri.length == 0) {
                             if (MyDebug.LOG) Log.d(TAG, "no SAF ghost image was set")
-                            val editor = sharedPreferences.edit()
-                            editor.putString(
-                                PreferenceKeys.GhostImagePreferenceKey, "preference_ghost_image_off"
-                            )
-                            editor.apply()
+                            sharedPreferences.edit {
+                                putString(
+                                    PreferenceKeys.GhostImagePreferenceKey,
+                                    "preference_ghost_image_off"
+                                )
+                            }
                         }
                     }
                 } else {
@@ -5261,13 +5268,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     val uri: String = sharedPreferences.getString(
                         PreferenceKeys.GhostSelectedImageSAFPreferenceKey, ""
                     )!!
-                    if (uri.length == 0) {
+                    if (uri.isEmpty()) {
                         if (MyDebug.LOG) Log.d(TAG, "no SAF ghost image was set")
-                        val editor = sharedPreferences.edit()
-                        editor.putString(
-                            PreferenceKeys.GhostImagePreferenceKey, "preference_ghost_image_off"
-                        )
-                        editor.apply()
+                        sharedPreferences.edit {
+                            putString(
+                                PreferenceKeys.GhostImagePreferenceKey, "preference_ghost_image_off"
+                            )
+                        }
                     }
                 }
 
@@ -5279,15 +5286,15 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
             CHOOSE_LOAD_SETTINGS_SAF_CODE -> {
                 if (resultCode == RESULT_OK && resultData != null) {
-                    val fileUri = resultData.getData()
+                    val fileUri = resultData.data
                     if (MyDebug.LOG) Log.d(TAG, "returned single fileUri: " + fileUri)
                     // persist permission just in case?
                     val takeFlags =
-                        (resultData.getFlags() and (Intent.FLAG_GRANT_READ_URI_PERMISSION))
+                        (resultData.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION))
                     try {/*if( true )
 						throw new SecurityException(); // test*/
                         // Check for the freshest data.
-                        getContentResolver().takePersistableUriPermission(fileUri!!, takeFlags)
+                        contentResolver.takePersistableUriPermission(fileUri!!, takeFlags)
 
                         settingsManager!!.loadSettings(fileUri)
                     } catch (e: SecurityException) {
@@ -5919,11 +5926,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 //                        zoomSeekBar.visibility = View.VISIBLE
 //                    }
                 } else {
-                    zoomSeekBar.visibility = View.INVISIBLE // should be INVISIBLE not GONE, as the focus_seekbar is aligned to be left to this; in future we might want this similarly for exposure panel
+                    zoomSeekBar.visibility =
+                        View.INVISIBLE // should be INVISIBLE not GONE, as the focus_seekbar is aligned to be left to this; in future we might want this similarly for exposure panel
                 }
             } else {
                 zoomControls.visibility = View.GONE
-                zoomSeekBar.visibility = View.INVISIBLE // should be INVISIBLE not GONE, as the focus_seekbar is aligned to be left to this; in future we might want this similarly for the exposure panel
+                zoomSeekBar.visibility =
+                    View.INVISIBLE // should be INVISIBLE not GONE, as the focus_seekbar is aligned to be left to this; in future we might want this similarly for the exposure panel
             }
             if (MyDebug.LOG) Log.d(
                 TAG,
@@ -6129,7 +6138,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     fun setManualFocusSeekbarProgress(isTargetDistance: Boolean, focusDistance: Float) {
         val focusSeekBar =
-            if (isTargetDistance) binding.focusBracketingTargetSeekbar else binding.focusSeekbar
+            if (isTargetDistance) binding.focusBracketingTargetSeekbar else binding.focusBracketingSourceDistanceSeekbar
         ManualSeekbars.setProgressSeekbarScaled(
             focusSeekBar,
             0.0,
@@ -6141,7 +6150,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     private fun setManualFocusSeekbar(isTargetDistance: Boolean) {
         if (MyDebug.LOG) Log.d(TAG, "setManualFocusSeekbar")
         val focusSeekBar =
-            if (isTargetDistance) binding.focusBracketingTargetSeekbar else binding.focusSeekbar
+            if (isTargetDistance) binding.focusBracketingTargetSeekbar else binding.focusBracketingSourceDistanceSeekbar
         focusSeekBar.setOnSeekBarChangeListener(null) // clear an existing listener - don't want to call the listener when setting up the progress bar to match the existing state
 
         preview?.cameraController?.let {
@@ -6221,7 +6230,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     fun setManualFocusSeekBarVisibility(isTargetDistance: Boolean) {
         val isVisible = showManualFocusSeekbar(isTargetDistance)
         val focusSeekBar =
-            if (isTargetDistance) binding.layoutFocusBracketingTargetSeekbar else binding.layoutFocusSeekbar
+            if (isTargetDistance) binding.layoutFocusBracketingTargetDistance else binding.layoutFocusBracketingSourceDistance
         val visibility = if (isVisible) View.VISIBLE else View.GONE
         focusSeekBar.visibility = visibility
 

@@ -115,7 +115,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             seekBar.progressTintList = progressColor
             seekBar.thumbTintList = thumbColor
 
-            seekBar = mainActivity.binding.focusSeekbar
+            seekBar = mainActivity.binding.focusBracketingSourceDistanceSeekbar
             seekBar.progressTintList = progressColor
             seekBar.thumbTintList = thumbColor
 
@@ -222,7 +222,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
     fun setFocusSeekbarsRotation() {
         setFixedRotation(
-            mainActivity.binding.focusSeekbar,
+            mainActivity.binding.focusBracketingSourceDistanceSeekbar,
             0,
             navigation_gap_reverse_landscape_align_parent_bottom,
             0,
@@ -420,7 +420,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             val settingsButton = mainActivity.binding.settings
             val zoomControls = mainActivity.binding.zoom
             val zoomSeekBar = mainActivity.binding.zoomSeekbar
-            val focusSeekBar = mainActivity.binding.focusSeekbar
+            val focusSeekBar = mainActivity.binding.focusBracketingSourceDistanceSeekbar
             val focusBracketingTargetSeekBar = mainActivity.binding.focusBracketingTargetSeekbar
 
             if (showCycleRawIcon()) cycleRawButton.visibility = visibility

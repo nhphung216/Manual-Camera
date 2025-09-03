@@ -397,92 +397,117 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/layout_focus_seekbar"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_focus_bracketing_source_distance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
-                <ImageButton
-                    android:id="@+id/focus_infinity"
-                    android:layout_width="@dimen/onscreen_button_size"
-                    android:layout_height="@dimen/onscreen_button_size"
-                    android:background="@null"
-                    android:backgroundTint="@null"
-                    android:backgroundTintMode="src_in"
-                    android:contentDescription="@string/face_detection_enable"
-                    android:padding="@dimen/onscreen_button_padding"
+                <TextView
+                    android:id="@+id/txt_focus_bracketing_source_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/focus_bracketing_source_distance"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/icon_focus_bracketing_source_distance_infinity"
+                    android:layout_width="@dimen/onscreen_button_size_small"
+                    android:layout_height="@dimen/onscreen_button_size_small"
+                    android:contentDescription="@string/focus_bracketing_source_distance"
                     android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_source_distance_seekbar"
+                    app:layout_constraintEnd_toStartOf="@+id/focus_bracketing_source_distance_seekbar"
+                    app:layout_constraintTop_toTopOf="@+id/focus_bracketing_source_distance_seekbar"
                     app:srcCompat="@drawable/focus_mode_infinity" />
 
                 <SeekBar
-                    android:id="@+id/focus_seekbar"
+                    android:id="@+id/focus_bracketing_source_distance_seekbar"
                     android:layout_width="250dp"
-                    android:layout_height="46dp"
+                    android:layout_height="wrap_content"
                     android:background="@color/seekbar_background"
-                    android:contentDescription="@string/focus_distance"
+                    android:contentDescription="@string/focus_bracketing_source_distance"
                     android:progressBackgroundTint="@color/color_selected"
                     android:progressTint="@color/color_selected"
-                    android:thumbTint="@color/color_selected" />
+                    android:thumbTint="@color/color_selected"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_focus_bracketing_source_distance" />
 
-                <ImageButton
-                    android:id="@+id/focus_macro"
-                    android:layout_width="@dimen/onscreen_button_size"
-                    android:layout_height="@dimen/onscreen_button_size"
-                    android:background="@null"
-                    android:backgroundTint="@null"
-                    android:backgroundTintMode="src_in"
-                    android:contentDescription="@string/face_detection_enable"
-                    android:padding="@dimen/onscreen_button_padding"
+                <ImageView
+                    android:id="@+id/icon_focus_bracketing_source_distance_focus"
+                    android:layout_width="@dimen/onscreen_button_size_small"
+                    android:layout_height="@dimen/onscreen_button_size_small"
+                    android:contentDescription="@string/focus_bracketing_source_distance"
                     android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_source_distance_seekbar"
+                    app:layout_constraintStart_toEndOf="@+id/focus_bracketing_source_distance_seekbar"
+                    app:layout_constraintTop_toTopOf="@+id/focus_bracketing_source_distance_seekbar"
                     app:srcCompat="@drawable/ic_macro_focus" />
-            </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layout_focus_bracketing_target_seekbar"
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_focus_bracketing_target_distance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
-                <ImageButton
-                    android:id="@+id/focus_bracketing_target_infinity"
-                    android:layout_width="@dimen/onscreen_button_size"
-                    android:layout_height="@dimen/onscreen_button_size"
-                    android:background="@null"
-                    android:backgroundTint="@null"
-                    android:backgroundTintMode="src_in"
-                    android:contentDescription="@string/face_detection_enable"
-                    android:padding="@dimen/onscreen_button_padding"
+                <TextView
+                    android:id="@+id/txt_focus_bracketing_target_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/focus_bracketing_target_distance"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/icon_focus_bracketing_target_distance_infinity"
+                    android:layout_width="@dimen/onscreen_button_size_small"
+                    android:layout_height="@dimen/onscreen_button_size_small"
+                    android:contentDescription="@string/focus_bracketing_target_distance"
                     android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_target_seekbar"
+                    app:layout_constraintEnd_toStartOf="@+id/focus_bracketing_target_seekbar"
+                    app:layout_constraintTop_toTopOf="@+id/focus_bracketing_target_seekbar"
                     app:srcCompat="@drawable/focus_mode_infinity" />
 
                 <SeekBar
                     android:id="@+id/focus_bracketing_target_seekbar"
                     android:layout_width="250dp"
-                    android:layout_height="46dp"
+                    android:layout_height="wrap_content"
                     android:background="@color/seekbar_background"
                     android:contentDescription="@string/focus_bracketing_target_distance"
                     android:progressBackgroundTint="@color/color_selected"
                     android:progressTint="@color/color_selected"
-                    android:thumbTint="@color/color_selected" />
+                    android:thumbTint="@color/color_selected"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_focus_bracketing_target_distance" />
 
-                <ImageButton
-                    android:id="@+id/focus_bracketing_target_macro"
-                    android:layout_width="@dimen/onscreen_button_size"
-                    android:layout_height="@dimen/onscreen_button_size"
-                    android:background="@null"
-                    android:backgroundTint="@null"
-                    android:backgroundTintMode="src_in"
-                    android:contentDescription="@string/face_detection_enable"
-                    android:padding="@dimen/onscreen_button_padding"
+                <ImageView
+                    android:id="@+id/icon_focus_bracketing_target_distance_focus"
+                    android:layout_width="@dimen/onscreen_button_size_small"
+                    android:layout_height="@dimen/onscreen_button_size_small"
+                    android:contentDescription="@string/focus_bracketing_target_distance"
                     android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_target_seekbar"
+                    app:layout_constraintStart_toEndOf="@+id/focus_bracketing_target_seekbar"
+                    app:layout_constraintTop_toTopOf="@+id/focus_bracketing_target_seekbar"
                     app:srcCompat="@drawable/ic_macro_focus" />
-            </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <SeekBar
                 android:id="@+id/zoom_seekbar"
