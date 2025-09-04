@@ -217,7 +217,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         } else {
             Preference pref = findPreference("preference_resolution");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         {
@@ -236,12 +236,12 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         if (!supports_expo_bracketing || max_expo_bracketing_n_images <= 3) {
             Preference pref = findPreference("preference_expo_bracketing_n_images");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
         if (!supports_expo_bracketing) {
             Preference pref = findPreference("preference_expo_bracketing_stops");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
     }
 
@@ -261,7 +261,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             // default!)
             Preference pref = findPreference(PreferenceKeys.FaceDetectionPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_camera_controls");
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         {
@@ -330,7 +330,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             // default!)
             Preference pref = findPreference(PreferenceKeys.FaceDetectionPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_camera_controls");
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         final int preview_width = bundle.getInt("preview_width");
@@ -754,7 +754,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             // default!)
             Preference pref = findPreference(PreferenceKeys.AntiBandingPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_processing_settings");
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         boolean has_edge_mode = false;
@@ -774,7 +774,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             // default!)
             Preference pref = findPreference(PreferenceKeys.EdgeModePreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_processing_settings");
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         boolean has_noise_reduction_mode = false;
@@ -794,7 +794,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             // default!)
             Preference pref = findPreference(PreferenceKeys.CameraNoiseReductionModePreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_processing_settings");
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
     }
 
@@ -836,49 +836,49 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             // default!)
             Preference pref = findPreference("preference_show_face_detection");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_flash) {
             Preference pref = findPreference("preference_show_cycle_flash");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_preview_bitmaps) {
             Preference pref = findPreference("preference_show_focus_peaking");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_auto_stabilise) {
             Preference pref = findPreference(ShowAutoLevelPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_raw) {
             Preference pref = findPreference(ShowCycleRawPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_white_balance_lock) {
             Preference pref = findPreference(ShowWhiteBalanceLockPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_exposure_lock) {
             Preference pref = findPreference("preference_show_exposure_lock");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!is_multi_cam && !has_physical_cameras) {
             Preference pref = findPreference("preference_multi_cam_button");
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
     }
 
@@ -892,13 +892,13 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         if (!is_multi_cam) {
             Preference pref = findPreference(ShowCameraIDPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!using_android_l) {
             Preference pref = findPreference(ShowISOPreferenceKey);
             PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
-            pg.removePreference(pref);
+            if (pg != null && pref != null) pg.removePreference(pref);
         }
     }
 
@@ -1206,7 +1206,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
                 Preference pref = preferenceFragment.findPreference(preference_key);
                 if (pref != null) {
                     PreferenceGroup pg = (PreferenceGroup) preferenceFragment.findPreference(preferenceCategoryKey);
-                    pg.removePreference(pref);
+                    if (pg != null && pref != null) pg.removePreference(pref);
                 }
             }
         }

@@ -3,7 +3,6 @@ package com.ssolstice.camera.manual.remotecontrol;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-//import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -40,14 +39,18 @@ import com.ssolstice.camera.manual.utils.Logger;
 
 import java.util.ArrayList;
 
-//public class DeviceScanner extends ListActivity {
-//public class DeviceScanner extends Activity {
 public class DeviceScanner extends AppCompatActivity {
+
     private static final String TAG = "OC-BLEScanner";
+
     private LeDeviceListAdapter leDeviceListAdapter;
+
     private BluetoothAdapter bluetoothAdapter;
+
     private boolean is_scanning;
+
     private Handler bluetoothHandler;
+
     private SharedPreferences mSharedPreferences;
 
     private static final int REQUEST_ENABLE_BT = 1;

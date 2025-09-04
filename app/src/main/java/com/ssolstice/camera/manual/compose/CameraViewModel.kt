@@ -33,6 +33,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.isNotEmpty
+import kotlin.collections.map
+import kotlin.collections.orEmpty
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -216,7 +219,10 @@ class CameraViewModel @Inject constructor(
         }
         viewModelScope.launch {
             delay(500)
-            activity.updateForSettings(true, "", true, false)
+            viewModelScope.launch {
+                delay(100)
+                updateForSettings(activity)
+            }
         }
     }
 
@@ -239,7 +245,7 @@ class CameraViewModel @Inject constructor(
         }
         viewModelScope.launch {
             delay(500)
-            activity.updateForSettings(true, "", true, false)
+            updateForSettings(activity)
         }
     }
 
@@ -321,7 +327,7 @@ class CameraViewModel @Inject constructor(
         }
         viewModelScope.launch {
             delay(500)
-            activity.updateForSettings(true, "", true, false)
+            updateForSettings(activity)
         }
     }
 
@@ -333,213 +339,25 @@ class CameraViewModel @Inject constructor(
             )
     }
 
-    fun setupCameraData(
-        activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
-    ) {
-        Log.e(TAG, "setupCameraData")
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
-        val photoMode = applicationInterface.photoMode
-        Log.e(TAG, "setupCameraData")
-        Log.e(TAG, "photoMode: $photoMode")
-
-        val isPremiumUser = isPremiumUser(activity)
-        Log.e(TAG, "isPremiumUser: $isPremiumUser")
-
-        // collect photo resolutions
-        if (!preview.isVideo && photoMode != PhotoMode.Panorama) {
-            val pictureSizes = preview.getSupportedPictureSizes(true).asReversed()
-            Log.e(TAG, "pictureSizes: $pictureSizes")
-
-            val currentPictureSize = preview.getCurrentPictureSize()
-
-            val photoResolutions: MutableList<SettingItemModel> = pictureSizes.map { size ->
-                val fileSizeView = "(${Preview.getMPString(size.width, size.height)})"
-                val aspectView = getAspectRatio(size.width, size.height)
-
-                val model = SettingItemModel(
-                    id = "${size.width} ${size.height}",
-                    text = "${size.width}x${size.height}",
-                    sub = "$aspectView $fileSizeView",
-                    selected = size == currentPictureSize
-                )
-                if (model.selected) setResolutionSelected(
-                    activity, applicationInterface, preview, model
-                )
-                model
-            }.toMutableList()
-
-            if (photoResolutions.isNotEmpty()) setResolutionOfPhoto(photoResolutions)
+    fun setupCameraData(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+        Log.e(TAG, "setupCameraData()")
+        try {
+            setupPhotoResolutions(activity, applicationInterface, preview)
+            // timers
+            setupTimers(activity,  applicationInterface, preview)
+            // repeats
+            setupRepeats(activity, applicationInterface, preview)
+            // resolutions of video
+            setupVideo(activity, applicationInterface, preview)
+            // speed of video
+            setupSpeedVideo(activity, applicationInterface, preview)
+            // flash
+            setupFlash(activity, applicationInterface, preview)
+            // raw
+            setupRaw(activity, applicationInterface, preview)
+        } catch (e: Exception) {
+            Log.e(TAG, "setupCameraData() failed: ${e.message}", e)
         }
-
-
-        // timers
-        if (photoMode != PhotoMode.Panorama) {
-            val timerValues = activity.resources.getStringArray(R.array.preference_timer_values)
-            val timerEntries = activity.resources.getStringArray(R.array.preference_timer_entries)
-            val timerValue =
-                sharedPreferences.getString(PreferenceKeys.TimerPreferenceKey, "0") ?: "0"
-
-            val timerIndex = timerValues.indexOf(timerValue).takeIf { it >= 0 } ?: 0
-
-            val timers: MutableList<SettingItemModel> = timerValues.mapIndexed { index, value ->
-                val model = SettingItemModel(
-                    id = value,
-                    text = timerEntries.getOrNull(index).orEmpty(),
-                    selected = index == timerIndex
-                )
-                if (model.selected) setTimerSelected(
-                    activity, model
-                )
-                model
-            }.toMutableList()
-
-            if (timers.isNotEmpty()) setTimer(timers)
-        }
-
-        // repeats
-        if (photoMode != PhotoMode.Panorama) {
-            val repeatModeValues =
-                activity.resources.getStringArray(R.array.preference_burst_mode_values)
-            val repeatModeEntries =
-                activity.resources.getStringArray(R.array.preference_burst_mode_entries)
-            val repeatModeValue: String =
-                sharedPreferences.getString(PreferenceKeys.RepeatModePreferenceKey, "1")!!
-            val repeats: MutableList<SettingItemModel> =
-                repeatModeValues.mapIndexed { index, value ->
-                    val model = SettingItemModel(
-                        id = value,
-                        text = repeatModeEntries.getOrNull(index).orEmpty(),
-                        selected = value == repeatModeValue
-                    )
-                    if (model.selected) setRepeatSelected(
-                        activity, model
-                    )
-                    model
-                }.toMutableList()
-
-            if (repeats.isNotEmpty()) setRepeat(repeats)
-        }
-
-        // resolutions of video
-        if (preview.isVideo) {
-            var videoSizes =
-                preview.getSupportedVideoQuality(applicationInterface.getVideoFPSPref())
-            if (videoSizes.isEmpty()) {
-                Log.e(TAG, "can't find any supported video sizes for current fps!")
-                videoSizes = preview.videoQualityHander.getSupportedVideoQuality()
-            }
-            videoSizes = ArrayList<String>(videoSizes)
-            videoSizes.reverse()
-
-            val resolutionsPremium =
-                arrayListOf("2560x1920", "3264x1836", "4000x2000", "3840x2160", "3840x2160 4K")
-
-            val resolutionOfVideo: MutableList<SettingItemModel> =
-                videoSizes.mapIndexed { index, value ->
-                    val text = preview.getCamcorderProfileDescriptionShort(value)
-                    val requirePremium = !isPremiumUser && resolutionsPremium.contains(text)
-                    val model = SettingItemModel(
-                        id = value,
-                        text = text + (if (requirePremium) " (PRO)" else ""),
-                        selected = value == preview.videoQualityHander.getCurrentVideoQuality(),
-                        isPremium = requirePremium
-                    )
-                    Log.e("resolutionOfVideo ", "${model.id} ${model.text}")
-                    if (model.selected) setResolutionOfVideoSelected(
-                        activity, applicationInterface, preview, model
-                    )
-                    model
-                }.toMutableList()
-
-            if (resolutionOfVideo.isNotEmpty()) setResolutionOfVideo(resolutionOfVideo)
-        }
-
-        // speed of video
-        if (preview.isVideo) {
-            val captureRateValues = applicationInterface.supportedVideoCaptureRates
-            if (captureRateValues.size > 1) {
-                val captureRateValue = sharedPreferences.getFloat(
-                    PreferenceKeys.getVideoCaptureRatePreferenceKey(
-                        preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
-                    ), 1.0f
-                )
-                val speeds: MutableList<SettingItemModel> =
-                    captureRateValues.mapIndexed { index, value ->
-                        Log.e("speeds ", "$index $value")
-                        val text = if (abs(1.0f - (value ?: 0f)) < 1.0e-5) {
-                            activity.getString(R.string.preference_video_capture_rate_normal)
-                        } else {
-                            value.toString() + "x"
-                        }
-                        val requirePremium = !isPremiumUser && (value?.toInt() ?: 0) >= 120
-                        val model = SettingItemModel(
-                            id = "$value",
-                            text = text + (if (requirePremium) " (PRO)" else ""),
-                            selected = value == captureRateValue,
-                            isPremium = requirePremium
-                        )
-                        if (model.selected) setSpeedSelected(
-                            activity, applicationInterface, preview, model
-                        )
-                        model
-                    }.toMutableList()
-
-                if (speeds.isNotEmpty()) setSpeeds(speeds)
-            }
-        }
-
-        // flash
-        val supportedFlashValues = preview.supportedFlashValues.orEmpty()
-        if (supportedFlashValues.isNotEmpty()) {
-            val flashEntries = activity.getResources().getStringArray(R.array.flash_entries)
-            val flashValues = activity.getResources().getStringArray(R.array.flash_values)
-            val flashList = supportedFlashValues.map { flashValue ->
-                val flashIndex = flashValues.indexOf(flashValue).takeIf { it >= 0 } ?: 0
-                val flashEntry = flashEntries.getOrNull(flashIndex).orEmpty()
-                val model = SettingItemModel(
-                    id = flashValue,
-                    selected = flashValue == preview.currentFlashValue,
-                    icon = getFlashIcon(flashValue),
-                    text = flashEntry
-                )
-                if (model.selected) {
-                    setFlashSelected(preview, model)
-                }
-                model
-            }.toMutableList()
-
-            if (flashList.isNotEmpty()) {
-                setFlashList(flashList)
-            }
-        }
-
-        // raw
-        val rawValues = activity.resources.getStringArray(R.array.raw_values)
-        val rawEntries = activity.resources.getStringArray(R.array.raw_entries)
-        val typedArray = activity.resources.obtainTypedArray(R.array.raw_icons)
-        val rawIcons = IntArray(typedArray.length()) { i ->
-            typedArray.getResourceId(i, 0)
-        }
-        typedArray.recycle()
-        val rawModeValue: String =
-            sharedPreferences.getString(PreferenceKeys.RawPreferenceKey, "preference_raw_no")
-                ?: "preference_raw_no"
-        val rawModeIndex = rawValues.indexOf(rawModeValue).takeIf { it >= 0 } ?: 0
-
-        val rawList: MutableList<SettingItemModel> = rawValues.mapIndexed { index, flashValue ->
-            val model = SettingItemModel(
-                id = flashValue,
-                text = rawEntries[index],
-                selected = index == rawModeIndex,
-                icon = rawIcons[index]
-            )
-            if (model.selected) setRawSelected(
-                activity, model
-            )
-            model
-        }.toMutableList()
-
-        if (rawList.isNotEmpty()) setRawList(rawList)
     }
 
     private fun getFlashIcon(flashValue: String): Int = when (flashValue) {
@@ -1097,9 +915,21 @@ class CameraViewModel @Inject constructor(
         )
 
         sharedPreferences.edit { putFloat(cameraIdSPhysicalPref, captureRate) }
+
         viewModelScope.launch {
             delay(100)
-            activity.updateForSettings(true, "", true, false)
+            updateForSettings(activity)
+        }
+    }
+
+    fun updateForSettings(activity: MainActivity) {
+        if (!activity.isDestroyed && !activity.isFinishing) {
+            activity.updateForSettings(
+                true,
+                "",
+                true,
+                false
+            )
         }
     }
 
@@ -1113,4 +943,247 @@ class CameraViewModel @Inject constructor(
             }
         }
     }
+
+    private fun setupPhotoResolutions(
+        activity: MainActivity,
+        applicationInterface: MyApplicationInterface,
+        preview: Preview,
+    ) {
+        try {
+            // collect photo resolutions
+            if (!preview.isVideo && applicationInterface.photoMode != PhotoMode.Panorama) {
+                val supportedPictureSizes = preview.getSupportedPictureSizes(true)
+                supportedPictureSizes?.let {
+                    val pictureSizes = it.asReversed()
+                    Log.e(TAG, "pictureSizes: $pictureSizes")
+
+                    val currentPictureSize = preview.getCurrentPictureSize()
+
+                    val photoResolutions: MutableList<SettingItemModel> = pictureSizes.map { size ->
+                        val fileSizeView = "(${Preview.getMPString(size.width, size.height)})"
+                        val aspectView = getAspectRatio(size.width, size.height)
+
+                        val model = SettingItemModel(
+                            id = "${size.width} ${size.height}",
+                            text = "${size.width}x${size.height}",
+                            sub = "$aspectView $fileSizeView",
+                            selected = size == currentPictureSize
+                        )
+                        if (model.selected) setResolutionSelected(
+                            activity, applicationInterface, preview, model
+                        )
+                        model
+                    }.toMutableList()
+
+                    if (photoResolutions.isNotEmpty()) setResolutionOfPhoto(photoResolutions)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "setupPhotoResolutions failed: ${e.message}", e)
+        }
+    }
+
+    private fun setupTimers(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+        try {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+            if (applicationInterface.photoMode != PhotoMode.Panorama) {
+                val timerValues = activity.resources.getStringArray(R.array.preference_timer_values)
+                val timerEntries = activity.resources.getStringArray(R.array.preference_timer_entries)
+                val timerValue =
+                    sharedPreferences.getString(PreferenceKeys.TimerPreferenceKey, "0") ?: "0"
+
+                val timerIndex = timerValues.indexOf(timerValue).takeIf { it >= 0 } ?: 0
+
+                val timers: MutableList<SettingItemModel> = timerValues.mapIndexed { index, value ->
+                    val model = SettingItemModel(
+                        id = value,
+                        text = timerEntries.getOrNull(index).orEmpty(),
+                        selected = index == timerIndex
+                    )
+                    if (model.selected) setTimerSelected(
+                        activity, model
+                    )
+                    model
+                }.toMutableList()
+
+                if (timers.isNotEmpty()) setTimer(timers)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "setupTimers failed: ${e.message}", e)
+        }
+    }
+
+    private fun setupRepeats(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+        try {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+            if (applicationInterface.photoMode != PhotoMode.Panorama) {
+                val repeatModeValues =
+                    activity.resources.getStringArray(R.array.preference_burst_mode_values)
+                val repeatModeEntries =
+                    activity.resources.getStringArray(R.array.preference_burst_mode_entries)
+                val repeatModeValue: String =
+                    sharedPreferences.getString(PreferenceKeys.RepeatModePreferenceKey, "1")!!
+                val repeats: MutableList<SettingItemModel> =
+                    repeatModeValues.mapIndexed { index, value ->
+                        val model = SettingItemModel(
+                            id = value,
+                            text = repeatModeEntries.getOrNull(index).orEmpty(),
+                            selected = value == repeatModeValue
+                        )
+                        if (model.selected) setRepeatSelected(
+                            activity, model
+                        )
+                        model
+                    }.toMutableList()
+
+                if (repeats.isNotEmpty()) setRepeat(repeats)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "setupRepeats failed: ${e.message}", e)
+        }
+    }
+
+    private fun setupVideo(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+        try {
+            val isPremiumUser = isPremiumUser(activity)
+            if (preview.isVideo) {
+                var videoSizes =
+                    preview.getSupportedVideoQuality(applicationInterface.getVideoFPSPref())
+                if (videoSizes.isEmpty()) {
+                    Log.e(TAG, "can't find any supported video sizes for current fps!")
+                    videoSizes = preview.videoQualityHander.getSupportedVideoQuality()
+                }
+                videoSizes = ArrayList<String>(videoSizes)
+                videoSizes.reverse()
+
+                val resolutionsPremium =
+                    arrayListOf("2560x1920", "3264x1836", "4000x2000", "3840x2160", "3840x2160 4K")
+
+                val resolutionOfVideo: MutableList<SettingItemModel> =
+                    videoSizes.mapIndexed { index, value ->
+                        val text = preview.getCamcorderProfileDescriptionShort(value)
+                        val requirePremium = !isPremiumUser && resolutionsPremium.contains(text)
+                        val model = SettingItemModel(
+                            id = value,
+                            text = text + (if (requirePremium) " (PRO)" else ""),
+                            selected = value == preview.videoQualityHander.getCurrentVideoQuality(),
+                            isPremium = requirePremium
+                        )
+                        Log.e("resolutionOfVideo ", "${model.id} ${model.text}")
+                        if (model.selected) setResolutionOfVideoSelected(
+                            activity, applicationInterface, preview, model
+                        )
+                        model
+                    }.toMutableList()
+
+                if (resolutionOfVideo.isNotEmpty()) setResolutionOfVideo(resolutionOfVideo)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "setupVideo failed: ${e.message}", e)
+        }
+    }
+
+    private fun setupSpeedVideo(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+        try {
+            val isPremiumUser = isPremiumUser(activity)
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+            if (preview.isVideo) {
+                val captureRateValues = applicationInterface.supportedVideoCaptureRates
+                if (captureRateValues.size > 1) {
+                    val captureRateValue = sharedPreferences.getFloat(
+                        PreferenceKeys.getVideoCaptureRatePreferenceKey(
+                            preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
+                        ), 1.0f
+                    )
+                    val speeds: MutableList<SettingItemModel> =
+                        captureRateValues.mapIndexed { index, value ->
+                            Log.e("speeds ", "$index $value")
+                            val text = if (abs(1.0f - (value ?: 0f)) < 1.0e-5) {
+                                activity.getString(R.string.preference_video_capture_rate_normal)
+                            } else {
+                                value.toString() + "x"
+                            }
+                            val requirePremium = !isPremiumUser && (value?.toInt() ?: 0) >= 120
+                            val model = SettingItemModel(
+                                id = "$value",
+                                text = text + (if (requirePremium) " (PRO)" else ""),
+                                selected = value == captureRateValue,
+                                isPremium = requirePremium
+                            )
+                            if (model.selected) setSpeedSelected(
+                                activity, applicationInterface, preview, model
+                            )
+                            model
+                        }.toMutableList()
+
+                    if (speeds.isNotEmpty()) setSpeeds(speeds)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "setupVideo failed: ${e.message}", e)
+        }
+    }
+
+    private fun setupFlash(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+        try {
+            val supportedFlashValues = preview.supportedFlashValues.orEmpty()
+            if (supportedFlashValues.isNotEmpty()) {
+                val flashEntries = activity.getResources().getStringArray(R.array.flash_entries)
+                val flashValues = activity.getResources().getStringArray(R.array.flash_values)
+                val flashList = supportedFlashValues.map { flashValue ->
+                    val flashIndex = flashValues.indexOf(flashValue).takeIf { it >= 0 } ?: 0
+                    val flashEntry = flashEntries.getOrNull(flashIndex).orEmpty()
+                    val model = SettingItemModel(
+                        id = flashValue,
+                        selected = flashValue == preview.currentFlashValue,
+                        icon = getFlashIcon(flashValue),
+                        text = flashEntry
+                    )
+                    if (model.selected) {
+                        setFlashSelected(preview, model)
+                    }
+                    model
+                }.toMutableList()
+
+                if (flashList.isNotEmpty()) {
+                    setFlashList(flashList)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "setupFlash failed: ${e.message}", e)
+        }
+    }
+
+    private fun setupRaw(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+        try {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
+            val rawValues = activity.resources.getStringArray(R.array.raw_values)
+            val rawEntries = activity.resources.getStringArray(R.array.raw_entries)
+            val typedArray = activity.resources.obtainTypedArray(R.array.raw_icons)
+            val rawIcons = IntArray(typedArray.length()) { i ->
+                typedArray.getResourceId(i, 0)
+            }
+            typedArray.recycle()
+            val rawModeValue: String =
+                sharedPreferences.getString(PreferenceKeys.RawPreferenceKey, "preference_raw_no")
+                    ?: "preference_raw_no"
+            val rawModeIndex = rawValues.indexOf(rawModeValue).takeIf { it >= 0 } ?: 0
+            val rawList: MutableList<SettingItemModel> = rawValues.mapIndexed { index, flashValue ->
+                val model = SettingItemModel(
+                    id = flashValue,
+                    text = rawEntries[index],
+                    selected = index == rawModeIndex,
+                    icon = rawIcons[index]
+                )
+                if (model.selected) setRawSelected(
+                    activity, model
+                )
+                model
+            }.toMutableList()
+            if (rawList.isNotEmpty()) setRawList(rawList)
+        } catch (e: Exception) {
+            Log.e(TAG, "setupRaw failed: ${e.message}", e)
+        }
+    }
+
 }

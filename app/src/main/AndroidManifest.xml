@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
-    android:versionCode="17"
-    android:versionName="1.0.17"
+    android:versionCode="18"
+    android:versionName="1.0.18"
     tools:ignore="GoogleAppIndexingWarning">
-    <!-- ignore GoogleAppIndexingWarning as we don't want to implement that -->
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -13,7 +13,6 @@
         android:smallScreens="true"
         android:xlargeScreens="true" />
 
-    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission
         android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
@@ -25,7 +24,6 @@
         android:usesPermissionFlags="neverForLocation"
         tools:targetApi="s" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28"
@@ -34,19 +32,13 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
+    <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.microphone" />
     <uses-feature
         android:name="android.hardware.bluetooth_le"
-        android:required="false" /> <!-- needed for targetting Android 11 - see https://developer.android.com/about/versions/11/behavior-changes-11 -->
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.TTS_SERVICE" />
-        </intent>
-    </queries>
+        android:required="false" />
 
     <application
         android:name=".CameraApp"
@@ -55,14 +47,11 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
-        <!-- should not change the android:name, including moving to a subpackage - see http://android-developers.blogspot.co.uk/2011/06/things-that-cannot-change.html -->
         <activity
             android:name=".MainActivity"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true">
-
-            <!-- clearTaskOnLaunch set to true, so if user goes to gallery then returns to home, we return to the camera rather than remaining in gallery if user relaunches ManualCamera -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -71,32 +60,26 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.media.action.IMAGE_CAPTURE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.media.action.IMAGE_CAPTURE_SECURE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.media.action.STILL_IMAGE_CAMERA" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.media.action.STILL_IMAGE_CAMERA_SECURE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.media.action.VIDEO_CAMERA" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.media.action.VIDEO_CAPTURE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -110,5 +93,10 @@
             android:enabled="true"
             android:exported="false" />
     </application>
-
+    <!-- needed for targetting Android 11 - see https://developer.android.com/about/versions/11/behavior-changes-11 -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
 </manifest>
