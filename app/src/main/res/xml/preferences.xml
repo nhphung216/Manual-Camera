@@ -555,6 +555,7 @@
         <Preference
             android:icon="@drawable/outline_reset_settings"
             android:key="preference_reset"
+            android:summary="@string/preference_reset_summary"
             android:title="@string/preference_reset" />
 
     </PreferenceCategory>
