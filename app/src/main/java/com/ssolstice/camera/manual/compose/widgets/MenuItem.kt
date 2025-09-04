@@ -15,14 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssolstice.camera.manual.R
-import com.ssolstice.camera.manual.compose.ui.theme.colorBackground
-import com.ssolstice.camera.manual.compose.ui.theme.textColorSelected
 
 @Preview
 @Composable
@@ -31,7 +30,7 @@ fun MenuItemPreview() {
         icon = painterResource(R.drawable.ic_white_balance),
         label = "White Balance",
         onClick = {},
-        isChanged = true
+        isChanged = false
     )
 }
 
@@ -58,7 +57,11 @@ fun MenuItem(
                 .padding(bottom = 8.dp)
                 .size(size.dp)
                 .background(
-                    color = if (selected) colorBackground() else Color.DarkGray,
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.secondaryContainer
+                    },
                     shape = CircleShape
                 )
                 .padding(4.dp),
@@ -70,6 +73,13 @@ fun MenuItem(
                     .align(Alignment.Center),
                 painter = icon,
                 contentDescription = label,
+                colorFilter = ColorFilter.tint(
+                    if (selected) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onSecondaryContainer
+                    }
+                ),
             )
             if (isChanged) {
                 Box(
@@ -82,8 +92,12 @@ fun MenuItem(
         }
         Text(
             text = label,
-            color = if (selected) textColorSelected() else Color.LightGray,
             fontSize = 14.sp,
+            color = if (selected) {
+                MaterialTheme.colorScheme.onPrimaryContainer
+            } else {
+                MaterialTheme.colorScheme.onSecondaryContainer
+            },
         )
     }
 }

@@ -1,6 +1,5 @@
 package com.ssolstice.camera.manual.compose
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,20 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -100,7 +94,6 @@ fun CameraSettings(
     onSpeedChange: (SettingItemModel) -> Unit = {},
     onFlashChange: (SettingItemModel) -> Unit = {},
     onRawChange: (SettingItemModel) -> Unit = {},
-    onClose: () -> Unit = {},
     onUpgrade: () -> Unit = {},
     flashList: MutableList<SettingItemModel> = mutableListOf(),
     rawList: MutableList<SettingItemModel> = mutableListOf(),
@@ -114,8 +107,6 @@ fun CameraSettings(
         modifier = modifier
             .clickable {}
             .fillMaxWidth()
-            .background(Color(0xF0000000))
-            .padding(top = 16.dp)
     ) {
         // title
         Box(
@@ -126,37 +117,30 @@ fun CameraSettings(
             Text(
                 stringResource(if (isPhotoMode) R.string.photo_settings else R.string.video_settings),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                color = Color.White,
                 modifier = Modifier.align(Alignment.CenterStart)
             )
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = null,
-                tint = WhiteColor,
-                modifier = Modifier
-                    .size(24.dp)
-                    .align(Alignment.CenterEnd)
-                    .clickable { onClose() })
         }
 
         // flash
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Column {
-                TitleSettingRow(stringResource(R.string.more_light))
-                SubTitleSettingRow(flashSelected?.text ?: "")
-            }
-            LazyRow(modifier = Modifier.align(Alignment.CenterEnd)) {
-                items(flashList) { item ->
-                    ItemResolution(
-                        shape = CircleShape,
-                        text = item.text,
-                        isSelect = item.id == flashSelected?.id,
-                        icon = item.icon,
-                        onClick = { onFlashChange(item) })
+        if (flashList.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+            ) {
+                Column {
+                    TitleSettingRow(stringResource(R.string.more_light))
+                    SubTitleSettingRow(flashSelected?.text ?: "")
+                }
+                LazyRow(modifier = Modifier.align(Alignment.CenterEnd)) {
+                    items(flashList) { item ->
+                        ItemResolution(
+                            shape = CircleShape,
+                            text = item.text,
+                            selected = item.id == flashSelected?.id,
+                            icon = item.icon,
+                            onClick = { onFlashChange(item) })
+                    }
                 }
             }
         }
@@ -177,7 +161,7 @@ fun CameraSettings(
                                 shape = CircleShape,
                                 text = item.text,
                                 icon = item.icon,
-                                isSelect = item.id == rawSelected?.id,
+                                selected = item.id == rawSelected?.id,
                                 onClick = { onRawChange(item) },
                             )
                         }
@@ -193,8 +177,7 @@ fun CameraSettings(
                         ItemResolution(
                             text = item.text,
                             sub = item.sub,
-                            isPremium = item.isPremium,
-                            isSelect = item.id == resolutionSelected?.id,
+                            selected = item.id == resolutionSelected?.id,
                             onClick = { onResolutionChange(item) },
                         )
                     }
@@ -208,7 +191,7 @@ fun CameraSettings(
                     ) {
                         items(timers) { item ->
                             ItemResolution(
-                                item.text, isSelect = item.id == timerSelected?.id,
+                                item.text, selected = item.id == timerSelected?.id,
                                 onClick = { onTimerChange(item) },
                             )
                         }
@@ -223,7 +206,7 @@ fun CameraSettings(
                     ) {
                         items(repeats) { item ->
                             ItemResolution(
-                                item.text, isSelect = item.id == repeatSelected?.id,
+                                item.text, selected = item.id == repeatSelected?.id,
                                 onClick = { onRepeatChange(item) },
                             )
                         }
@@ -239,8 +222,7 @@ fun CameraSettings(
                 items(speeds) { item ->
                     ItemResolution(
                         text = item.text,
-                        isSelect = item.id == speedSelected?.id,
-                        isPremium = item.isPremium,
+                        selected = item.id == speedSelected?.id,
                         onClick = {
                             if (item.isPremium) {
                                 onUpgrade()
@@ -259,8 +241,7 @@ fun CameraSettings(
                 items(resolutionsVideo) { item ->
                     ItemResolution(
                         text = item.text,
-                        isSelect = item.id == resolutionOfVideoSelected?.id,
-                        isPremium = item.isPremium,
+                        selected = item.id == resolutionOfVideoSelected?.id,
                         onClick = {
                             if (item.isPremium) {
                                 onUpgrade()

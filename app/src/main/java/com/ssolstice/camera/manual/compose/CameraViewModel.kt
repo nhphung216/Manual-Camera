@@ -5,7 +5,6 @@ import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.hardware.camera2.CameraExtensionCharacteristics
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,7 +17,6 @@ import com.ssolstice.camera.manual.MyApplicationInterface.VideoMode
 import com.ssolstice.camera.manual.PreferenceKeys
 import com.ssolstice.camera.manual.R
 import com.ssolstice.camera.manual.billing.BillingManager
-import com.ssolstice.camera.manual.utils.AnalyticsLogger
 import com.ssolstice.camera.manual.models.CameraControlModel
 import com.ssolstice.camera.manual.models.ControlOptionModel
 import com.ssolstice.camera.manual.models.OptionRes
@@ -26,16 +24,18 @@ import com.ssolstice.camera.manual.models.PhotoModeUiModel
 import com.ssolstice.camera.manual.models.SettingItemModel
 import com.ssolstice.camera.manual.models.VideoModeUiModel
 import com.ssolstice.camera.manual.preview.Preview
+import com.ssolstice.camera.manual.utils.AnalyticsLogger
+import com.ssolstice.camera.manual.utils.Logger
 import com.ssolstice.camera.manual.utils.SharedPrefManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.collections.isNotEmpty
-import kotlin.collections.map
-import kotlin.collections.orEmpty
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -130,9 +130,7 @@ class CameraViewModel @Inject constructor(
     private val _flashList = MutableStateFlow(mutableListOf<SettingItemModel>())
     val flashList: StateFlow<MutableList<SettingItemModel>> = _flashList
     fun setFlashList(list: MutableList<SettingItemModel>) {
-        viewModelScope.launch {
-            _flashList.value = list
-        }
+        _flashList.value = list
     }
 
     private val _flashSelected = MutableLiveData<SettingItemModel>()
@@ -142,9 +140,7 @@ class CameraViewModel @Inject constructor(
     private val _rawList = MutableStateFlow(mutableListOf<SettingItemModel>())
     val rawList: StateFlow<MutableList<SettingItemModel>> = _rawList
     fun setRawList(resolution: MutableList<SettingItemModel>) {
-        viewModelScope.launch {
-            _rawList.value = resolution
-        }
+        _rawList.value = resolution
     }
 
     private val _rawSelected = MutableLiveData<SettingItemModel>()
@@ -154,9 +150,7 @@ class CameraViewModel @Inject constructor(
     private val _resolutionsOfPhoto = MutableStateFlow(mutableListOf<SettingItemModel>())
     val resolutionsOfPhoto: StateFlow<MutableList<SettingItemModel>> = _resolutionsOfPhoto
     fun setResolutionOfPhoto(resolution: MutableList<SettingItemModel>) {
-        viewModelScope.launch {
-            _resolutionsOfPhoto.value = resolution
-        }
+        _resolutionsOfPhoto.value = resolution
     }
 
     private val _resolutionSelected = MutableLiveData<SettingItemModel>()
@@ -166,9 +160,7 @@ class CameraViewModel @Inject constructor(
     private val _repeats = MutableStateFlow(mutableListOf<SettingItemModel>())
     val repeats: StateFlow<MutableList<SettingItemModel>> = _repeats
     fun setRepeat(repeat: MutableList<SettingItemModel>) {
-        viewModelScope.launch {
-            _repeats.value = repeat
-        }
+        _repeats.value = repeat
     }
 
     private val _repeatSelected = MutableLiveData<SettingItemModel>()
@@ -178,9 +170,7 @@ class CameraViewModel @Inject constructor(
     private val _timers = MutableStateFlow(mutableListOf<SettingItemModel>())
     val timers: StateFlow<MutableList<SettingItemModel>> = _timers
     fun setTimer(timer: MutableList<SettingItemModel>) {
-        viewModelScope.launch {
-            _timers.value = timer
-        }
+        _timers.value = timer
     }
 
     private val _timerSelected = MutableLiveData<SettingItemModel>()
@@ -192,9 +182,7 @@ class CameraViewModel @Inject constructor(
     private val _resolutionsOfVideo = MutableStateFlow(mutableListOf<SettingItemModel>())
     val resolutionsOfVideo: StateFlow<MutableList<SettingItemModel>> = _resolutionsOfVideo
     fun setResolutionOfVideo(resolutionsVideo: MutableList<SettingItemModel>) {
-        viewModelScope.launch {
-            _resolutionsOfVideo.value = resolutionsVideo
-        }
+        _resolutionsOfVideo.value = resolutionsVideo
     }
 
     private val _resolutionsOfVideoSelected = MutableLiveData<SettingItemModel>()
@@ -252,7 +240,7 @@ class CameraViewModel @Inject constructor(
     fun setFlashSelected(
         preview: Preview, item: SettingItemModel
     ) {
-        Log.e(TAG, "setFlashSelected: $item")
+        Logger.e(TAG, "setFlashSelected: $item")
         logFeatureUsed("setFlashSelected ${item.id}")
         _flashSelected.value = item
         preview.updateFlash(item.id)
@@ -261,7 +249,7 @@ class CameraViewModel @Inject constructor(
     fun setRawSelected(
         activity: MainActivity, item: SettingItemModel
     ) {
-        Log.e(TAG, "setRawSelected: $item")
+        Logger.e(TAG, "setRawSelected: $item")
         logFeatureUsed("setRawSelected ${item.id}")
         _rawSelected.value = item
 
@@ -278,7 +266,7 @@ class CameraViewModel @Inject constructor(
     fun setRepeatSelected(
         activity: MainActivity, item: SettingItemModel
     ) {
-        Log.e(TAG, "setRepeatSelected: $item")
+        Logger.e(TAG, "setRepeatSelected: $item")
         logFeatureUsed("setRepeatSelected ${item.id}")
         _repeatSelected.value = item
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -290,7 +278,7 @@ class CameraViewModel @Inject constructor(
     fun setTimerSelected(
         activity: MainActivity, item: SettingItemModel
     ) {
-        Log.e(TAG, "setTimerSelected: $item")
+        Logger.e(TAG, "setTimerSelected: $item")
         logFeatureUsed("setTimerSelected ${item.id}")
         _timerSelected.value = item
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -316,7 +304,7 @@ class CameraViewModel @Inject constructor(
         preview: Preview,
         rate: Float
     ) {
-        Log.e(TAG, "setSpeedSelected: $rate")
+        Logger.e(TAG, "setSpeedSelected: $rate")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         sharedPreferences.edit {
             putFloat(
@@ -339,24 +327,90 @@ class CameraViewModel @Inject constructor(
             )
     }
 
-    fun setupCameraData(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
-        Log.e(TAG, "setupCameraData()")
-        try {
-            setupPhotoResolutions(activity, applicationInterface, preview)
-            // timers
-            setupTimers(activity,  applicationInterface, preview)
-            // repeats
-            setupRepeats(activity, applicationInterface, preview)
-            // resolutions of video
-            setupVideo(activity, applicationInterface, preview)
-            // speed of video
-            setupSpeedVideo(activity, applicationInterface, preview)
-            // flash
-            setupFlash(activity, applicationInterface, preview)
-            // raw
-            setupRaw(activity, applicationInterface, preview)
-        } catch (e: Exception) {
-            Log.e(TAG, "setupCameraData() failed: ${e.message}", e)
+    fun setupCameraData(
+        activity: MainActivity,
+        applicationInterface: MyApplicationInterface,
+        preview: Preview
+    ) {
+        Logger.e(TAG, "setupCameraData()")
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                val photoResolutions =
+                    async { setupPhotoResolutions(activity, applicationInterface, preview) }.await()
+                val timers = async { setupTimers(activity, applicationInterface) }.await()
+                val repeats = async { setupRepeats(activity, applicationInterface) }.await()
+                val videoOptions =
+                    async { setupVideo(activity, applicationInterface, preview) }.await()
+                val speedVideo =
+                    async { setupSpeedVideo(activity, applicationInterface, preview) }.await()
+                val flashModes = async { setupFlash(activity, preview) }.await()
+                val rawModes = async { setupRaw(activity) }.await()
+
+                // chuyển sang Main thread update UI
+                withContext(Dispatchers.Main) {
+                    Logger.e(TAG, "setupCameraData() withContext(Dispatchers.Main)")
+                    
+                    Logger.e(TAG, "photoResolutions: ${photoResolutions.size}")
+                    if (photoResolutions.isNotEmpty()) {
+                        setResolutionOfPhoto(photoResolutions)
+                        photoResolutions.find { it.selected }?.let { selectedModel ->
+                            setResolutionSelected(
+                                activity,
+                                applicationInterface,
+                                preview,
+                                selectedModel
+                            )
+                        }
+                    }
+
+                    Logger.e(TAG, "timers: ${timers.size}")
+                    if (timers.isNotEmpty()) {
+                        setTimer(timers)
+                        timers.find { it.selected }?.let { selectedModel ->
+                            setTimerSelected(activity, selectedModel)
+                        }
+                    }
+
+                    Logger.e(TAG, "repeats: ${repeats.size}")
+                    if (repeats.isNotEmpty()) {
+                        setRepeat(repeats)
+                        repeats.find { it.selected }?.let { selectedModel ->
+                            setRepeatSelected(activity, selectedModel)
+                        }
+                    }
+
+                    Logger.e(TAG, "videoOptions: ${videoOptions.size}")
+                    if (videoOptions.isNotEmpty()) {
+                        setResolutionOfVideo(videoOptions)
+                        videoOptions.find { it.selected }?.let { selectedModel ->
+                            setResolutionOfVideoSelected(activity, applicationInterface, preview, selectedModel)
+                        }
+                    }
+
+                    Logger.e(TAG, "speedVideo: ${speedVideo.size}")
+                    if (speedVideo.isNotEmpty()) {
+                        setSpeeds(speedVideo)
+                    }
+
+                    Logger.e(TAG, "flashModes: ${flashModes.size}")
+                    if (flashModes.isNotEmpty()) {
+                        setFlashList(flashModes)
+                        flashModes.find { it.selected }?.let { selectedModel ->
+                            setFlashSelected(preview, selectedModel)
+                        }
+                    }
+
+                    Logger.e(TAG, "rawModes: ${rawModes.size}")
+                    if (rawModes.isNotEmpty()) {
+                        setRawList(rawModes)
+                        rawModes.find { it.selected }?.let { selectedModel ->
+                            setRawSelected(activity, selectedModel)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Logger.e(TAG, "setupCameraData() failed: ${e.message}" + e)
+            }
         }
     }
 
@@ -432,14 +486,10 @@ class CameraViewModel @Inject constructor(
         }
     }
 
-    fun setupCameraControlsData(
-        activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
-    ) {
-        Log.e(TAG, "setupCameraData")
-        val photoMode = applicationInterface.photoMode
-        val controlsMap = hashMapOf<String, CameraControlModel>()
-
-        // white balance
+    fun buildWhiteBalanceControls(
+        activity: MainActivity,
+        preview: Preview
+    ): CameraControlModel? {
         val supportedWhiteBalances = preview.getSupportedWhiteBalances()
         if (supportedWhiteBalances != null) {
             val options: ArrayList<ControlOptionModel> = arrayListOf()
@@ -467,20 +517,25 @@ class CameraViewModel @Inject constructor(
                 }
                 options.add(model)
             }
-            controlsMap["white_balance"] = CameraControlModel(
+            return CameraControlModel(
                 id = "white_balance",
                 text = activity.getString(R.string.white_balance),
                 icon = R.drawable.ic_white_balance,
                 options = options,
             )
         }
+        return null
+    }
 
-        // exposure
+    fun buildExposureControls(
+        activity: MainActivity,
+        preview: Preview
+    ): CameraControlModel? {
         if (preview.supportsExposures()) {
             val minExposure = preview.minimumExposure.toFloat()
             val maxExposure = preview.maximumExposure.toFloat()
             val currentExposure = preview.currentExposure.toFloat()
-            controlsMap["exposure"] = CameraControlModel(
+            return CameraControlModel(
                 id = "exposure",
                 text = activity.getString(R.string.exposure),
                 icon = R.drawable.ic_exposure_24,
@@ -490,12 +545,17 @@ class CameraViewModel @Inject constructor(
                 steps = 30
             )
         }
+        return null
+    }
 
-        // iso
+    fun buildIsoControls(
+        activity: MainActivity,
+        preview: Preview
+    ): CameraControlModel? {
         if (preview.supportsISORange()) {
             val minISO = preview.minimumISO.toFloat()
             val maxISO = preview.maximumISO.toFloat()
-            controlsMap["iso"] = CameraControlModel(
+            return CameraControlModel(
                 id = "iso",
                 text = activity.getString(R.string.iso),
                 icon = R.drawable.iso_icon,
@@ -504,25 +564,39 @@ class CameraViewModel @Inject constructor(
                 steps = 30
             )
         }
+        return null
+    }
 
-        // shutter
+    fun buildShutterControls(
+        activity: MainActivity,
+        preview: Preview
+    ): CameraControlModel? {
         if (preview.supportsExposureTime()) {
             val minExposure = preview.minimumExposureTime.toFloat()
             val maxExposure = preview.maximumExposureTime.toFloat()
-            Log.e(TAG, "minExposure: $minExposure, maxExposure: $maxExposure")
-            controlsMap["shutter"] = CameraControlModel(
+            Logger.e(TAG, "minExposure: $minExposure, maxExposure: $maxExposure")
+            return CameraControlModel(
                 id = "shutter",
                 text = activity.getString(R.string.shutter),
                 icon = R.drawable.ic_shutter_speed_24,
                 valueRange = minExposure..maxExposure,
-                labels = generateShutterSpeedLabels(minExposure.toDouble(), maxExposure.toDouble()),
+                labels = generateShutterSpeedLabels(
+                    minExposure.toDouble(),
+                    maxExposure.toDouble()
+                ),
                 steps = 30
             )
         }
+        return null
+    }
 
-        // focus
+    fun buildFocusControls(
+        activity: MainActivity,
+        applicationInterface: MyApplicationInterface,
+        preview: Preview
+    ): CameraControlModel? {
         var supportedFocusValues = preview.supportedFocusValues
-        if (!preview.isVideo && photoMode == PhotoMode.FocusBracketing) {
+        if (!preview.isVideo && applicationInterface.photoMode == PhotoMode.FocusBracketing) {
             // don't show focus modes in focus bracketing mode (as we'll always run in manual focus mode)
             supportedFocusValues = null
         }
@@ -547,7 +621,7 @@ class CameraViewModel @Inject constructor(
                         )
                     )
                 }
-                controlsMap["focus"] = CameraControlModel(
+                return CameraControlModel(
                     id = "focus",
                     text = activity.getString(R.string.focus),
                     icon = R.drawable.ic_center_focus_24,
@@ -555,8 +629,14 @@ class CameraViewModel @Inject constructor(
                 )
             }
         }
+        return null
+    }
 
-        // scene mode
+    fun buildSceneControls(
+        activity: MainActivity,
+        preview: Preview
+    ): CameraControlModel? {
+
         val supportedSceneModes = preview.supportedSceneModes
         if (supportedSceneModes != null) {
             val options: ArrayList<ControlOptionModel> = arrayListOf()
@@ -569,15 +649,20 @@ class CameraViewModel @Inject constructor(
                     )
                 )
             }
-            controlsMap["scene_mode"] = CameraControlModel(
+            return CameraControlModel(
                 id = "scene_mode",
                 text = activity.getString(R.string.scene_mode),
                 icon = R.drawable.scene_mode_fireworks,
                 options = options,
             )
         }
+        return null
+    }
 
-        // color effect
+    fun buildColorEffectControls(
+        activity: MainActivity,
+        preview: Preview
+    ): CameraControlModel? {
         val supportedColorEffects = preview.supportedColorEffects
         if (supportedColorEffects != null) {
             val options: ArrayList<ControlOptionModel> = arrayListOf()
@@ -590,14 +675,39 @@ class CameraViewModel @Inject constructor(
                     )
                 )
             }
-            controlsMap["color_effect"] = CameraControlModel(
+            return CameraControlModel(
                 id = "color_effect",
                 text = activity.getString(R.string.color_effect),
                 icon = R.drawable.color_effect_negative,
                 options = options,
             )
         }
-        _controlsMapData.value = controlsMap
+        return null
+    }
+
+    fun setupCameraControlsData(
+        activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
+    ) {
+        Logger.e(TAG, "setupCameraData")
+        viewModelScope.launch(Dispatchers.Default) {
+            val wb = async { buildWhiteBalanceControls(activity, preview) }
+            val exp = async { buildExposureControls(activity, preview) }
+            val iso = async { buildIsoControls(activity, preview) }
+            val shutter = async { buildShutterControls(activity, preview) }
+            val focus = async { buildFocusControls(activity, applicationInterface, preview) }
+            val scene = async { buildSceneControls(activity, preview) }
+            val color = async { buildColorEffectControls(activity, preview) }
+
+            val controlsMap = hashMapOf<String, CameraControlModel>()
+
+            listOf(wb, exp, iso, shutter, focus, scene, color)
+                .mapNotNull { it.await() }
+                .forEach { controlsMap[it.id] = it }
+
+            withContext(Dispatchers.Main) {
+                _controlsMapData.value = controlsMap
+            }
+        }
     }
 
     fun setControlOptionModel(item: ControlOptionModel?) {
@@ -864,14 +974,14 @@ class CameraViewModel @Inject constructor(
     ) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         val captureRateValues = applicationInterface.supportedVideoCaptureRates
-        Log.e(TAG, "captureRateValues: $captureRateValues")
+        Logger.e(TAG, "captureRateValues: $captureRateValues")
 
         val captureRate = sharedPreferences.getFloat(
             PreferenceKeys.getVideoCaptureRatePreferenceKey(
                 preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
             ), 1.0f
         )
-        Log.e(TAG, "captureRateValue: $captureRate")
+        Logger.e(TAG, "captureRateValue: $captureRate")
 
         val videoModes = arrayListOf<VideoModeUiModel>()
         val slowMotion =
@@ -948,18 +1058,15 @@ class CameraViewModel @Inject constructor(
         activity: MainActivity,
         applicationInterface: MyApplicationInterface,
         preview: Preview,
-    ) {
+    ): MutableList<SettingItemModel> {
+        val result = mutableListOf<SettingItemModel>()
         try {
-            // collect photo resolutions
             if (!preview.isVideo && applicationInterface.photoMode != PhotoMode.Panorama) {
                 val supportedPictureSizes = preview.getSupportedPictureSizes(true)
                 supportedPictureSizes?.let {
                     val pictureSizes = it.asReversed()
-                    Log.e(TAG, "pictureSizes: $pictureSizes")
-
                     val currentPictureSize = preview.getCurrentPictureSize()
-
-                    val photoResolutions: MutableList<SettingItemModel> = pictureSizes.map { size ->
+                    pictureSizes.map { size ->
                         val fileSizeView = "(${Preview.getMPString(size.width, size.height)})"
                         val aspectView = getAspectRatio(size.width, size.height)
 
@@ -969,51 +1076,51 @@ class CameraViewModel @Inject constructor(
                             sub = "$aspectView $fileSizeView",
                             selected = size == currentPictureSize
                         )
-                        if (model.selected) setResolutionSelected(
-                            activity, applicationInterface, preview, model
-                        )
-                        model
-                    }.toMutableList()
-
-                    if (photoResolutions.isNotEmpty()) setResolutionOfPhoto(photoResolutions)
+                        result.add(model)
+                    }
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "setupPhotoResolutions failed: ${e.message}", e)
+            Logger.e(TAG, "setupPhotoResolutions failed: ${e.message}")
         }
+        return result
     }
 
-    private fun setupTimers(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+    private fun setupTimers(
+        activity: MainActivity,
+        applicationInterface: MyApplicationInterface
+    ): MutableList<SettingItemModel> {
+        val result = mutableListOf<SettingItemModel>()
         try {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
             if (applicationInterface.photoMode != PhotoMode.Panorama) {
                 val timerValues = activity.resources.getStringArray(R.array.preference_timer_values)
-                val timerEntries = activity.resources.getStringArray(R.array.preference_timer_entries)
+                val timerEntries =
+                    activity.resources.getStringArray(R.array.preference_timer_entries)
                 val timerValue =
                     sharedPreferences.getString(PreferenceKeys.TimerPreferenceKey, "0") ?: "0"
 
                 val timerIndex = timerValues.indexOf(timerValue).takeIf { it >= 0 } ?: 0
-
-                val timers: MutableList<SettingItemModel> = timerValues.mapIndexed { index, value ->
+                timerValues.mapIndexed { index, value ->
                     val model = SettingItemModel(
                         id = value,
                         text = timerEntries.getOrNull(index).orEmpty(),
                         selected = index == timerIndex
                     )
-                    if (model.selected) setTimerSelected(
-                        activity, model
-                    )
-                    model
-                }.toMutableList()
-
-                if (timers.isNotEmpty()) setTimer(timers)
+                    result.add(model)
+                }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "setupTimers failed: ${e.message}", e)
+            Logger.e(TAG, "setupTimers failed: ${e.message}")
         }
+        return result
     }
 
-    private fun setupRepeats(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+    private fun setupRepeats(
+        activity: MainActivity,
+        applicationInterface: MyApplicationInterface
+    ): MutableList<SettingItemModel> {
+        val result = mutableListOf<SettingItemModel>()
         try {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
             if (applicationInterface.photoMode != PhotoMode.Panorama) {
@@ -1023,34 +1130,34 @@ class CameraViewModel @Inject constructor(
                     activity.resources.getStringArray(R.array.preference_burst_mode_entries)
                 val repeatModeValue: String =
                     sharedPreferences.getString(PreferenceKeys.RepeatModePreferenceKey, "1")!!
-                val repeats: MutableList<SettingItemModel> =
-                    repeatModeValues.mapIndexed { index, value ->
-                        val model = SettingItemModel(
-                            id = value,
-                            text = repeatModeEntries.getOrNull(index).orEmpty(),
-                            selected = value == repeatModeValue
-                        )
-                        if (model.selected) setRepeatSelected(
-                            activity, model
-                        )
-                        model
-                    }.toMutableList()
-
-                if (repeats.isNotEmpty()) setRepeat(repeats)
+                repeatModeValues.mapIndexed { index, value ->
+                    val model = SettingItemModel(
+                        id = value,
+                        text = repeatModeEntries.getOrNull(index).orEmpty(),
+                        selected = value == repeatModeValue
+                    )
+                    result.add(model)
+                }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "setupRepeats failed: ${e.message}", e)
+            Logger.e(TAG, "setupRepeats failed: ${e.message}")
         }
+        return result
     }
 
-    private fun setupVideo(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+    private fun setupVideo(
+        activity: MainActivity,
+        applicationInterface: MyApplicationInterface,
+        preview: Preview
+    ): MutableList<SettingItemModel> {
+        val result = mutableListOf<SettingItemModel>()
         try {
             val isPremiumUser = isPremiumUser(activity)
             if (preview.isVideo) {
                 var videoSizes =
                     preview.getSupportedVideoQuality(applicationInterface.getVideoFPSPref())
                 if (videoSizes.isEmpty()) {
-                    Log.e(TAG, "can't find any supported video sizes for current fps!")
+                    Logger.e(TAG, "can't find any supported video sizes for current fps!")
                     videoSizes = preview.videoQualityHander.getSupportedVideoQuality()
                 }
                 videoSizes = ArrayList<String>(videoSizes)
@@ -1059,31 +1166,31 @@ class CameraViewModel @Inject constructor(
                 val resolutionsPremium =
                     arrayListOf("2560x1920", "3264x1836", "4000x2000", "3840x2160", "3840x2160 4K")
 
-                val resolutionOfVideo: MutableList<SettingItemModel> =
-                    videoSizes.mapIndexed { index, value ->
-                        val text = preview.getCamcorderProfileDescriptionShort(value)
-                        val requirePremium = !isPremiumUser && resolutionsPremium.contains(text)
-                        val model = SettingItemModel(
-                            id = value,
-                            text = text + (if (requirePremium) " (PRO)" else ""),
-                            selected = value == preview.videoQualityHander.getCurrentVideoQuality(),
-                            isPremium = requirePremium
-                        )
-                        Log.e("resolutionOfVideo ", "${model.id} ${model.text}")
-                        if (model.selected) setResolutionOfVideoSelected(
-                            activity, applicationInterface, preview, model
-                        )
-                        model
-                    }.toMutableList()
-
-                if (resolutionOfVideo.isNotEmpty()) setResolutionOfVideo(resolutionOfVideo)
+                videoSizes.mapIndexed { index, value ->
+                    val text = preview.getCamcorderProfileDescriptionShort(value)
+                    val requirePremium = !isPremiumUser && resolutionsPremium.contains(text)
+                    val model = SettingItemModel(
+                        id = value,
+                        text = text + (if (requirePremium) " (PRO)" else ""),
+                        selected = value == preview.videoQualityHander.getCurrentVideoQuality(),
+                        isPremium = requirePremium
+                    )
+                    Logger.e("resolutionOfVideo ", "${model.id} ${model.text}")
+                    result.add(model)
+                }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "setupVideo failed: ${e.message}", e)
+            Logger.e(TAG, "setupVideo failed: ${e.message}")
         }
+        return result
     }
 
-    private fun setupSpeedVideo(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+    private fun setupSpeedVideo(
+        activity: MainActivity,
+        applicationInterface: MyApplicationInterface,
+        preview: Preview
+    ): MutableList<SettingItemModel> {
+        val result = mutableListOf<SettingItemModel>()
         try {
             val isPremiumUser = isPremiumUser(activity)
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -1095,42 +1202,41 @@ class CameraViewModel @Inject constructor(
                             preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
                         ), 1.0f
                     )
-                    val speeds: MutableList<SettingItemModel> =
-                        captureRateValues.mapIndexed { index, value ->
-                            Log.e("speeds ", "$index $value")
-                            val text = if (abs(1.0f - (value ?: 0f)) < 1.0e-5) {
-                                activity.getString(R.string.preference_video_capture_rate_normal)
-                            } else {
-                                value.toString() + "x"
-                            }
-                            val requirePremium = !isPremiumUser && (value?.toInt() ?: 0) >= 120
-                            val model = SettingItemModel(
-                                id = "$value",
-                                text = text + (if (requirePremium) " (PRO)" else ""),
-                                selected = value == captureRateValue,
-                                isPremium = requirePremium
-                            )
-                            if (model.selected) setSpeedSelected(
-                                activity, applicationInterface, preview, model
-                            )
-                            model
-                        }.toMutableList()
-
-                    if (speeds.isNotEmpty()) setSpeeds(speeds)
+                    captureRateValues.mapIndexed { index, value ->
+                        Logger.e("speeds ", "$index $value")
+                        val text = if (abs(1.0f - (value ?: 0f)) < 1.0e-5) {
+                            activity.getString(R.string.preference_video_capture_rate_normal)
+                        } else {
+                            value.toString() + "x"
+                        }
+                        val requirePremium = !isPremiumUser && (value?.toInt() ?: 0) >= 120
+                        val model = SettingItemModel(
+                            id = "$value",
+                            text = text + (if (requirePremium) " (PRO)" else ""),
+                            selected = value == captureRateValue,
+                            isPremium = requirePremium
+                        )
+                        result.add(model)
+                    }
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "setupVideo failed: ${e.message}", e)
+            Logger.e(TAG, "setupVideo failed: ${e.message}")
         }
+        return result
     }
 
-    private fun setupFlash(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+    private fun setupFlash(
+        activity: MainActivity,
+        preview: Preview
+    ): MutableList<SettingItemModel> {
+        val result = mutableListOf<SettingItemModel>()
         try {
             val supportedFlashValues = preview.supportedFlashValues.orEmpty()
             if (supportedFlashValues.isNotEmpty()) {
                 val flashEntries = activity.getResources().getStringArray(R.array.flash_entries)
                 val flashValues = activity.getResources().getStringArray(R.array.flash_values)
-                val flashList = supportedFlashValues.map { flashValue ->
+                supportedFlashValues.map { flashValue ->
                     val flashIndex = flashValues.indexOf(flashValue).takeIf { it >= 0 } ?: 0
                     val flashEntry = flashEntries.getOrNull(flashIndex).orEmpty()
                     val model = SettingItemModel(
@@ -1139,22 +1245,19 @@ class CameraViewModel @Inject constructor(
                         icon = getFlashIcon(flashValue),
                         text = flashEntry
                     )
-                    if (model.selected) {
-                        setFlashSelected(preview, model)
-                    }
-                    model
-                }.toMutableList()
-
-                if (flashList.isNotEmpty()) {
-                    setFlashList(flashList)
+                    result.add(model)
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "setupFlash failed: ${e.message}", e)
+            Logger.e(TAG, "setupFlash failed: ${e.message}")
         }
+        return result
     }
 
-    private fun setupRaw(activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview) {
+    private fun setupRaw(
+        activity: MainActivity
+    ): MutableList<SettingItemModel> {
+        val result = mutableListOf<SettingItemModel>()
         try {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
             val rawValues = activity.resources.getStringArray(R.array.raw_values)
@@ -1168,22 +1271,18 @@ class CameraViewModel @Inject constructor(
                 sharedPreferences.getString(PreferenceKeys.RawPreferenceKey, "preference_raw_no")
                     ?: "preference_raw_no"
             val rawModeIndex = rawValues.indexOf(rawModeValue).takeIf { it >= 0 } ?: 0
-            val rawList: MutableList<SettingItemModel> = rawValues.mapIndexed { index, flashValue ->
+            rawValues.mapIndexed { index, flashValue ->
                 val model = SettingItemModel(
                     id = flashValue,
                     text = rawEntries[index],
                     selected = index == rawModeIndex,
                     icon = rawIcons[index]
                 )
-                if (model.selected) setRawSelected(
-                    activity, model
-                )
-                model
-            }.toMutableList()
-            if (rawList.isNotEmpty()) setRawList(rawList)
+                result.add(model)
+            }
         } catch (e: Exception) {
-            Log.e(TAG, "setupRaw failed: ${e.message}", e)
+            Logger.e(TAG, "setupRaw failed: ${e.message}")
         }
+        return result
     }
-
 }

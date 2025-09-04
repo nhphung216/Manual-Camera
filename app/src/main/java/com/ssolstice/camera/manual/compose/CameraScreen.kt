@@ -1,7 +1,6 @@
 package com.ssolstice.camera.manual.compose
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -134,6 +133,7 @@ val WhiteColor = Color(0xFFFFFFFF)
 
 @Composable
 fun CameraScreen(
+    modifier: Modifier = Modifier,
     isRecording: Boolean = false,
     isVideoRecordingPaused: Boolean = false,
     isPhotoMode: Boolean = true,
@@ -147,7 +147,7 @@ fun CameraScreen(
     onPauseVideo: () -> Unit = {},
     onSwitchCamera: () -> Unit = {},
     showCameraSettings: () -> Unit = {},
-    showConfigTableSettings: () -> Unit = {},
+    showCameraControls: () -> Unit = {},
 
     photoModes: List<PhotoModeUiModel> = emptyList(),
     onChangePhotoMode: (PhotoModeUiModel) -> Unit = {},
@@ -163,7 +163,7 @@ fun CameraScreen(
     onCaptureRateSelected: (Float) -> Unit = {},
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(Color(0x00101010))
     ) {
@@ -285,7 +285,7 @@ fun CameraScreen(
                     tint = WhiteColor,
                     modifier = Modifier
                         .clickable {
-                            showConfigTableSettings()
+                            showCameraControls()
                         }
                         .size(38.dp)
                         .background(Color.DarkGray, shape = CircleShape)

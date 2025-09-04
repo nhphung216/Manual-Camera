@@ -60,7 +60,6 @@ import android.view.TextureView
 import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.view.View.OnSystemUiVisibilityChangeListener
-import android.view.View.OnTouchListener
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -72,6 +71,14 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -79,13 +86,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.exifinterface.media.ExifInterface
@@ -105,6 +112,7 @@ import com.ssolstice.camera.manual.compose.CameraSettings
 import com.ssolstice.camera.manual.compose.CameraViewModel
 import com.ssolstice.camera.manual.compose.ui.theme.OpenCameraTheme
 import com.ssolstice.camera.manual.databinding.ActivityMainBinding
+import com.ssolstice.camera.manual.models.CameraSheetType
 import com.ssolstice.camera.manual.preview.Preview
 import com.ssolstice.camera.manual.remotecontrol.BluetoothRemoteControl
 import com.ssolstice.camera.manual.ui.DrawPreview
@@ -115,6 +123,7 @@ import com.ssolstice.camera.manual.utils.LocaleHelper
 import com.ssolstice.camera.manual.utils.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -338,6 +347,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         super.attachBaseContext(LocaleHelper.setLocale(newBase))
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("ClickableViewAccessibility", "UseKtx")
     override fun onCreate(savedInstanceState: Bundle?) {
         var debug_time: Long = 0
@@ -771,9 +781,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             OpenCameraTheme {
                 val activity = this@MainActivity
 
-                val showCameraSettings = rememberSaveable { mutableStateOf(false) }
-                val showCameraControls = rememberSaveable { mutableStateOf(false) }
-
                 val isRecording by viewModel.isRecording.collectAsState()
                 val isPhotoMode by viewModel.isPhotoMode.collectAsState()
 
@@ -810,7 +817,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 var sceneModeValue by remember { mutableStateOf("") }
                 var colorEffectValue by remember { mutableStateOf("") }
 
-                var currentControlSelected by remember { mutableStateOf("white_balance") }
+                var currentControlSelected by remember { mutableStateOf("") }
                 var valueFormated by remember { mutableStateOf("") }
 
                 val photoModes = viewModel.photoModes.collectAsState()
@@ -832,68 +839,62 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     }
                 }
 
-                Box {
+                val sheetState = rememberStandardBottomSheetState(
+                    initialValue = SheetValue.Hidden, skipHiddenState = false
+                )
+                val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
+                val coroutineScope = rememberCoroutineScope()
+
+                var currentSheet by remember { mutableStateOf(CameraSheetType.NONE) }
+
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     CameraScreen(
+                        modifier = Modifier.align(Alignment.BottomCenter),
                         isRecording = isRecording,
                         isVideoRecordingPaused = isVideoRecordingPaused,
                         isPhotoMode = isPhotoMode,
                         galleryBitmap = galleryBitmap,
-                        onOpenGallery = {
-                            clickedGallery()
-                        },
-                        onTogglePhotoVideoMode = {
-                            clickedSwitchVideo()
-                        },
-                        onTakePhoto = {
-                            clickedTakePhoto()
-                        },
-                        onTakeLongPhoto = {
-                            longClickedTakePhoto()
-                        },
-                        takePhotoButtonLongClickCancelled = {
-                            takePhotoButtonLongClickCancelled()
-                        },
-                        onTakePhotoVideoSnapshot = {
-                            clickedTakePhotoVideoSnapshot()
-                        },
-                        onPauseVideo = {
-                            clickedPauseVideo()
-                        },
-                        onSwitchCamera = {
-                            clickedSwitchCamera()
-                        },
-
+                        onOpenGallery = { clickedGallery() },
+                        onTogglePhotoVideoMode = { clickedSwitchVideo() },
+                        onTakePhoto = { clickedTakePhoto() },
+                        onTakeLongPhoto = { longClickedTakePhoto() },
+                        takePhotoButtonLongClickCancelled = { takePhotoButtonLongClickCancelled() },
+                        onTakePhotoVideoSnapshot = { clickedTakePhotoVideoSnapshot() },
+                        onPauseVideo = { clickedPauseVideo() },
+                        onSwitchCamera = { clickedSwitchCamera() },
                         showCameraSettings = {
-                            showCameraSettings.value = !showCameraSettings.value
-                            if (showCameraSettings.value && preview != null && applicationInterface != null) {
+                            coroutineScope.launch {
+                                currentSheet = CameraSheetType.SETTINGS
+                                sheetState.expand()
+                            }
+                            if (preview != null && applicationInterface != null) {
                                 viewModel.logViewClicked("showCameraSettings")
-                                viewModel.setupCameraData(
-                                    activity, applicationInterface!!, preview!!
-                                )
+                                viewModel.setupCameraData(activity, applicationInterface!!, preview!!)
                             }
                         },
-                        showConfigTableSettings = {
+                        showCameraControls = {
                             if (preview != null && applicationInterface != null) {
                                 if (preview?.isVideo == true && preview?.isVideoRecording == true) {
                                     Logger.d(
-                                        MainActivity.TAG,
-                                        "don't add any more options"
+                                        MainActivity.TAG, "don't add any more options"
                                     )
                                 } else {
                                     if (preview?.cameraController != null && applicationInterface?.isCameraExtensionPref != true) {
-                                        showCameraControls.value = !showCameraControls.value
-                                        if (showCameraControls.value) {
-                                            viewModel.logViewClicked("showConfigTableSettings")
-                                            viewModel.setupCameraControlsData(
-                                                activity, applicationInterface!!, preview!!
-                                            )
+                                        coroutineScope.launch {
+                                            currentSheet = CameraSheetType.CONTROLS
+                                            sheetState.expand()
                                         }
+                                        viewModel.logViewClicked("showConfigTableSettings")
+                                        viewModel.setupCameraControlsData(
+                                            activity, applicationInterface!!, preview!!
+                                        )
                                     }
                                 }
                             }
 
                         },
-
                         photoModes = photoModes.value,
                         currentPhotoMode = currentPhotoMode.value,
                         onChangePhotoMode = {
@@ -910,7 +911,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             viewModel.setSelectedPhotoOption(this@MainActivity, preview!!, it)
                         },
                         selectedPhotoOption = selectedPhotoOption.value,
-
                         videoModes = videoModes.value,
                         onChangeVideoMode = { newMode ->
                             Logger.d(TAG, "onChangeVideoMode: $newMode")
@@ -927,7 +927,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         },
                         // video, slow motion, time lapse
                         currentVideoMode = currentVideoMode.value,
-
                         captureRate = captureRate.value,
                         onCaptureRateSelected = {
                             Logger.d(TAG, "onCaptureRateSelected: $it")
@@ -941,363 +940,412 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         },
                     )
 
-                    if (showCameraSettings.value) {
-                        CameraSettings(
-                            isPhotoMode = isPhotoMode,
-                            currentPhotoMode = currentPhotoMode.value,
-                            resolutionSelected = resolutionSelected,
-                            timerSelected = timerSelected,
-                            repeatSelected = repeatSelected,
-                            speedSelected = speedSelected,
-                            resolutionOfVideoSelected = resolutionOfVideoSelected,
-                            resolutions = resolutions,
-                            resolutionsVideo = resolutionsOfVideo,
-                            timers = timers,
-                            repeats = repeats,
-                            speeds = speeds,
-                            flashList = flashList,
-                            rawList = rawList,
-                            flashSelected = flashSelected,
-                            rawSelected = rawSelected,
-                            onResolutionChange = {
-                                Logger.d(TAG, "onResolutionChange: $it")
-                                viewModel.logViewClicked("onResolutionChange")
-                                if (applicationInterface != null && preview != null) {
-                                    viewModel.setResolutionSelected(
-                                        activity, applicationInterface!!, preview!!, it
-                                    )
-                                }
-                            },
-                            onRawChange = {
-                                Logger.d(TAG, "onRawChange: $it")
-                                viewModel.logViewClicked("onRawChange")
-                                if (applicationInterface != null && preview != null) {
-                                    viewModel.setRawSelected(activity, it)
-                                }
-                            },
-                            onFlashChange = {
-                                Logger.d(TAG, "onFlashChange: $it")
-                                viewModel.logViewClicked("onFlashChange")
-                                if (applicationInterface != null && preview != null) {
-                                    viewModel.setFlashSelected(preview!!, it)
-                                }
-                            },
-                            onResolutionOfVideoChange = {
-                                Logger.d(TAG, "onResolutionOfVideoChange: $it")
-                                viewModel.logViewClicked("onResolutionOfVideoChange")
-                                if (applicationInterface != null && preview != null) {
-                                    viewModel.setResolutionOfVideoSelected(
-                                        activity, applicationInterface!!, preview!!, it
-                                    )
-                                }
-                            },
-                            onTimerChange = {
-                                Logger.d(TAG, "onTimerChange: $it")
-                                viewModel.logViewClicked("onTimerChange")
-                                if (applicationInterface != null && preview != null) {
-                                    viewModel.setTimerSelected(activity, it)
-                                }
-                            },
-                            onRepeatChange = {
-                                Logger.d(TAG, "onRepeatChange: $it")
-                                viewModel.logViewClicked("onRepeatChange")
-                                if (applicationInterface != null && preview != null) {
-                                    viewModel.setRepeatSelected(activity, it)
-                                }
-                            },
-                            onSpeedChange = {
-                                Logger.d(TAG, "onSpeedChange: $it")
-                                viewModel.logViewClicked("onSpeedChange")
-                                if (applicationInterface != null && preview != null) {
-                                    viewModel.setSpeedSelected(
-                                        activity, applicationInterface!!, preview!!, it
-                                    )
-                                }
-                            },
-                            onClose = { showCameraSettings.value = false },
-                            onOpenSettings = {
-                                viewModel.logViewClicked("clickedSettings")
-                                clickedSettings()
-                            },
-                            onUpgrade = {
-                                viewModel.logViewClicked("showUpgradeDialog")
-                                showUpgradeDialog()
-                            })
-                    }
-
-                    if (showCameraControls.value) {
-                        CameraControls(
-                            modifier = Modifier.align(Alignment.BottomEnd),
-                            onClose = { showCameraControls.value = false },
-                            cameraControls = controlsMapData ?: hashMapOf(),
-                            exposureValue = exposureValue,
-                            isoValue = isoValue,
-                            shutterValue = shutterValue,
-                            valueFormated = valueFormated,
-                            whiteBalanceValue = whiteBalanceValue,
-                            controlOptionModel = controlOptionModel.value,
-                            onWhiteBalanceChanged = { item ->
-                                Logger.d(TAG, "onWhiteBalanceChanged: $item")
-                                whiteBalanceValue = item.id
-
-                                if (whiteBalanceValue == "manual") {
-                                    applicationInterface?.let {
-                                        whiteBalanceManualValue =
-                                            applicationInterface!!.whiteBalanceTemperaturePref.toFloat()
-                                        viewModel.setControlOptionModel(item)
+                    BottomSheetScaffold(
+                        scaffoldState = scaffoldState,
+                        sheetPeekHeight = 0.dp,
+                        // 🎨 màu nền của bottom sheet
+                        sheetContainerColor = MaterialTheme.colorScheme.surface,
+                        // 🎨 màu chữ/icon trong bottom sheet
+                        sheetContentColor = MaterialTheme.colorScheme.onSurface,
+                        sheetContent = {
+                            when (currentSheet) {
+                                CameraSheetType.SETTINGS -> {
+                                    Box {
+                                        CameraSettings(
+                                            isPhotoMode = isPhotoMode,
+                                            currentPhotoMode = currentPhotoMode.value,
+                                            resolutionSelected = resolutionSelected,
+                                            timerSelected = timerSelected,
+                                            repeatSelected = repeatSelected,
+                                            speedSelected = speedSelected,
+                                            resolutionOfVideoSelected = resolutionOfVideoSelected,
+                                            resolutions = resolutions,
+                                            resolutionsVideo = resolutionsOfVideo,
+                                            timers = timers,
+                                            repeats = repeats,
+                                            speeds = speeds,
+                                            flashList = flashList,
+                                            rawList = rawList,
+                                            flashSelected = flashSelected,
+                                            rawSelected = rawSelected,
+                                            onResolutionChange = {
+                                                Logger.d(TAG, "onResolutionChange: $it")
+                                                viewModel.logViewClicked("onResolutionChange")
+                                                if (applicationInterface != null && preview != null) {
+                                                    viewModel.setResolutionSelected(
+                                                        activity,
+                                                        applicationInterface!!,
+                                                        preview!!,
+                                                        it
+                                                    )
+                                                }
+                                            },
+                                            onRawChange = {
+                                                Logger.d(TAG, "onRawChange: $it")
+                                                viewModel.logViewClicked("onRawChange")
+                                                if (applicationInterface != null && preview != null) {
+                                                    viewModel.setRawSelected(activity, it)
+                                                }
+                                            },
+                                            onFlashChange = {
+                                                Logger.d(TAG, "onFlashChange: $it")
+                                                viewModel.logViewClicked("onFlashChange")
+                                                if (applicationInterface != null && preview != null) {
+                                                    viewModel.setFlashSelected(preview!!, it)
+                                                }
+                                            },
+                                            onResolutionOfVideoChange = {
+                                                Logger.d(TAG, "onResolutionOfVideoChange: $it")
+                                                viewModel.logViewClicked("onResolutionOfVideoChange")
+                                                if (applicationInterface != null && preview != null) {
+                                                    viewModel.setResolutionOfVideoSelected(
+                                                        activity,
+                                                        applicationInterface!!,
+                                                        preview!!,
+                                                        it
+                                                    )
+                                                }
+                                            },
+                                            onTimerChange = {
+                                                Logger.d(TAG, "onTimerChange: $it")
+                                                viewModel.logViewClicked("onTimerChange")
+                                                if (applicationInterface != null && preview != null) {
+                                                    viewModel.setTimerSelected(activity, it)
+                                                }
+                                            },
+                                            onRepeatChange = {
+                                                Logger.d(TAG, "onRepeatChange: $it")
+                                                viewModel.logViewClicked("onRepeatChange")
+                                                if (applicationInterface != null && preview != null) {
+                                                    viewModel.setRepeatSelected(activity, it)
+                                                }
+                                            },
+                                            onSpeedChange = {
+                                                Logger.d(TAG, "onSpeedChange: $it")
+                                                viewModel.logViewClicked("onSpeedChange")
+                                                if (applicationInterface != null && preview != null) {
+                                                    viewModel.setSpeedSelected(
+                                                        activity,
+                                                        applicationInterface!!,
+                                                        preview!!,
+                                                        it
+                                                    )
+                                                }
+                                            },
+                                            onOpenSettings = {
+                                                viewModel.logViewClicked("clickedSettings")
+                                                clickedSettings()
+                                            },
+                                            onUpgrade = {
+                                                viewModel.logViewClicked("showUpgradeDialog")
+                                                showUpgradeDialog()
+                                            })
                                     }
-                                } else {
-                                    viewModel.setControlOptionModel(null)
                                 }
 
-                                val editor = sharedPreferences.edit()
-                                editor.putString(
-                                    PreferenceKeys.WhiteBalancePreferenceKey, whiteBalanceValue
-                                )
-                                editor.apply()
+                                CameraSheetType.CONTROLS -> {
+                                    Box {
+                                        CameraControls(
+                                            modifier = Modifier.align(Alignment.BottomEnd),
+                                            cameraControls = controlsMapData ?: hashMapOf(),
 
-                                if (whiteBalanceValue == "manual") {
-                                    updateForSettings(
-                                        true,
-                                        "${getString(R.string.white_balance)}: ${whiteBalanceManualValue.toInt()}K"
-                                    )
-                                } else {
-                                    updateForSettings(
-                                        true, "${getString(R.string.white_balance)}: ${item.text}"
-                                    )
-                                }
-                            },
-                            whiteBalanceManualValue = whiteBalanceManualValue,
-                            onWhiteBalanceManualChanged = {
-                                whiteBalanceManualValue = it
-                                preview?.setWhiteBalanceTemperature(it.toInt())
-                            },
-                            focusManualValue = focusManualValue,
-                            onFocusManualChanged = { progress ->
-                                focusManualValue = progress
-                                val frac: Double = progress / 100.0
-                                val scaling = ManualSeekbars.seekbarScaling(frac)
-                                val focusDistance =
-                                    (scaling * preview!!.minimumFocusDistance).toFloat()
-                                preview?.setFocusDistance(focusDistance, true, true)
-                            },
-                            focusValue = focusValue,
-                            onFocusChanged = { item ->
-                                Logger.d(TAG, "onFocusChanged: $item")
-                                val selectedValue: String? = item.id
-                                focusValue = item.id
+                                            exposureValue = exposureValue,
+                                            isoValue = isoValue,
+                                            shutterValue = shutterValue,
+                                            valueFormated = valueFormated,
 
-                                if (focusValue == "focus_mode_manual2") {
-                                    if (applicationInterface != null) {
-                                        focusManualValue =
-                                            applicationInterface!!.getFocusDistancePref(true)
-                                    }
-                                    viewModel.setControlOptionModel(item)
-                                } else {
-                                    viewModel.setControlOptionModel(null)
-                                }
+                                            // White Balance
+                                            whiteBalanceValue = whiteBalanceValue,
+                                            controlOptionModel = controlOptionModel.value,
+                                            onWhiteBalanceChanged = { item ->
+                                                Logger.d(TAG, "onWhiteBalanceChanged: $item")
+                                                whiteBalanceValue = item.id
 
-                                if (focusValue != "focus_mode_manual2") {
-                                    preview?.updateFocus(item.id, false, true)
-                                    if (preview?.cameraController != null) {
-                                        if (preview?.cameraController?.sceneModeAffectsFunctionality() == true) {
-                                            updateForSettings(
-                                                true,
-                                                getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForFocus(
-                                                    selectedValue
+                                                if (whiteBalanceValue == "manual") {
+                                                    applicationInterface?.let {
+                                                        whiteBalanceManualValue =
+                                                            applicationInterface!!.whiteBalanceTemperaturePref.toFloat()
+                                                        viewModel.setControlOptionModel(item)
+                                                    }
+                                                } else {
+                                                    viewModel.setControlOptionModel(null)
+                                                }
+
+                                                val editor = sharedPreferences.edit()
+                                                editor.putString(
+                                                    PreferenceKeys.WhiteBalancePreferenceKey,
+                                                    whiteBalanceValue
                                                 )
-                                            )
-                                        } else {
-                                            preview?.cameraController?.setSceneMode(selectedValue)
-                                        }
-                                    }
-                                }
-                            },
-                            sceneModeValue = sceneModeValue,
-                            onSceneModeChanged = { item ->
-                                Logger.d(TAG, "onSceneModeChanged: $item")
-                                applicationInterface?.setSceneModePref(item.id)
-                                sceneModeValue = item.id
-                                if (preview?.cameraController != null) {
-                                    if (preview?.cameraController?.sceneModeAffectsFunctionality() == true) {
-                                        updateForSettings(
-                                            true,
-                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(
-                                                item.id
-                                            )
+                                                editor.apply()
+
+                                                if (whiteBalanceValue == "manual") {
+                                                    updateForSettings(
+                                                        true,
+                                                        "${getString(R.string.white_balance)}: ${whiteBalanceManualValue.toInt()}K"
+                                                    )
+                                                } else {
+                                                    updateForSettings(
+                                                        true,
+                                                        "${getString(R.string.white_balance)}: ${item.text}"
+                                                    )
+                                                }
+                                            },
+                                            whiteBalanceManualValue = whiteBalanceManualValue,
+                                            onWhiteBalanceManualChanged = {
+                                                whiteBalanceManualValue = it
+                                                preview?.setWhiteBalanceTemperature(it.toInt())
+                                            },
+
+                                            // focus manual
+                                            focusManualValue = focusManualValue,
+                                            onFocusManualChanged = { progress ->
+                                                focusManualValue = progress
+                                                val frac: Double = progress / 100.0
+                                                val scaling = ManualSeekbars.seekbarScaling(frac)
+                                                val focusDistance =
+                                                    (scaling * preview!!.minimumFocusDistance).toFloat()
+                                                preview?.setFocusDistance(focusDistance, true, true)
+                                            },
+
+                                            // focus
+                                            focusValue = focusValue,
+                                            onFocusChanged = { item ->
+                                                Logger.d(TAG, "onFocusChanged: $item")
+                                                val selectedValue: String? = item.id
+                                                focusValue = item.id
+
+                                                if (focusValue == "focus_mode_manual2") {
+                                                    if (applicationInterface != null) {
+                                                        focusManualValue =
+                                                            applicationInterface!!.getFocusDistancePref(
+                                                                true
+                                                            )
+                                                    }
+                                                    viewModel.setControlOptionModel(item)
+                                                } else {
+                                                    viewModel.setControlOptionModel(null)
+                                                }
+
+                                                if (focusValue != "focus_mode_manual2") {
+                                                    preview?.updateFocus(item.id, false, true)
+                                                    if (preview?.cameraController != null) {
+                                                        if (preview?.cameraController?.sceneModeAffectsFunctionality() == true) {
+                                                            updateForSettings(
+                                                                true,
+                                                                getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForFocus(
+                                                                    selectedValue
+                                                                )
+                                                            )
+                                                        } else {
+                                                            preview?.cameraController?.setSceneMode(
+                                                                selectedValue
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            },
+
+                                            // scene mode
+                                            sceneModeValue = sceneModeValue,
+                                            onSceneModeChanged = { item ->
+                                                Logger.d(TAG, "onSceneModeChanged: $item")
+                                                applicationInterface?.setSceneModePref(item.id)
+                                                sceneModeValue = item.id
+                                                if (preview?.cameraController != null) {
+                                                    if (preview?.cameraController?.sceneModeAffectsFunctionality() == true) {
+                                                        updateForSettings(
+                                                            true,
+                                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(
+                                                                item.id
+                                                            )
+                                                        )
+                                                    } else {
+                                                        preview?.cameraController?.setSceneMode(item.id)
+                                                        updateForSettings(
+                                                            true,
+                                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(
+                                                                item.id
+                                                            )
+                                                        )
+                                                    }
+                                                }
+                                            },
+
+                                            // color effect
+                                            colorEffectValue = colorEffectValue,
+                                            onColorEffectChanged = { item ->
+                                                Logger.d(TAG, "onColorEffectChanged: $item")
+                                                if (preview!!.cameraController != null) {
+                                                    preview!!.cameraController.setColorEffect(item.id)
+                                                    applicationInterface?.setColorEffectPref(item.id)
+                                                    colorEffectValue = item.id
+                                                }
+                                            },
+                                            controlIdSelected = currentControlSelected,
+                                            onControlIdSelected = {
+                                                currentControlSelected = it
+                                                when (currentControlSelected) {
+                                                    "exposure" -> {
+                                                        valueFormated =
+                                                            preview?.getExposureString(exposureValue.toInt())
+                                                                ?: ""
+                                                    }
+
+                                                    "iso" -> {
+                                                        valueFormated =
+                                                            if (getIsoMode() == CameraController.ISO_DEFAULT) {
+                                                                CameraController.ISO_DEFAULT
+                                                            } else {
+                                                                preview?.getISOString(isoValue.toInt())
+                                                                    ?: ""
+                                                            }
+                                                    }
+
+                                                    "shutter" -> {
+                                                        valueFormated =
+                                                            if (shutterValue.toLong() == EXPOSURE_TIME_DEFAULT) {
+                                                                getString(R.string.auto)
+                                                            } else {
+                                                                preview?.getExposureTimeString(
+                                                                    shutterValue.toLong()
+                                                                ) ?: ""
+                                                            }
+                                                    }
+                                                }
+                                            },
+
+                                            // ISO
+                                            onIsoChanged = { iso ->
+                                                isoValue = iso
+                                                if (getIsoMode() == CameraController.ISO_DEFAULT) {
+                                                    setIsoManual()
+                                                }
+                                                preview?.setISO(iso.toInt())
+                                                valueFormated =
+                                                    preview?.getISOString(iso.toInt()) ?: ""
+                                            },
+                                            onIsoReset = {
+                                                setIsoAuto()
+                                                valueFormated = getString(R.string.auto)
+                                            },
+
+                                            // Shutter
+                                            onShutterChanged = {
+                                                shutterValue = it
+                                                setIsoManual()
+                                                preview?.setExposureTime(it.toLong())
+                                                valueFormated =
+                                                    preview?.getExposureTimeString(it.toLong())
+                                                        ?: ""
+                                            },
+                                            onShutterReset = {
+                                                shutterValue = EXPOSURE_TIME_DEFAULT.toFloat()
+                                                setIsoAuto()
+                                                preview?.setExposureTime(EXPOSURE_TIME_DEFAULT)
+                                                valueFormated = preview?.getExposureTimeString(
+                                                    EXPOSURE_TIME_DEFAULT
+                                                ) ?: ""
+                                            },
+
+                                            // Exposure
+                                            onExposureChanged = {
+                                                exposureValue = it
+                                                preview?.setExposure(it.toInt())
+                                                valueFormated =
+                                                    preview?.getExposureString(it.toInt()) ?: ""
+                                            },
+                                            onExposureReset = {
+                                                exposureValue = 0f
+                                                preview?.setExposure(0)
+                                                valueFormated = preview?.getExposureString(0) ?: ""
+                                            },
+                                            onResetAllSettings = {
+                                                // iso
+                                                setIsoAuto()
+
+                                                // exposure
+                                                exposureValue = 0f
+                                                preview?.setExposure(0)
+
+                                                // white balance
+                                                whiteBalanceValue = "auto"
+                                                viewModel.setControlOptionModel(null)
+                                                val editor = sharedPreferences.edit()
+                                                editor.putString(
+                                                    PreferenceKeys.WhiteBalancePreferenceKey,
+                                                    whiteBalanceValue
+                                                )
+                                                editor.apply()
+
+                                                // shutter
+                                                shutterValue = EXPOSURE_TIME_DEFAULT.toFloat()
+                                                preview?.setExposureTime(EXPOSURE_TIME_DEFAULT)
+
+                                                // focus: focus_mode_auto
+                                                focusValue = "focus_mode_auto"
+                                                preview?.updateFocus(focusValue, false, true)
+                                                if (preview?.cameraController?.sceneModeAffectsFunctionality() == false) {
+                                                    preview?.cameraController?.setSceneMode(
+                                                        focusValue
+                                                    )
+                                                }
+
+                                                // scene mode: Auto
+                                                applicationInterface?.setSceneModePref("auto")
+                                                sceneModeValue = "auto"
+                                                if (preview?.cameraController?.sceneModeAffectsFunctionality() == false) {
+                                                    preview?.cameraController?.setSceneMode("auto")
+                                                }
+
+                                                // color effect
+                                                if (preview?.cameraController != null) {
+                                                    preview?.cameraController?.setColorEffect("auto")
+                                                    applicationInterface?.setColorEffectPref("auto")
+                                                    colorEffectValue = "auto"
+                                                }
+
+                                                updateForSettings(true, "Reset All")
+                                            },
                                         )
-                                    } else {
-                                        preview?.cameraController?.setSceneMode(item.id)
-                                        updateForSettings(
-                                            true,
-                                            getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(
-                                                item.id
-                                            )
-                                        )
                                     }
                                 }
-                            },
-                            colorEffectValue = colorEffectValue,
-                            onColorEffectChanged = { item ->
-                                Logger.d(TAG, "onColorEffectChanged: $item")
-                                if (preview!!.cameraController != null) {
-                                    preview!!.cameraController.setColorEffect(item.id)
-                                    applicationInterface?.setColorEffectPref(item.id)
-                                    colorEffectValue = item.id
-                                }
-                            },
-                            controlIdSelected = currentControlSelected,
-                            onControlIdSelected = {
-                                currentControlSelected = it
-                                when (currentControlSelected) {
-                                    "exposure" -> {
-                                        valueFormated =
-                                            preview?.getExposureString(exposureValue.toInt()) ?: ""
-                                    }
 
-                                    "iso" -> {
-                                        valueFormated =
-                                            if (getIsoMode() == CameraController.ISO_DEFAULT) {
-                                                CameraController.ISO_DEFAULT
-                                            } else {
-                                                preview?.getISOString(isoValue.toInt()) ?: ""
-                                            }
-                                    }
-
-                                    "shutter" -> {
-                                        valueFormated =
-                                            if (shutterValue.toLong() == EXPOSURE_TIME_DEFAULT) {
-                                                getString(R.string.auto)
-                                            } else {
-                                                preview?.getExposureTimeString(shutterValue.toLong())
-                                                    ?: ""
-                                            }
-                                    }
-                                }
-                            },
-
-                            // ISO
-                            onIsoChanged = { iso ->
-                                isoValue = iso
-                                if (getIsoMode() == CameraController.ISO_DEFAULT) {
-                                    setIsoManual()
-                                }
-                                preview?.setISO(iso.toInt())
-                                valueFormated = preview?.getISOString(iso.toInt()) ?: ""
-                            },
-                            onIsoReset = {
-                                setIsoAuto()
-                                valueFormated = getString(R.string.auto)
-                            },
-
-                            // Shutter
-                            onShutterChanged = {
-                                shutterValue = it
-                                setIsoManual()
-                                preview?.setExposureTime(it.toLong())
-                                valueFormated = preview?.getExposureTimeString(it.toLong()) ?: ""
-                            },
-                            onShutterReset = {
-                                shutterValue = EXPOSURE_TIME_DEFAULT.toFloat()
-                                setIsoAuto()
-                                preview?.setExposureTime(EXPOSURE_TIME_DEFAULT)
-                                valueFormated =
-                                    preview?.getExposureTimeString(EXPOSURE_TIME_DEFAULT) ?: ""
-                            },
-
-                            // Exposure
-                            onExposureChanged = {
-                                exposureValue = it
-                                preview?.setExposure(it.toInt())
-                                valueFormated = preview?.getExposureString(it.toInt()) ?: ""
-                            },
-                            onExposureReset = {
-                                exposureValue = 0f
-                                preview?.setExposure(0)
-                                valueFormated = preview?.getExposureString(0) ?: ""
-                            },
-                            onResetAllSettings = {
-                                // iso
-                                setIsoAuto()
-
-                                // exposure
-                                exposureValue = 0f
-                                preview?.setExposure(0)
-
-                                // white balance
-                                whiteBalanceValue = "auto"
-                                viewModel.setControlOptionModel(null)
-                                val editor = sharedPreferences.edit()
-                                editor.putString(
-                                    PreferenceKeys.WhiteBalancePreferenceKey, whiteBalanceValue
-                                )
-                                editor.apply()
-
-                                // shutter
-                                shutterValue = EXPOSURE_TIME_DEFAULT.toFloat()
-                                preview?.setExposureTime(EXPOSURE_TIME_DEFAULT)
-
-                                // focus: focus_mode_auto
-                                focusValue = "focus_mode_auto"
-                                preview?.updateFocus(focusValue, false, true)
-                                if (preview?.cameraController?.sceneModeAffectsFunctionality() == false) {
-                                    preview?.cameraController?.setSceneMode(focusValue)
-                                }
-
-                                // scene mode: Auto
-                                applicationInterface?.setSceneModePref("auto")
-                                sceneModeValue = "auto"
-                                if (preview?.cameraController?.sceneModeAffectsFunctionality() == false) {
-                                    preview?.cameraController?.setSceneMode("auto")
-                                }
-
-                                // color effect
-                                if (preview?.cameraController != null) {
-                                    preview?.cameraController?.setColorEffect("auto")
-                                    applicationInterface?.setColorEffectPref("auto")
-                                    colorEffectValue = "auto"
-                                }
-
-                                updateForSettings(true, "Reset All")
-                            },
-                        )
+                                else -> Box(Modifier.height(1.dp)) {} // sheet rỗng khi NONE
+                            }
+                        }
+                    ) {
                     }
                 }
 
                 BackHandler {
-                    val fm = getFragmentManager()
-                    val preferenceFragment = fm.findFragmentByTag("PREFERENCE_FRAGMENT") as? MyPreferenceFragment
-
+                    val fm = fragmentManager
+                    val preferenceFragment =
+                        fm.findFragmentByTag("PREFERENCE_FRAGMENT") as? MyPreferenceFragment
                     if (preferenceFragment != null && preferenceFragment.isVisible) {
                         // Nếu có sub-screen trong back stack của PREFERENCE_FRAGMENT
                         if (fm.backStackEntryCount > 1) {
                             fm.popBackStack() // quay về fragment trước đó (sub -> main)
                         } else {
                             // không có sub nữa, ẩn fragment cha
-                            fm.beginTransaction()
-                                .remove(preferenceFragment)
-                                .commit()
-                            fm.executePendingTransactions()
+                            fm.beginTransaction().remove(preferenceFragment).commit()
                             activity.settingsClosing()
                         }
-                    } else if (showCameraSettings.value) {
-                        showCameraSettings.value = false
-                    } else if (showCameraControls.value) {
-                        showCameraControls.value = false
+                    } else if (sheetState.currentValue == SheetValue.Expanded) {
+                        coroutineScope.launch {
+                            sheetState.hide()
+                            currentSheet = CameraSheetType.NONE
+                        }
                     } else {
                         activity.finish()
                     }
                 }
-
             }
         }
 
-        if (MyDebug.LOG) {
-            Logger.d(
-                TAG,
-                "onCreate: total time for Activity startup: " + (System.currentTimeMillis() - debug_time)
-            )
-        }
+        Logger.d(
+            TAG,
+            "onCreate: total time for Activity startup: " + (System.currentTimeMillis() - debug_time)
+        )
     }
 
     private fun changePhotoMode(mode: PhotoMode) {
@@ -1836,8 +1884,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 "preloadIcons: total time for preloadIcons: " + (System.currentTimeMillis() - debug_time)
             )
             Logger.d(
-                TAG,
-                "size of preloaded_bitmap_resources: " + preloaded_bitmap_resources.size
+                TAG, "size of preloaded_bitmap_resources: " + preloaded_bitmap_resources.size
             )
         }
     }
@@ -1854,8 +1901,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         if (MyDebug.LOG) {
             Logger.d(TAG, "onDestroy")
             Logger.d(
-                TAG,
-                "size of preloaded_bitmap_resources: " + preloaded_bitmap_resources.size
+                TAG, "size of preloaded_bitmap_resources: " + preloaded_bitmap_resources.size
             )
         }
         activity_count--
@@ -2269,8 +2315,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         if (MyDebug.LOG) {
             Logger.d(
-                TAG,
-                "onPause: total time to pause: " + (System.currentTimeMillis() - debug_time)
+                TAG, "onPause: total time to pause: " + (System.currentTimeMillis() - debug_time)
             )
         }
     }
@@ -2300,11 +2345,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 Logger.d(TAG, "rotation: $rotation")
                 Logger.d(TAG, "old_rotation: $oldRotation")
             }
-            if ((rotation == Surface.ROTATION_0 && oldRotation == Surface.ROTATION_180)
-                || (rotation == Surface.ROTATION_180 && oldRotation == Surface.ROTATION_0)
-                || (rotation == Surface.ROTATION_90 && oldRotation == Surface.ROTATION_270)
-                || (rotation == Surface.ROTATION_270 && oldRotation == Surface.ROTATION_90)
-            ) {
+            if ((rotation == Surface.ROTATION_0 && oldRotation == Surface.ROTATION_180) || (rotation == Surface.ROTATION_180 && oldRotation == Surface.ROTATION_0) || (rotation == Surface.ROTATION_90 && oldRotation == Surface.ROTATION_270) || (rotation == Surface.ROTATION_270 && oldRotation == Surface.ROTATION_90)) {
                 Logger.d(
                     TAG, "onDisplayChanged: switched between landscape and reverse orientation"
                 )
@@ -2500,7 +2541,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
      * @return True if the long-click is handled, otherwise return false to indicate that regular
      * click should still be triggered when the user releases the touch.
      */
-     fun longClickedTakePhoto(): Boolean {
+    fun longClickedTakePhoto(): Boolean {
         Logger.d(TAG, "longClickedTakePhoto")
         if (preview?.isVideo == true) {
             // no long-click action for video mode
@@ -3791,8 +3832,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         if (MyDebug.LOG) {
             Logger.d(
-                TAG,
-                "updateForSettings: done: " + (System.currentTimeMillis() - debug_time)
+                TAG, "updateForSettings: done: " + (System.currentTimeMillis() - debug_time)
             )
         }
     }
@@ -4189,8 +4229,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
                             else -> {
                                 Logger.d(
-                                    TAG,
-                                    "unknown system_orientation?!: " + system_orientation
+                                    TAG, "unknown system_orientation?!: " + system_orientation
                                 )
                                 new_navigation_gap = 0
                                 new_navigation_gap_landscape = 0
@@ -5281,8 +5320,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     val fileUri = resultData.data
                     Logger.d(TAG, "returned single fileUri: $fileUri")
                     // persist permission just in case?
-                    val takeFlags =
-                        (resultData.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION))
+                    val takeFlags = (resultData.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION))
                     try {/*if( true )
 						throw new SecurityException(); // test*/
                         // Check for the freshest data.
@@ -5342,8 +5380,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     val fileUri = resultData.data
                     Logger.d(TAG, "returned single fileUri: " + fileUri)
                     // persist permission just in case?
-                    val takeFlags =
-                        (resultData.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION))
+                    val takeFlags = (resultData.flags and (Intent.FLAG_GRANT_READ_URI_PERMISSION))
                     try {/*if( true )
 						throw new SecurityException(); // test*/
                         // Check for the freshest data.
@@ -6947,7 +6984,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     fun takePhotoButtonLongClickCancelled() {
-        viewModel.logViewClicked( "takePhotoButtonLongClickCancelled")
+        viewModel.logViewClicked("takePhotoButtonLongClickCancelled")
         if (preview?.cameraController != null && preview?.cameraController?.isContinuousBurstInProgress() == true) {
             preview?.cameraController?.stopContinuousBurst()
         }

@@ -13,19 +13,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ssolstice.camera.manual.compose.ui.theme.colorBackground
 
 @Composable
 fun ItemResolution(
     text: String,
     sub: String? = "",
-    isSelect: Boolean = false,
-    isPremium: Boolean = false,
+    selected: Boolean = false,
     shape: Shape = RoundedCornerShape(16.dp),
     onClick: () -> Unit = {},
     icon: Int = 0
@@ -37,10 +34,10 @@ fun ItemResolution(
             }
             .padding(8.dp)
             .background(
-                if (isSelect) {
-                    colorBackground()
+                color = if (selected) {
+                    MaterialTheme.colorScheme.primary
                 } else {
-                    Color.Black
+                    MaterialTheme.colorScheme.secondaryContainer
                 },
                 shape = shape
             )
@@ -53,18 +50,22 @@ fun ItemResolution(
                 modifier = Modifier.size(24.dp),
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = Color.White
+                tint = if (selected) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onSecondaryContainer
+                },
             )
         } else {
             Text(
                 text = text,
                 style = MaterialTheme.typography.titleSmall,
                 fontSize = 16.sp,
-                color = if (isPremium) {
-                    Color.Yellow
+                color = if (selected) {
+                    MaterialTheme.colorScheme.background
                 } else {
-                    if (isSelect) Color.Black else Color.White
-                }
+                    MaterialTheme.colorScheme.onSecondaryContainer
+                },
             )
         }
         if (sub != "") {
@@ -72,7 +73,11 @@ fun ItemResolution(
                 text = sub ?: "",
                 style = MaterialTheme.typography.labelSmall,
                 fontSize = 14.sp,
-                color = if (isSelect) Color.Black else Color.White.copy(alpha = 0.7f)
+                color = if (selected) {
+                    MaterialTheme.colorScheme.background.copy(alpha = 0.7f)
+                } else {
+                    MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                },
             )
         }
     }

@@ -1,6 +1,5 @@
 package com.ssolstice.camera.manual.compose
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,13 +11,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,13 +31,47 @@ import com.ssolstice.camera.manual.models.ControlOptionModel
 fun CameraControlsPreview() {
     CameraControls(
         modifier = Modifier,
-        onClose = {},
         onResetAllSettings = {},
         valueFormated = "",
         controlOptionModel = ControlOptionModel(
             id = "white_balance",
-            text = "White Balance",
-            icon = R.drawable.ic_white_balance
+        ),
+        cameraControls = hashMapOf(
+            "white_balance" to CameraControlModel(
+                id = "white_balance",
+                text = "White Balance",
+                icon = R.drawable.ic_white_balance,
+            ),
+            "exposure" to CameraControlModel(
+                id = "exposure",
+                text = "Exposure",
+                icon = R.drawable.ic_exposure_24,
+            ),
+            "iso" to CameraControlModel(
+                id = "iso",
+                text = "ISO",
+                icon = R.drawable.ic_iso_film,
+            ),
+            "shutter" to CameraControlModel(
+                id = "shutter",
+                text = "Shutter",
+                icon = R.drawable.ic_shutter,
+            ),
+            "focus" to CameraControlModel(
+                id = "focus",
+                text = "Focus",
+                icon = R.drawable.ic_auto_focus,
+            ),
+            "scene_mode" to CameraControlModel(
+                id = "scene_mode",
+                text = "Scene Mode",
+                icon = R.drawable.scene_mode_fireworks,
+            ),
+            "color_effect" to CameraControlModel(
+                id = "color_effect",
+                text = "Color Effect",
+                icon = R.drawable.color_effect_negative,
+            )
         )
     )
 }
@@ -48,12 +79,11 @@ fun CameraControlsPreview() {
 @Composable
 fun CameraControls(
     modifier: Modifier = Modifier,
-    onClose: () -> Unit = {},
     onResetAllSettings: () -> Unit = {},
     valueFormated: String = "",
     controlOptionModel: ControlOptionModel?,
 
-    controlIdSelected: String = "white_balance",
+    controlIdSelected: String = "",
     onControlIdSelected: (String) -> Unit = {},
 
     exposureValue: Float = 0f,
@@ -91,24 +121,11 @@ fun CameraControls(
     Column(
         modifier = modifier
             .clickable {}
-            .background(Color(0xF0000000))
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
     ) {
         Column(
             modifier = modifier.fillMaxWidth(),
         ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier
-                    .padding(end = 24.dp, bottom = 16.dp)
-                    .align(Alignment.End)
-                    .size(24.dp)
-                    .clickable { onClose() }
-            )
-
             val controlModel = cameraControls[controlIdSelected]
             controlModel?.let {
                 when (controlIdSelected) {
@@ -192,7 +209,7 @@ fun CameraControls(
                                 Icon(
                                     painter = painterResource(R.drawable.focus_mode_infinity),
                                     contentDescription = null,
-                                    tint = Color.White,
+                                    tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.size(24.dp)
                                 )
                                 CustomValueSlider(
@@ -209,7 +226,7 @@ fun CameraControls(
                                 Icon(
                                     painter = painterResource(R.drawable.ic_macro_focus),
                                     contentDescription = null,
-                                    tint = Color.White,
+                                    tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.size(24.dp)
                                 )
                                 Spacer(modifier = Modifier.width(16.dp))
@@ -277,7 +294,8 @@ fun CameraControls(
 
             LazyRow(
                 modifier = modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {

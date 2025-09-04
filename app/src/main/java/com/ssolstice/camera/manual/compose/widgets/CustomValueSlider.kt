@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
@@ -67,9 +68,6 @@ fun CustomValueSlider(
     showBackgroundColor: Boolean = false,
     onValueChange: (Float, String) -> Unit,
     valueRange: ClosedFloatingPointRange<Float> = -1f..1f,
-    thumbColor: Color = Color.Yellow,
-    activeColor: Color = Color.Yellow,
-    inactiveColor: Color = Color.Gray,
     onReset: () -> Unit = {}
 ) {
     Box(
@@ -80,7 +78,7 @@ fun CustomValueSlider(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp, top = 12.dp)
+                .padding(bottom = 24.dp, top = 24.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -120,11 +118,11 @@ fun CustomValueSlider(
                             .fillMaxWidth()
                             .padding(horizontal = 1.dp),
                         colors = SliderDefaults.colors(
-                            thumbColor = thumbColor,              // màu nút
-                            activeTrackColor = Color.White,        // track bên trái
-                            inactiveTrackColor = Color.White, // track bên phải
-                            activeTickColor = activeColor,            // dot bên trái
-                            inactiveTickColor = inactiveColor          // dot bên phải
+                            thumbColor = MaterialTheme.colorScheme.primary,              // màu nút
+                            activeTrackColor = MaterialTheme.colorScheme.secondaryContainer,        // track bên trái
+                            inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer, // track bên phải
+                            activeTickColor = Color.Yellow,            // dot bên trái
+                            inactiveTickColor = Color.Gray          // dot bên phải
                         )
                     )
                 }
@@ -133,7 +131,7 @@ fun CustomValueSlider(
                 Icon(
                     imageVector = Icons.Default.Autorenew,
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .padding(end = 24.dp)
                         .size(24.dp)
