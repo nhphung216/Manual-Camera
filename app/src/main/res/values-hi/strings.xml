@@ -1309,4 +1309,15 @@
     <string name="time_lapse">समय चूक</string>
     <string name="are_you_sure">क्या आप निश्चित हैं?</string>
     <string name="preference_screen_see_more">और देखें</string>
+    <string name="preference_show_white_balance">श्वेत संतुलन दिखाएं</string>
+    <string name="preference_show_white_balance_summary">वर्तमान श्वेत संतुलन प्रदर्शित करें।</string>
+    <string name="preference_show_scene_mode">दृश्य मोड दिखाएं</string>
+    <string name="preference_show_scene_mode_summary">वर्तमान दृश्य मोड प्रदर्शित करें।</string>
+    <string name="preference_show_focus_mode">फ़ोकस मोड दिखाएं</string>
+    <string name="preference_show_focus_mode_summary">वर्तमान फ़ोकस मोड प्रदर्शित करें।</string>
+    <string name="preference_show_exposure">एक्सपोज़र जानकारी दिखाएं</string>
+    <string name="preference_show_exposure_summary">वर्तमान एक्सपोज़र प्रदर्शित करें।</string>
+    <string name="update">अपडेट करें</string>
+    <string name="skip">छोड़ दें</string>
+    <string name="update_available">नया संस्करण उपलब्ध है</string>
 </resources>

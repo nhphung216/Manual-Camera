@@ -946,4 +946,15 @@
     <string name="time_lapse">Accéléré</string>
     <string name="are_you_sure">Êtes-vous sûr ?</string>
     <string name="preference_screen_see_more">Voir plus</string>
+    <string name="preference_show_white_balance">Afficher la balance des blancs</string>
+    <string name="preference_show_white_balance_summary">Afficher la balance des blancs actuelle.</string>
+    <string name="preference_show_scene_mode">Afficher le mode scène</string>
+    <string name="preference_show_scene_mode_summary">Afficher le mode scène actuel.</string>
+    <string name="preference_show_focus_mode">Afficher le mode de mise au point</string>
+    <string name="preference_show_focus_mode_summary">Afficher le mode de mise au point actuel.</string>
+    <string name="preference_show_exposure">Afficher les informations d\'exposition</string>
+    <string name="preference_show_exposure_summary">Afficher l\'exposition actuelle.</string>
+    <string name="update">Mettre à jour</string>
+    <string name="skip">Ignorer</string>
+    <string name="update_available">Nouvelle version disponible</string>
 </resources>

@@ -1088,5 +1088,15 @@
     <string name="time_lapse">Časovni zamik</string>
     <string name="are_you_sure">Ste prepričani?</string>
     <string name="preference_screen_see_more">Prikaži več</string>
-
+    <string name="preference_show_white_balance">Pokaži ravnovesje beline</string>
+    <string name="preference_show_white_balance_summary">Prikaži trenutno ravnovesje beline.</string>
+    <string name="preference_show_scene_mode">Pokaži scenski način</string>
+    <string name="preference_show_scene_mode_summary">Prikaži trenutni scenski način.</string>
+    <string name="preference_show_focus_mode">Pokaži način ostrenja</string>
+    <string name="preference_show_focus_mode_summary">Prikaži trenutni način ostrenja.</string>
+    <string name="preference_show_exposure">Pokaži informacije o osvetlitvi</string>
+    <string name="preference_show_exposure_summary">Prikaži trenutno osvetlitev.</string>
+    <string name="update">Posodobi</string>
+    <string name="skip">Preskoči</string>
+    <string name="update_available">Na voljo je nova različica</string>
 </resources>

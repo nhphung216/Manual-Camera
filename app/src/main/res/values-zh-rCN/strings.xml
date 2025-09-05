@@ -1063,4 +1063,15 @@
     <string name="time_lapse">延时摄影</string>
     <string name="are_you_sure">您确定吗？</string>
     <string name="preference_screen_see_more">查看更多</string>
+    <string name="preference_show_white_balance">显示白平衡</string>
+    <string name="preference_show_white_balance_summary">显示当前白平衡。</string>
+    <string name="preference_show_scene_mode">显示场景模式</string>
+    <string name="preference_show_scene_mode_summary">显示当前场景模式。</string>
+    <string name="preference_show_focus_mode">显示对焦模式</string>
+    <string name="preference_show_focus_mode_summary">显示当前对焦模式。</string>
+    <string name="preference_show_exposure">显示曝光信息</string>
+    <string name="preference_show_exposure_summary">显示当前曝光。</string>
+    <string name="update">更新</string>
+    <string name="skip">跳过</string>
+    <string name="update_available">有新版本可用</string>
 </resources>

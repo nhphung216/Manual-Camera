@@ -952,4 +952,15 @@
     <string name="cancel">Скасувати</string>
     <string name="are_you_sure">Ви впевнені?</string>
     <string name="preference_screen_see_more">Показати більше</string>
+    <string name="preference_show_white_balance">Показати баланс білого</string>
+    <string name="preference_show_white_balance_summary">Показати поточний баланс білого.</string>
+    <string name="preference_show_scene_mode">Показати режим сцени</string>
+    <string name="preference_show_scene_mode_summary">Показати поточний режим сцени.</string>
+    <string name="preference_show_focus_mode">Показати режим фокусування</string>
+    <string name="preference_show_focus_mode_summary">Показати поточний режим фокусування.</string>
+    <string name="preference_show_exposure">Показати інформацію про експозицію</string>
+    <string name="preference_show_exposure_summary">Показати поточну експозицію.</string>
+    <string name="update">Оновити</string>
+    <string name="skip">Пропустити</string>
+    <string name="update_available">Доступна нова версія</string>
 </resources>

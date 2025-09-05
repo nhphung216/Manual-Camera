@@ -914,5 +914,15 @@
     <string name="time_lapse">Časosběr</string>
     <string name="are_you_sure">Jste si jistý?</string>
     <string name="preference_screen_see_more">Zobrazit více</string>
-
+    <string name="preference_show_white_balance">Zobrazit vyvážení bílé</string>
+    <string name="preference_show_white_balance_summary">Zobrazit aktuální vyvážení bílé.</string>
+    <string name="preference_show_scene_mode">Zobrazit scénický režim</string>
+    <string name="preference_show_scene_mode_summary">Zobrazit aktuální scénický režim.</string>
+    <string name="preference_show_focus_mode">Zobrazit režim ostření</string>
+    <string name="preference_show_focus_mode_summary">Zobrazit aktuální režim ostření.</string>
+    <string name="preference_show_exposure">Zobrazit informace o expozici</string>
+    <string name="preference_show_exposure_summary">Zobrazit aktuální expozici.</string>
+    <string name="update">Aktualizovat</string>
+    <string name="skip">Přeskočit</string>
+    <string name="update_available">Nová verze k dispozici</string>
 </resources>

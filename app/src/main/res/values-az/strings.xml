@@ -894,6 +894,16 @@
     <string name="time_lapse">Zaman Aşımı</string>
     <string name="are_you_sure">Əminsiniz?</string>
     <string name="preference_screen_see_more">Daha çox göstər</string>
-
+    <string name="preference_show_white_balance">Ağ balansını göstər</string>
+    <string name="preference_show_white_balance_summary">Hazırkı ağ balansını göstər.</string>
+    <string name="preference_show_scene_mode">Səhnə rejimini göstər</string>
+    <string name="preference_show_scene_mode_summary">Hazırkı səhnə rejimini göstər.</string>
+    <string name="preference_show_focus_mode">Fokus rejimini göstər</string>
+    <string name="preference_show_focus_mode_summary">Hazırkı fokus rejimini göstər.</string>
+    <string name="preference_show_exposure">Ekspozisiya məlumatını göstər</string>
+    <string name="preference_show_exposure_summary">Hazırkı ekspozisiyanı göstər.</string>
+    <string name="update">Yenilə</string>
+    <string name="skip">Keç</string>
+    <string name="update_available">Yeni versiya mövcuddur</string>
 
 </resources>

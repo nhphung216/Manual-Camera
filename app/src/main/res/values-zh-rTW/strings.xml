@@ -1078,4 +1078,15 @@
     <string name="cancel">取消</string>
     <string name="are_you_sure">您確定嗎？</string>
     <string name="preference_screen_see_more">查看更多</string>
+    <string name="preference_show_white_balance">顯示白平衡</string>
+    <string name="preference_show_white_balance_summary">顯示目前白平衡。</string>
+    <string name="preference_show_scene_mode">顯示場景模式</string>
+    <string name="preference_show_scene_mode_summary">顯示目前場景模式。</string>
+    <string name="preference_show_focus_mode">顯示對焦模式</string>
+    <string name="preference_show_focus_mode_summary">顯示目前對焦模式。</string>
+    <string name="preference_show_exposure">顯示曝光資訊</string>
+    <string name="preference_show_exposure_summary">顯示目前曝光值。</string>
+    <string name="update">更新</string>
+    <string name="skip">略過</string>
+    <string name="update_available">有新版本可供更新</string>
 </resources>

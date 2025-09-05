@@ -1087,4 +1087,15 @@
     <string name="time_lapse">Time Lapse</string>
     <string name="are_you_sure">Sei sicuro?</string>
     <string name="preference_screen_see_more">Mostra altro</string>
+    <string name="preference_show_white_balance">Mostra bilanciamento del bianco</string>
+    <string name="preference_show_white_balance_summary">Visualizza il bilanciamento del bianco corrente.</string>
+    <string name="preference_show_scene_mode">Mostra modalità scena</string>
+    <string name="preference_show_scene_mode_summary">Visualizza la modalità scena corrente.</string>
+    <string name="preference_show_focus_mode">Mostra modalità messa a fuoco</string>
+    <string name="preference_show_focus_mode_summary">Visualizza la modalità di messa a fuoco corrente.</string>
+    <string name="preference_show_exposure">Mostra informazioni sull\'esposizione</string>
+    <string name="preference_show_exposure_summary">Visualizza l\'esposizione corrente.</string>
+    <string name="update">Aggiorna</string>
+    <string name="skip">Salta</string>
+    <string name="update_available">Nuova versione disponibile</string>
 </resources>

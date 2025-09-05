@@ -93,6 +93,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.exifinterface.media.ExifInterface
@@ -121,6 +122,7 @@ import com.ssolstice.camera.manual.ui.MainUI
 import com.ssolstice.camera.manual.ui.ManualSeekbars
 import com.ssolstice.camera.manual.utils.LocaleHelper
 import com.ssolstice.camera.manual.utils.Logger
+import com.ssolstice.camera.manual.utils.UpdateState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -172,8 +174,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     private var magneticSensor: MagneticSensor? = null
 
     // if we change this, remember that any page linked to must abide by Google Play developer policies!
-    //public static final String DonateLink = "https://play.google.com/store/apps/details?id=harman.mark.donation";
-    //private SpeechControl speechControl;
     var preview: Preview? = null
         private set
 
@@ -752,6 +752,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             OpenCameraTheme {
                 val activity = this@MainActivity
 
+                val updateAppState by viewModel.updateState.observeAsState(UpdateState.None)
+
                 val isRecording by viewModel.isRecording.collectAsState()
                 val isPhotoMode by viewModel.isPhotoMode.collectAsState()
 
@@ -810,6 +812,10 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     }
                 }
 
+                LaunchedEffect(Unit) {
+                    viewModel.checkUpdate()
+                }
+
                 val sheetState = rememberStandardBottomSheetState(
                     initialValue = SheetValue.Hidden, skipHiddenState = false
                 )
@@ -823,6 +829,16 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 ) {
                     CameraScreen(
                         modifier = Modifier.align(Alignment.BottomCenter),
+                        updateState = updateAppState,
+                        onClickUpdate = {
+                            viewModel.logViewClicked("New Version Available")
+                            activity.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    "https://play.google.com/store/apps/details?id=com.ssolstice.camera.manual".toUri()
+                                )
+                            )
+                        },
                         isRecording = isRecording,
                         isVideoRecordingPaused = isVideoRecordingPaused,
                         isPhotoMode = isPhotoMode,
@@ -843,9 +859,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             if (preview != null && applicationInterface != null) {
                                 viewModel.logViewClicked("showCameraSettings")
                                 viewModel.setupCameraData(
-                                    activity,
-                                    applicationInterface!!,
-                                    preview!!
+                                    activity, applicationInterface!!, preview!!
                                 )
                             }
                         },
@@ -915,13 +929,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                         },
                     )
                     BottomSheetScaffold(
-                        scaffoldState = scaffoldState,
-                        sheetPeekHeight = 0.dp,
+                        scaffoldState = scaffoldState, sheetPeekHeight = 0.dp,
                         // 🎨 màu nền của bottom sheet
                         sheetContainerColor = MaterialTheme.colorScheme.surface,
                         // 🎨 màu chữ/icon trong bottom sheet
-                        sheetContentColor = MaterialTheme.colorScheme.onSurface,
-                        sheetContent = {
+                        sheetContentColor = MaterialTheme.colorScheme.onSurface, sheetContent = {
                             when (currentSheet) {
                                 CameraSheetType.SETTINGS -> {
                                     Box {
@@ -1290,9 +1302,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
                                 else -> Box(Modifier.height(1.dp)) {} // sheet rỗng khi NONE
                             }
-                        }
-                    ) {
-                    }
+                        }) {}
                 }
 
                 BackHandler {
@@ -3304,26 +3314,21 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         )
 
         bundle.putBoolean(
-            "supported_scene_modes",
-            this.preview?.supportedSceneModes?.isNotEmpty() ?: false
+            "supported_scene_modes", this.preview?.supportedSceneModes?.isNotEmpty() ?: false
         )
         bundle.putBoolean(
-            "supported_white_balance",
-            this.preview?.supportedWhiteBalances?.isNotEmpty() ?: false
+            "supported_white_balance", this.preview?.supportedWhiteBalances?.isNotEmpty() ?: false
         )
         bundle.putBoolean(
-            "supported_exposure",
-            this.preview?.supportsExposures() ?: false
+            "supported_exposure", this.preview?.supportsExposures() ?: false
         )
 
 
-        if (preview?.supportsFocus() == true
-            && ((preview?.supportedFocusValues?.size ?: 0) > 1)
-            && applicationInterface!!.photoMode != PhotoMode.FocusBracketing
+        if (preview?.supportsFocus() == true && ((preview?.supportedFocusValues?.size
+                ?: 0) > 1) && applicationInterface!!.photoMode != PhotoMode.FocusBracketing
         ) {
             bundle.putBoolean(
-                "supported_focus_mode",
-                this.preview?.supportedFocusValues?.isNotEmpty() ?: false
+                "supported_focus_mode", this.preview?.supportedFocusValues?.isNotEmpty() ?: false
             )
         } else {
             bundle.putBoolean("supported_focus_mode", false)

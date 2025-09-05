@@ -845,5 +845,15 @@
     <string name="reset_all">Redefinir tudo</string>
     <string name="are_you_sure">Você tem certeza?</string>
     <string name="preference_screen_see_more">Ver mais</string>
-
+    <string name="preference_show_white_balance">Mostrar balanço de branco</string>
+    <string name="preference_show_white_balance_summary">Exibir o balanço de branco atual.</string>
+    <string name="preference_show_scene_mode">Mostrar modo de cena</string>
+    <string name="preference_show_scene_mode_summary">Exibir o modo de cena atual.</string>
+    <string name="preference_show_focus_mode">Mostrar modo de foco</string>
+    <string name="preference_show_focus_mode_summary">Exibir o modo de foco atual.</string>
+    <string name="preference_show_exposure">Mostrar informações de exposição</string>
+    <string name="preference_show_exposure_summary">Exibir a exposição atual.</string>
+    <string name="update">Atualizar</string>
+    <string name="skip">Pular</string>
+    <string name="update_available">Nova versão disponível</string>
 </resources>

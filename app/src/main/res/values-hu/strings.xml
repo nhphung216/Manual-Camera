@@ -946,4 +946,15 @@
     <string name="time_lapse">Gyorsított felvétel</string>
     <string name="are_you_sure">Biztos vagy benne?</string>
     <string name="preference_screen_see_more">Továbbiak megtekintése</string>
+    <string name="preference_show_white_balance">Fehéregyensúly megjelenítése</string>
+    <string name="preference_show_white_balance_summary">Aktuális fehéregyensúly megjelenítése.</string>
+    <string name="preference_show_scene_mode">Jelenetmód megjelenítése</string>
+    <string name="preference_show_scene_mode_summary">Aktuális jelenetmód megjelenítése.</string>
+    <string name="preference_show_focus_mode">Fókuszmód megjelenítése</string>
+    <string name="preference_show_focus_mode_summary">Aktuális fókuszmód megjelenítése.</string>
+    <string name="preference_show_exposure">Expozíciós információk megjelenítése</string>
+    <string name="preference_show_exposure_summary">Aktuális expozíció megjelenítése.</string>
+    <string name="update">Frissítés</string>
+    <string name="skip">Kihagyás</string>
+    <string name="update_available">Új verzió elérhető</string>
 </resources>

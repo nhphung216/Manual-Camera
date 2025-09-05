@@ -1086,4 +1086,15 @@
     <string name="time_lapse">Zeitraffer</string>
     <string name="are_you_sure">Sind Sie sicher?</string>
     <string name="preference_screen_see_more">Mehr anzeigen</string>
+    <string name="preference_show_white_balance">Weißabgleich anzeigen</string>
+    <string name="preference_show_white_balance_summary">Aktuellen Weißabgleich anzeigen.</string>
+    <string name="preference_show_scene_mode">Szenenmodus anzeigen</string>
+    <string name="preference_show_scene_mode_summary">Aktuellen Szenenmodus anzeigen.</string>
+    <string name="preference_show_focus_mode">Fokusmodus anzeigen</string>
+    <string name="preference_show_focus_mode_summary">Aktuellen Fokusmodus anzeigen.</string>
+    <string name="preference_show_exposure">Belichtungsinformationen anzeigen</string>
+    <string name="preference_show_exposure_summary">Aktuelle Belichtung anzeigen.</string>
+    <string name="update">Aktualisieren</string>
+    <string name="skip">Überspringen</string>
+    <string name="update_available">Neue Version verfügbar</string>
 </resources>

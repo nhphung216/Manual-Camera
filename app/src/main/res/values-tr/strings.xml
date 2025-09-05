@@ -911,4 +911,15 @@
     <string name="time_lapse">Hızlandırılmış Çekim</string>
     <string name="are_you_sure">Emin misiniz?</string>
     <string name="preference_screen_see_more">Daha fazlasını gör</string>
+    <string name="preference_show_white_balance">Beyaz dengesini göster</string>
+    <string name="preference_show_white_balance_summary">Geçerli beyaz dengesini göster.</string>
+    <string name="preference_show_scene_mode">Sahne modunu göster</string>
+    <string name="preference_show_scene_mode_summary">Geçerli sahne modunu göster.</string>
+    <string name="preference_show_focus_mode">Odak modunu göster</string>
+    <string name="preference_show_focus_mode_summary">Geçerli odak modunu göster.</string>
+    <string name="preference_show_exposure">Pozlama bilgisini göster</string>
+    <string name="preference_show_exposure_summary">Geçerli pozlamayı göster.</string>
+    <string name="update">Güncelle</string>
+    <string name="skip">Atla</string>
+    <string name="update_available">Yeni Sürüm Mevcut</string>
 </resources>

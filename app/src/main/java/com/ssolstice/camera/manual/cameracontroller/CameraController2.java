@@ -4940,24 +4940,6 @@ public class CameraController2 extends CameraController {
             right += hwidth;
             top -= hheight;
             bottom += hheight;
-            if (MyDebug.LOG) {
-                Logger.INSTANCE.d(TAG, "zoom: " + zoom);
-                Logger.INSTANCE.d(TAG, "hwidth: " + hwidth);
-                Logger.INSTANCE.d(TAG, "hheight: " + hheight);
-                Logger.INSTANCE.d(TAG, "sensor_rect left: " + sensor_rect.left);
-                Logger.INSTANCE.d(TAG, "sensor_rect top: " + sensor_rect.top);
-                Logger.INSTANCE.d(TAG, "sensor_rect right: " + sensor_rect.right);
-                Logger.INSTANCE.d(TAG, "sensor_rect bottom: " + sensor_rect.bottom);
-                Logger.INSTANCE.d(TAG, "left: " + left);
-                Logger.INSTANCE.d(TAG, "top: " + top);
-                Logger.INSTANCE.d(TAG, "right: " + right);
-                Logger.INSTANCE.d(TAG, "bottom: " + bottom);
-            /*Rect current_rect = previewBuilder.get(CaptureRequest.SCALER_CROP_REGION);
-            Logger.INSTANCE.d(TAG, "current_rect left: " + current_rect.left);
-            Logger.INSTANCE.d(TAG, "current_rect top: " + current_rect.top);
-            Logger.INSTANCE.d(TAG, "current_rect right: " + current_rect.right);
-            Logger.INSTANCE.d(TAG, "current_rect bottom: " + current_rect.bottom);*/
-            }
             camera_settings.scalar_crop_region = new Rect(left, top, right, bottom);
             camera_settings.setCropRegion(previewBuilder);
         }
@@ -4965,11 +4947,6 @@ public class CameraController2 extends CameraController {
         try {
             setRepeatingRequest();
         } catch (CameraAccessException e) {
-            if (MyDebug.LOG) {
-                Log.e(TAG, "failed to set zoom");
-                Log.e(TAG, "reason: " + e.getReason());
-                Log.e(TAG, "message: " + e.getMessage());
-            }
             e.printStackTrace();
         }
     }
@@ -4995,11 +4972,6 @@ public class CameraController2 extends CameraController {
             try {
                 setRepeatingRequest();
             } catch (CameraAccessException e) {
-                if (MyDebug.LOG) {
-                    Log.e(TAG, "failed to set exposure compensation");
-                    Log.e(TAG, "reason: " + e.getReason());
-                    Log.e(TAG, "message: " + e.getMessage());
-                }
                 e.printStackTrace();
             }
             return true;
@@ -5009,7 +4981,6 @@ public class CameraController2 extends CameraController {
 
     @Override
     public void setPreviewFpsRange(int min, int max) {
-        Logger.INSTANCE.d(TAG, "setPreviewFpsRange: " + min + "-" + max);
         camera_settings.ae_target_fps_range = new Range<>(min / 1000, max / 1000);
 //      Frame duration is in nanoseconds.  Using min to be safe.
         camera_settings.sensor_frame_duration =
@@ -5020,11 +4991,6 @@ public class CameraController2 extends CameraController {
                 setRepeatingRequest();
             }
         } catch (CameraAccessException e) {
-            if (MyDebug.LOG) {
-                Log.e(TAG, "failed to set preview fps range to " + min + "-" + max);
-                Log.e(TAG, "reason: " + e.getReason());
-                Log.e(TAG, "message: " + e.getMessage());
-            }
             e.printStackTrace();
         }
     }
@@ -5077,7 +5043,6 @@ public class CameraController2 extends CameraController {
 
     @Override
     public void setFocusValue(String focus_value) {
-        Logger.INSTANCE.d(TAG, "setFocusValue: " + focus_value);
         BLOCK_FOR_EXTENSIONS();
         int focus_mode;
         switch (focus_value) {

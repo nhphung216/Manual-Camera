@@ -1,13 +1,14 @@
 package com.ssolstice.camera.manual.compose
 
+import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.hardware.camera2.CameraExtensionCharacteristics
 import android.preference.PreferenceManager
 import androidx.core.content.edit
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssolstice.camera.manual.MainActivity
 import com.ssolstice.camera.manual.MyApplicationInterface
@@ -25,7 +26,10 @@ import com.ssolstice.camera.manual.models.VideoModeUiModel
 import com.ssolstice.camera.manual.preview.Preview
 import com.ssolstice.camera.manual.utils.AnalyticsLogger
 import com.ssolstice.camera.manual.utils.Logger
+import com.ssolstice.camera.manual.utils.RemoteConfigManager
 import com.ssolstice.camera.manual.utils.SharedPrefManager
+import com.ssolstice.camera.manual.utils.UpdatePromptManager
+import com.ssolstice.camera.manual.utils.UpdateState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -41,11 +45,42 @@ import kotlin.math.max
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val sharedPrefManager: SharedPrefManager,
-    private val analyticsLogger: AnalyticsLogger
-) : ViewModel() {
+    private val analyticsLogger: AnalyticsLogger,
+    private val remoteConfigManager: RemoteConfigManager,
+    private val updatePromptManager: UpdatePromptManager,
+    private val application: Application
+) : AndroidViewModel(application) {
 
     companion object {
         private const val TAG = "CameraViewModel"
+    }
+
+    private val _updateState = MutableLiveData<UpdateState>()
+    val updateState: LiveData<UpdateState> = _updateState
+
+    fun checkUpdate() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updatePromptManager.increaseOpenCount()
+
+            remoteConfigManager.fetchAndActivate()
+
+            val currentVersionCode = getApplication<Application>().packageManager.getPackageInfo(
+                    getApplication<Application>().packageName,
+                    0
+                ).versionCode
+
+            val state = remoteConfigManager.checkUpdateState(currentVersionCode)
+
+            when (state) {
+                is UpdateState.Force -> _updateState.postValue(state)
+                is UpdateState.Recommended, is UpdateState.Optional -> {
+                    val shouldShow = updatePromptManager.shouldShowPrompt(minOpensPerDay = 3)
+                    if (shouldShow) _updateState.postValue(state)
+                }
+
+                UpdateState.None -> Unit
+            }
+        }
     }
 
     fun logFeatureUsed(featureName: String?) {
@@ -285,10 +320,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun applySpeedSelectedPreview(
-        activity: MainActivity,
-        appInterface: MyApplicationInterface,
-        preview: Preview,
-        rate: Float
+        activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview, rate: Float
     ) {
         Logger.e(TAG, "setSpeedSelected: $rate")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -308,15 +340,12 @@ class CameraViewModel @Inject constructor(
     fun isPremiumUser(activity: MainActivity): Boolean {
         return activity.getSharedPreferences(BillingManager.PREF_BILLING_NAME, MODE_PRIVATE)
             .getBoolean(
-                BillingManager.PREF_PREMIUM_KEY,
-                false
+                BillingManager.PREF_PREMIUM_KEY, false
             )
     }
 
     fun setupCameraData(
-        activity: MainActivity,
-        appInterface: MyApplicationInterface,
-        preview: Preview
+        activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ) {
         Logger.e(TAG, "setupCameraData()")
         viewModelScope.launch(Dispatchers.Default) {
@@ -325,10 +354,8 @@ class CameraViewModel @Inject constructor(
                     async { setupPhotoResolutions(appInterface, preview) }.await()
                 val timers = async { setupTimers(activity, appInterface) }.await()
                 val repeats = async { setupRepeats(activity, appInterface) }.await()
-                val videoOptions =
-                    async { setupVideo(activity, appInterface, preview) }.await()
-                val speedVideo =
-                    async { setupSpeedVideo(activity, appInterface, preview) }.await()
+                val videoOptions = async { setupVideo(activity, appInterface, preview) }.await()
+                val speedVideo = async { setupSpeedVideo(activity, appInterface, preview) }.await()
                 val flashModes = async { setupFlash(activity, preview) }.await()
                 val rawModes = async { setupRaw(activity) }.await()
 
@@ -341,10 +368,7 @@ class CameraViewModel @Inject constructor(
                         setResolutionOfPhoto(photoResolutions)
                         photoResolutions.find { it.selected }?.let { selectedModel ->
                             setResolutionSelected(
-                                activity,
-                                appInterface,
-                                preview,
-                                selectedModel
+                                activity, appInterface, preview, selectedModel
                             )
                         }
                     }
@@ -370,10 +394,7 @@ class CameraViewModel @Inject constructor(
                         setResolutionOfVideo(videoOptions)
                         videoOptions.find { it.selected }?.let { selectedModel ->
                             setResolutionOfVideoSelected(
-                                activity,
-                                appInterface,
-                                preview,
-                                selectedModel
+                                activity, appInterface, preview, selectedModel
                             )
                         }
                     }
@@ -410,8 +431,7 @@ class CameraViewModel @Inject constructor(
 
 
     fun buildWhiteBalanceControls(
-        activity: MainActivity,
-        preview: Preview
+        activity: MainActivity, preview: Preview
     ): CameraControlModel? {
         val supportedWhiteBalances = preview.getSupportedWhiteBalances()
         if (supportedWhiteBalances != null) {
@@ -451,8 +471,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun buildExposureControls(
-        activity: MainActivity,
-        preview: Preview
+        activity: MainActivity, preview: Preview
     ): CameraControlModel? {
         if (preview.supportsExposures()) {
             val minExposure = preview.minimumExposure.toFloat()
@@ -472,8 +491,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun buildIsoControls(
-        activity: MainActivity,
-        preview: Preview
+        activity: MainActivity, preview: Preview
     ): CameraControlModel? {
         if (preview.supportsISORange()) {
             val minISO = preview.minimumISO.toFloat()
@@ -491,8 +509,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun buildShutterControls(
-        activity: MainActivity,
-        preview: Preview
+        activity: MainActivity, preview: Preview
     ): CameraControlModel? {
         if (preview.supportsExposureTime()) {
             val minExposure = preview.minimumExposureTime.toFloat()
@@ -504,8 +521,7 @@ class CameraViewModel @Inject constructor(
                 icon = R.drawable.ic_shutter_speed_24,
                 valueRange = minExposure..maxExposure,
                 labels = generateShutterSpeedLabels(
-                    minExposure.toDouble(),
-                    maxExposure.toDouble()
+                    minExposure.toDouble(), maxExposure.toDouble()
                 ),
                 steps = 30
             )
@@ -514,9 +530,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun buildFocusControls(
-        activity: MainActivity,
-        appInterface: MyApplicationInterface,
-        preview: Preview
+        activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ): CameraControlModel? {
         var supportedFocusValues = preview.supportedFocusValues
         if (!preview.isVideo && appInterface.photoMode == PhotoMode.FocusBracketing) {
@@ -556,8 +570,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun buildSceneControls(
-        activity: MainActivity,
-        preview: Preview
+        activity: MainActivity, preview: Preview
     ): CameraControlModel? {
         val supportedSceneModes = preview.supportedSceneModes
         if (supportedSceneModes != null) {
@@ -582,8 +595,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun buildColorEffectControls(
-        activity: MainActivity,
-        preview: Preview
+        activity: MainActivity, preview: Preview
     ): CameraControlModel? {
         val supportedColorEffects = preview.supportedColorEffects
         if (supportedColorEffects != null) {
@@ -622,8 +634,7 @@ class CameraViewModel @Inject constructor(
 
             val controlsMap = hashMapOf<String, CameraControlModel>()
 
-            listOf(wb, exp, iso, shutter, focus, scene, color)
-                .mapNotNull { it.await() }
+            listOf(wb, exp, iso, shutter, focus, scene, color).mapNotNull { it.await() }
                 .forEach { controlsMap[it.id] = it }
 
             withContext(Dispatchers.Main) {
@@ -959,10 +970,7 @@ class CameraViewModel @Inject constructor(
     fun updateForSettings(activity: MainActivity) {
         if (!activity.isDestroyed && !activity.isFinishing) {
             activity.updateForSettings(
-                true,
-                "",
-                true,
-                false
+                true, "", true, false
             )
         }
     }
@@ -1010,8 +1018,7 @@ class CameraViewModel @Inject constructor(
     }
 
     private fun setupTimers(
-        activity: MainActivity,
-        appInterface: MyApplicationInterface
+        activity: MainActivity, appInterface: MyApplicationInterface
     ): MutableList<SettingItemModel> {
         val result = mutableListOf<SettingItemModel>()
         try {
@@ -1040,8 +1047,7 @@ class CameraViewModel @Inject constructor(
     }
 
     private fun setupRepeats(
-        activity: MainActivity,
-        appInterface: MyApplicationInterface
+        activity: MainActivity, appInterface: MyApplicationInterface
     ): MutableList<SettingItemModel> {
         val result = mutableListOf<SettingItemModel>()
         try {
@@ -1069,16 +1075,13 @@ class CameraViewModel @Inject constructor(
     }
 
     private fun setupVideo(
-        activity: MainActivity,
-        appInterface: MyApplicationInterface,
-        preview: Preview
+        activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ): MutableList<SettingItemModel> {
         val result = mutableListOf<SettingItemModel>()
         try {
             val isPremiumUser = isPremiumUser(activity)
             if (preview.isVideo) {
-                var videoSizes =
-                    preview.getSupportedVideoQuality(appInterface.getVideoFPSPref())
+                var videoSizes = preview.getSupportedVideoQuality(appInterface.getVideoFPSPref())
                 if (videoSizes.isEmpty()) {
                     Logger.e(TAG, "can't find any supported video sizes for current fps!")
                     videoSizes = preview.videoQualityHander.getSupportedVideoQuality()
@@ -1109,9 +1112,7 @@ class CameraViewModel @Inject constructor(
     }
 
     private fun setupSpeedVideo(
-        activity: MainActivity,
-        appInterface: MyApplicationInterface,
-        preview: Preview
+        activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ): MutableList<SettingItemModel> {
         val result = mutableListOf<SettingItemModel>()
         try {
@@ -1150,8 +1151,7 @@ class CameraViewModel @Inject constructor(
     }
 
     private fun setupFlash(
-        activity: MainActivity,
-        preview: Preview
+        activity: MainActivity, preview: Preview
     ): MutableList<SettingItemModel> {
         val result = mutableListOf<SettingItemModel>()
         try {

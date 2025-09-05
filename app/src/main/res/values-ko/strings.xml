@@ -905,4 +905,15 @@
     <string name="time_lapse">타임랩스</string>
     <string name="are_you_sure">확실하십니까?</string>
     <string name="preference_screen_see_more">더 보기</string>
+    <string name="preference_show_white_balance">화이트 밸런스 표시</string>
+    <string name="preference_show_white_balance_summary">현재 화이트 밸런스를 표시합니다.</string>
+    <string name="preference_show_scene_mode">장면 모드 표시</string>
+    <string name="preference_show_scene_mode_summary">현재 장면 모드를 표시합니다.</string>
+    <string name="preference_show_focus_mode">초점 모드 표시</string>
+    <string name="preference_show_focus_mode_summary">현재 초점 모드를 표시합니다.</string>
+    <string name="preference_show_exposure">노출 정보 표시</string>
+    <string name="preference_show_exposure_summary">현재 노출을 표시합니다.</string>
+    <string name="update">업데이트</string>
+    <string name="skip">건너뛰기</string>
+    <string name="update_available">새 버전 사용 가능</string>
 </resources>

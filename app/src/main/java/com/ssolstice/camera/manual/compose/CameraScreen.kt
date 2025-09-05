@@ -23,13 +23,18 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.VideoSettings
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssolstice.camera.manual.MyApplicationInterface
+import com.ssolstice.camera.manual.R
 import com.ssolstice.camera.manual.compose.ui.theme.colorBackground
 import com.ssolstice.camera.manual.compose.widgets.CaptureCameraControls
 import com.ssolstice.camera.manual.compose.widgets.CaptureRateSelector
@@ -40,42 +45,29 @@ import com.ssolstice.camera.manual.models.OptionRes
 import com.ssolstice.camera.manual.models.PhotoModeUiModel
 import com.ssolstice.camera.manual.models.VideoModeUiModel
 import com.ssolstice.camera.manual.utils.Logger
+import com.ssolstice.camera.manual.utils.UpdateState
 
 val photoModes = listOf(
     PhotoModeUiModel(
-        text = "Panorama",
-        selected = false,
-        mode = MyApplicationInterface.PhotoMode.Panorama
-    ),
-    PhotoModeUiModel(
-        text = "FastBurst",
-        selected = true,
-        mode = MyApplicationInterface.PhotoMode.FastBurst
-    ),
-    PhotoModeUiModel(
+        text = "Panorama", selected = false, mode = MyApplicationInterface.PhotoMode.Panorama
+    ), PhotoModeUiModel(
+        text = "FastBurst", selected = true, mode = MyApplicationInterface.PhotoMode.FastBurst
+    ), PhotoModeUiModel(
         text = "Focus Bracketing",
         selected = false,
         mode = MyApplicationInterface.PhotoMode.FocusBracketing
-    ),
-    PhotoModeUiModel(
-        text = "Standard",
-        selected = false,
-        mode = MyApplicationInterface.PhotoMode.Standard
-    ),
-    PhotoModeUiModel(
+    ), PhotoModeUiModel(
+        text = "Standard", selected = false, mode = MyApplicationInterface.PhotoMode.Standard
+    ), PhotoModeUiModel(
         text = "Expo Bracketing",
         selected = false,
         mode = MyApplicationInterface.PhotoMode.ExpoBracketing
-    ),
-    PhotoModeUiModel(
+    ), PhotoModeUiModel(
         text = "Noise Reduction",
         selected = false,
         mode = MyApplicationInterface.PhotoMode.NoiseReduction
-    ),
-    PhotoModeUiModel(
-        text = "DRO",
-        selected = false,
-        mode = MyApplicationInterface.PhotoMode.DRO
+    ), PhotoModeUiModel(
+        text = "DRO", selected = false, mode = MyApplicationInterface.PhotoMode.DRO
     )
 )
 
@@ -85,14 +77,12 @@ val videoModes = listOf(
         selected = true,
         mode = MyApplicationInterface.VideoMode.Slow_Motion,
         captureRates = arrayListOf(0.125f, 0.25f, 0.5f)
-    ),
-    VideoModeUiModel(
+    ), VideoModeUiModel(
         text = "Standard",
         selected = false,
         mode = MyApplicationInterface.VideoMode.Video,
         captureRates = arrayListOf(1f)
-    ),
-    VideoModeUiModel(
+    ), VideoModeUiModel(
         text = "Time Lapse",
         selected = false,
         mode = MyApplicationInterface.VideoMode.Time_Lapse,
@@ -124,8 +114,7 @@ fun CameraPreview() {
         captureRate = 0.25f,
         onCaptureRateSelected = {
             Logger.d("CameraPreview", "onCaptureRateSelected: $it")
-        }
-    )
+        })
 }
 
 val RecordColor = Color(0xFFDD2C00)
@@ -134,6 +123,8 @@ val WhiteColor = Color(0xFFFFFFFF)
 @Composable
 fun CameraScreen(
     modifier: Modifier = Modifier,
+    updateState: UpdateState? = null,
+    onClickUpdate: () -> Unit = {},
     isRecording: Boolean = false,
     isVideoRecordingPaused: Boolean = false,
     isPhotoMode: Boolean = true,
@@ -172,8 +163,7 @@ fun CameraScreen(
                 icon = Icons.Default.PhotoLibrary,
                 options = currentPhotoMode.options,
                 selectedOption = selectedPhotoOption,
-                onSelectedOption = { onSelectedPhotoOption(it) }
-            )
+                onSelectedOption = { onSelectedPhotoOption(it) })
         }
 
         if (!isPhotoMode && currentVideoMode != null && currentVideoMode.captureRates.isNotEmpty()) {
@@ -201,16 +191,12 @@ fun CameraScreen(
 
         if (isPhotoMode && photoModes.isNotEmpty()) {
             PhotoModeSelector(
-                modes = photoModes,
-                onModeSelected = { mode -> onChangePhotoMode(mode) }
-            )
+                modes = photoModes, onModeSelected = { mode -> onChangePhotoMode(mode) })
         }
 
         if (!isPhotoMode && videoModes.isNotEmpty()) {
             VideoModeSelector(
-                modes = videoModes,
-                onModeSelected = { mode -> onChangeVideoMode(mode) }
-            )
+                modes = videoModes, onModeSelected = { mode -> onChangeVideoMode(mode) })
         }
 
         Row(
@@ -230,8 +216,7 @@ fun CameraScreen(
                     .padding(8.dp)
                     .clickable {
                         showCameraSettings()
-                    }
-            )
+                    })
             Row(
                 horizontalArrangement = Arrangement.spacedBy(2.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -255,8 +240,7 @@ fun CameraScreen(
                                 Color.DarkGray
                             }, shape = CircleShape
                         )
-                        .padding(8.dp)
-                )
+                        .padding(8.dp))
                 Icon(
                     imageVector = Icons.Filled.Videocam,
                     contentDescription = null,
@@ -269,11 +253,9 @@ fun CameraScreen(
                                 colorBackground()
                             } else {
                                 Color.DarkGray
-                            },
-                            shape = CircleShape
+                            }, shape = CircleShape
                         )
-                        .padding(8.dp)
-                )
+                        .padding(8.dp))
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -289,9 +271,24 @@ fun CameraScreen(
                         }
                         .size(38.dp)
                         .background(Color.DarkGray, shape = CircleShape)
-                        .padding(8.dp)
-                )
+                        .padding(8.dp))
             }
+        }
+
+        if (updateState != UpdateState.None) {
+            Text(
+                stringResource(R.string.update_available),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    textDecoration = TextDecoration.Underline
+                ),
+                color = Color.Green,
+                modifier = Modifier
+                    .clickable {
+                        onClickUpdate()
+                    }
+                    .padding(bottom = 16.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))

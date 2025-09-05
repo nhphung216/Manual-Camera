@@ -951,4 +951,15 @@
     <string name="time_lapse">Tidsforløp</string>
     <string name="are_you_sure">Er du sikker?</string>
     <string name="preference_screen_see_more">Se mer</string>
+    <string name="preference_show_white_balance">Vis hvitbalanse</string>
+    <string name="preference_show_white_balance_summary">Vis gjeldende hvitbalanse.</string>
+    <string name="preference_show_scene_mode">Vis scenemodus</string>
+    <string name="preference_show_scene_mode_summary">Vis gjeldende scenemodus.</string>
+    <string name="preference_show_focus_mode">Vis fokusmodus</string>
+    <string name="preference_show_focus_mode_summary">Vis gjeldende fokusmodus.</string>
+    <string name="preference_show_exposure">Vis eksponeringsinfo</string>
+    <string name="preference_show_exposure_summary">Vis gjeldende eksponering.</string>
+    <string name="update">Oppdater</string>
+    <string name="skip">Hopp over</string>
+    <string name="update_available">Ny versjon tilgjengelig</string>
 </resources>

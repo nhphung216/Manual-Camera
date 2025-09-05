@@ -4843,9 +4843,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
         String[] entries = getResources().getStringArray(entries_id);
         String[] values = getResources().getStringArray(values_id);
         for (int i = 0; i < values.length; i++) {
-            Logger.INSTANCE.d(TAG, "    compare to value: " + values[i]);
             if (value.equals(values[i])) {
-                Logger.INSTANCE.d(TAG, "    found entry: " + i);
                 return entries[i];
             }
         }
@@ -4884,9 +4882,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     /** This returns the flash mode indicated by the UI, rather than from the camera parameters.
      */
     public String getCurrentFocusValue() {
-        Logger.INSTANCE.d(TAG, "getCurrentFocusValue()");
         if (camera_controller == null) {
-            Logger.INSTANCE.d(TAG, "camera not opened!");
             return null;
         }
         if (this.supported_focus_values != null && this.current_focus_index != -1)
@@ -4895,9 +4891,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     private void setFocusValue(String focus_value, boolean auto_focus) {
-        Logger.INSTANCE.d(TAG, "setFocusValue() " + focus_value);
         if (camera_controller == null) {
-            Logger.INSTANCE.d(TAG, "camera not opened!");
             return;
         }
         cancelAutoFocus();
@@ -4912,15 +4906,12 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     private void setupContinuousFocusMove() {
-        Logger.INSTANCE.d(TAG, "setupContinuousFocusMove()");
         if (continuous_focus_move_is_started) {
             continuous_focus_move_is_started = false;
             applicationInterface.onContinuousFocusMove(false);
         }
         String focus_value = current_focus_index != -1 ? supported_focus_values.get(current_focus_index) : null;
-        Logger.INSTANCE.d(TAG, "focus_value is " + focus_value);
         if (camera_controller != null && focus_value != null && focus_value.equals("focus_mode_continuous_picture") && !this.is_video) {
-            Logger.INSTANCE.d(TAG, "set continuous picture focus move callback");
             camera_controller.setContinuousFocusMoveCallback(new CameraController.ContinuousFocusMoveCallback() {
                 @Override
                 public void onContinuousFocusMove(boolean start) {
@@ -4932,20 +4923,16 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
                 }
             });
         } else if (camera_controller != null) {
-            Logger.INSTANCE.d(TAG, "remove continuous picture focus move callback");
             camera_controller.setContinuousFocusMoveCallback(null);
         }
     }
 
     public void toggleWhiteBalanceLock() {
-        Logger.INSTANCE.d(TAG, "toggleWhiteBalanceLock()");
         if (this.phase == PHASE_TAKING_PHOTO) {
             // just to be safe
-            Logger.INSTANCE.d(TAG, "currently taking a photo");
             return;
         }
         if (camera_controller == null) {
-            Logger.INSTANCE.d(TAG, "camera not opened!");
             return;
         }
         if (is_white_balance_lock_supported) {
@@ -4956,14 +4943,11 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public void toggleExposureLock() {
-        Logger.INSTANCE.d(TAG, "toggleExposureLock()");
         if (this.phase == PHASE_TAKING_PHOTO) {
             // just to be safe
-            Logger.INSTANCE.d(TAG, "currently taking a photo");
             return;
         }
         if (camera_controller == null) {
-            Logger.INSTANCE.d(TAG, "camera not opened!");
             return;
         }
         if (is_exposure_lock_supported) {
@@ -4980,19 +4964,15 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
      * @param continuous_fast_burst If true, then start a continuous fast burst.
      */
     public void takePicturePressed(boolean photo_snapshot, boolean continuous_fast_burst) {
-        Logger.INSTANCE.d(TAG, "takePicturePressed");
         if (camera_controller == null) {
-            Logger.INSTANCE.d(TAG, "camera not opened!");
             this.phase = PHASE_NORMAL;
             return;
         }
         if (!this.has_surface) {
-            Logger.INSTANCE.d(TAG, "preview surface not yet available");
             this.phase = PHASE_NORMAL;
             return;
         }
         if (is_video && continuous_fast_burst) {
-            Log.e(TAG, "continuous_fast_burst not supported for video mode");
             this.phase = PHASE_NORMAL;
             return;
         }
@@ -5016,7 +4996,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
             return;
         } else if ((!is_video || photo_snapshot) && this.phase == PHASE_TAKING_PHOTO) {
             // user requested take photo while already taking photo
-            Logger.INSTANCE.d(TAG, "already taking a photo");
             if (remaining_repeat_photos != 0) {
                 cancelRepeat();
                 showToast(take_photo_toast, R.string.cancelled_repeat_mode, true);
@@ -5030,8 +5009,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
         if (!is_video || photo_snapshot) {
             // check it's okay to take a photo
             if (!applicationInterface.canTakeNewPhoto()) {
-                Logger.INSTANCE.d(TAG, "don't take another photo, queue is full");
-                //showToast(take_photo_toast, "Still processing...");
                 return;
             }
         }
@@ -5049,15 +5026,12 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
 
         String repeat_mode_value = applicationInterface.getRepeatPref();
         if (repeat_mode_value.equals("unlimited")) {
-            Logger.INSTANCE.d(TAG, "unlimited repeat");
             remaining_repeat_photos = -1;
         } else {
             int n_repeat;
             try {
                 n_repeat = Integer.parseInt(repeat_mode_value);
-                Logger.INSTANCE.d(TAG, "n_repeat: " + n_repeat);
             } catch (NumberFormatException e) {
-                Log.e(TAG, "failed to parse repeat_mode value: " + repeat_mode_value);
                 e.printStackTrace();
                 n_repeat = 1;
             }
@@ -5069,14 +5043,9 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
         } else {
             takePictureOnTimer(timer_delay, false);
         }
-        Logger.INSTANCE.d(TAG, "takePicturePressed exit");
     }
 
     private void takePictureOnTimer(final long timer_delay, boolean repeated) {
-        if (MyDebug.LOG) {
-            Logger.INSTANCE.d(TAG, "takePictureOnTimer");
-            Logger.INSTANCE.d(TAG, "timer_delay: " + timer_delay);
-        }
         this.phase = PHASE_TIMER;
         class TakePictureTimerTask extends TimerTask {
             public void run() {
@@ -5099,10 +5068,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
             }
         }
         take_photo_time = System.currentTimeMillis() + timer_delay;
-        Logger.INSTANCE.d(TAG, "take photo at: " + take_photo_time);
-		/*if( !repeated ) {
-			showToast(take_photo_toast, R.string.started_timer);
-		}*/
         takePictureTimer.schedule(takePictureTimerTask = new TakePictureTimerTask(), timer_delay);
 
         class BeepTimerTask extends TimerTask {
@@ -5119,10 +5084,9 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     private void flashVideo() {
-        Logger.INSTANCE.d(TAG, "flashVideo");
         // getFlashValue() may return "" if flash not supported!
         String flash_value = camera_controller.getFlashValue();
-        if (flash_value.length() == 0)
+        if (flash_value.isEmpty())
             return;
         String flash_value_ui = getCurrentFlashValue();
         if (flash_value_ui == null)
@@ -6352,7 +6316,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     private void setPreviewPaused(boolean paused) {
-        Logger.INSTANCE.d(TAG, "setPreviewPaused: " + paused);
         applicationInterface.hasPausedPreview(paused);
         if (paused) {
             this.phase = PHASE_PREVIEW_PAUSED;
@@ -6554,14 +6517,11 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     /** Whether optical image stabilization (OIS) is supported by the device.
      */
     public boolean supportsOpticalStabilization() {
-        Logger.INSTANCE.d(TAG, "supportsOpticalStabilization");
         return supports_optical_stabilization;
     }
 
     public boolean getOpticalStabilization() {
-        Logger.INSTANCE.d(TAG, "getOpticalStabilization");
         if (camera_controller == null) {
-            Logger.INSTANCE.d(TAG, "camera not opened!");
             return false;
         }
         return camera_controller.getOpticalStabilization();
@@ -6570,7 +6530,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     /** Whether video digital stabilization is supported by the device.
      */
     public boolean supportsVideoStabilization() {
-        Logger.INSTANCE.d(TAG, "supportsVideoStabilization");
         return supports_video_stabilization;
     }
 
@@ -6695,12 +6654,10 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public long getMinimumExposureTime() {
-        Logger.INSTANCE.d(TAG, "getMinimumExposureTime: " + min_exposure_time);
         return this.min_exposure_time;
     }
 
     public long getMaximumExposureTime() {
-        Logger.INSTANCE.d(TAG, "getMaximumExposureTime: " + max_exposure_time);
         long max = max_exposure_time;
         if (applicationInterface.isExpoBracketingPref() || applicationInterface.isFocusBracketingPref() || applicationInterface.isCameraBurstPref()) {
             // doesn't make sense to allow long exposure times in these modes
@@ -6722,14 +6679,11 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public int getMaximumExposure() {
-        Logger.INSTANCE.d(TAG, "getMaximumExposure");
         return this.max_exposure;
     }
 
     public int getCurrentExposure() {
-        Logger.INSTANCE.d(TAG, "getCurrentExposure");
         if (camera_controller == null) {
-            Logger.INSTANCE.d(TAG, "camera not opened!");
             return 0;
         }
         return camera_controller.getExposureCompensation();

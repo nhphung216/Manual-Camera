@@ -1087,5 +1087,15 @@
     <string name="time_lapse">Интервальная съемка</string>
     <string name="are_you_sure">Вы уверены?</string>
     <string name="preference_screen_see_more">Показать больше</string>
-
+    <string name="preference_show_white_balance">Показать баланс белого</string>
+    <string name="preference_show_white_balance_summary">Показать текущий баланс белого.</string>
+    <string name="preference_show_scene_mode">Показать режим сцены</string>
+    <string name="preference_show_scene_mode_summary">Показать текущий режим сцены.</string>
+    <string name="preference_show_focus_mode">Показать режим фокусировки</string>
+    <string name="preference_show_focus_mode_summary">Показать текущий режим фокусировки.</string>
+    <string name="preference_show_exposure">Показать информацию об экспозиции</string>
+    <string name="preference_show_exposure_summary">Показать текущую экспозицию.</string>
+    <string name="update">Обновить</string>
+    <string name="skip">Пропустить</string>
+    <string name="update_available">Доступна новая версия</string>
 </resources>

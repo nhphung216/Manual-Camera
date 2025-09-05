@@ -2,7 +2,10 @@ package com.ssolstice.camera.manual.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.gson.Gson
+import com.ssolstice.camera.manual.utils.RemoteConfigManager
 import com.ssolstice.camera.manual.utils.SharedPrefManager
 import dagger.Module
 import dagger.Provides
@@ -33,4 +36,21 @@ object AppModule {
     ): SharedPrefManager {
         return SharedPrefManager(sharedPreferences, gson)
     }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseRemoteConfig(): FirebaseRemoteConfig {
+        val config = FirebaseRemoteConfig.getInstance()
+        val settings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 3600 // fetch mỗi 1h
+        }
+        config.setConfigSettingsAsync(settings)
+        return config
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoteConfigManager(
+        remoteConfig: FirebaseRemoteConfig
+    ): RemoteConfigManager = RemoteConfigManager(remoteConfig)
 }

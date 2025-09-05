@@ -1032,4 +1032,15 @@
     <string name="time_lapse">Tua nhanh thời gian</string>
     <string name="are_you_sure">Bạn có chắc không?</string>
     <string name="preference_screen_see_more">Xem thêm</string>
+    <string name="preference_show_white_balance">Hiển thị cân bằng trắng</string>
+    <string name="preference_show_white_balance_summary">Hiển thị cân bằng trắng hiện tại.</string>
+    <string name="preference_show_scene_mode">Hiển thị chế độ cảnh</string>
+    <string name="preference_show_scene_mode_summary">Hiển thị chế độ cảnh hiện tại.</string>
+    <string name="preference_show_focus_mode">Hiển thị chế độ lấy nét</string>
+    <string name="preference_show_focus_mode_summary">Hiển thị chế độ lấy nét hiện tại.</string>
+    <string name="preference_show_exposure">Hiển thị thông tin phơi sáng</string>
+    <string name="preference_show_exposure_summary">Hiển thị độ phơi sáng hiện tại.</string>
+    <string name="update">Cập nhật</string>
+    <string name="skip">Bỏ qua</string>
+    <string name="update_available">Có phiên bản mới</string>
 </resources>

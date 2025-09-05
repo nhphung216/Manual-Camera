@@ -1099,5 +1099,15 @@
     <string name="time_lapse">Film poklatkowy</string>
     <string name="are_you_sure">Czy na pewno?</string>
     <string name="preference_screen_see_more">Zobacz więcej</string>
-
+    <string name="preference_show_white_balance">Pokaż balans bieli</string>
+    <string name="preference_show_white_balance_summary">Wyświetl bieżący balans bieli.</string>
+    <string name="preference_show_scene_mode">Pokaż tryb sceny</string>
+    <string name="preference_show_scene_mode_summary">Wyświetl bieżący tryb sceny.</string>
+    <string name="preference_show_focus_mode">Pokaż tryb ostrości</string>
+    <string name="preference_show_focus_mode_summary">Wyświetl bieżący tryb ostrości.</string>
+    <string name="preference_show_exposure">Pokaż informacje o ekspozycji</string>
+    <string name="preference_show_exposure_summary">Wyświetl bieżącą ekspozycję.</string>
+    <string name="update">Aktualizuj</string>
+    <string name="skip">Pomiń</string>
+    <string name="update_available">Dostępna nowa wersja</string>
 </resources>

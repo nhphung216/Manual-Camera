@@ -1046,5 +1046,15 @@
     <string name="time_lapse">タイムラプス</string>
     <string name="are_you_sure">よろしいですか？</string>
     <string name="preference_screen_see_more">詳細を見る</string>
-
+    <string name="preference_show_white_balance">ホワイトバランスを表示</string>
+    <string name="preference_show_white_balance_summary">現在のホワイトバランスを表示します。</string>
+    <string name="preference_show_scene_mode">シーンモードを表示</string>
+    <string name="preference_show_scene_mode_summary">現在のシーンモードを表示します。</string>
+    <string name="preference_show_focus_mode">フォーカスモードを表示</string>
+    <string name="preference_show_focus_mode_summary">現在のフォーカスモードを表示します。</string>
+    <string name="preference_show_exposure">露出情報を表示</string>
+    <string name="preference_show_exposure_summary">現在の露出を表示します。</string>
+    <string name="update">更新</string>
+    <string name="skip">スキップ</string>
+    <string name="update_available">新しいバージョンが利用可能です</string>
 </resources>

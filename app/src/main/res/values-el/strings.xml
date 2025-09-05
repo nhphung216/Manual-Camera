@@ -900,4 +900,15 @@
     <string name="time_lapse">Time Lapse</string>
     <string name="are_you_sure">Είστε σίγουροι;</string>
     <string name="preference_screen_see_more">Δείτε περισσότερα</string>
+    <string name="preference_show_white_balance">Εμφάνιση ισορροπίας λευκού</string>
+    <string name="preference_show_white_balance_summary">Εμφάνιση της τρέχουσας ισορροπίας λευκού.</string>
+    <string name="preference_show_scene_mode">Εμφάνιση λειτουργίας σκηνής</string>
+    <string name="preference_show_scene_mode_summary">Εμφάνιση της τρέχουσας λειτουργίας σκηνής.</string>
+    <string name="preference_show_focus_mode">Εμφάνιση λειτουργίας εστίασης</string>
+    <string name="preference_show_focus_mode_summary">Εμφάνιση της τρέχουσας λειτουργίας εστίασης.</string>
+    <string name="preference_show_exposure">Εμφάνιση πληροφοριών έκθεσης</string>
+    <string name="preference_show_exposure_summary">Εμφάνιση της τρέχουσας έκθεσης.</string>
+    <string name="update">Ενημέρωση</string>
+    <string name="skip">Παράλειψη</string>
+    <string name="update_available">Νέα έκδοση διαθέσιμη</string>
 </resources>

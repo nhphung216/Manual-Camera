@@ -911,5 +911,15 @@
     <string name="time_lapse">Прамежак часу</string>
     <string name="are_you_sure">Вы ўпэўнены?</string>
     <string name="preference_screen_see_more">Паказаць больш</string>
-
+    <string name="preference_show_white_balance">Паказаць баланс белага</string>
+    <string name="preference_show_white_balance_summary">Паказаць бягучы баланс белага.</string>
+    <string name="preference_show_scene_mode">Паказаць рэжым сцэны</string>
+    <string name="preference_show_scene_mode_summary">Паказаць бягучы рэжым сцэны.</string>
+    <string name="preference_show_focus_mode">Паказаць рэжым факусіроўкі</string>
+    <string name="preference_show_focus_mode_summary">Паказаць бягучы рэжым факусіроўкі.</string>
+    <string name="preference_show_exposure">Паказаць інфармацыю аб экспазіцыі</string>
+    <string name="preference_show_exposure_summary">Паказаць бягучую экспазіцыю.</string>
+    <string name="update">Абнавіць</string>
+    <string name="skip">Прапусціць</string>
+    <string name="update_available">Даступная новая версія</string>
 </resources>
