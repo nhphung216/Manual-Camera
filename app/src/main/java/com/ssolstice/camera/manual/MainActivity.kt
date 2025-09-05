@@ -128,7 +128,6 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.text.DecimalFormat
-import java.util.Arrays
 import java.util.Collections
 import java.util.Hashtable
 import java.util.concurrent.Executors
@@ -679,10 +678,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             if (versionCode != -1) {
                 val latestVersion =
                     sharedPreferences.getInt(PreferenceKeys.LatestVersionPreferenceKey, 0)
-                if (MyDebug.LOG) {
-                    Logger.d(TAG, "version_code: $versionCode")
-                    Logger.d(TAG, "latest_version: $latestVersion")
-                }
+                Logger.d(TAG, "version_code: $versionCode")
+                Logger.d(TAG, "latest_version: $latestVersion")
                 // We set the latest_version whether or not the dialog is shown - if we showed the first time dialog, we don't
                 // want to then show the What's New dialog next time we run! Similarly if the user had disabled showing the dialog,
                 // but then enables it, we still shouldn't show the dialog until the new time ManualCamera upgrades.
@@ -737,45 +734,19 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         this.hasOldSystemOrientation = true
         this.oldSystemOrientation = this.systemOrientation
 
-        binding.upgrade.setOnClickListener {
-            doUpgrade()
-        }
-        binding.settings.setOnClickListener {
-            clickedSettings()
-        }
-        binding.cancelPanorama.setOnClickListener {
-            clickedCancelPanorama()
-        }
-        binding.cycleRaw.setOnClickListener {
-            clickedCycleRaw()
-        }
-        binding.cycleFlash.setOnClickListener {
-            clickedCycleFlash()
-        }
-        binding.storeLocation.setOnClickListener {
-            clickedStoreLocation()
-        }
-        binding.textStamp.setOnClickListener {
-            clickedTextStamp()
-        }
-        binding.stamp.setOnClickListener {
-            clickedStamp()
-        }
-        binding.focusPeaking.setOnClickListener {
-            clickedFocusPeaking()
-        }
-        binding.autoLevel.setOnClickListener {
-            clickedAutoLevel()
-        }
-        binding.faceDetection.setOnClickListener {
-            clickedFaceDetection()
-        }
-        binding.audioControl.setOnClickListener {
-            clickedAudioControl()
-        }
-        binding.switchMultiCamera.setOnClickListener {
-            clickedSwitchMultiCamera()
-        }
+        binding.upgrade.setOnClickListener { doUpgrade() }
+        binding.settings.setOnClickListener { clickedSettings() }
+        binding.cancelPanorama.setOnClickListener { clickedCancelPanorama() }
+        binding.cycleRaw.setOnClickListener { clickedCycleRaw() }
+        binding.cycleFlash.setOnClickListener { clickedCycleFlash() }
+        binding.storeLocation.setOnClickListener { clickedStoreLocation() }
+        binding.textStamp.setOnClickListener { clickedTextStamp() }
+        binding.stamp.setOnClickListener { clickedStamp() }
+        binding.focusPeaking.setOnClickListener { clickedFocusPeaking() }
+        binding.autoLevel.setOnClickListener { clickedAutoLevel() }
+        binding.faceDetection.setOnClickListener { clickedFaceDetection() }
+        binding.audioControl.setOnClickListener { clickedAudioControl() }
+        binding.switchMultiCamera.setOnClickListener { clickedSwitchMultiCamera() }
 
         binding.composeView.setContent {
             OpenCameraTheme {
@@ -871,7 +842,11 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             }
                             if (preview != null && applicationInterface != null) {
                                 viewModel.logViewClicked("showCameraSettings")
-                                viewModel.setupCameraData(activity, applicationInterface!!, preview!!)
+                                viewModel.setupCameraData(
+                                    activity,
+                                    applicationInterface!!,
+                                    preview!!
+                                )
                             }
                         },
                         showCameraControls = {
@@ -939,7 +914,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             }
                         },
                     )
-
                     BottomSheetScaffold(
                         scaffoldState = scaffoldState,
                         sheetPeekHeight = 0.dp,
@@ -1113,13 +1087,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                                 Logger.d(TAG, "onFocusChanged: $item")
                                                 val selectedValue: String? = item.id
                                                 focusValue = item.id
+                                                applicationInterface?.focusModePref = focusValue
 
                                                 if (focusValue == "focus_mode_manual2") {
                                                     if (applicationInterface != null) {
                                                         focusManualValue =
-                                                            applicationInterface!!.getFocusDistancePref(
+                                                            applicationInterface?.getFocusDistancePref(
                                                                 true
-                                                            )
+                                                            ) ?: 0f
                                                     }
                                                     viewModel.setControlOptionModel(item)
                                                 } else {
@@ -1227,6 +1202,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                             onIsoReset = {
                                                 setIsoAuto()
                                                 valueFormated = getString(R.string.auto)
+                                                updateForSettings(false, valueFormated)
                                             },
 
                                             // Shutter
@@ -1245,6 +1221,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                                 valueFormated = preview?.getExposureTimeString(
                                                     EXPOSURE_TIME_DEFAULT
                                                 ) ?: ""
+                                                updateForSettings(false, valueFormated)
                                             },
 
                                             // Exposure
@@ -1258,6 +1235,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                                                 exposureValue = 0f
                                                 preview?.setExposure(0)
                                                 valueFormated = preview?.getExposureString(0) ?: ""
+                                                updateForSettings(false, valueFormated)
                                             },
                                             onResetAllSettings = {
                                                 // iso
@@ -3324,6 +3302,33 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         bundle.putString(
             "photo_mode_string", getPhotoModeString(applicationInterface!!.photoMode, true)
         )
+
+        bundle.putBoolean(
+            "supported_scene_modes",
+            this.preview?.supportedSceneModes?.isNotEmpty() ?: false
+        )
+        bundle.putBoolean(
+            "supported_white_balance",
+            this.preview?.supportedWhiteBalances?.isNotEmpty() ?: false
+        )
+        bundle.putBoolean(
+            "supported_exposure",
+            this.preview?.supportsExposures() ?: false
+        )
+
+
+        if (preview?.supportsFocus() == true
+            && ((preview?.supportedFocusValues?.size ?: 0) > 1)
+            && applicationInterface!!.photoMode != PhotoMode.FocusBracketing
+        ) {
+            bundle.putBoolean(
+                "supported_focus_mode",
+                this.preview?.supportedFocusValues?.isNotEmpty() ?: false
+            )
+        } else {
+            bundle.putBoolean("supported_focus_mode", false)
+        }
+
         bundle.putBoolean("supports_auto_stabilise", this.supports_auto_stabilise)
         bundle.putBoolean("supports_flash", this.preview?.supportsFlash() == true)
         bundle.putBoolean("supports_force_video_4k", this.supports_force_video_4k)
@@ -3530,15 +3535,15 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         bundle.putBoolean("video_high_speed", preview?.isVideoHighSpeed() == true)
         bundle.putFloat(
-            "video_capture_rate_factor", applicationInterface!!.getVideoCaptureRateFactor()
+            "video_capture_rate_factor", applicationInterface?.getVideoCaptureRateFactor() ?: 1f
         )
 
-        val video_sizes = this.preview?.videoQualityHander?.getSupportedVideoSizes() ?: null
-        if (video_sizes != null) {
-            val widths = IntArray(video_sizes.size)
-            val heights = IntArray(video_sizes.size)
+        val videoSizes = this.preview?.videoQualityHander?.getSupportedVideoSizes()
+        if (videoSizes != null) {
+            val widths = IntArray(videoSizes.size)
+            val heights = IntArray(videoSizes.size)
             var i = 0
-            for (size in video_sizes) {
+            for (size in videoSizes) {
                 widths[i] = size.width
                 heights[i] = size.height
                 i++
@@ -3595,10 +3600,10 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         showPreview(false)
         setWindowFlagsForSettings() // important to do after passing camera info into bundle, since this will close the camera
         val fragment = MyPreferenceFragment()
-        fragment.setArguments(bundle)
+        fragment.arguments = bundle
         // use commitAllowingStateLoss() instead of commit(), does to "java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState" crash seen on Google Play
         // see http://stackoverflow.com/questions/7575921/illegalstateexception-can-not-perform-this-action-after-onsaveinstancestate-wit
-        getFragmentManager().beginTransaction()
+        fragmentManager.beginTransaction()
             .add(android.R.id.content, fragment, "PREFERENCE_FRAGMENT").addToBackStack(null)
             .commitAllowingStateLoss()
     }
@@ -3606,23 +3611,20 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     override fun onPreferenceStartFragment(caller: PreferenceFragment, pref: Preference): Boolean {
         if (MyDebug.LOG) {
             Logger.d(TAG, "onPreferenceStartFragment")
-            Logger.d(TAG, "pref: " + pref.getFragment())
+            Logger.d(TAG, "pref: " + pref.fragment)
         }
 
         // instantiate the new fragment
         //final Bundle args = pref.getExtras();
         // we want to pass the caller preference fragment's bundle to the new sub-screen (this will be a
         // copy of the bundle originally created in openSettings()
-        val args = Bundle(caller.getArguments())
-
-        val fragment = Fragment.instantiate(this, pref.getFragment(), args)
+        val args = Bundle(caller.arguments)
+        val fragment = Fragment.instantiate(this, pref.fragment, args)
         fragment.setTargetFragment(caller, 0)
-        Logger.d(TAG, "replace fragment")/*getFragmentManager().beginTransaction()
-                .replace(R.id.content, fragment)
-                .addToBackStack(null)
-                .commit();*/
-        getFragmentManager().beginTransaction()
-            .add(android.R.id.content, fragment, "PREFERENCE_FRAGMENT_" + pref.getFragment())
+        Logger.d(TAG, "replace fragment")
+
+        fragmentManager.beginTransaction()
+            .add(android.R.id.content, fragment, "PREFERENCE_FRAGMENT_" + pref.fragment)
             .addToBackStack(null).commitAllowingStateLoss()
 
         /*
@@ -6177,14 +6179,14 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             Logger.d(TAG, "exposure_seekbar_values is null")
                             return
                         }
-                        val new_exposure = getExposureSeekbarValue(progress)
+                        val newExposure = getExposureSeekbarValue(progress)
                         if (fromUser) {
                             // check if not scrolling past the repeated zeroes
-                            if (preview?.getCurrentExposure() != new_exposure) {
+                            if (preview?.getCurrentExposure() != newExposure) {
                                 last_haptic_time = performHapticFeedback(seekBar, last_haptic_time)
                             }
                         }
-                        preview?.setExposure(new_exposure)
+                        preview?.setExposure(newExposure)
                     }
 
                     override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -6194,9 +6196,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     }
                 })
 
-                val seek_bar_zoom = binding.exposureSeekbarZoom
-                seek_bar_zoom.setOnZoomInClickListener { changeExposure(1) }
-                seek_bar_zoom.setOnZoomOutClickListener { changeExposure(-1) }
+                binding.exposureSeekbarZoom.setOnZoomInClickListener { changeExposure(1) }
+                binding.exposureSeekbarZoom.setOnZoomOutClickListener { changeExposure(-1) }
             }
         }
 
@@ -6573,10 +6574,9 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
      * them if certain settings are on.
      */
     private fun showPhotoVideoToast(always_show: Boolean) {
-        if (MyDebug.LOG) {
-            Logger.d(TAG, "showPhotoVideoToast")
-            Logger.d(TAG, "always_show? " + always_show)
-        }
+        Logger.d(TAG, "showPhotoVideoToast")
+        Logger.d(TAG, "always_show? " + always_show)
+
         val camera_controller = preview?.cameraController
         if (camera_controller == null || this.isCameraInBackground) {
             Logger.d(TAG, "camera not open or in background")
@@ -6588,7 +6588,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         val video_high_speed = preview?.isVideoHighSpeed()
         val photo_mode = applicationInterface!!.photoMode
 
-        if (preview?.isVideo() == true) {
+        if (preview?.isVideo == true) {
             val profile = preview?.getVideoProfile()
             profile?.let {
                 val extension_string = profile.fileExtension
@@ -6634,45 +6634,44 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 val tonemap_profile = applicationInterface!!.getVideoTonemapProfile()
                 if (tonemap_profile != TonemapProfile.TONEMAPPROFILE_OFF && preview?.supportsTonemapCurve() == true) {
                     if (applicationInterface!!.getVideoTonemapProfile() != TonemapProfile.TONEMAPPROFILE_OFF && preview?.supportsTonemapCurve() == true) {
-                        var string_id = 0
+                        var stringId = 0
                         when (tonemap_profile) {
-                            TonemapProfile.TONEMAPPROFILE_REC709 -> string_id =
+                            TonemapProfile.TONEMAPPROFILE_REC709 -> stringId =
                                 R.string.preference_video_rec709
 
-                            TonemapProfile.TONEMAPPROFILE_SRGB -> string_id =
+                            TonemapProfile.TONEMAPPROFILE_SRGB -> stringId =
                                 R.string.preference_video_srgb
 
-                            TonemapProfile.TONEMAPPROFILE_LOG -> string_id = R.string.video_log
-                            TonemapProfile.TONEMAPPROFILE_GAMMA -> string_id =
+                            TonemapProfile.TONEMAPPROFILE_LOG -> stringId = R.string.video_log
+                            TonemapProfile.TONEMAPPROFILE_GAMMA -> stringId =
                                 R.string.preference_video_gamma
 
-                            TonemapProfile.TONEMAPPROFILE_JTVIDEO -> string_id =
+                            TonemapProfile.TONEMAPPROFILE_JTVIDEO -> stringId =
                                 R.string.preference_video_jtvideo
 
-                            TonemapProfile.TONEMAPPROFILE_JTLOG -> string_id =
+                            TonemapProfile.TONEMAPPROFILE_JTLOG -> stringId =
                                 R.string.preference_video_jtlog
 
-                            TonemapProfile.TONEMAPPROFILE_JTLOG2 -> string_id =
+                            TonemapProfile.TONEMAPPROFILE_JTLOG2 -> stringId =
                                 R.string.preference_video_jtlog2
 
                             TonemapProfile.TONEMAPPROFILE_OFF -> {
-
                             }
                         }
-                        if (string_id != 0) {
+                        if (stringId != 0) {
                             simple = false
-                            toast_string += "\n" + getResources().getString(string_id)
+                            toast_string += "\n" + getResources().getString(stringId)
                             if (tonemap_profile == TonemapProfile.TONEMAPPROFILE_GAMMA) {
                                 toast_string += " " + applicationInterface!!.getVideoProfileGamma()
                             }
                         } else {
-                            Logger.d(TAG, "unknown tonemap_profile: " + tonemap_profile)
+                            Logger.d(TAG, "unknown tonemap_profile: $tonemap_profile")
                         }
                     }
                 }
             }
 
-            val record_audio = applicationInterface!!.getRecordAudioPref()
+            val record_audio = applicationInterface!!.recordAudioPref
             if (!record_audio) {
                 toast_string += "\n" + getResources().getString(R.string.audio_disabled)
                 simple = false
@@ -6684,7 +6683,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                     getResources().getStringArray(R.array.preference_video_max_duration_entries)
                 val values_array =
                     getResources().getStringArray(R.array.preference_video_max_duration_values)
-                val index = Arrays.asList<String?>(*values_array).indexOf(max_duration_value)
+                val index = listOf(*values_array).indexOf(max_duration_value)
                 if (index != -1) { // just in case!
                     val entry = entries_array[index]
                     toast_string += "\n" + getResources().getString(R.string.max_duration) + ": " + entry
@@ -6721,14 +6720,16 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
             val photo_mode_string = getPhotoModeString(photo_mode, false)
             if (photo_mode_string != null) {
-                toast_string += (if (toast_string.length == 0) "" else "\n") + getResources().getString(
+                toast_string += (if (toast_string.isEmpty()) "" else "\n") + getResources().getString(
                     R.string.photo_mode
                 ) + ": " + photo_mode_string
                 if (photo_mode != PhotoMode.DRO && photo_mode != PhotoMode.HDR && photo_mode != PhotoMode.NoiseReduction) simple =
                     false
             }
 
-            if (preview?.supportsFocus() == true && (preview?.supportedFocusValues?.size ?: 0 > 1) && photo_mode != PhotoMode.FocusBracketing) {
+            if (preview?.supportsFocus() == true && ((preview?.supportedFocusValues?.size
+                    ?: 0) > 1) && photo_mode != PhotoMode.FocusBracketing
+            ) {
                 val focus_value = preview?.getCurrentFocusValue()
                 if (focus_value != null && (focus_value != "focus_mode_auto") && (focus_value != "focus_mode_continuous_picture")) {
                     val focus_entry = preview?.findFocusEntryForValue(focus_value)
@@ -6740,25 +6741,27 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
             if (applicationInterface!!.autoStabilisePref) {
                 // important as users are sometimes confused at the behaviour if they don't realise the option is on
-                toast_string += (if (toast_string.length == 0) "" else "\n") + getResources().getString(
+                toast_string += (if (toast_string.isEmpty()) "" else "\n") + getResources().getString(
                     R.string.preference_auto_stabilise
                 )
                 simple = false
             }
         }
+
         if (applicationInterface!!.getFaceDetectionPref()) {
             // important so that the user realises why touching for focus/metering areas won't work - easy to forget that face detection has been turned on!
             toast_string += "\n" + getResources().getString(R.string.preference_face_detection)
             simple = false
         }
+
         if (video_high_speed == false) {
             //manual ISO only supported for high speed video
-            val iso_value = applicationInterface!!.getISOPref()
-            if (iso_value != CameraController.ISO_DEFAULT) {
-                toast_string += "\nISO: " + iso_value
+            val isoValue = applicationInterface?.isoPref ?: ""
+            if (isoValue != CameraController.ISO_DEFAULT) {
+                toast_string += "\nISO: $isoValue"
                 if (preview?.supportsExposureTime() == true) {
-                    val exposure_time_value = applicationInterface!!.getExposureTimePref()
-                    toast_string += " " + preview?.getExposureTimeString(exposure_time_value)
+                    val exposureTimeValue = applicationInterface?.exposureTimePref ?: 0L
+                    toast_string += " " + preview?.getExposureTimeString(exposureTimeValue)
                 }
                 simple = false
             }
@@ -6768,28 +6771,29 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                 simple = false
             }
         }
+
         try {
-            val scene_mode = camera_controller.getSceneMode()
-            val white_balance = camera_controller.getWhiteBalance()
-            val color_effect = camera_controller.getColorEffect()
-            if (scene_mode != null && scene_mode != CameraController.SCENE_MODE_DEFAULT) {
+            val sceneMode = camera_controller.getSceneMode()
+            val whiteBalance = camera_controller.getWhiteBalance()
+            val colorEffect = camera_controller.getColorEffect()
+            if (sceneMode != null && sceneMode != CameraController.SCENE_MODE_DEFAULT) {
                 toast_string += "\n" + getResources().getString(R.string.scene_mode) + ": " + mainUI?.getEntryForSceneMode(
-                    scene_mode
+                    sceneMode
                 )
                 simple = false
             }
-            if (white_balance != null && white_balance != CameraController.WHITE_BALANCE_DEFAULT) {
+            if (whiteBalance != null && whiteBalance != CameraController.WHITE_BALANCE_DEFAULT) {
                 toast_string += "\n" + getResources().getString(R.string.white_balance) + ": " + mainUI?.getEntryForWhiteBalance(
-                    white_balance
+                    whiteBalance
                 )
-                if (white_balance == "manual" && preview?.supportsWhiteBalanceTemperature() == true) {
+                if (whiteBalance == "manual" && preview?.supportsWhiteBalanceTemperature() == true) {
                     toast_string += " " + camera_controller.getWhiteBalanceTemperature()
                 }
                 simple = false
             }
-            if (color_effect != null && color_effect != CameraController.COLOR_EFFECT_DEFAULT) {
+            if (colorEffect != null && colorEffect != CameraController.COLOR_EFFECT_DEFAULT) {
                 toast_string += "\n" + getResources().getString(R.string.color_effect) + ": " + mainUI?.getEntryForColorEffect(
-                    color_effect
+                    colorEffect
                 )
                 simple = false
             }
@@ -6797,51 +6801,49 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             // catch runtime error from camera_controller old API from camera.getParameters()
             e.printStackTrace()
         }
-        val lock_orientation = applicationInterface!!.getLockOrientationPref()
-        if (lock_orientation != "none" && photo_mode != PhotoMode.Panorama) {
+
+        val lockOrientation = applicationInterface!!.getLockOrientationPref()
+        if (lockOrientation != "none" && photo_mode != PhotoMode.Panorama) {
             // panorama locks to portrait, but don't want to display that in the toast
-            val entries_array =
+            val entriesArray =
                 getResources().getStringArray(R.array.preference_lock_orientation_entries)
-            val values_array =
+            val valuesArray =
                 getResources().getStringArray(R.array.preference_lock_orientation_values)
-            val index = Arrays.asList<String?>(*values_array).indexOf(lock_orientation)
+            val index = listOf(*valuesArray).indexOf(lockOrientation)
             if (index != -1) { // just in case!
-                val entry = entries_array[index]
+                val entry = entriesArray[index]
                 toast_string += "\n" + entry
                 simple = false
             }
         }
+
         val timer: String = sharedPreferences.getString(PreferenceKeys.TimerPreferenceKey, "0")!!
         if (timer != "0" && photo_mode != PhotoMode.Panorama) {
-            val entries_array = getResources().getStringArray(R.array.preference_timer_entries)
-            val values_array = getResources().getStringArray(R.array.preference_timer_values)
-            val index = Arrays.asList<String?>(*values_array).indexOf(timer)
+            val entriesArray = getResources().getStringArray(R.array.preference_timer_entries)
+            val valuesArray = getResources().getStringArray(R.array.preference_timer_values)
+            val index = listOf(*valuesArray).indexOf(timer)
             if (index != -1) { // just in case!
-                val entry = entries_array[index]
+                val entry = entriesArray[index]
                 toast_string += "\n" + getResources().getString(R.string.preference_timer) + ": " + entry
                 simple = false
             }
         }
         val repeat = applicationInterface!!.getRepeatPref()
         if (repeat != "1") {
-            val entries_array = getResources().getStringArray(R.array.preference_burst_mode_entries)
-            val values_array = getResources().getStringArray(R.array.preference_burst_mode_values)
-            val index = Arrays.asList<String?>(*values_array).indexOf(repeat)
+            val entriesArray = getResources().getStringArray(R.array.preference_burst_mode_entries)
+            val valuesArray = getResources().getStringArray(R.array.preference_burst_mode_values)
+            val index = listOf(*valuesArray).indexOf(repeat)
             if (index != -1) { // just in case!
-                val entry = entries_array[index]
+                val entry = entriesArray[index]
                 toast_string += "\n" + getResources().getString(R.string.preference_burst_mode) + ": " + entry
                 simple = false
             }
         }
 
-        /*if( audio_listener != null ) {
-			toast_string += "\n" + getResources().getString(R.string.preference_audio_noise_control);
-		}*/
-        if (MyDebug.LOG) {
-            Logger.d(TAG, "toast_string: " + toast_string)
-            Logger.d(TAG, "simple?: " + simple)
-            Logger.d(TAG, "push_info_toast_text: " + push_info_toast_text)
-        }
+        Logger.d(TAG, "toast_string: $toast_string")
+        Logger.d(TAG, "simple?: $simple")
+        Logger.d(TAG, "push_info_toast_text: $push_info_toast_text")
+
         val use_fake_toast = true
         if (!simple || always_show) {
             if (push_info_toast_text != null) {
@@ -6856,10 +6858,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
     private fun freeAudioListener(wait_until_done: Boolean) {
         Logger.d(TAG, "freeAudioListener")
-        if (audio_listener != null) {
-            audio_listener!!.release(wait_until_done)
-            audio_listener = null
-        }
+        audio_listener?.release(wait_until_done)
+        audio_listener = null
         mainUI?.audioControlStopped()
     }
 

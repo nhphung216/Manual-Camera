@@ -294,6 +294,6 @@ fun CameraScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(34.dp))
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }

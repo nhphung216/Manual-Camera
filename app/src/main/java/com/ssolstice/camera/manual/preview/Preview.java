@@ -3064,17 +3064,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
                 Logger.INSTANCE.d(TAG, "focus not supported");
                 supported_focus_values = null;
             }
-			/*supported_focus_values = new ArrayList<>();
-			supported_focus_values.add("focus_mode_auto");
-			supported_focus_values.add("focus_mode_infinity");
-			supported_focus_values.add("focus_mode_macro");
-			supported_focus_values.add("focus_mode_locked");
-			supported_focus_values.add("focus_mode_manual2");
-			supported_focus_values.add("focus_mode_fixed");
-			supported_focus_values.add("focus_mode_edof");
-			supported_focus_values.add("focus_mode_continuous_video");*/
-		    /*View focusModeButton = (View) activity.findViewById(R.id.focus_mode);
-			focusModeButton.setVisibility(supported_focus_values != null && !immersive_mode ? View.VISIBLE : View.GONE);*/
         }
 
         {
@@ -4215,7 +4204,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public void setISO(int new_iso) {
-        Logger.INSTANCE.d(TAG, "setISO(): " + new_iso);
         if (camera_controller != null && supports_iso_range) {
             if (new_iso < min_iso)
                 new_iso = min_iso;
@@ -4230,7 +4218,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public void setExposureTime(long new_exposure_time) {
-        Logger.INSTANCE.d(TAG, "setExposureTime(): " + new_exposure_time);
         if (camera_controller != null && supports_exposure_time) {
             if (new_exposure_time < getMinimumExposureTime())
                 new_exposure_time = getMinimumExposureTime();
@@ -4260,8 +4247,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public String getExposureTimeString(long exposure_time) {
-        /*if( MyDebug.LOG )
-            Logger.INSTANCE.d(TAG, "getExposureTimeString(): " + exposure_time);*/
         double exposure_time_s = exposure_time / 1000000000.0;
         String string;
         if (exposure_time > 100000000) {
@@ -4271,8 +4256,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
             double exposure_time_r = 1.0 / exposure_time_s;
             string = " 1/" + (int) (exposure_time_r + 0.5) + getResources().getString(R.string.seconds_abbreviation);
         }
-        /*if( MyDebug.LOG )
-            Logger.INSTANCE.d(TAG, "getExposureTimeString() return: " + string);*/
         return string;
     }
 
@@ -4870,6 +4853,7 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public String findFocusEntryForValue(String focus_value) {
+        if (focus_value == null) return "";
         return findEntryForValue(focus_value, R.array.focus_mode_entries, R.array.focus_mode_values);
     }
 
@@ -6386,12 +6370,8 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public void onAccelerometerSensorChanged(SensorEvent event) {
-		/*if( MyDebug.LOG )
-    		Logger.INSTANCE.d(TAG, "onAccelerometerSensorChanged: " + event.values[0] + ", " + event.values[1] + ", " + event.values[2]);*/
-
         this.has_gravity = true;
         for (int i = 0; i < 3; i++) {
-            //this.gravity[i] = event.values[i];
             this.gravity[i] = sensor_alpha * this.gravity[i] + (1.0f - sensor_alpha) * event.values[i];
         }
         calculateGeoDirection();
@@ -6400,23 +6380,17 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
         double y = gravity[1];
         double z = gravity[2];
         double mag = Math.sqrt(x * x + y * y + z * z);
-		/*if( MyDebug.LOG )
-			Logger.INSTANCE.d(TAG, "xyz: " + x + ", " + y + ", " + z);*/
 
         this.has_pitch_angle = false;
         if (mag > 1.0e-8) {
             this.has_pitch_angle = true;
             this.pitch_angle = Math.asin(-z / mag) * 180.0 / Math.PI;
-			/*if( MyDebug.LOG )
-				Logger.INSTANCE.d(TAG, "pitch: " + pitch_angle);*/
 
             this.has_level_angle = true;
             this.natural_level_angle = Math.atan2(-x, y) * 180.0 / Math.PI;
             if (this.natural_level_angle < -0.0) {
                 this.natural_level_angle += 360.0;
             }
-            //natural_level_angle = 0.0f; // test zero angle
-
             updateLevelAngles();
         } else {
             Log.e(TAG, "accel sensor has zero mag: " + mag);
@@ -6601,101 +6575,83 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public boolean getVideoStabilization() {
-        Logger.INSTANCE.d(TAG, "getVideoStabilization");
         if (camera_controller == null) {
-            Logger.INSTANCE.d(TAG, "camera not opened!");
             return false;
         }
         return camera_controller.getVideoStabilization();
     }
 
     public boolean supportsPhotoVideoRecording() {
-        Logger.INSTANCE.d(TAG, "supportsPhotoVideoRecording");
         return supports_photo_video_recording && !video_high_speed;
     }
 
     /** Returns true iff we're in video mode, and a high speed fps video mode is selected.
      */
     public boolean isVideoHighSpeed() {
-        Logger.INSTANCE.d(TAG, "isVideoHighSpeed");
         return is_video && video_high_speed;
     }
 
     public boolean canDisableShutterSound() {
-        Logger.INSTANCE.d(TAG, "canDisableShutterSound");
         return can_disable_shutter_sound;
     }
 
     public int getTonemapMaxCurvePoints() {
-        Logger.INSTANCE.d(TAG, "getTonemapMaxCurvePoints");
         return tonemap_max_curve_points;
     }
 
     public boolean supportsTonemapCurve() {
-        Logger.INSTANCE.d(TAG, "supportsTonemapCurve");
         return supports_tonemap_curve;
     }
 
     /** Return the supported apertures for this camera.
      */
     public float[] getSupportedApertures() {
-        Logger.INSTANCE.d(TAG, "getSupportedApertures");
         return supported_apertures;
     }
 
     public List<String> getSupportedColorEffects() {
-        Logger.INSTANCE.d(TAG, "getSupportedColorEffects");
         return this.color_effects;
     }
 
     public List<String> getSupportedSceneModes() {
-        Logger.INSTANCE.d(TAG, "getSupportedSceneModes");
         return this.scene_modes;
     }
 
     public List<String> getSupportedWhiteBalances() {
-        Logger.INSTANCE.d(TAG, "getSupportedWhiteBalances");
         return this.white_balances;
     }
 
     public List<String> getSupportedAntiBanding() {
-        Logger.INSTANCE.d(TAG, "getSupportedAntiBanding");
         return this.antibanding;
     }
 
     public List<String> getSupportedEdgeModes() {
-        Logger.INSTANCE.d(TAG, "getSupportedEdgeModes");
         return this.edge_modes;
     }
 
     public List<String> getSupportedNoiseReductionModes() {
-        Logger.INSTANCE.d(TAG, "getSupportedNoiseReductionModes");
         return this.noise_reduction_modes;
     }
 
     public String getISOKey() {
-        Logger.INSTANCE.d(TAG, "getISOKey");
         return camera_controller == null ? "" : camera_controller.getISOKey();
     }
 
     /** Whether manual white balance temperatures can be specified via setWhiteBalanceTemperature().
      */
     public boolean supportsWhiteBalanceTemperature() {
-        Logger.INSTANCE.d(TAG, "supportsWhiteBalanceTemperature");
         return this.supports_white_balance_temperature;
     }
 
     /** Minimum allowed white balance temperature.
      */
     public int getMinimumWhiteBalanceTemperature() {
-        Logger.INSTANCE.d(TAG, "getMinimumWhiteBalanceTemperature");
         return this.min_temperature;
     }
 
     /** Maximum allowed white balance temperature.
      */
     public int getMaximumWhiteBalanceTemperature() {
-        Logger.INSTANCE.d(TAG, "getMaximumWhiteBalanceTemperature");
         return this.max_temperature;
     }
 
@@ -6704,7 +6660,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
      *  false, getSupportedISOs() to find allowed ISO values.
      */
     public boolean supportsISORange() {
-        Logger.INSTANCE.d(TAG, "supportsISORange");
         return this.supports_iso_range;
     }
 
@@ -6716,21 +6671,18 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
      *  null). Instead use getMinimumISO() and getMaximumISO().
      */
     public List<String> getSupportedISOs() {
-        Logger.INSTANCE.d(TAG, "getSupportedISOs");
         return this.isos;
     }
 
     /** Returns minimum ISO value. Only relevant if supportsISORange() returns true.
      */
     public int getMinimumISO() {
-        Logger.INSTANCE.d(TAG, "getMinimumISO");
         return this.min_iso;
     }
 
     /** Returns maximum ISO value. Only relevant if supportsISORange() returns true.
      */
     public int getMaximumISO() {
-        Logger.INSTANCE.d(TAG, "getMaximumISO");
         return this.max_iso;
     }
 
@@ -6739,7 +6691,6 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public boolean supportsExposureTime() {
-        Logger.INSTANCE.d(TAG, "supportsExposureTime");
         return this.supports_exposure_time;
     }
 
@@ -6763,12 +6714,10 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
     }
 
     public boolean supportsExposures() {
-        Logger.INSTANCE.d(TAG, "supportsExposures");
         return this.exposures != null;
     }
 
     public int getMinimumExposure() {
-        Logger.INSTANCE.d(TAG, "getMinimumExposure");
         return this.min_exposure;
     }
 
@@ -6786,20 +6735,11 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
         return camera_controller.getExposureCompensation();
     }
 
-    /*List<String> getSupportedExposures() {
-		if( MyDebug.LOG )
-			Logger.INSTANCE.d(TAG, "getSupportedExposures");
-    	return this.exposures;
-    }*/
-
     public boolean supportsExpoBracketing() {
-		/*if( MyDebug.LOG )
-			Logger.INSTANCE.d(TAG, "supportsExpoBracketing");*/
         return this.supports_expo_bracketing;
     }
 
     public int maxExpoBracketingNImages() {
-        Logger.INSTANCE.d(TAG, "maxExpoBracketingNImages");
         return this.max_expo_bracketing_n_images;
     }
 

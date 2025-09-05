@@ -1,6 +1,5 @@
 package com.ssolstice.camera.manual.compose
 
-import android.annotation.SuppressLint
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.hardware.camera2.CameraExtensionCharacteristics
@@ -113,19 +112,6 @@ class CameraViewModel @Inject constructor(
         }
     }
 
-    @SuppressLint("DefaultLocale")
-    private fun getAspectRatio(width: Int, height: Int): String {
-        val ratio = width.toDouble() / height
-        if (abs(ratio - 16.0 / 9) < 0.01) return "16:9"
-        if (abs(ratio - 4.0 / 3) < 0.01) return "4:3"
-        if (abs(ratio - 3.0 / 2) < 0.01) return "3:2"
-        if (abs(ratio - 1.0) < 0.01) return "1:1"
-        if (abs(ratio - 5.0 / 4) < 0.01) return "5:4"
-        if (abs(ratio - 21.0 / 9) < 0.01) return "21:9"
-        if (abs(ratio - 2) < 0.01) return "2:1"
-        return String.format("%.2f:1", ratio) // fallback dạng 1.78:1
-    }
-
     // flash
     private val _flashList = MutableStateFlow(mutableListOf<SettingItemModel>())
     val flashList: StateFlow<MutableList<SettingItemModel>> = _flashList
@@ -190,7 +176,7 @@ class CameraViewModel @Inject constructor(
 
     fun setResolutionOfVideoSelected(
         activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
+        appInterface: MyApplicationInterface,
         preview: Preview,
         item: SettingItemModel
     ) {
@@ -200,8 +186,8 @@ class CameraViewModel @Inject constructor(
             putString(
                 PreferenceKeys.getVideoQualityPreferenceKey(
                     preview.getCameraId(),
-                    applicationInterface.cameraIdSPhysicalPref,
-                    applicationInterface.fpsIsHighSpeed()
+                    appInterface.cameraIdSPhysicalPref,
+                    appInterface.fpsIsHighSpeed()
                 ), item.id
             )
         }
@@ -216,7 +202,7 @@ class CameraViewModel @Inject constructor(
 
     fun setResolutionSelected(
         activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
+        appInterface: MyApplicationInterface,
         preview: Preview,
         item: SettingItemModel
     ) {
@@ -227,7 +213,7 @@ class CameraViewModel @Inject constructor(
         sharedPreferences.edit {
             putString(
                 PreferenceKeys.getResolutionPreferenceKey(
-                    preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
+                    preview.getCameraId(), appInterface.cameraIdSPhysicalPref
                 ), item.id
             )
         }
@@ -289,18 +275,18 @@ class CameraViewModel @Inject constructor(
 
     fun setSpeedSelected(
         activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
+        appInterface: MyApplicationInterface,
         preview: Preview,
         item: SettingItemModel
     ) {
         logFeatureUsed("setSpeedSelected ${item.id}")
         _speedSelected.value = item
-        applySpeedSelectedPreview(activity, applicationInterface, preview, item.id.toFloat())
+        applySpeedSelectedPreview(activity, appInterface, preview, item.id.toFloat())
     }
 
     fun applySpeedSelectedPreview(
         activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
+        appInterface: MyApplicationInterface,
         preview: Preview,
         rate: Float
     ) {
@@ -309,7 +295,7 @@ class CameraViewModel @Inject constructor(
         sharedPreferences.edit {
             putFloat(
                 PreferenceKeys.getVideoCaptureRatePreferenceKey(
-                    preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
+                    preview.getCameraId(), appInterface.cameraIdSPhysicalPref
                 ), rate
             )
         }
@@ -329,34 +315,34 @@ class CameraViewModel @Inject constructor(
 
     fun setupCameraData(
         activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
+        appInterface: MyApplicationInterface,
         preview: Preview
     ) {
         Logger.e(TAG, "setupCameraData()")
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 val photoResolutions =
-                    async { setupPhotoResolutions(activity, applicationInterface, preview) }.await()
-                val timers = async { setupTimers(activity, applicationInterface) }.await()
-                val repeats = async { setupRepeats(activity, applicationInterface) }.await()
+                    async { setupPhotoResolutions(appInterface, preview) }.await()
+                val timers = async { setupTimers(activity, appInterface) }.await()
+                val repeats = async { setupRepeats(activity, appInterface) }.await()
                 val videoOptions =
-                    async { setupVideo(activity, applicationInterface, preview) }.await()
+                    async { setupVideo(activity, appInterface, preview) }.await()
                 val speedVideo =
-                    async { setupSpeedVideo(activity, applicationInterface, preview) }.await()
+                    async { setupSpeedVideo(activity, appInterface, preview) }.await()
                 val flashModes = async { setupFlash(activity, preview) }.await()
                 val rawModes = async { setupRaw(activity) }.await()
 
                 // chuyển sang Main thread update UI
                 withContext(Dispatchers.Main) {
                     Logger.e(TAG, "setupCameraData() withContext(Dispatchers.Main)")
-                    
+
                     Logger.e(TAG, "photoResolutions: ${photoResolutions.size}")
                     if (photoResolutions.isNotEmpty()) {
                         setResolutionOfPhoto(photoResolutions)
                         photoResolutions.find { it.selected }?.let { selectedModel ->
                             setResolutionSelected(
                                 activity,
-                                applicationInterface,
+                                appInterface,
                                 preview,
                                 selectedModel
                             )
@@ -383,7 +369,12 @@ class CameraViewModel @Inject constructor(
                     if (videoOptions.isNotEmpty()) {
                         setResolutionOfVideo(videoOptions)
                         videoOptions.find { it.selected }?.let { selectedModel ->
-                            setResolutionOfVideoSelected(activity, applicationInterface, preview, selectedModel)
+                            setResolutionOfVideoSelected(
+                                activity,
+                                appInterface,
+                                preview,
+                                selectedModel
+                            )
                         }
                     }
 
@@ -414,77 +405,9 @@ class CameraViewModel @Inject constructor(
         }
     }
 
-    private fun getFlashIcon(flashValue: String): Int = when (flashValue) {
-        "flash_off" -> R.drawable.flash_off
-        "flash_auto", "flash_frontscreen_auto" -> R.drawable.flash_auto
-        "flash_on", "flash_frontscreen_on" -> R.drawable.flash_on
-        "flash_torch", "flash_frontscreen_torch" -> R.drawable.baseline_highlight_white_48
-        "flash_red_eye" -> R.drawable.baseline_remove_red_eye_white_48
-        else -> R.drawable.flash_off
-    }
-
     private val _controlsMapData = MutableLiveData<HashMap<String, CameraControlModel>>()
     val controlsMapData: LiveData<HashMap<String, CameraControlModel>> = _controlsMapData
 
-    fun generateExposureLabels(
-        min: Int,       // ví dụ -24
-        max: Int,       // ví dụ +24
-        stepsPerEv: Int // ví dụ 6 (tức 6 steps = 1 EV)
-    ): ArrayList<String> {
-        val minEv = min / stepsPerEv
-        val maxEv = max / stepsPerEv
-
-        val list = ArrayList<String>()
-        for (ev in minEv..maxEv) {
-            list.add(
-                if (ev > 0) "+$ev" else ev.toString()
-            )
-        }
-        return list
-    }
-
-    fun generateIsoLabels(
-        minIso: Int, maxIso: Int
-    ): ArrayList<String> {
-        val labels = arrayListOf<String>()
-
-        // Chọn ISO chuẩn gần min và max
-        var iso = 50
-        if (minIso > iso) iso = minIso
-
-        while (iso <= maxIso) {
-            labels.add(iso.toString())
-            iso *= 2 // tăng theo bội số 2
-        }
-
-        // đảm bảo có giá trị min và max
-        if (!labels.contains(minIso.toString())) labels.add(0, minIso.toString())
-        if (!labels.contains(maxIso.toString())) labels.add(maxIso.toString())
-
-        return labels
-    }
-
-    fun generateShutterSpeedLabels(
-        minSpeed: Double, // giây, ví dụ 1/8000s = 0.000125
-        maxSpeed: Double  // giây, ví dụ 30s
-    ): ArrayList<String> {
-        val labels = ArrayList<String>()
-        var speed = minSpeed
-
-        while (speed <= maxSpeed) {
-            labels.add(formatShutter(speed))
-            speed *= 2 // mỗi bước nhân đôi thời gian
-        }
-        return labels
-    }
-
-    private fun formatShutter(seconds: Double): String {
-        return if (seconds >= 1) {
-            "${seconds.toInt()}s"
-        } else {
-            "1/${(1 / seconds).toInt()}"
-        }
-    }
 
     fun buildWhiteBalanceControls(
         activity: MainActivity,
@@ -500,8 +423,8 @@ class CameraViewModel @Inject constructor(
                     val maxWhiteBalance = preview.getMaximumWhiteBalanceTemperature().toFloat()
                     ControlOptionModel(
                         id = value,
-                        text = activity.mainUI!!.getEntryForWhiteBalance(value),
-                        icon = activity.mainUI!!.getIconForWhiteBalance(value),
+                        text = activity.mainUI?.getEntryForWhiteBalance(value) ?: "",
+                        icon = activity.mainUI?.getIconForWhiteBalance(value) ?: R.drawable.ic_auto,
                         valueRange = minWhiteBalance..maxWhiteBalance,
                         currentValue = temperature.toFloat(),
                         labels = generateExposureLabels(
@@ -511,8 +434,8 @@ class CameraViewModel @Inject constructor(
                 } else {
                     ControlOptionModel(
                         id = value,
-                        text = activity.mainUI!!.getEntryForWhiteBalance(value),
-                        icon = activity.mainUI!!.getIconForWhiteBalance(value)
+                        text = activity.mainUI?.getEntryForWhiteBalance(value) ?: "",
+                        icon = activity.mainUI?.getIconForWhiteBalance(value) ?: R.drawable.ic_auto
                     )
                 }
                 options.add(model)
@@ -592,11 +515,11 @@ class CameraViewModel @Inject constructor(
 
     fun buildFocusControls(
         activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
+        appInterface: MyApplicationInterface,
         preview: Preview
     ): CameraControlModel? {
         var supportedFocusValues = preview.supportedFocusValues
-        if (!preview.isVideo && applicationInterface.photoMode == PhotoMode.FocusBracketing) {
+        if (!preview.isVideo && appInterface.photoMode == PhotoMode.FocusBracketing) {
             // don't show focus modes in focus bracketing mode (as we'll always run in manual focus mode)
             supportedFocusValues = null
         }
@@ -615,8 +538,8 @@ class CameraViewModel @Inject constructor(
                     options.add(
                         ControlOptionModel(
                             id = value,
-                            text = activity.mainUI!!.getEntryForFocus(value),
-                            icon = activity.mainUI!!.getIconForFocus(value),
+                            text = activity.mainUI?.getEntryForFocus(value) ?: "",
+                            icon = activity.mainUI?.getIconForFocus(value) ?: R.drawable.ic_auto,
                             selected = value == currentFocus
                         )
                     )
@@ -636,7 +559,6 @@ class CameraViewModel @Inject constructor(
         activity: MainActivity,
         preview: Preview
     ): CameraControlModel? {
-
         val supportedSceneModes = preview.supportedSceneModes
         if (supportedSceneModes != null) {
             val options: ArrayList<ControlOptionModel> = arrayListOf()
@@ -644,8 +566,8 @@ class CameraViewModel @Inject constructor(
                 options.add(
                     ControlOptionModel(
                         id = value,
-                        text = activity.mainUI!!.getEntryForSceneMode(value),
-                        icon = activity.mainUI!!.getIconForSceneMode(value)
+                        text = activity.mainUI?.getEntryForSceneMode(value) ?: "",
+                        icon = activity.mainUI?.getIconForSceneMode(value) ?: R.drawable.ic_auto
                     )
                 )
             }
@@ -670,8 +592,8 @@ class CameraViewModel @Inject constructor(
                 options.add(
                     ControlOptionModel(
                         id = value,
-                        text = activity.mainUI!!.getEntryForColorEffect(value),
-                        icon = activity.mainUI!!.getIconForColorEffect(value)
+                        text = activity.mainUI?.getEntryForColorEffect(value) ?: "",
+                        icon = activity.mainUI?.getIconForColorEffect(value) ?: R.drawable.ic_auto
                     )
                 )
             }
@@ -686,7 +608,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun setupCameraControlsData(
-        activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
+        activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ) {
         Logger.e(TAG, "setupCameraData")
         viewModelScope.launch(Dispatchers.Default) {
@@ -694,7 +616,7 @@ class CameraViewModel @Inject constructor(
             val exp = async { buildExposureControls(activity, preview) }
             val iso = async { buildIsoControls(activity, preview) }
             val shutter = async { buildShutterControls(activity, preview) }
-            val focus = async { buildFocusControls(activity, applicationInterface, preview) }
+            val focus = async { buildFocusControls(activity, appInterface, preview) }
             val scene = async { buildSceneControls(activity, preview) }
             val color = async { buildColorEffectControls(activity, preview) }
 
@@ -761,7 +683,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun loadPhotoModeViews(
-        act: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
+        act: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ) {
         val photoModes = ArrayList<PhotoModeUiModel>()
         if (act.supportsPanorama()) {
@@ -869,28 +791,28 @@ class CameraViewModel @Inject constructor(
         }
 
         savePhotoModesToDb(photoModes)
-        handlePhotoModes(photoModes, act, applicationInterface, preview)
+        handlePhotoModes(photoModes, act, appInterface, preview)
     }
 
     fun loadPhotoModes(
-        activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
+        activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ) {
         val list = getPhotoModesDb()
         if (list.isNotEmpty()) {
-            handlePhotoModes(list, activity, applicationInterface, preview)
+            handlePhotoModes(list, activity, appInterface, preview)
         }
-        loadPhotoModeViews(activity, applicationInterface, preview)
+        loadPhotoModeViews(activity, appInterface, preview)
     }
 
     fun handlePhotoModes(
         photoModes: ArrayList<PhotoModeUiModel>,
         act: MainActivity,
-        applicationInterface: MyApplicationInterface,
+        appInterface: MyApplicationInterface,
         preview: Preview,
     ) {
         var currentPhotoMode: PhotoModeUiModel? = null
         for (mode in photoModes) {
-            if (mode.mode == applicationInterface.photoMode) {
+            if (mode.mode == appInterface.photoMode) {
                 currentPhotoMode = mode
                 break
             }
@@ -965,20 +887,22 @@ class CameraViewModel @Inject constructor(
             sharedPreferences.edit {
                 putString(PreferenceKeys.FastBurstNImagesPreferenceKey, option.value)
             }
-            preview.cameraController?.setBurstNImages(act.applicationInterface!!.getBurstNImages())
+            preview.cameraController?.setBurstNImages(
+                act.applicationInterface?.getBurstNImages() ?: 2
+            )
         }
     }
 
     fun loadVideoModes(
-        activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
+        activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
-        val captureRateValues = applicationInterface.supportedVideoCaptureRates
+        val captureRateValues = appInterface.supportedVideoCaptureRates
         Logger.e(TAG, "captureRateValues: $captureRateValues")
 
         val captureRate = sharedPreferences.getFloat(
             PreferenceKeys.getVideoCaptureRatePreferenceKey(
-                preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
+                preview.getCameraId(), appInterface.cameraIdSPhysicalPref
             ), 1.0f
         )
         Logger.e(TAG, "captureRateValue: $captureRate")
@@ -1021,7 +945,7 @@ class CameraViewModel @Inject constructor(
 
         val getCameraId = preview.getCameraId()
         val cameraIdSPhysicalPref = PreferenceKeys.getVideoCaptureRatePreferenceKey(
-            getCameraId, applicationInterface.cameraIdSPhysicalPref
+            getCameraId, appInterface.cameraIdSPhysicalPref
         )
 
         sharedPreferences.edit { putFloat(cameraIdSPhysicalPref, captureRate) }
@@ -1044,24 +968,23 @@ class CameraViewModel @Inject constructor(
     }
 
     fun checkSwitchCamera(
-        activity: MainActivity, applicationInterface: MyApplicationInterface, preview: Preview
+        activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ) {
         if (!isPhotoMode.value) {
             viewModelScope.launch {
                 delay(1000)
-                loadVideoModes(activity, applicationInterface, preview)
+                loadVideoModes(activity, appInterface, preview)
             }
         }
     }
 
     private fun setupPhotoResolutions(
-        activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
+        appInterface: MyApplicationInterface,
         preview: Preview,
     ): MutableList<SettingItemModel> {
         val result = mutableListOf<SettingItemModel>()
         try {
-            if (!preview.isVideo && applicationInterface.photoMode != PhotoMode.Panorama) {
+            if (!preview.isVideo && appInterface.photoMode != PhotoMode.Panorama) {
                 val supportedPictureSizes = preview.getSupportedPictureSizes(true)
                 supportedPictureSizes?.let {
                     val pictureSizes = it.asReversed()
@@ -1088,12 +1011,12 @@ class CameraViewModel @Inject constructor(
 
     private fun setupTimers(
         activity: MainActivity,
-        applicationInterface: MyApplicationInterface
+        appInterface: MyApplicationInterface
     ): MutableList<SettingItemModel> {
         val result = mutableListOf<SettingItemModel>()
         try {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
-            if (applicationInterface.photoMode != PhotoMode.Panorama) {
+            if (appInterface.photoMode != PhotoMode.Panorama) {
                 val timerValues = activity.resources.getStringArray(R.array.preference_timer_values)
                 val timerEntries =
                     activity.resources.getStringArray(R.array.preference_timer_entries)
@@ -1118,12 +1041,12 @@ class CameraViewModel @Inject constructor(
 
     private fun setupRepeats(
         activity: MainActivity,
-        applicationInterface: MyApplicationInterface
+        appInterface: MyApplicationInterface
     ): MutableList<SettingItemModel> {
         val result = mutableListOf<SettingItemModel>()
         try {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
-            if (applicationInterface.photoMode != PhotoMode.Panorama) {
+            if (appInterface.photoMode != PhotoMode.Panorama) {
                 val repeatModeValues =
                     activity.resources.getStringArray(R.array.preference_burst_mode_values)
                 val repeatModeEntries =
@@ -1147,7 +1070,7 @@ class CameraViewModel @Inject constructor(
 
     private fun setupVideo(
         activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
+        appInterface: MyApplicationInterface,
         preview: Preview
     ): MutableList<SettingItemModel> {
         val result = mutableListOf<SettingItemModel>()
@@ -1155,7 +1078,7 @@ class CameraViewModel @Inject constructor(
             val isPremiumUser = isPremiumUser(activity)
             if (preview.isVideo) {
                 var videoSizes =
-                    preview.getSupportedVideoQuality(applicationInterface.getVideoFPSPref())
+                    preview.getSupportedVideoQuality(appInterface.getVideoFPSPref())
                 if (videoSizes.isEmpty()) {
                     Logger.e(TAG, "can't find any supported video sizes for current fps!")
                     videoSizes = preview.videoQualityHander.getSupportedVideoQuality()
@@ -1187,7 +1110,7 @@ class CameraViewModel @Inject constructor(
 
     private fun setupSpeedVideo(
         activity: MainActivity,
-        applicationInterface: MyApplicationInterface,
+        appInterface: MyApplicationInterface,
         preview: Preview
     ): MutableList<SettingItemModel> {
         val result = mutableListOf<SettingItemModel>()
@@ -1195,11 +1118,11 @@ class CameraViewModel @Inject constructor(
             val isPremiumUser = isPremiumUser(activity)
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
             if (preview.isVideo) {
-                val captureRateValues = applicationInterface.supportedVideoCaptureRates
+                val captureRateValues = appInterface.supportedVideoCaptureRates
                 if (captureRateValues.size > 1) {
                     val captureRateValue = sharedPreferences.getFloat(
                         PreferenceKeys.getVideoCaptureRatePreferenceKey(
-                            preview.getCameraId(), applicationInterface.cameraIdSPhysicalPref
+                            preview.getCameraId(), appInterface.cameraIdSPhysicalPref
                         ), 1.0f
                     )
                     captureRateValues.mapIndexed { index, value ->

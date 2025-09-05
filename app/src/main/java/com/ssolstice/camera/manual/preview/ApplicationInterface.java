@@ -354,6 +354,10 @@ public interface ApplicationInterface {
 
     void setFocusPref(String focus_value, boolean is_video);
 
+    void setFocusModePref(String focus_value);
+
+    String getFocusModePref();
+
     void setVideoPref(boolean is_video);
 
     void setSceneModePref(String scene_mode);

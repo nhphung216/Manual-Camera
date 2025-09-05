@@ -6,7 +6,7 @@ fun <T : Any> T.tag() = this::class.simpleName ?: "LOGGING_UNKNOWN"
 
 object Logger {
 
-    private var isEnable = false
+    private var isEnable = true
 
     fun d(tag: String?, message: String?) {
         if (isEnable && message != null) {

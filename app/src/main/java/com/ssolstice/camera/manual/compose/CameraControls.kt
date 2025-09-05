@@ -120,7 +120,6 @@ fun CameraControls(
 ) {
     Column(
         modifier = modifier
-            .clickable {}
             .fillMaxWidth()
     ) {
         Column(

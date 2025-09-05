@@ -6,8 +6,12 @@ import static com.ssolstice.camera.manual.PreferenceKeys.RecordAudioSourcePrefer
 import static com.ssolstice.camera.manual.PreferenceKeys.ShowAutoLevelPreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.ShowCameraIDPreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.ShowCycleRawPreferenceKey;
+import static com.ssolstice.camera.manual.PreferenceKeys.ShowExposurePreferenceKey;
+import static com.ssolstice.camera.manual.PreferenceKeys.ShowFocusPreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.ShowISOPreferenceKey;
+import static com.ssolstice.camera.manual.PreferenceKeys.ShowSceneModePreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.ShowWhiteBalanceLockPreferenceKey;
+import static com.ssolstice.camera.manual.PreferenceKeys.ShowWhiteBalancePreferenceKey;
 import static com.ssolstice.camera.manual.PreferenceKeys.VideoStabilizationPreferenceKey;
 
 import com.ssolstice.camera.manual.cameracontroller.CameraController;
@@ -47,7 +51,6 @@ import android.preference.PreferenceManager;
 import android.preference.TwoStatePreference;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -146,41 +149,38 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         Logger.INSTANCE.d(TAG, "can_disable_shutter_sound: " + can_disable_shutter_sound);
         if (!can_disable_shutter_sound) {
             Preference pref = findPreference("preference_shutter_sound");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_camera_controls");
             pg.removePreference(pref);
         }
 
         {
             Preference pref = findPreference("preference_save_location");
-            pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference arg0) {
-                    Logger.INSTANCE.d(TAG, "clicked save location");
-                    MainActivity main_activity = (MainActivity) getActivity();
-                    if (main_activity.getStorageUtils().isUsingSAF()) {
-                        main_activity.openFolderChooserDialogSAF(true);
-                        return true;
-                    } else if (MainActivity.useScopedStorage()) {
-                        // we can't use an EditTextPreference (or MyEditTextPreference) due to having to support non-scoped-storage, or when SAF is enabled...
-                        // anyhow, this means we can share code when called from gallery long-press anyway
-                        AlertDialog.Builder alertDialog = main_activity.createSaveFolderDialog();
-                        final AlertDialog alert = alertDialog.create();
-                        // AlertDialog.Builder.setOnDismissListener() requires API level 17, so do it this way instead
-                        alert.setOnDismissListener(arg1 -> {
-                            Logger.INSTANCE.d(TAG, "save folder dialog dismissed");
-                            dialogs.remove(alert);
-                        });
-                        alert.show();
-                        dialogs.add(alert);
-                        return true;
-                    } else {
-                        File start_folder = main_activity.getStorageUtils().getImageFolder();
+            pref.setOnPreferenceClickListener(arg0 -> {
+                Logger.INSTANCE.d(TAG, "clicked save location");
+                MainActivity main_activity = (MainActivity) getActivity();
+                if (main_activity.getStorageUtils().isUsingSAF()) {
+                    main_activity.openFolderChooserDialogSAF(true);
+                    return true;
+                } else if (MainActivity.useScopedStorage()) {
+                    // we can't use an EditTextPreference (or MyEditTextPreference) due to having to support non-scoped-storage, or when SAF is enabled...
+                    // anyhow, this means we can share code when called from gallery long-press anyway
+                    AlertDialog.Builder alertDialog = main_activity.createSaveFolderDialog();
+                    final AlertDialog alert = alertDialog.create();
+                    // AlertDialog.Builder.setOnDismissListener() requires API level 17, so do it this way instead
+                    alert.setOnDismissListener(arg1 -> {
+                        Logger.INSTANCE.d(TAG, "save folder dialog dismissed");
+                        dialogs.remove(alert);
+                    });
+                    alert.show();
+                    dialogs.add(alert);
+                    return true;
+                } else {
+                    File start_folder = main_activity.getStorageUtils().getImageFolder();
 
-                        FolderChooserDialog fragment = new MyPreferenceFragment.SaveFolderChooserDialog();
-                        fragment.setStartFolder(start_folder);
-                        fragment.show(getFragmentManager(), "FOLDER_FRAGMENT");
-                        return true;
-                    }
+                    FolderChooserDialog fragment = new SaveFolderChooserDialog();
+                    fragment.setStartFolder(start_folder);
+                    fragment.show(getFragmentManager(), "FOLDER_FRAGMENT");
+                    return true;
                 }
             });
         }
@@ -192,7 +192,6 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
 
         final int max_expo_bracketing_n_images = bundle.getInt("max_expo_bracketing_n_images");
         Logger.INSTANCE.d(TAG, "max_expo_bracketing_n_images: " + max_expo_bracketing_n_images);
-
 
         final int[] widths = bundle.getIntArray("resolution_widths");
         final int[] heights = bundle.getIntArray("resolution_heights");
@@ -216,7 +215,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             lp.setKey(resolution_preference_key);
         } else {
             Preference pref = findPreference("preference_resolution");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_photo_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
 
@@ -235,12 +234,12 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
 
         if (!supports_expo_bracketing || max_expo_bracketing_n_images <= 3) {
             Preference pref = findPreference("preference_expo_bracketing_n_images");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_photo_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
         if (!supports_expo_bracketing) {
             Preference pref = findPreference("preference_expo_bracketing_stops");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_photo_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
     }
@@ -742,12 +741,15 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         if (antibanding_values != null && antibanding_values.length > 0) {
             String[] antibanding_entries = bundle.getStringArray("antibanding_entries");
             if (antibanding_entries != null && antibanding_entries.length == antibanding_values.length) { // should always be true here, but just in case
-                MyPreferenceFragment.readFromBundle(this, antibanding_values, antibanding_entries, PreferenceKeys.AntiBandingPreferenceKey, CameraController.ANTIBANDING_DEFAULT, PreferenceKey_Root);
+                MyPreferenceFragment.readFromBundle(this, antibanding_values, antibanding_entries,
+                        PreferenceKeys.AntiBandingPreferenceKey, CameraController.ANTIBANDING_DEFAULT,
+                        "preference_category_processing_settings");
                 has_antibanding = true;
             }
         }
         Logger.INSTANCE.d(TAG, "has_antibanding?: " + has_antibanding);
-        if (!has_antibanding && (camera_open || sharedPreferences.getString(PreferenceKeys.AntiBandingPreferenceKey, CameraController.ANTIBANDING_DEFAULT).equals(CameraController.ANTIBANDING_DEFAULT))) {
+        if (!has_antibanding && (camera_open || sharedPreferences.getString(PreferenceKeys.AntiBandingPreferenceKey,
+                CameraController.ANTIBANDING_DEFAULT).equals(CameraController.ANTIBANDING_DEFAULT))) {
             // if camera not open, we'll think this setting isn't supported - but should only remove
             // this preference if it's set to the default (otherwise if user sets to a non-default
             // value that causes camera to not open, user won't be able to put it back to the
@@ -762,12 +764,15 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         if (edge_mode_values != null && edge_mode_values.length > 0) {
             String[] edge_mode_entries = bundle.getStringArray("edge_modes_entries");
             if (edge_mode_entries != null && edge_mode_entries.length == edge_mode_values.length) { // should always be true here, but just in case
-                MyPreferenceFragment.readFromBundle(this, edge_mode_values, edge_mode_entries, PreferenceKeys.EdgeModePreferenceKey, CameraController.EDGE_MODE_DEFAULT, PreferenceKey_Root);
+                MyPreferenceFragment.readFromBundle(this, edge_mode_values, edge_mode_entries,
+                        PreferenceKeys.EdgeModePreferenceKey,
+                        CameraController.EDGE_MODE_DEFAULT, "preference_category_processing_settings");
                 has_edge_mode = true;
             }
         }
         Logger.INSTANCE.d(TAG, "has_edge_mode?: " + has_edge_mode);
-        if (!has_edge_mode && (camera_open || sharedPreferences.getString(PreferenceKeys.EdgeModePreferenceKey, CameraController.EDGE_MODE_DEFAULT).equals(CameraController.EDGE_MODE_DEFAULT))) {
+        if (!has_edge_mode && (camera_open || sharedPreferences.getString(PreferenceKeys.EdgeModePreferenceKey,
+                CameraController.EDGE_MODE_DEFAULT).equals(CameraController.EDGE_MODE_DEFAULT))) {
             // if camera not open, we'll think this setting isn't supported - but should only remove
             // this preference if it's set to the default (otherwise if user sets to a non-default
             // value that causes camera to not open, user won't be able to put it back to the
@@ -781,13 +786,19 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         String[] noise_reduction_mode_values = bundle.getStringArray("noise_reduction_modes");
         if (noise_reduction_mode_values != null && noise_reduction_mode_values.length > 0) {
             String[] noise_reduction_mode_entries = bundle.getStringArray("noise_reduction_modes_entries");
-            if (noise_reduction_mode_entries != null && noise_reduction_mode_entries.length == noise_reduction_mode_values.length) { // should always be true here, but just in case
-                MyPreferenceFragment.readFromBundle(this, noise_reduction_mode_values, noise_reduction_mode_entries, PreferenceKeys.CameraNoiseReductionModePreferenceKey, CameraController.NOISE_REDUCTION_MODE_DEFAULT, PreferenceKey_Root);
+            if (noise_reduction_mode_entries != null
+                    && noise_reduction_mode_entries.length == noise_reduction_mode_values.length) { // should always be true here, but just in case
+                MyPreferenceFragment.readFromBundle(this,
+                        noise_reduction_mode_values, noise_reduction_mode_entries,
+                        PreferenceKeys.CameraNoiseReductionModePreferenceKey,
+                        CameraController.NOISE_REDUCTION_MODE_DEFAULT, "preference_category_processing_settings");
                 has_noise_reduction_mode = true;
             }
         }
         Logger.INSTANCE.d(TAG, "has_noise_reduction_mode?: " + has_noise_reduction_mode);
-        if (!has_noise_reduction_mode && (camera_open || sharedPreferences.getString(PreferenceKeys.CameraNoiseReductionModePreferenceKey, CameraController.NOISE_REDUCTION_MODE_DEFAULT).equals(CameraController.NOISE_REDUCTION_MODE_DEFAULT))) {
+        if (!has_noise_reduction_mode
+                && (camera_open || sharedPreferences.getString(PreferenceKeys.CameraNoiseReductionModePreferenceKey,
+                CameraController.NOISE_REDUCTION_MODE_DEFAULT).equals(CameraController.NOISE_REDUCTION_MODE_DEFAULT))) {
             // if camera not open, we'll think this setting isn't supported - but should only remove
             // this preference if it's set to the default (otherwise if user sets to a non-default
             // value that causes camera to not open, user won't be able to put it back to the
@@ -835,49 +846,49 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             // value that causes camera to not open, user won't be able to put it back to the
             // default!)
             Preference pref = findPreference("preference_show_face_detection");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_on_screen_gui_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_flash) {
             Preference pref = findPreference("preference_show_cycle_flash");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_on_screen_gui_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_preview_bitmaps) {
             Preference pref = findPreference("preference_show_focus_peaking");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_on_screen_gui_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_auto_stabilise) {
             Preference pref = findPreference(ShowAutoLevelPreferenceKey);
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_on_screen_gui_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_raw) {
             Preference pref = findPreference(ShowCycleRawPreferenceKey);
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_on_screen_gui_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_white_balance_lock) {
             Preference pref = findPreference(ShowWhiteBalanceLockPreferenceKey);
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_on_screen_gui_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!supports_exposure_lock) {
             Preference pref = findPreference("preference_show_exposure_lock");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_on_screen_gui_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!is_multi_cam && !has_physical_cameras) {
             Preference pref = findPreference("preference_multi_cam_button");
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_on_screen_gui_settings");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
     }
@@ -889,15 +900,51 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
         final boolean is_multi_cam = bundle.getBoolean("is_multi_cam");
         Logger.INSTANCE.d(TAG, "is_multi_cam: " + is_multi_cam);
 
+        final boolean supportedSceneModes = bundle.getBoolean("supported_scene_modes");
+        Logger.INSTANCE.d(TAG, "supportedSceneModes: " + supportedSceneModes);
+
+        final boolean supportedWhiteBalance = bundle.getBoolean("supported_white_balance");
+        Logger.INSTANCE.d(TAG, "supportedWhiteBalance: " + supportedWhiteBalance);
+
+        final boolean supportedExposure = bundle.getBoolean("supported_exposure");
+        Logger.INSTANCE.d(TAG, "supportedExposure: " + supportedExposure);
+
+        final boolean supportedFocusMode = bundle.getBoolean("supported_focus_mode");
+        Logger.INSTANCE.d(TAG, "supportedFocusMode: " + supportedFocusMode);
+
         if (!is_multi_cam) {
             Preference pref = findPreference(ShowCameraIDPreferenceKey);
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_camera_preview");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
 
         if (!using_android_l) {
             Preference pref = findPreference(ShowISOPreferenceKey);
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_camera_preview");
+            if (pg != null && pref != null) pg.removePreference(pref);
+        }
+
+        if (!supportedWhiteBalance) {
+            Preference pref = findPreference(ShowWhiteBalancePreferenceKey);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_camera_preview");
+            if (pg != null && pref != null) pg.removePreference(pref);
+        }
+
+        if (!supportedSceneModes) {
+            Preference pref = findPreference(ShowSceneModePreferenceKey);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_camera_preview");
+            if (pg != null && pref != null) pg.removePreference(pref);
+        }
+
+        if (!supportedFocusMode) {
+            Preference pref = findPreference(ShowFocusPreferenceKey);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_camera_preview");
+            if (pg != null && pref != null) pg.removePreference(pref);
+        }
+
+        if (!supportedExposure) {
+            Preference pref = findPreference(ShowExposurePreferenceKey);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_camera_preview");
             if (pg != null && pref != null) pg.removePreference(pref);
         }
     }
@@ -971,7 +1018,7 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
 //            lp.setDialogTitle(title);
 //        } else {
 //            Preference pref = findPreference("preference_video_quality");
-//            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+//            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_video_settings");
 //            pg.removePreference(pref);
 //        }
 
@@ -1009,17 +1056,17 @@ public class MyPreferenceFragment extends PreferenceFragment implements OnShared
             // default!)
             // (needed for Pixel 6 Pro where setting to sRGB causes camera to fail to open when in video mode)
             Preference pref = findPreference(PreferenceKeys.VideoLogPreferenceKey);
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_video_settings");
             if (pref != null & pg != null) pg.removePreference(pref);
 
             pref = findPreference(PreferenceKeys.VideoProfileGammaPreferenceKey);
-            pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            pg = (PreferenceGroup) this.findPreference("preference_category_video_settings");
             if (pref != null & pg != null) pg.removePreference(pref);
         }
 
         if (!supports_video_stabilization) {
             Preference pref = findPreference(VideoStabilizationPreferenceKey);
-            PreferenceGroup pg = (PreferenceGroup) this.findPreference(PreferenceKey_Root);
+            PreferenceGroup pg = (PreferenceGroup) this.findPreference("preference_category_video_settings");
             if (pref != null & pg != null) pg.removePreference(pref);
         }
 

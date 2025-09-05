@@ -1133,4 +1133,13 @@
     <string name="color_effects">Color Effects</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="preference_screen_see_more">See more</string>
+
+    <string name="preference_show_white_balance" translatable="false">Show white balance</string>
+    <string name="preference_show_white_balance_summary" translatable="false">Display the current white balance.</string>
+    <string name="preference_show_scene_mode" translatable="false">Show scene mode</string>
+    <string name="preference_show_scene_mode_summary" translatable="false">Display the current scene mode.</string>
+    <string name="preference_show_focus_mode" translatable="false">Show focus mode</string>
+    <string name="preference_show_focus_mode_summary" translatable="false">Display the current focus mode.</string>
+    <string name="preference_show_exposure" translatable="false">Show exposure info</string>
+    <string name="preference_show_exposure_summary" translatable="false">Display the current exposure.</string>
 </resources>

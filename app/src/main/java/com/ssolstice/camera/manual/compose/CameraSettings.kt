@@ -105,7 +105,6 @@ fun CameraSettings(
 ) {
     Column(
         modifier = modifier
-            .clickable {}
             .fillMaxWidth()
     ) {
         // title

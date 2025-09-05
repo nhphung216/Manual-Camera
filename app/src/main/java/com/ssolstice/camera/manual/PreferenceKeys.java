@@ -76,6 +76,8 @@ public class PreferenceKeys {
 
     public static final String IsVideoPreferenceKey = "is_video";
 
+    public static final String FocusModeKey = "focus_mode";
+
     public static final String ExposurePreferenceKey = "preference_exposure";
 
     public static final String ColorEffectPreferenceKey = "preference_color_effect";
@@ -164,8 +166,6 @@ public class PreferenceKeys {
 
     public static final String StampGPSFormatPreferenceKey = "preference_stamp_gpsformat";
 
-    //public static final String StampGeoAddressPreferenceKey = "preference_stamp_geo_address";
-
     public static final String UnitsDistancePreferenceKey = "preference_units_distance";
 
     public static final String TextStampPreferenceKey = "preference_textstamp";
@@ -187,8 +187,6 @@ public class PreferenceKeys {
     public static final String RemoteType = "preference_remote_type";
 
     public static final String WaterType = "preference_water_type";
-
-    //public static final String BackgroundPhotoSavingPreferenceKey = "preference_background_photo_saving";
 
     public static final String Camera2FakeFlashPreferenceKey = "preference_camera2_fake_flash";
 
@@ -248,8 +246,6 @@ public class PreferenceKeys {
 
     public static final String ShowZoomSliderControlsPreferenceKey = "preference_show_zoom_slider_controls";
 
-    public static final String ShowTakePhotoPreferenceKey = "preference_show_take_photo";
-
     public static final String ShowFaceDetectionPreferenceKey = "preference_show_face_detection";
 
     public static final String ShowCycleFlashPreferenceKey = "preference_show_cycle_flash";
@@ -273,6 +269,14 @@ public class PreferenceKeys {
     public static final String ShowZoomPreferenceKey = "preference_show_zoom";
 
     public static final String ShowISOPreferenceKey = "preference_show_iso";
+
+    public static final String ShowWhiteBalancePreferenceKey = "preference_show_white_balance";
+
+    public static final String ShowFocusPreferenceKey = "preference_show_focus_mode";
+
+    public static final String ShowExposurePreferenceKey = "preference_show_exposure";
+
+    public static final String ShowSceneModePreferenceKey = "preference_show_scene_mode";
 
     public static final String HistogramPreferenceKey = "preference_histogram";
 

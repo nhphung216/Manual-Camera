@@ -252,7 +252,7 @@ abstract class BasicApplicationInterface : ApplicationInterface {
         return CameraController.EXPOSURE_TIME_DEFAULT
     }
 
-    override fun getFocusDistancePref(is_target_distance: Boolean): Float {
+    override fun getFocusDistancePref(isTargetDistance: Boolean): Float {
         return 0f
     }
 
@@ -432,6 +432,14 @@ abstract class BasicApplicationInterface : ApplicationInterface {
     }
 
     override fun setFocusPref(focus_value: String?, is_video: Boolean) {
+    }
+
+    override fun setFocusModePref(focus_value: String?) {
+
+    }
+
+    override fun getFocusModePref(): String? {
+        return ""
     }
 
     override fun setVideoPref(is_video: Boolean) {

@@ -211,7 +211,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="@string/preference_category_camera_preview"
+        android:key="preference_category_camera_preview"
         android:title="@string/preference_category_camera_preview">
 
         <ListPreference
@@ -258,13 +258,40 @@
             android:summary="@string/preference_free_memory_summary"
             android:title="@string/preference_free_memory" />
 
-        <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->
         <CheckBoxPreference
             android:defaultValue="true"
             android:icon="@drawable/ic_iso_film"
             android:key="preference_show_iso"
             android:summary="@string/preference_show_iso_summary"
             android:title="@string/preference_show_iso" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/ic_camera_auto_whitebalance"
+            android:key="preference_show_white_balance"
+            android:summary="@string/preference_show_white_balance_summary"
+            android:title="@string/preference_show_white_balance" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/outline_exposure_32"
+            android:key="preference_show_exposure"
+            android:summary="@string/preference_show_exposure_summary"
+            android:title="@string/preference_show_exposure" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/focus_mode_auto"
+            android:key="preference_show_focus_mode"
+            android:summary="@string/preference_show_focus_mode_summary"
+            android:title="@string/preference_show_focus_mode" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@drawable/scene_mode_night_portrait"
+            android:key="preference_show_scene_mode"
+            android:summary="@string/preference_show_scene_mode_summary"
+            android:title="@string/preference_show_scene_mode" />
 
         <ListPreference
             android:defaultValue="preference_histogram_off"
@@ -284,7 +311,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="@string/preference_category_on_screen_gui_settings"
+        android:key="preference_category_on_screen_gui_settings"
         android:title="@string/preference_category_on_screen_gui_settings">
 
         <!--  if we move this to another PreferenceGroup, we should update code to remove this Preference -->

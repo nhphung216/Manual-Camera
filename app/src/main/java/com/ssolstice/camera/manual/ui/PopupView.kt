@@ -480,7 +480,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
             }
             Logger.d(TAG, "PopupView time 9: " + (System.nanoTime() - debug_time))
 
-            if (preview.isVideo()) {
+            if (preview.isVideo) {
                 // only show video resolutions in video mode
                 //final List<String> video_sizes = preview.getVideoQualityHander().getSupportedVideoQuality();
                 //video_size_index = preview.getVideoQualityHander().getCurrentVideoQualityIndex();

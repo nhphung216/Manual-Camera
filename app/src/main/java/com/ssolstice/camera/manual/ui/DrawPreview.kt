@@ -26,8 +26,8 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Surface
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
+import androidx.core.graphics.toColorInt
+import androidx.core.view.isVisible
 import com.ssolstice.camera.manual.ImageSaver
 import com.ssolstice.camera.manual.LocationSupplier
 import com.ssolstice.camera.manual.MainActivity
@@ -42,6 +42,8 @@ import com.ssolstice.camera.manual.cameracontroller.CameraController
 import com.ssolstice.camera.manual.preview.ApplicationInterface
 import com.ssolstice.camera.manual.preview.Preview
 import com.ssolstice.camera.manual.ui.MainUI.UIPlacement
+import com.ssolstice.camera.manual.utils.Logger
+import com.ssolstice.camera.manual.utils.capitalizeFirstLetter
 import java.io.IOException
 import java.text.DateFormat
 import java.text.DecimalFormat
@@ -61,9 +63,6 @@ import kotlin.math.min
 import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
-import androidx.core.view.isVisible
-import androidx.core.graphics.toColorInt
-import com.ssolstice.camera.manual.utils.Logger
 
 class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicationInterface) {
 
@@ -81,23 +80,27 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
     private var dim_preview = DimPreview.DIM_PREVIEW_OFF
 
-    private var cover_preview = false // whether to cover the preview for Camera2 API
+    private var coverPreview = false // whether to cover the preview for Camera2 API
     private var camera_inactive_time_ms: Long =
         -1 // if != -1, the time when the camera became inactive
 
     // store to avoid calling PreferenceManager.getDefaultSharedPreferences() repeatedly
-    private val sharedPreferences: SharedPreferences
+    private val sharedPref: SharedPreferences
 
     // cached preferences (need to call updateSettings() to refresh):
-    private var has_settings = false
+    private var hasSettings = false
     private var photoMode: PhotoMode? = null
     private var show_time_pref = false
     private var show_camera_id_pref = false
-    private var show_free_memory_pref = false
-    private var show_iso_pref = false
+    private var showFreeMemoryPref = false
+    private var showIsoPref = false
+    private var showWhiteBalancePref = false
+    private var showExposurePref = false
+    private var showFocusPref = false
+    private var showSceneModePref = false
     private var show_video_max_amp_pref = false
     private var show_zoom_pref = false
-    private var show_battery_pref = false
+    private var showBatteryPref = false
     private var show_angle_pref = false
     private var angle_highlight_color_pref = 0
     private var show_geo_direction_pref = false
@@ -125,15 +128,15 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     private var ghost_selected_image_pref = ""
     private var ghost_selected_image_bitmap: Bitmap? = null
     private var ghost_image_alpha = 0
-    private var want_histogram = false
+    private var wantHistogram = false
     private var histogram_type: Preview.HistogramType? = null
-    private var want_zebra_stripes = false
+    private var wantZebraStripes = false
     private var zebra_stripes_threshold = 0
     private var zebra_stripes_color_foreground = 0
     private var zebra_stripes_color_background = 0
-    private var want_focus_peaking = false
+    private var wantFocusPeaking = false
     private var focus_peaking_color_pref = 0
-    private var want_pre_shots = false
+    private var wantPreShots = false
 
     // avoid doing things that allocate memory every frame!
     private val p = Paint()
@@ -225,9 +228,12 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     private var camera_id_string: String? = null
     private var last_camera_id_time: Long = 0
 
-    private var iso_exposure_string: String? = null
-    private var is_scanning = false
-    private var last_iso_exposure_time: Long = 0
+    private var whiteBalanceStr: String? = null
+    private var whiteBalanceTemp: String? = null
+
+    private var isoExposureString: String? = null
+    private var isScanning = false
+    private var lastIsoExposureTime: Long = 0
 
     private var need_flash_indicator = false
     private var last_need_flash_indicator_time: Long = 0
@@ -284,9 +290,6 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
     @Volatile
     var test_thumbnail_anim_count: Int = 0
-    private val thumbnail_anim_src_rect = RectF()
-    private val thumbnail_anim_dst_rect = RectF()
-    private val thumbnail_anim_matrix = Matrix()
     private var last_thumbnail_is_video = false // whether thumbnail is for video
 
     private var show_last_image = false // whether to show the last image as part of "pause preview"
@@ -295,7 +298,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     private val last_image_matrix = Matrix()
     private var allow_ghost_last_image = false // whether to allow ghosting the last image
 
-    private var ae_started_scanning_ms: Long = -1 // time when ae started scanning
+    private var aeStartedScanningMs: Long = -1 // time when ae started scanning
 
     private var taking_picture =
         false // true iff camera is in process of capturing a picture (including any necessary prior steps such as autofocus, flash/precapture)
@@ -339,7 +342,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     init {
         Logger.d(TAG, "DrawPreview")
         this.mainActivity = mainActivity
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
+        this.sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         this.applicationInterface = applicationInterface
 
         // n.b., don't call updateSettings() here, as it may rely on things that aren't yet initialise (e.g., the preview)
@@ -379,7 +382,6 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         )
         expo_bitmap =
             BitmapFactory.decodeResource(context.resources, R.drawable.expo_icon)
-        //focus_bracket_bitmap = BitmapFactory.decodeResource(getContext().resources, R.drawable.focus_bracket_icon);
         burst_bitmap = BitmapFactory.decodeResource(
             context.resources,
             R.drawable.ic_burst_mode_white_48dp
@@ -430,116 +432,88 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             R.drawable.baseline_rotate_right_white_48
         )
 
-        ybounds_text =
-            context.resources.getString(R.string.zoom) + context.resources
-                .getString(R.string.angle) + context.resources
-                .getString(R.string.direction)
+        ybounds_text = context.resources.getString(R.string.zoom) + context.resources
+            .getString(R.string.angle) + context.resources
+            .getString(R.string.direction)
     }
 
     fun onDestroy() {
         Logger.d(TAG, "onDestroy")
-        if (free_memory_future != null) {
-            Logger.d(TAG, "cancel free_memory_future")
-            free_memory_future!!.cancel(true)
-        }
-        // clean up just in case
-        if (location_bitmap != null) {
-            location_bitmap!!.recycle()
-            location_bitmap = null
-        }
-        if (location_off_bitmap != null) {
-            location_off_bitmap!!.recycle()
-            location_off_bitmap = null
-        }
-        if (raw_jpeg_bitmap != null) {
-            raw_jpeg_bitmap!!.recycle()
-            raw_jpeg_bitmap = null
-        }
-        if (raw_only_bitmap != null) {
-            raw_only_bitmap!!.recycle()
-            raw_only_bitmap = null
-        }
-        if (auto_stabilise_bitmap != null) {
-            auto_stabilise_bitmap!!.recycle()
-            auto_stabilise_bitmap = null
-        }
-        if (dro_bitmap != null) {
-            dro_bitmap!!.recycle()
-            dro_bitmap = null
-        }
-        if (hdr_bitmap != null) {
-            hdr_bitmap!!.recycle()
-            hdr_bitmap = null
-        }
-        if (panorama_bitmap != null) {
-            panorama_bitmap!!.recycle()
-            panorama_bitmap = null
-        }
-        if (expo_bitmap != null) {
-            expo_bitmap!!.recycle()
-            expo_bitmap = null
-        }
-        if (burst_bitmap != null) {
-            burst_bitmap!!.recycle()
-            burst_bitmap = null
-        }
-        if (nr_bitmap != null) {
-            nr_bitmap!!.recycle()
-            nr_bitmap = null
-        }
-        if (x_night_bitmap != null) {
-            x_night_bitmap!!.recycle()
-            x_night_bitmap = null
-        }
-        if (x_bokeh_bitmap != null) {
-            x_bokeh_bitmap!!.recycle()
-            x_bokeh_bitmap = null
-        }
-        if (x_beauty_bitmap != null) {
-            x_beauty_bitmap!!.recycle()
-            x_beauty_bitmap = null
-        }
-        if (photostamp_bitmap != null) {
-            photostamp_bitmap!!.recycle()
-            photostamp_bitmap = null
-        }
-        if (flash_bitmap != null) {
-            flash_bitmap!!.recycle()
-            flash_bitmap = null
-        }
-        if (face_detection_bitmap != null) {
-            face_detection_bitmap!!.recycle()
-            face_detection_bitmap = null
-        }
-        if (audio_disabled_bitmap != null) {
-            audio_disabled_bitmap!!.recycle()
-            audio_disabled_bitmap = null
-        }
-        if (high_speed_fps_bitmap != null) {
-            high_speed_fps_bitmap!!.recycle()
-            high_speed_fps_bitmap = null
-        }
-        if (slow_motion_bitmap != null) {
-            slow_motion_bitmap!!.recycle()
-            slow_motion_bitmap = null
-        }
-        if (time_lapse_bitmap != null) {
-            time_lapse_bitmap!!.recycle()
-            time_lapse_bitmap = null
-        }
-        if (rotate_left_bitmap != null) {
-            rotate_left_bitmap!!.recycle()
-            rotate_left_bitmap = null
-        }
-        if (rotate_right_bitmap != null) {
-            rotate_right_bitmap!!.recycle()
-            rotate_right_bitmap = null
-        }
+        Logger.d(TAG, "cancel free_memory_future")
+        free_memory_future?.cancel(true)
 
-        if (ghost_selected_image_bitmap != null) {
-            ghost_selected_image_bitmap!!.recycle()
-            ghost_selected_image_bitmap = null
-        }
+        location_bitmap?.recycle()
+        location_bitmap = null
+
+        location_off_bitmap?.recycle()
+        location_off_bitmap = null
+
+        raw_jpeg_bitmap?.recycle()
+        raw_jpeg_bitmap = null
+
+        raw_only_bitmap?.recycle()
+        raw_only_bitmap = null
+
+        auto_stabilise_bitmap?.recycle()
+
+        auto_stabilise_bitmap = null
+
+        dro_bitmap?.recycle()
+        dro_bitmap = null
+
+        hdr_bitmap?.recycle()
+        hdr_bitmap = null
+
+        panorama_bitmap?.recycle()
+        panorama_bitmap = null
+
+        expo_bitmap?.recycle()
+        expo_bitmap = null
+
+        burst_bitmap?.recycle()
+        burst_bitmap = null
+
+        nr_bitmap?.recycle()
+        nr_bitmap = null
+
+        x_night_bitmap?.recycle()
+        x_night_bitmap = null
+
+        x_bokeh_bitmap?.recycle()
+        x_bokeh_bitmap = null
+
+        x_beauty_bitmap?.recycle()
+        x_beauty_bitmap = null
+
+        photostamp_bitmap?.recycle()
+        photostamp_bitmap = null
+
+        flash_bitmap?.recycle()
+        flash_bitmap = null
+
+        face_detection_bitmap?.recycle()
+        face_detection_bitmap = null
+
+        audio_disabled_bitmap?.recycle()
+        audio_disabled_bitmap = null
+
+        high_speed_fps_bitmap?.recycle()
+        high_speed_fps_bitmap = null
+
+        slow_motion_bitmap?.recycle()
+        slow_motion_bitmap = null
+
+        time_lapse_bitmap?.recycle()
+        time_lapse_bitmap = null
+
+        rotate_left_bitmap?.recycle()
+        rotate_left_bitmap = null
+
+        rotate_right_bitmap?.recycle()
+        rotate_right_bitmap = null
+
+        ghost_selected_image_bitmap?.recycle()
+        ghost_selected_image_bitmap = null
         ghost_selected_image_pref = ""
     }
 
@@ -636,7 +610,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     }
 
     fun cameraInOperation(in_operation: Boolean) {
-        if (in_operation && !mainActivity.preview!!.isVideo()) {
+        if (in_operation && mainActivity.preview?.isVideo == false) {
             taking_picture = true
         } else {
             taking_picture = false
@@ -705,53 +679,75 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         photoMode = applicationInterface.photoMode
         Logger.d(TAG, "photoMode: $photoMode")
 
-        show_time_pref = sharedPreferences.getBoolean(PreferenceKeys.ShowTimePreferenceKey, true)
+        show_time_pref = sharedPref.getBoolean(PreferenceKeys.ShowTimePreferenceKey, true)
         // reset in case user changes the preference:
         dateFormatTimeInstance = DateFormat.getTimeInstance()
         current_time_string = null
         last_current_time_time = 0
         text_bounds_time = null
 
-        show_camera_id_pref = mainActivity.isMultiCam && sharedPreferences.getBoolean(
+        show_camera_id_pref = mainActivity.isMultiCam && sharedPref.getBoolean(
             PreferenceKeys.ShowCameraIDPreferenceKey,
             true
         )
         //show_camera_id_pref = true; // test
-        show_free_memory_pref =
-            sharedPreferences.getBoolean(PreferenceKeys.ShowFreeMemoryPreferenceKey, true)
-        show_iso_pref = sharedPreferences.getBoolean(PreferenceKeys.ShowISOPreferenceKey, true)
-        show_video_max_amp_pref =
-            sharedPreferences.getBoolean(PreferenceKeys.ShowVideoMaxAmpPreferenceKey, false)
-        show_zoom_pref = sharedPreferences.getBoolean(PreferenceKeys.ShowZoomPreferenceKey, true)
-        show_battery_pref =
-            sharedPreferences.getBoolean(PreferenceKeys.ShowBatteryPreferenceKey, true)
+        showFreeMemoryPref =
+            sharedPref.getBoolean(PreferenceKeys.ShowFreeMemoryPreferenceKey, true)
 
-        show_angle_pref = sharedPreferences.getBoolean(PreferenceKeys.ShowAnglePreferenceKey, false)
-        val angle_highlight_color: String = sharedPreferences.getString(
+        showIsoPref = sharedPref.getBoolean(PreferenceKeys.ShowISOPreferenceKey, true)
+
+        val supportedWhiteBalances =
+            mainActivity.preview?.getSupportedWhiteBalances()?.isNotEmpty() ?: false
+        showWhiteBalancePref =
+            sharedPref.getBoolean(
+                PreferenceKeys.ShowWhiteBalancePreferenceKey,
+                false
+            ) && supportedWhiteBalances
+
+        showExposurePref = sharedPref.getBoolean(PreferenceKeys.ShowFocusPreferenceKey, false)
+
+        showFocusPref = sharedPref.getBoolean(PreferenceKeys.ShowFocusPreferenceKey, false)
+
+        val supportedSceneModes =
+            mainActivity.preview?.getSupportedSceneModes()?.isNotEmpty() ?: false
+        showSceneModePref =
+            sharedPref.getBoolean(
+                PreferenceKeys.ShowSceneModePreferenceKey,
+                false
+            ) && supportedSceneModes
+
+        show_video_max_amp_pref =
+            sharedPref.getBoolean(PreferenceKeys.ShowVideoMaxAmpPreferenceKey, false)
+        show_zoom_pref = sharedPref.getBoolean(PreferenceKeys.ShowZoomPreferenceKey, true)
+        showBatteryPref =
+            sharedPref.getBoolean(PreferenceKeys.ShowBatteryPreferenceKey, true)
+
+        show_angle_pref = sharedPref.getBoolean(PreferenceKeys.ShowAnglePreferenceKey, false)
+        val angle_highlight_color: String = sharedPref.getString(
             PreferenceKeys.ShowAngleHighlightColorPreferenceKey,
             "#14e715"
         )!!
         angle_highlight_color_pref = angle_highlight_color.toColorInt()
         show_geo_direction_pref =
-            sharedPreferences.getBoolean(PreferenceKeys.ShowGeoDirectionPreferenceKey, false)
+            sharedPref.getBoolean(PreferenceKeys.ShowGeoDirectionPreferenceKey, false)
 
         take_photo_border_pref =
-            sharedPreferences.getBoolean(PreferenceKeys.TakePhotoBorderPreferenceKey, true)
-        preview_size_wysiwyg_pref = sharedPreferences.getString(
+            sharedPref.getBoolean(PreferenceKeys.TakePhotoBorderPreferenceKey, true)
+        preview_size_wysiwyg_pref = sharedPref.getString(
             PreferenceKeys.PreviewSizePreferenceKey,
             "preference_preview_size_wysiwyg"
         ) == "preference_preview_size_wysiwyg"
         store_location_pref =
-            sharedPreferences.getBoolean(PreferenceKeys.LocationPreferenceKey, false)
+            sharedPref.getBoolean(PreferenceKeys.LocationPreferenceKey, false)
 
         show_angle_line_pref =
-            sharedPreferences.getBoolean(PreferenceKeys.ShowAngleLinePreferenceKey, false)
+            sharedPref.getBoolean(PreferenceKeys.ShowAngleLinePreferenceKey, false)
         show_pitch_lines_pref =
-            sharedPreferences.getBoolean(PreferenceKeys.ShowPitchLinesPreferenceKey, false)
+            sharedPref.getBoolean(PreferenceKeys.ShowPitchLinesPreferenceKey, false)
         show_geo_direction_lines_pref =
-            sharedPreferences.getBoolean(PreferenceKeys.ShowGeoDirectionLinesPreferenceKey, false)
+            sharedPref.getBoolean(PreferenceKeys.ShowGeoDirectionLinesPreferenceKey, false)
 
-        val immersive_mode: String = sharedPreferences.getString(
+        val immersive_mode: String = sharedPref.getString(
             PreferenceKeys.ImmersiveModePreferenceKey,
             "immersive_mode_off"
         )!!
@@ -769,18 +765,18 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
         this.storedAutoStabilisePref = applicationInterface.autoStabilisePref
 
-        preference_grid_pref = sharedPreferences.getString(
+        preference_grid_pref = sharedPref.getString(
             PreferenceKeys.ShowGridPreferenceKey,
             "preference_grid_none"
         )
 
-        ghost_image_pref = sharedPreferences.getString(
+        ghost_image_pref = sharedPref.getString(
             PreferenceKeys.GhostImagePreferenceKey,
             "preference_ghost_image_off"
         )
         if (ghost_image_pref == "preference_ghost_image_selected") {
             val new_ghost_selected_image_pref: String =
-                sharedPreferences.getString(PreferenceKeys.GhostSelectedImageSAFPreferenceKey, "")!!
+                sharedPref.getString(PreferenceKeys.GhostSelectedImageSAFPreferenceKey, "")!!
             Logger.d(
                 TAG,
                 "new_ghost_selected_image_pref: " + new_ghost_selected_image_pref
@@ -825,14 +821,14 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         }
         ghost_image_alpha = applicationInterface.ghostImageAlpha
 
-        val histogram_pref: String = sharedPreferences.getString(
+        val histogram_pref: String = sharedPref.getString(
             PreferenceKeys.HistogramPreferenceKey,
             "preference_histogram_off"
         )!!
-        want_histogram =
+        wantHistogram =
             histogram_pref != "preference_histogram_off" && mainActivity.supportsPreviewBitmaps()
         histogram_type = Preview.HistogramType.HISTOGRAM_TYPE_VALUE
-        if (want_histogram) {
+        if (wantHistogram) {
             when (histogram_pref) {
                 "preference_histogram_rgb" -> histogram_type =
                     Preview.HistogramType.HISTOGRAM_TYPE_RGB
@@ -852,7 +848,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         }
 
         val zebra_stripes_value: String =
-            sharedPreferences.getString(PreferenceKeys.ZebraStripesPreferenceKey, "0")!!
+            sharedPref.getString(PreferenceKeys.ZebraStripesPreferenceKey, "0")!!
         try {
             zebra_stripes_threshold = zebra_stripes_value.toInt()
         } catch (e: NumberFormatException) {
@@ -863,26 +859,26 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             e.printStackTrace()
             zebra_stripes_threshold = 0
         }
-        want_zebra_stripes =
+        wantZebraStripes =
             (zebra_stripes_threshold != 0) and mainActivity.supportsPreviewBitmaps()
 
-        val zebra_stripes_color_foreground_value: String = sharedPreferences.getString(
+        val zebra_stripes_color_foreground_value: String = sharedPref.getString(
             PreferenceKeys.ZebraStripesForegroundColorPreferenceKey,
             "#ff000000"
         )!!
         zebra_stripes_color_foreground = Color.parseColor(zebra_stripes_color_foreground_value)
-        val zebra_stripes_color_background_value: String = sharedPreferences.getString(
+        val zebra_stripes_color_background_value: String = sharedPref.getString(
             PreferenceKeys.ZebraStripesBackgroundColorPreferenceKey,
             "#ffffffff"
         )!!
         zebra_stripes_color_background = Color.parseColor(zebra_stripes_color_background_value)
 
-        want_focus_peaking = applicationInterface.focusPeakingPref
+        wantFocusPeaking = applicationInterface.focusPeakingPref
         val focus_peaking_color: String =
-            sharedPreferences.getString(PreferenceKeys.FocusPeakingColorPreferenceKey, "#ffffff")!!
+            sharedPref.getString(PreferenceKeys.FocusPeakingColorPreferenceKey, "#ffffff")!!
         focus_peaking_color_pref = Color.parseColor(focus_peaking_color)
 
-        want_pre_shots = applicationInterface.getPreShotsPref(photoMode)
+        wantPreShots = applicationInterface.getPreShotsPref(photoMode)
 
         last_camera_id_time = 0 // in case camera id changed
         last_view_angles_time = 0 // force view angles to be recomputed
@@ -892,7 +888,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         focus_seekbars_margin_left =
             -1 // needed as the focus seekbars can only be updated when visible
 
-        has_settings = true
+        hasSettings = true
     }
 
     /** Indicates that navigation gaps have changed, as a hint to avoid cached data.
@@ -1365,7 +1361,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         val preview = mainActivity.preview
         val camera_controller = preview!!.cameraController
         if (preview.isVideo || preview_size_wysiwyg_pref) {
-            val preference_crop_guide: String = sharedPreferences.getString(
+            val preference_crop_guide: String = sharedPref.getString(
                 PreferenceKeys.ShowCropGuidePreferenceKey,
                 "crop_guide_none"
             )!!
@@ -1451,7 +1447,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                             p
                         )
                         p.setStyle(Paint.Style.FILL) // reset
-                        p.setAlpha(255) // reset
+                        p.alpha = 255 // reset
                     }
                 }
             }
@@ -1463,16 +1459,16 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         top_x: Int,
         top_y: Int,
         bottom_y: Int,
-        device_ui_rotation: Int,
-        time_ms: Long
+        deviceUiRotation: Int,
+        timeMs: Long
     ) {
         val preview = mainActivity.preview
-        val camera_controller = preview!!.cameraController
-        val ui_rotation = preview.getUIRotation()
+        val cameraController = preview!!.cameraController
+        val ui_rotation = preview.uiRotation
 
         // set up text etc for the multiple lines of "info" (time, free mem, etc)
-        p.setTextSize(16 * scale_font + 0.5f) // convert dps to pixels
-        p.setTextAlign(Paint.Align.LEFT)
+        p.textSize = 16 * scale_font + 0.5f // convert dps to pixels
+        p.textAlign = Paint.Align.LEFT
         var location_x = top_x
         var location_y = top_y
         val gap_x = (8 * scale_font + 0.5f).toInt() // convert dps to pixels
@@ -1484,27 +1480,27 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             location_x += diff / 2
             location_y -= diff / 2
         }
-        if (device_ui_rotation == 90) {
+        if (deviceUiRotation == 90) {
             location_y = canvas.height - location_y - (20 * scale_font + 0.5f).toInt()
         }
         var align_right = false
-        if (device_ui_rotation == 180) {
+        if (deviceUiRotation == 180) {
             location_x = canvas.width - location_x
-            p.setTextAlign(Paint.Align.RIGHT)
+            p.textAlign = Paint.Align.RIGHT
             align_right = true
         }
 
         var first_line_height = 0
         var first_line_xshift = 0
         if (show_time_pref) {
-            if (current_time_string == null || time_ms / 1000 > last_current_time_time / 1000) {
+            if (current_time_string == null || timeMs / 1000 > last_current_time_time / 1000) {
                 // avoid creating a new calendar object every time
                 if (calendar == null) calendar = Calendar.getInstance()
-                else calendar!!.setTimeInMillis(time_ms)
+                else calendar!!.timeInMillis = timeMs
 
                 current_time_string = dateFormatTimeInstance!!.format(calendar!!.getTime())
                 //current_time_string = DateUtils.formatDateTime(getContext(), c.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME);
-                last_current_time_time = time_ms
+                last_current_time_time = timeMs
             }
             // n.b., DateFormat.getTimeInstance() ignores user preferences such as 12/24 hour or date format, but this is an Android bug.
             // Whilst DateUtils.formatDateTime doesn't have that problem, it doesn't print out seconds! See:
@@ -1521,7 +1517,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 val calendar = Calendar.getInstance()
                 calendar.set(100, 0, 1, 10, 59, 59)
                 val bounds_time_string = dateFormatTimeInstance!!.format(calendar.getTime())
-                Logger.d(TAG, "bounds_time_string:" + bounds_time_string)
+                Logger.d(TAG, "bounds_time_string:$bounds_time_string")
                 p.getTextBounds(bounds_time_string, 0, bounds_time_string.length, text_bounds_time)
             }
             first_line_xshift += text_bounds_time!!.width() + gap_x
@@ -1542,13 +1538,14 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             // don't update location_y yet, as we have time and cameraid shown on the same line
             first_line_height = max(first_line_height, height)
         }
-        if (show_camera_id_pref && camera_controller != null) {
-            if (camera_id_string == null || time_ms > last_camera_id_time + 10000) {
+
+        if (show_camera_id_pref && cameraController != null) {
+            if (camera_id_string == null || timeMs > last_camera_id_time + 10000) {
                 // cache string for performance
 
                 camera_id_string = context.resources
                     .getString(R.string.camera_id) + ":" + preview.getCameraId() // intentionally don't put a space
-                last_camera_id_time = time_ms
+                last_camera_id_time = timeMs
             }
             if (text_bounds_camera_id == null) {
                 Logger.d(TAG, "compute text_bounds_camera_id")
@@ -1580,21 +1577,22 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             first_line_height = max(first_line_height, height)
         }
         // update location_y for first line (time and camera id)
-        if (device_ui_rotation == 90) {
+        if (deviceUiRotation == 90) {
             // upside-down portrait
             location_y -= first_line_height
         } else {
             location_y += first_line_height
         }
 
-        if (camera_controller != null && show_free_memory_pref) {
-            if ((last_free_memory_time == 0L || time_ms > last_free_memory_time + 10000) && free_memory_future == null) {
+        // show free memory
+        if (cameraController != null && showFreeMemoryPref) {
+            if ((last_free_memory_time == 0L || timeMs > last_free_memory_time + 10000) && free_memory_future == null) {
                 // don't call this too often, for UI performance
 
                 free_memory_future = free_memory_executor.submit(free_memory_runnable)
 
                 last_free_memory_time =
-                    time_ms // always set this, so that in case of free memory not being available, we aren't calling freeMemory() every frame
+                    timeMs // always set this, so that in case of free memory not being available, we aren't calling freeMemory() every frame
             }
             if (free_memory_gb >= 0.0f && free_memory_gb_string != null) {
                 //int height = applicationInterface.drawTextWithBackground(canvas, p, free_memory_gb_string, Color.WHITE, Color.BLACK, location_x, location_y, MyApplicationInterface.Alignment.ALIGNMENT_TOP);
@@ -1622,7 +1620,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     text_bounds_free_memory
                 )
                 height += gap_y
-                if (device_ui_rotation == 90) {
+                if (deviceUiRotation == 90) {
                     location_y -= height
                 } else {
                     location_y += height
@@ -1631,9 +1629,9 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         }
 
         // Now draw additional info on the lower left corner if needed
-        val y_offset = (27 * scale_font + 0.5f).toInt()
-        p.setTextSize(24 * scale_font + 0.5f) // convert dps to pixels
-        if (OSDLine1 != null && OSDLine1!!.length > 0) {
+        val yOffset = (27 * scale_font + 0.5f).toInt()
+        p.textSize = 24 * scale_font + 0.5f // convert dps to pixels
+        if (OSDLine1 != null && OSDLine1!!.isNotEmpty()) {
             applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
@@ -1641,13 +1639,13 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 Color.WHITE,
                 Color.BLACK,
                 location_x,
-                bottom_y - y_offset,
+                bottom_y - yOffset,
                 MyApplicationInterface.Alignment.ALIGNMENT_BOTTOM,
-                null,
                 MyApplicationInterface.Shadow.SHADOW_OUTLINE
             )
         }
-        if (OSDLine2 != null && OSDLine2!!.length > 0) {
+
+        if (OSDLine2?.isNotEmpty() == true) {
             applicationInterface.drawTextWithBackground(
                 canvas,
                 p,
@@ -1657,82 +1655,76 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 location_x,
                 bottom_y,
                 MyApplicationInterface.Alignment.ALIGNMENT_BOTTOM,
-                null,
                 MyApplicationInterface.Shadow.SHADOW_OUTLINE
             )
         }
         p.textSize = 16 * scale_font + 0.5f // Restore text size
 
-        if (camera_controller != null && show_iso_pref) {
-            if (iso_exposure_string == null || time_ms > last_iso_exposure_time + 500) {
-                iso_exposure_string = ""
-                if (camera_controller.captureResultHasIso()) {
-                    val iso = camera_controller.captureResultIso()
-                    if (iso_exposure_string!!.isNotEmpty()) iso_exposure_string += " "
-                    iso_exposure_string += preview.getISOString(iso)
+        // iso
+        if (cameraController != null && showIsoPref) {
+            if (isoExposureString == null || timeMs > lastIsoExposureTime + 500) {
+                isoExposureString = ""
+                if (cameraController.captureResultHasIso()) {
+                    val iso = cameraController.captureResultIso()
+                    if (isoExposureString!!.isNotEmpty()) isoExposureString += " "
+                    isoExposureString += preview.getISOString(iso)
                 }
-                if (camera_controller.captureResultHasExposureTime()) {
-                    val exposureTime = camera_controller.captureResultExposureTime()
-                    if (iso_exposure_string!!.isNotEmpty()) iso_exposure_string += " "
-                    iso_exposure_string += preview.getExposureTimeString(exposureTime)
+                if (cameraController.captureResultHasExposureTime()) {
+                    val exposureTime = cameraController.captureResultExposureTime()
+                    if (isoExposureString!!.isNotEmpty()) isoExposureString += " "
+                    isoExposureString += preview.getExposureTimeString(exposureTime)
                 }
-                if (preview.isVideoRecording && camera_controller.captureResultHasFrameDuration()) {
-                    val frame_duration = camera_controller.captureResultFrameDuration()
-                    if (iso_exposure_string!!.isNotEmpty()) iso_exposure_string += " "
-                    iso_exposure_string += preview.getFrameDurationString(frame_duration)
+                if (preview.isVideoRecording && cameraController.captureResultHasFrameDuration()) {
+                    val frameDuration = cameraController.captureResultFrameDuration()
+                    if (isoExposureString!!.isNotEmpty()) isoExposureString += " "
+                    isoExposureString += preview.getFrameDurationString(frameDuration)
                 }
 
-                /*if( camera_controller.captureResultHasAperture() ) {
-                    float aperture = camera_controller.captureResultAperture();
-                    if( iso_exposure_string.length() > 0 )
-                        iso_exposure_string += " F";
-                    iso_exposure_string += decimal_format_1dp_force0.format(aperture);
-                }*/
-                is_scanning = false
-                if (camera_controller.captureResultIsAEScanning()) {
+                isScanning = false
+
+                if (cameraController.captureResultIsAEScanning()) {
                     // only show as scanning if in auto ISO mode (problem on Nexus 6 at least that if we're in manual ISO mode, after pausing and
                     // resuming, the camera driver continually reports CONTROL_AE_STATE_SEARCHING)
-                    val value: String = sharedPreferences.getString(
+                    val value: String = sharedPref.getString(
                         PreferenceKeys.ISOPreferenceKey,
                         CameraController.ISO_DEFAULT
-                    )!!
+                    ) ?: ""
                     if (value == "auto") {
-                        is_scanning = true
+                        isScanning = true
                     }
                 }
 
-                last_iso_exposure_time = time_ms
+                lastIsoExposureTime = timeMs
             }
 
-            if (iso_exposure_string!!.length > 0) {
-                var text_color = Color.rgb(255, 235, 59) // Yellow 500
-                if (is_scanning) {
+            if (isoExposureString?.isNotEmpty() == true) {
+                var textColor = Color.GREEN
+                if (isScanning) {
                     // we only change the color if ae scanning is at least a certain time, otherwise we get a lot of flickering of the color
-                    if (ae_started_scanning_ms == -1L) {
-                        ae_started_scanning_ms = time_ms
-                    } else if (time_ms - ae_started_scanning_ms > 500) {
-                        text_color = Color.rgb(244, 67, 54) // Red 500
+                    if (aeStartedScanningMs == -1L) {
+                        aeStartedScanningMs = timeMs
+                    } else if (timeMs - aeStartedScanningMs > 500) {
+                        textColor = Color.rgb(244, 67, 54) // Red 500
                     }
                 } else {
-                    ae_started_scanning_ms = -1
+                    aeStartedScanningMs = -1
                 }
                 // can't cache the bounds rect, as the width may change significantly as the ISO or exposure values change
                 var height = applicationInterface.drawTextWithBackground(
                     canvas,
                     p,
-                    iso_exposure_string ?: "",
-                    text_color,
+                    isoExposureString ?: "",
+                    textColor,
                     Color.BLACK,
                     location_x,
                     location_y,
                     MyApplicationInterface.Alignment.ALIGNMENT_TOP,
-                    ybounds_text,
                     MyApplicationInterface.Shadow.SHADOW_OUTLINE
                 )
                 height += gap_y
                 // only move location_y if we actually print something (because on old camera API, even if the ISO option has
                 // been enabled, we'll never be able to display the on-screen ISO)
-                if (device_ui_rotation == 90) {
+                if (deviceUiRotation == 90) {
                     location_y -= height
                 } else {
                     location_y += height
@@ -1740,16 +1732,211 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             }
         }
 
-        // padding to align with earlier text
-        val flash_padding = (1 * scale_font + 0.5f).toInt() // convert dps to pixels
+        // white balance
+        val supportedWhiteBalances = preview.supportedWhiteBalances?.isNotEmpty() ?: false
+        if (cameraController != null && showWhiteBalancePref && supportedWhiteBalances) {
+            var displayText: String
+            val whiteBalancePref = applicationInterface.whiteBalancePref
+            if (whiteBalancePref == "auto" || whiteBalancePref == "manual") {
+                val whiteBalanceTemperaturePref = applicationInterface.whiteBalanceTemperaturePref
+                displayText = "WB ${whiteBalanceTemperaturePref}K"
+            } else {
+                displayText = "WB ${whiteBalancePref.capitalizeFirstLetter()}"
+            }
 
-        if (camera_controller != null) {
+            if (displayText.isNotEmpty()) {
+                var textColor = Color.GREEN
+                if (isScanning) {
+                    // we only change the color if ae scanning is at least a certain time, otherwise we get a lot of flickering of the color
+                    if (aeStartedScanningMs == -1L) {
+                        aeStartedScanningMs = timeMs
+                    } else if (timeMs - aeStartedScanningMs > 500) {
+                        textColor = Color.rgb(244, 67, 54) // Red 500
+                    }
+                } else {
+                    aeStartedScanningMs = -1
+                }
+                // can't cache the bounds rect, as the width may change significantly as the ISO or exposure values change
+                var height = applicationInterface.drawTextWithBackground(
+                    canvas,
+                    p,
+                    displayText,
+                    textColor,
+                    Color.BLACK,
+                    location_x,
+                    location_y,
+                    MyApplicationInterface.Alignment.ALIGNMENT_TOP,
+                    MyApplicationInterface.Shadow.SHADOW_OUTLINE
+                )
+                height += gap_y
+                // only move location_y if we actually print something (because on old camera API, even if the ISO option has
+                // been enabled, we'll never be able to display the on-screen ISO)
+                if (deviceUiRotation == 90) {
+                    location_y -= height
+                } else {
+                    location_y += height
+                }
+            }
+        }
+
+        // exposure
+        if (cameraController != null && showExposurePref && preview.supportsExposures()) {
+            val exposureValue = preview.currentExposure
+            val displayText =
+                if (exposureValue == 0) "EV:Auto" else preview.getExposureString(exposureValue)
+                    ?: ""
+            if (displayText.isNotEmpty()) {
+                var textColor = Color.GREEN
+                if (isScanning) {
+                    // we only change the color if ae scanning is at least a certain time, otherwise we get a lot of flickering of the color
+                    if (aeStartedScanningMs == -1L) {
+                        aeStartedScanningMs = timeMs
+                    } else if (timeMs - aeStartedScanningMs > 500) {
+                        textColor = Color.rgb(244, 67, 54) // Red 500
+                    }
+                } else {
+                    aeStartedScanningMs = -1
+                }
+                // can't cache the bounds rect, as the width may change significantly as the ISO or exposure values change
+                var height = applicationInterface.drawTextWithBackground(
+                    canvas,
+                    p,
+                    displayText,
+                    textColor,
+                    Color.BLACK,
+                    location_x,
+                    location_y,
+                    MyApplicationInterface.Alignment.ALIGNMENT_TOP,
+                    MyApplicationInterface.Shadow.SHADOW_OUTLINE
+                )
+                height += gap_y
+                // only move location_y if we actually print something (because on old camera API, even if the ISO option has
+                // been enabled, we'll never be able to display the on-screen ISO)
+                if (deviceUiRotation == 90) {
+                    location_y -= height
+                } else {
+                    location_y += height
+                }
+            }
+        }
+
+        // scene mode
+        val supportedSceneMode = preview.supportedSceneModes?.isNotEmpty() ?: false
+        if (cameraController != null && showSceneModePref && supportedSceneMode) {
+            val value = applicationInterface.sceneModePref
+            val displayText =
+                (context.getString(R.string.scene_mode) + ":" + mainActivity.mainUI?.getEntryForSceneMode(
+                    value
+                ))
+
+            if (displayText.isNotEmpty()) {
+                var textColor = Color.GREEN
+                if (isScanning) {
+                    // we only change the color if ae scanning is at least a certain time, otherwise we get a lot of flickering of the color
+                    if (aeStartedScanningMs == -1L) {
+                        aeStartedScanningMs = timeMs
+                    } else if (timeMs - aeStartedScanningMs > 500) {
+                        textColor = Color.rgb(244, 67, 54) // Red 500
+                    }
+                } else {
+                    aeStartedScanningMs = -1
+                }
+                // can't cache the bounds rect, as the width may change significantly as the ISO or exposure values change
+                var height = applicationInterface.drawTextWithBackground(
+                    canvas,
+                    p,
+                    displayText,
+                    textColor,
+                    Color.BLACK,
+                    location_x,
+                    location_y,
+                    MyApplicationInterface.Alignment.ALIGNMENT_TOP,
+                    MyApplicationInterface.Shadow.SHADOW_OUTLINE
+                )
+                height += gap_y
+                // only move location_y if we actually print something (because on old camera API, even if the ISO option has
+                // been enabled, we'll never be able to display the on-screen ISO)
+                if (deviceUiRotation == 90) {
+                    location_y -= height
+                } else {
+                    location_y += height
+                }
+            }
+        }
+
+        // focus mode
+        val supportsFocus = if (preview.supportsFocus() && ((preview.supportedFocusValues?.size
+                ?: 0) > 1) && applicationInterface.photoMode != PhotoMode.FocusBracketing
+        ) {
+            preview.supportedFocusValues?.isNotEmpty() ?: false
+        } else {
+            false
+        }
+        if (cameraController != null && showFocusPref && supportsFocus) {
+            val currentFocusValue = preview.currentFocusValue
+            val focusEntry: String = preview.findFocusEntryForValue(currentFocusValue)
+            val focusMode = applicationInterface.focusModePref
+            val displayText = if (focusMode == "focus_mode_manual2") {
+                val focusDistance = applicationInterface.getFocusDistancePref(true)
+                if (focusDistance > 0.0f) {
+                    val realFocusDistance: Float = 1.0f / focusDistance
+                    context.getString(R.string.focus) + ":" + decimalFormat2dpForce0.format(
+                        realFocusDistance.toDouble()
+                    ) + context.resources.getString(
+                        R.string.metres_abbreviation
+                    )
+                } else {
+                    context.getString(R.string.focus) + ":" + context.resources.getString(R.string.infinite)
+                }
+            } else {
+                focusEntry
+            }
+
+            if (displayText.isNotEmpty()) {
+                var textColor = Color.GREEN
+                if (isScanning) {
+                    // we only change the color if ae scanning is at least a certain time, otherwise we get a lot of flickering of the color
+                    if (aeStartedScanningMs == -1L) {
+                        aeStartedScanningMs = timeMs
+                    } else if (timeMs - aeStartedScanningMs > 500) {
+                        textColor = Color.rgb(244, 67, 54) // Red 500
+                    }
+                } else {
+                    aeStartedScanningMs = -1
+                }
+                // can't cache the bounds rect, as the width may change significantly as the ISO or exposure values change
+                var height = applicationInterface.drawTextWithBackground(
+                    canvas,
+                    p,
+                    displayText,
+                    textColor,
+                    Color.BLACK,
+                    location_x,
+                    location_y,
+                    MyApplicationInterface.Alignment.ALIGNMENT_TOP,
+                    MyApplicationInterface.Shadow.SHADOW_OUTLINE
+                )
+                height += gap_y
+                // only move location_y if we actually print something (because on old camera API, even if the ISO option has
+                // been enabled, we'll never be able to display the on-screen ISO)
+                if (deviceUiRotation == 90) {
+                    location_y -= height
+                } else {
+                    location_y += height
+                }
+            }
+        }
+
+        // flash
+        val flashPadding = (1 * scale_font + 0.5f).toInt() // convert dps to pixels
+
+        // location
+        if (cameraController != null) {
             // draw info icons
-
-            var location_x2 = location_x - flash_padding
+            var location_x2 = location_x - flashPadding
             val icon_size = (16 * scale_dp + 0.5f).toInt() // convert dps to pixels
-            if (device_ui_rotation == 180) {
-                location_x2 = location_x - icon_size + flash_padding
+            if (deviceUiRotation == 180) {
+                location_x2 = location_x - icon_size + flashPadding
             }
 
             if (store_location_pref) {
@@ -1759,11 +1946,11 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     location_x2 + icon_size,
                     location_y + icon_size
                 )
-                p.setStyle(Paint.Style.FILL)
-                p.setColor(Color.BLACK)
-                p.setAlpha(64)
+                p.style = Paint.Style.FILL
+                p.color = Color.BLACK
+                p.alpha = 64
                 canvas.drawRect(icon_dest, p)
-                p.setAlpha(255)
+                p.alpha = 255
 
                 val location = applicationInterface.getLocation(locationInfo)
                 if (location != null) {
@@ -1771,17 +1958,15 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     val location_radius = icon_size / 10
                     val indicator_x = location_x2 + icon_size - (location_radius * 1.5).toInt()
                     val indicator_y = location_y + (location_radius * 1.5).toInt()
-                    p.setColor(
-                        if (locationInfo.LocationWasCached()) Color.rgb(
-                            127,
-                            127,
-                            127
-                        ) else if (location.getAccuracy() < 25.01f) Color.rgb(
-                            37,
-                            155,
-                            36
-                        ) else Color.rgb(255, 235, 59)
-                    ) // Green 500 or Yellow 500
+                    p.color = if (locationInfo.LocationWasCached()) Color.rgb(
+                        127,
+                        127,
+                        127
+                    ) else if (location.accuracy < 25.01f) Color.rgb(
+                        37,
+                        155,
+                        36
+                    ) else Color.rgb(255, 235, 59) // Green 500 or Yellow 500
                     canvas.drawCircle(
                         indicator_x.toFloat(),
                         indicator_y.toFloat(),
@@ -1792,10 +1977,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     canvas.drawBitmap(location_off_bitmap!!, null, icon_dest, p)
                 }
 
-                if (device_ui_rotation == 180) {
-                    location_x2 -= icon_size + flash_padding
+                if (deviceUiRotation == 180) {
+                    location_x2 -= icon_size + flashPadding
                 } else {
-                    location_x2 += icon_size + flash_padding
+                    location_x2 += icon_size + flashPadding
                 }
             }
 
@@ -1808,11 +1993,11 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     location_x2 + icon_size,
                     location_y + icon_size
                 )
-                p.setStyle(Paint.Style.FILL)
-                p.setColor(Color.BLACK)
-                p.setAlpha(64)
+                p.style = Paint.Style.FILL
+                p.color = Color.BLACK
+                p.alpha = 64
                 canvas.drawRect(icon_dest, p)
-                p.setAlpha(255)
+                p.alpha = 255
                 canvas.drawBitmap(
                     (if (is_raw_only_pref) raw_only_bitmap else raw_jpeg_bitmap)!!,
                     null,
@@ -1820,10 +2005,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     p
                 )
 
-                if (device_ui_rotation == 180) {
-                    location_x2 -= icon_size + flash_padding
+                if (deviceUiRotation == 180) {
+                    location_x2 -= icon_size + flashPadding
                 } else {
-                    location_x2 += icon_size + flash_padding
+                    location_x2 += icon_size + flashPadding
                 }
             }
 
@@ -1834,45 +2019,45 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     location_x2 + icon_size,
                     location_y + icon_size
                 )
-                p.setStyle(Paint.Style.FILL)
-                p.setColor(Color.BLACK)
-                p.setAlpha(64)
+                p.style = Paint.Style.FILL
+                p.color = Color.BLACK
+                p.alpha = 64
                 canvas.drawRect(icon_dest, p)
-                p.setAlpha(255)
+                p.alpha = 255
                 canvas.drawBitmap(face_detection_bitmap!!, null, icon_dest, p)
 
-                if (device_ui_rotation == 180) {
-                    location_x2 -= icon_size + flash_padding
+                if (deviceUiRotation == 180) {
+                    location_x2 -= icon_size + flashPadding
                 } else {
-                    location_x2 += icon_size + flash_padding
+                    location_x2 += icon_size + flashPadding
                 }
             }
 
-            if (this.storedAutoStabilisePref && preview.hasLevelAngleStable()) { // auto-level is supported for photos taken in video mode
+            if (storedAutoStabilisePref && preview.hasLevelAngleStable()) { // auto-level is supported for photos taken in video mode
                 icon_dest.set(
                     location_x2,
                     location_y,
                     location_x2 + icon_size,
                     location_y + icon_size
                 )
-                p.setStyle(Paint.Style.FILL)
-                p.setColor(Color.BLACK)
-                p.setAlpha(64)
+                p.style = Paint.Style.FILL
+                p.color = Color.BLACK
+                p.alpha = 64
                 canvas.drawRect(icon_dest, p)
-                p.setAlpha(255)
+                p.alpha = 255
                 canvas.drawBitmap(auto_stabilise_bitmap!!, null, icon_dest, p)
 
-                if (device_ui_rotation == 180) {
-                    location_x2 -= icon_size + flash_padding
+                if (deviceUiRotation == 180) {
+                    location_x2 -= icon_size + flashPadding
                 } else {
-                    location_x2 += icon_size + flash_padding
+                    location_x2 += icon_size + flashPadding
                 }
             }
 
             if ((photoMode == PhotoMode.DRO || photoMode == PhotoMode.HDR || photoMode == PhotoMode.Panorama || photoMode == PhotoMode.ExpoBracketing ||  //photoMode == MyApplicationInterface.PhotoMode.FocusBracketing ||
                         photoMode == PhotoMode.FastBurst || photoMode == PhotoMode.NoiseReduction || photoMode == PhotoMode.X_Night || photoMode == PhotoMode.X_Bokeh || photoMode == PhotoMode.X_Beauty
                         ) &&
-                !applicationInterface.isVideoPref()
+                !applicationInterface.isVideoPref
             ) { // these photo modes not supported for video mode
                 icon_dest.set(
                     location_x2,
@@ -1880,30 +2065,38 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     location_x2 + icon_size,
                     location_y + icon_size
                 )
-                p.setStyle(Paint.Style.FILL)
-                p.setColor(Color.BLACK)
-                p.setAlpha(64)
+                p.style = Paint.Style.FILL
+                p.color = Color.BLACK
+                p.alpha = 64
                 canvas.drawRect(icon_dest, p)
-                p.setAlpha(255)
+                p.alpha = 255
                 val bitmap =
-                    if (photoMode == PhotoMode.DRO) dro_bitmap else if (photoMode == PhotoMode.HDR) hdr_bitmap else if (photoMode == PhotoMode.Panorama) panorama_bitmap else if (photoMode == PhotoMode.ExpoBracketing) expo_bitmap else  //photoMode == MyApplicationInterface.PhotoMode.FocusBracketing ? focus_bracket_bitmap :
-                        if (photoMode == PhotoMode.FastBurst) burst_bitmap else if (photoMode == PhotoMode.NoiseReduction) nr_bitmap else if (photoMode == PhotoMode.X_Night) x_night_bitmap else if (photoMode == PhotoMode.X_Bokeh) x_bokeh_bitmap else if (photoMode == PhotoMode.X_Beauty) x_beauty_bitmap else null
+                    when (photoMode) {
+                        PhotoMode.DRO -> dro_bitmap
+                        PhotoMode.HDR -> hdr_bitmap
+                        PhotoMode.Panorama -> panorama_bitmap
+                        PhotoMode.ExpoBracketing -> expo_bitmap
+                        PhotoMode.FastBurst -> burst_bitmap
+                        PhotoMode.NoiseReduction -> nr_bitmap
+                        PhotoMode.X_Night -> x_night_bitmap
+                        PhotoMode.X_Bokeh -> x_bokeh_bitmap
+                        PhotoMode.X_Beauty -> x_beauty_bitmap
+                        else -> null
+                    }
                 if (bitmap != null) {
                     if (photoMode == PhotoMode.NoiseReduction && applicationInterface.getNRModePref() == ApplicationInterface.NRModePref.NRMODE_LOW_LIGHT) {
-                        p.setColorFilter(
-                            PorterDuffColorFilter(
-                                Color.rgb(255, 235, 59),
-                                PorterDuff.Mode.SRC_IN
-                            )
+                        p.colorFilter = PorterDuffColorFilter(
+                            Color.rgb(255, 235, 59),
+                            PorterDuff.Mode.SRC_IN
                         ) // Yellow 500
                     }
                     canvas.drawBitmap(bitmap, null, icon_dest, p)
-                    p.setColorFilter(null)
+                    p.colorFilter = null
 
-                    if (device_ui_rotation == 180) {
-                        location_x2 -= icon_size + flash_padding
+                    if (deviceUiRotation == 180) {
+                        location_x2 -= icon_size + flashPadding
                     } else {
-                        location_x2 += icon_size + flash_padding
+                        location_x2 += icon_size + flashPadding
                     }
                 }
             }
@@ -1918,21 +2111,21 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     location_x2 + icon_size,
                     location_y + icon_size
                 )
-                p.setStyle(Paint.Style.FILL)
-                p.setColor(Color.BLACK)
-                p.setAlpha(64)
+                p.style = Paint.Style.FILL
+                p.color = Color.BLACK
+                p.alpha = 64
                 canvas.drawRect(icon_dest, p)
-                p.setAlpha(255)
+                p.alpha = 255
                 canvas.drawBitmap(photostamp_bitmap!!, null, icon_dest, p)
 
-                if (device_ui_rotation == 180) {
-                    location_x2 -= icon_size + flash_padding
+                if (deviceUiRotation == 180) {
+                    location_x2 -= icon_size + flashPadding
                 } else {
-                    location_x2 += icon_size + flash_padding
+                    location_x2 += icon_size + flashPadding
                 }
             }
 
-            if (!is_audio_enabled_pref && applicationInterface.isVideoPref()) {
+            if (!is_audio_enabled_pref && applicationInterface.isVideoPref) {
                 icon_dest.set(
                     location_x2,
                     location_y,
@@ -1943,13 +2136,13 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 p.setColor(Color.BLACK)
                 p.setAlpha(64)
                 canvas.drawRect(icon_dest, p)
-                p.setAlpha(255)
+                p.alpha = 255
                 canvas.drawBitmap(audio_disabled_bitmap!!, null, icon_dest, p)
 
-                if (device_ui_rotation == 180) {
-                    location_x2 -= icon_size + flash_padding
+                if (deviceUiRotation == 180) {
+                    location_x2 -= icon_size + flashPadding
                 } else {
-                    location_x2 += icon_size + flash_padding
+                    location_x2 += icon_size + flashPadding
                 }
             }
 
@@ -1965,7 +2158,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 p.setColor(Color.BLACK)
                 p.setAlpha(64)
                 canvas.drawRect(icon_dest, p)
-                p.setAlpha(255)
+                p.alpha = 255
                 canvas.drawBitmap(
                     (if (capture_rate_factor < 1.0f) slow_motion_bitmap else time_lapse_bitmap)!!,
                     null,
@@ -1973,10 +2166,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     p
                 )
 
-                if (device_ui_rotation == 180) {
-                    location_x2 -= icon_size + flash_padding
+                if (deviceUiRotation == 180) {
+                    location_x2 -= icon_size + flashPadding
                 } else {
-                    location_x2 += icon_size + flash_padding
+                    location_x2 += icon_size + flashPadding
                 }
             } else if (is_high_speed && applicationInterface.isVideoPref()) {
                 icon_dest.set(
@@ -1989,35 +2182,35 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 p.setColor(Color.BLACK)
                 p.setAlpha(64)
                 canvas.drawRect(icon_dest, p)
-                p.setAlpha(255)
+                p.alpha = 255
                 canvas.drawBitmap(high_speed_fps_bitmap!!, null, icon_dest, p)
 
-                if (device_ui_rotation == 180) {
-                    location_x2 -= icon_size + flash_padding
+                if (deviceUiRotation == 180) {
+                    location_x2 -= icon_size + flashPadding
                 } else {
-                    location_x2 += icon_size + flash_padding
+                    location_x2 += icon_size + flashPadding
                 }
             }
 
-            if (time_ms > last_need_flash_indicator_time + 100) {
+            if (timeMs > last_need_flash_indicator_time + 100) {
                 need_flash_indicator = false
                 val flash_value = preview.getCurrentFlashValue()
                 // note, flash_frontscreen_auto not yet support for the flash symbol (as camera_controller.needsFlash() only returns info on the built-in actual flash, not frontscreen flash)
                 if (flash_value != null &&
                     (flash_value == "flash_on"
-                            || ((flash_value == "flash_auto" || flash_value == "flash_red_eye") && camera_controller.needsFlash())
-                            || camera_controller.needsFrontScreenFlash()) && !applicationInterface.isVideoPref()
+                            || ((flash_value == "flash_auto" || flash_value == "flash_red_eye") && cameraController.needsFlash())
+                            || cameraController.needsFrontScreenFlash()) && !applicationInterface.isVideoPref()
                 ) { // flash-indicator not supported for photos taken in video mode
                     need_flash_indicator = true
                 }
 
-                last_need_flash_indicator_time = time_ms
+                last_need_flash_indicator_time = timeMs
             }
             if (need_flash_indicator) {
                 if (needs_flash_time != -1L) {
                     val fade_ms: Long = 500
-                    var alpha = (time_ms - needs_flash_time) / fade_ms.toFloat()
-                    if (time_ms - needs_flash_time >= fade_ms) alpha = 1.0f
+                    var alpha = (timeMs - needs_flash_time) / fade_ms.toFloat()
+                    if (timeMs - needs_flash_time >= fade_ms) alpha = 1.0f
                     icon_dest.set(
                         location_x2,
                         location_y,
@@ -2033,25 +2226,25 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     canvas.drawRect(icon_dest, p)
                     p.setAlpha((255 * alpha).toInt())
                     canvas.drawBitmap(flash_bitmap!!, null, icon_dest, p)
-                    p.setAlpha(255)
+                    p.alpha = 255
                 } else {
-                    needs_flash_time = time_ms
+                    needs_flash_time = timeMs
                 }
             } else {
                 needs_flash_time = -1
             }
 
-            if (device_ui_rotation == 90) {
+            if (deviceUiRotation == 90) {
                 location_y -= icon_gap_y
             } else {
                 location_y += (icon_size + icon_gap_y)
             }
         }
 
-        if (camera_controller != null && !show_last_image) {
-            // draw histogram
-            if (preview.isPreviewBitmapEnabled()) {
-                val histogram = preview.getHistogram()
+        // draw histogram
+        if (cameraController != null && !show_last_image) {
+            if (preview.isPreviewBitmapEnabled) {
+                val histogram = preview.histogram
                 if (histogram != null) {
                     /*if( MyDebug.LOG )
 						Logger.d(TAG, "histogram length: " + histogram.length);*/
@@ -2061,23 +2254,23 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                         (histogram_height_dp * scale_dp + 0.5f).toInt() // convert dps to pixels
                     // n.b., if changing the histogram_height, remember to update focus_seekbar and
                     // focus_bracketing_target_seekbar margins in activity_main.xml
-                    var location_x2 = location_x - flash_padding
-                    if (device_ui_rotation == 180) {
-                        location_x2 = location_x - histogram_width + flash_padding
+                    var location_x2 = location_x - flashPadding
+                    if (deviceUiRotation == 180) {
+                        location_x2 = location_x - histogram_width + flashPadding
                     }
                     icon_dest.set(
-                        location_x2 - flash_padding,
+                        location_x2 - flashPadding,
                         location_y,
-                        location_x2 - flash_padding + histogram_width,
+                        location_x2 - flashPadding + histogram_width,
                         location_y + histogram_height
                     )
-                    if (device_ui_rotation == 90) {
+                    if (deviceUiRotation == 90) {
                         icon_dest.top -= histogram_height
                         icon_dest.bottom -= histogram_height
                     }
 
-                    p.setStyle(Paint.Style.FILL)
-                    p.setColor(Color.argb(64, 0, 0, 0))
+                    p.style = Paint.Style.FILL
+                    p.color = Color.argb(64, 0, 0, 0)
                     canvas.drawRect(icon_dest, p)
 
                     var max = 0
@@ -2087,53 +2280,34 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
                     if (histogram.size == 256 * 3) {
                         var c = 0
-
-                        /* For overlapping rgb, we'll have:
-							(1, (1-a2).(1-a1).a0.r, (1-a2).a1.g, a2.b)
-						   If we wanted to have the alpha scaling the same (i.e., same r, g, b values
-						   if r=g=b, then this gives:
-						       a2 = 1/[2+1/a0]
-                               a1 = 1 - a2/[a0.(1-a2)]
-                           However this then means that for non-overlapping colours, red is too
-                           strong whilst blue is too weak, so we instead adjust to:
-                               a0' = (a0+a1)/2
-                               a1' = a1
-                               a2' = (a1+a2)/2
-						 */
-                        /*final int a0 = 255;
-						final int a1 = 128;
-						final int a2 = 85;*/
-                        //final int a0 = 191;
                         val a0 = 151
                         val a1 = 110
-                        //final int a2 = 77;
                         val a2 = 94
-                        /*final int a0 = 128;
-						final int a1 = 85;
-						final int a2 = 64;*/
                         val r = 255
                         val g = 255
                         val b = 255
 
                         for (i in 0..255) temp_histogram_channel[i] = histogram[c++]
-                        p.setColor(Color.argb(a0, r, 0, 0))
+                        p.color = Color.argb(a0, r, 0, 0)
                         drawHistogramChannel(canvas, temp_histogram_channel, max)
 
                         for (i in 0..255) temp_histogram_channel[i] = histogram[c++]
-                        p.setColor(Color.argb(a1, 0, g, 0))
+                        p.color = Color.argb(a1, 0, g, 0)
                         drawHistogramChannel(canvas, temp_histogram_channel, max)
 
                         for (i in 0..255) temp_histogram_channel[i] = histogram[c++]
-                        p.setColor(Color.argb(a2, 0, 0, b))
+                        p.color = Color.argb(a2, 0, 0, b)
                         drawHistogramChannel(canvas, temp_histogram_channel, max)
                     } else {
-                        p.setColor(Color.argb(192, 255, 255, 255))
+                        p.color = Color.argb(192, 255, 255, 255)
                         drawHistogramChannel(canvas, histogram, max)
                     }
                 }
             }
         }
     }
+
+    private val decimalFormat2dpForce0 = DecimalFormat("0.00")
 
     /** Draws histogram for a single color channel.
      * @param canvas Canvas to draw onto.
@@ -2173,12 +2347,12 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     private fun drawUI(canvas: Canvas, device_ui_rotation: Int, time_ms: Long) {
         val preview = mainActivity.preview
         val camera_controller = preview!!.cameraController
-        val ui_rotation = preview.getUIRotation()
+        val ui_rotation = preview.uiRotation
         val ui_placement = mainActivity.mainUI!!.uIPlacement
         val has_level_angle = preview.hasLevelAngle()
-        val level_angle = preview.getLevelAngle()
+        val level_angle = preview.levelAngle
         val has_geo_direction = preview.hasGeoDirection()
-        val geo_direction = preview.getGeoDirection()
+        val geo_direction = preview.geoDirection
         val system_orientation = mainActivity.systemOrientation
         val system_orientation_portrait = system_orientation == SystemOrientation.PORTRAIT
         var text_base_y = 0
@@ -2186,9 +2360,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         canvas.save()
         canvas.rotate(ui_rotation.toFloat(), canvas.width / 2.0f, canvas.height / 2.0f)
 
-        if (camera_controller != null && !preview.isPreviewPaused()) {
-            /*canvas.drawText("PREVIEW", canvas.width / 2,
-					canvas.height / 2, p);*/
+        if (camera_controller != null && !preview.isPreviewPaused) {
 
             val gap_y = (20 * scale_font + 0.5f).toInt() // convert dps to pixels
             val text_y = (16 * scale_font + 0.5f).toInt() // convert dps to pixels
@@ -2208,7 +2380,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
                 if (last_take_photo_top_time == 0L || time_ms > last_take_photo_top_time + 1000) {
                     // don't call this too often, for UI performance (due to calling View.getLocationOnScreen())
-                    preview.getView().getLocationOnScreen(gui_location)
+                    preview.view.getLocationOnScreen(gui_location)
                     val this_left = gui_location[if (system_orientation_portrait) 1 else 0]
                     take_photo_top = this_left
 
@@ -2221,25 +2393,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 val mid_x = max_x / 2
                 var diff_x = take_photo_top - mid_x
 
-                // diff_x is the difference from the centre of the canvas to the position we want
-                // assumes canvas is centered
-                // avoids calling getLocationOnScreen for performance
-                /*int offset_x = (int) (124 * scale + 0.5f); // convert dps to pixels
-                // offset_x should be enough such that on-screen level angle (this is the lowest display on-screen text) does not
-                // interfere with take photo icon when using at least a 16:9 preview aspect ratio
-                // should correspond to the logged "compare offset_x" above
-                int diff_x = preview.getView().getRootView().getRight()/2 - offset_x;
-                */
                 if (device_ui_rotation == 90) {
                     // so we don't interfere with the top bar info (datetime, free memory, ISO) when upside down
                     max_x -= (2.5 * gap_y).toInt()
                 }
-                /*if( MyDebug.LOG ) {
-					Logger.d(TAG, "root view right: " + preview.getView().getRootView().getRight());
-					Logger.d(TAG, "diff_x: " + diff_x);
-					Logger.d(TAG, "canvas.width/2 + diff_x: " + (canvas.width/2+diff_x));
-					Logger.d(TAG, "max_x: " + max_x);
-				}*/
                 if (mid_x + diff_x > max_x) {
                     // in case goes off the size of the canvas, for "black bar" cases (when preview aspect ratio < screen aspect ratio)
                     diff_x = max_x - mid_x
@@ -2268,6 +2425,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
             val draw_angle = has_level_angle && show_angle_pref
             val draw_geo_direction = has_geo_direction && show_geo_direction_pref
+
             if (draw_angle) {
                 var color = Color.WHITE
                 p.setTextSize(14 * scale_font + 0.5f) // convert dps to pixels
@@ -2335,6 +2493,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 )
                 p.isUnderlineText = false
             }
+
             if (draw_geo_direction) {
                 val color = Color.WHITE
                 p.setTextSize(14 * scale_font + 0.5f) // convert dps to pixels
@@ -2362,13 +2521,13 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     canvas.width / 2 + pixels_offset_x,
                     text_base_y,
                     MyApplicationInterface.Alignment.ALIGNMENT_BOTTOM,
-                    ybounds_text,
                     MyApplicationInterface.Shadow.SHADOW_OUTLINE
                 )
             }
-            if (preview.isOnTimer()) {
+
+            if (preview.isOnTimer) {
                 val remaining_time = (preview.timerEndTime - time_ms + 999) / 1000
-                Logger.d(TAG, "remaining_time: " + remaining_time)
+                Logger.d(TAG, "remaining_time: $remaining_time")
                 if (remaining_time > 0) {
                     p.textSize = 42 * scale_font + 0.5f // convert dps to pixels
                     p.textAlign = Paint.Align.CENTER
@@ -2389,7 +2548,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                         canvas.height / 2
                     ) // Red 500
                 }
-            } else if (preview.isVideoRecording()) {
+            } else if (preview.isVideoRecording) {
                 val video_time = preview.getVideoTime(false)
                 val time_s = getTimeStringFromSeconds(video_time / 1000)
                 /*if( MyDebug.LOG )
@@ -2421,6 +2580,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     )
                     pixels_offset_y += text_y
                 }
+
                 if (!preview.isVideoRecordingPaused || ((time_ms / 500).toInt()) % 2 == 0) { // if video is paused, then flash the video time
                     applicationInterface.drawTextWithBackground(
                         canvas,
@@ -2433,6 +2593,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     )
                     pixels_offset_y += text_y
                 }
+
                 if (show_video_max_amp_pref && !preview.isVideoRecordingPaused) {
                     // audio amplitude
                     if (!this.has_video_max_amp || time_ms > this.last_video_max_amp_time + 50) {
@@ -2511,6 +2672,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                         p.color = Color.WHITE
                     }
                 }
+
             } else if (taking_picture && capture_started) {
                 if (camera_controller.isCapturingBurst()) {
                     val n_burst_taken = camera_controller.getNBurstTaken() + 1
@@ -2599,7 +2761,6 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                         canvas.width / 2,
                         text_base_y - text_y,
                         MyApplicationInterface.Alignment.ALIGNMENT_BOTTOM,
-                        ybounds_text,
                         MyApplicationInterface.Shadow.SHADOW_OUTLINE
                     )
                 }
@@ -2650,9 +2811,6 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     p
                 )
             }
-            //canvas.drawRect(0.0f, 0.0f, 100.0f, 100.0f, p);
-            //canvas.drawRGB(255, 0, 0);
-            //canvas.drawRect(0.0f, 0.0f, canvas.width, canvas.height, p);
         }
 
         var top_x = (5 * scale_dp + 0.5f).toInt() // convert dps to pixels
@@ -2696,67 +2854,6 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             }
         }
 
-//        run {
-//            /*int focus_seekbars_margin_left_dp = 85;
-//                       if( want_histogram )
-//                           focus_seekbars_margin_left_dp += DrawPreview.histogram_height_dp;*/
-//            // 135 needed to make room for on-screen info lines in DrawPreview.onDrawInfoLines(), including the histogram
-//            // but we also need to take the top_icon_shift into account, for widescreen aspect ratios and "icons along top" UI placement
-//            val focus_seekbars_margin_left_dp = 135
-//            var new_focus_seekbars_margin_left =
-//                (focus_seekbars_margin_left_dp * scale_dp + 0.5f).toInt() // convert dps to pixels
-//            if (top_icon_shift > 0) {
-//                new_focus_seekbars_margin_left += top_icon_shift
-//            }
-//            if (focus_seekbars_margin_left == -1 || new_focus_seekbars_margin_left != focus_seekbars_margin_left) {
-//                // we check whether focus_seekbars_margin_left has changed, in case there is a performance cost for setting layoutparams
-//                this.focus_seekbars_margin_left = new_focus_seekbars_margin_left
-//                Logger.d(
-//                    TAG,
-//                    "set focus_seekbars_margin_left to " + focus_seekbars_margin_left
-//                )
-//
-//                // "left" and "right" here are written assuming we're in landscape system orientation
-//                var view = mainActivity.findViewById<View>(R.id.focus_seekbar)
-//                var layoutParams = view.layoutParams as LinearLayout.LayoutParams
-//                preview.view.getLocationOnScreen(gui_location)
-//                var preview_left = gui_location[if (system_orientation_portrait) 1 else 0]
-//                if (system_orientation == SystemOrientation.REVERSE_LANDSCAPE) preview_left += preview.view
-//                    .width // actually want preview-right for reverse landscape
-//
-//
-//                view.getLocationOnScreen(gui_location)
-//                var seekbar_right = gui_location[if (system_orientation_portrait) 1 else 0]
-//                if (system_orientation == SystemOrientation.LANDSCAPE || system_orientation == SystemOrientation.PORTRAIT) {
-//                    // n.b., we read view.width even if system_orientation is portrait, because the seekbar is rotated in portrait orientation
-//                    seekbar_right += view.width
-//                } else {
-//                    // and for reversed landscape, the seekbar is rotated 180 degrees, and getLocationOnScreen() returns the location after the rotation
-//                    seekbar_right -= view.width
-//                }
-//
-//                val min_seekbar_width = (150 * scale_dp + 0.5f).toInt() // convert dps to pixels
-//                var new_seekbar_width: Int
-//                if (system_orientation == SystemOrientation.LANDSCAPE || system_orientation == SystemOrientation.PORTRAIT) {
-//                    new_seekbar_width = seekbar_right - (preview_left + focus_seekbars_margin_left)
-//                } else {
-//                    // reversed landscape
-//                    new_seekbar_width = preview_left - focus_seekbars_margin_left - seekbar_right
-//                }
-//                new_seekbar_width = max(new_seekbar_width, min_seekbar_width)
-//                layoutParams.width = new_seekbar_width
-//                view.layoutParams = layoutParams
-//
-//                view = mainActivity.findViewById<View>(R.id.focus_bracketing_target_seekbar)
-//                layoutParams = view.layoutParams as LinearLayout.LayoutParams
-//                layoutParams.width = new_seekbar_width
-//                view.layoutParams = layoutParams
-//
-//                // need to update due to changing width of focus seekbars
-//                mainActivity.mainUI!!.setFocusSeekbarsRotation()
-//            }
-//        }
-
         var battery_x = top_x
         var battery_y = top_y + (5 * scale_dp + 0.5f).toInt()
         val battery_width = (5 * scale_dp + 0.5f).toInt() // convert dps to pixels
@@ -2773,7 +2870,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         if (device_ui_rotation == 180) {
             battery_x = canvas.width - battery_x - battery_width
         }
-        if (show_battery_pref) {
+        if (showBatteryPref) {
             if (!this.has_battery_frac || time_ms > this.last_battery_time + 60000) {
                 // only check periodically - unclear if checking is costly in any way
                 // note that it's fine to call registerReceiver repeatedly - we pass a null receiver, so this is fine as a "one shot" use
@@ -2850,23 +2947,23 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         if (photoMode == PhotoMode.Panorama) {
             // in panorama mode, we should the level iff we aren't taking the panorama photos
             actual_show_angle_line_pref =
-                !mainActivity.applicationInterface!!.gyroSensor.isRecording()
+                !mainActivity.applicationInterface!!.gyroSensor.isRecording
         } else actual_show_angle_line_pref = show_angle_line_pref
 
-        val allow_angle_lines = camera_controller != null && !preview.isPreviewPaused()
+        val allow_angle_lines = camera_controller != null && !preview.isPreviewPaused
 
         if (allow_angle_lines && has_level_angle && (actual_show_angle_line_pref || show_pitch_lines_pref || show_geo_direction_lines_pref)) {
-            val level_angle = preview.getLevelAngle()
+            val level_angle = preview.levelAngle
             val has_pitch_angle = preview.hasPitchAngle()
-            val pitch_angle = preview.getPitchAngle()
+            val pitch_angle = preview.pitchAngle
             val has_geo_direction = preview.hasGeoDirection()
-            val geo_direction = preview.getGeoDirection()
+            val geo_direction = preview.geoDirection
             // n.b., must draw this without the standard canvas rotation
             // lines should be shorter in portrait
             val radius_dps = if (device_ui_rotation == 90 || device_ui_rotation == 270) 60 else 80
             val radius = (radius_dps * scale_dp + 0.5f).toInt() // convert dps to pixels
             val o_radius = (10 * scale_dp + 0.5f).toInt() // convert dps to pixels
-            var angle = -preview.getOrigLevelAngle()
+            var angle = -preview.origLevelAngle
             // see http://android-developers.blogspot.co.uk/2010/09/one-screen-turn-deserves-another.html
             val rotation = mainActivity.getDisplayRotation(false)
             when (rotation) {
@@ -2876,14 +2973,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 Surface.ROTATION_0 -> {}
                 else -> {}
             }
-            /*if( MyDebug.LOG ) {
-                Logger.d(TAG, "system_orientation: " + system_orientation);
-                Logger.d(TAG, "rotation: " + rotation);
-            }*/
-            /*if( MyDebug.LOG ) {
-				Logger.d(TAG, "orig_level_angle: " + preview.getOrigLevelAngle());
-				Logger.d(TAG, "angle: " + angle);
-			}*/
+
             val cx = canvas.width / 2
             val cy = canvas.height / 2
 
@@ -2896,7 +2986,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             val hthickness = (0.5f * scale_dp + 0.5f) // convert dps to pixels
             var shadow_radius = hthickness
             shadow_radius = max(shadow_radius, 1.0f)
-            p.setStyle(Paint.Style.FILL)
+            p.style = Paint.Style.FILL
 
             if (actual_show_angle_line_pref && preview.hasLevelAngleStable()) {
                 // draw the non-rotated part of the level
@@ -2905,11 +2995,11 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 p.setShadowLayer(shadow_radius, 0.0f, 0.0f, Color.BLACK)
 
                 if (is_level) {
-                    p.setColor(angle_highlight_color_pref)
+                    p.color = angle_highlight_color_pref
                 } else {
-                    p.setColor(Color.WHITE)
+                    p.color = Color.WHITE
                 }
-                p.setAlpha(line_alpha)
+                p.alpha = line_alpha
                 draw_rect.set(
                     (cx - radius - o_radius).toFloat(),
                     cy - hthickness,
@@ -2933,15 +3023,14 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
             if (actual_show_angle_line_pref && preview.hasLevelAngleStable()) {
                 // only show the angle line if level angle "stable" (i.e., not pointing near vertically up or down)
-
                 p.setShadowLayer(shadow_radius, 0.0f, 0.0f, Color.BLACK)
 
                 if (is_level) {
-                    p.setColor(angle_highlight_color_pref)
+                    p.color = angle_highlight_color_pref
                 } else {
-                    p.setColor(Color.WHITE)
+                    p.color = Color.WHITE
                 }
-                p.setAlpha(line_alpha)
+                p.alpha = line_alpha
                 draw_rect.set(
                     (cx - radius).toFloat(),
                     cy - hthickness,
@@ -2961,9 +3050,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
                 if (is_level) {
                     // draw a second line
-
-                    p.setColor(angle_highlight_color_pref)
-                    p.setAlpha(line_alpha)
+                    p.color = angle_highlight_color_pref
+                    p.alpha = line_alpha
                     draw_rect.set(
                         (cx - radius).toFloat(),
                         cy - 6 * hthickness,
@@ -2989,18 +3077,6 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 (canvas.width / (2.0 * tan(Math.toRadians((camera_angle_x / 2.0))))).toFloat()
             val angle_scale_y =
                 (canvas.height / (2.0 * tan(Math.toRadians((camera_angle_y / 2.0))))).toFloat()
-            /*if( MyDebug.LOG ) {
-				Logger.d(TAG, "camera_angle_x: " + camera_angle_x);
-				Logger.d(TAG, "camera_angle_y: " + camera_angle_y);
-				Logger.d(TAG, "angle_scale_x: " + angle_scale_x);
-				Logger.d(TAG, "angle_scale_y: " + angle_scale_y);
-				Logger.d(TAG, "angle_scale_x/scale: " + angle_scale_x/scale);
-				Logger.d(TAG, "angle_scale_y/scale: " + angle_scale_y/scale);
-			}*/
-            /*if( MyDebug.LOG ) {
-				Logger.d(TAG, "has_pitch_angle?: " + has_pitch_angle);
-				Logger.d(TAG, "show_pitch_lines?: " + show_pitch_lines);
-			}*/
             var angle_scale =
                 sqrt((angle_scale_x * angle_scale_x + angle_scale_y * angle_scale_y).toDouble()).toFloat()
             angle_scale *= preview.getZoomRatio()
@@ -3021,16 +3097,16 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 							Logger.d(TAG, "pitch_angle: " + pitch_angle);
 							Logger.d(TAG, "pitch_distance_dp: " + pitch_distance_dp);
 						}*/
-                        p.setColor(Color.WHITE)
-                        p.setTextAlign(Paint.Align.LEFT)
+                        p.color = Color.WHITE
+                        p.textAlign = Paint.Align.LEFT
                         if (latitude_angle == 0 && abs(pitch_angle) < 1.0) {
-                            p.setAlpha(255)
+                            p.alpha = 255
                         } else if (latitude_angle == 90 && abs(pitch_angle - 90) < 3.0) {
-                            p.setAlpha(255)
+                            p.alpha = 255
                         } else if (latitude_angle == -90 && abs(pitch_angle + 90) < 3.0) {
-                            p.setAlpha(255)
+                            p.alpha = 255
                         } else {
-                            p.setAlpha(line_alpha)
+                            p.alpha = line_alpha
                         }
                         p.setShadowLayer(shadow_radius, 0.0f, 0.0f, Color.BLACK)
                         // can't use drawRoundRect(left, top, right, bottom, ...) as that requires API 21
@@ -3047,7 +3123,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                             canvas,
                             p,
                             latitude_angle.toString() + "\u00B0",
-                            p.getColor(),
+                            p.color,
                             Color.BLACK,
                             (cx + pitch_radius + 4 * hthickness).toInt(),
                             (cy + pitch_distance - 2 * hthickness).toInt(),
@@ -3067,26 +3143,21 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 val angle_step = this.angleStep
                 var longitude_angle = 0
                 while (longitude_angle < 360) {
-                    var this_angle = (longitude_angle - geo_angle).toDouble()
-                    /*if( MyDebug.LOG ) {
-						Logger.d(TAG, "longitude_angle: " + longitude_angle);
-						Logger.d(TAG, "geo_angle: " + geo_angle);
-						Logger.d(TAG, "this_angle: " + this_angle);
-					}*/
+                    var thisAngle = (longitude_angle - geo_angle).toDouble()
                     // normalise to be in interval [0, 360)
-                    while (this_angle >= 360.0) this_angle -= 360.0
-                    while (this_angle < -360.0) this_angle += 360.0
+                    while (thisAngle >= 360.0) thisAngle -= 360.0
+                    while (thisAngle < -360.0) thisAngle += 360.0
                     // pick shortest angle
-                    if (this_angle > 180.0) this_angle = -(360.0 - this_angle)
-                    if (abs(this_angle) < 90.0) {
+                    if (thisAngle > 180.0) thisAngle = -(360.0 - thisAngle)
+                    if (abs(thisAngle) < 90.0) {
                         /*if( MyDebug.LOG ) {
 							Logger.d(TAG, "this_angle is now: " + this_angle);
 						}*/
                         val geo_distance =
-                            angle_scale * tan(Math.toRadians(this_angle)).toFloat() // angle_scale is already in pixels rather than dps
-                        p.setColor(Color.WHITE)
-                        p.setTextAlign(Paint.Align.CENTER)
-                        p.setAlpha(line_alpha)
+                            angle_scale * tan(Math.toRadians(thisAngle)).toFloat() // angle_scale is already in pixels rather than dps
+                        p.color = Color.WHITE
+                        p.textAlign = Paint.Align.CENTER
+                        p.alpha = line_alpha
                         p.setShadowLayer(shadow_radius, 0.0f, 0.0f, Color.BLACK)
                         // can't use drawRoundRect(left, top, right, bottom, ...) as that requires API 21
                         draw_rect.set(
@@ -3113,16 +3184,16 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 }
             }
 
-            p.setAlpha(255)
-            p.setStyle(Paint.Style.FILL) // reset
+            p.alpha = 255
+            p.style = Paint.Style.FILL // reset
 
             canvas.restore()
         }
 
-        if (allow_angle_lines && this.storedAutoStabilisePref && preview.hasLevelAngleStable() && !preview.isVideo()) {
+        if (allow_angle_lines && this.storedAutoStabilisePref && preview.hasLevelAngleStable() && !preview.isVideo) {
             // although auto-level is supported for photos taken in video mode, there's the risk that it's misleading to display
             // the guide when in video mode!
-            val level_angle = preview.getLevelAngle()
+            val level_angle = preview.levelAngle
             var auto_stabilise_level_angle = level_angle
             //double auto_stabilise_level_angle = angle;
             while (auto_stabilise_level_angle < -90) auto_stabilise_level_angle += 180.0
@@ -3165,110 +3236,40 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 val o_top = (canvas.height - o_dist) / 2.0f
                 val o_right = (canvas.width + o_dist) / 2.0f
                 val o_bottom = (canvas.height + o_dist) / 2.0f
-                p.setStyle(Paint.Style.FILL)
-                p.setColor(Color.rgb(0, 0, 0))
-                p.setAlpha(crop_shading_alpha_c)
+                p.style = Paint.Style.FILL
+                p.color = Color.rgb(0, 0, 0)
+                p.alpha = crop_shading_alpha_c
                 canvas.drawRect(o_left, o_top, left, o_bottom, p)
                 canvas.drawRect(right, o_top, o_right, o_bottom, p)
                 canvas.drawRect(left, o_top, right, top, p) // top
                 canvas.drawRect(left, bottom, right, o_bottom, p) // bottom
 
                 if (has_level_angle && abs(level_angle) <= close_level_angle) { // n.b., use level_angle, not angle or orig_level_angle
-                    p.setColor(angle_highlight_color_pref)
+                    p.color = angle_highlight_color_pref
                 } else {
-                    p.setColor(Color.WHITE)
+                    p.color = Color.WHITE
                 }
-                p.setStyle(Paint.Style.STROKE)
-                p.setStrokeWidth(stroke_width)
+                p.style = Paint.Style.STROKE
+                p.strokeWidth = stroke_width
 
                 canvas.drawRect(left, top, right, bottom, p)
 
                 canvas.restore()
 
-                p.setStyle(Paint.Style.FILL) // reset
-                p.setAlpha(255) // reset
+                p.style = Paint.Style.FILL // reset
+                p.alpha = 255 // reset
             }
         }
     }
 
-    private fun doThumbnailAnimation(canvas: Canvas, time_ms: Long) {
+    private fun doFocusAnimation(canvas: Canvas, timeMs: Long) {
         val preview = mainActivity.preview
-        val camera_controller = preview!!.cameraController
-        // note, no need to check preferences here, as we do that when setting thumbnail_anim
-        if (camera_controller != null && this.thumbnail_anim && last_thumbnail != null) {
-            val ui_rotation = preview.getUIRotation()
-            val time = time_ms - this.thumbnail_anim_start_ms
-            val duration: Long = 500
-            if (time > duration) {
-                Logger.d(TAG, "thumbnail_anim finished")
-                this.thumbnail_anim = false
-            } else {
-                thumbnail_anim_src_rect.left = 0f
-                thumbnail_anim_src_rect.top = 0f
-                thumbnail_anim_src_rect.right = last_thumbnail!!.width.toFloat()
-                thumbnail_anim_src_rect.bottom = last_thumbnail!!.height.toFloat()
-                //                View galleryButton = main_activity.findViewById(R.id.gallery);
-                val alpha = (time.toFloat()) / duration.toFloat()
-
-                val st_x = canvas.width / 2
-                val st_y = canvas.height / 2
-
-                //                int nd_x = galleryButton.getLeft() + galleryButton.width/2;
-//                int nd_y = galleryButton.getTop() + galleryButton.height/2;
-//                int thumbnail_x = (int)( (1.0f-alpha)*st_x + alpha*nd_x );
-//                int thumbnail_y = (int)( (1.0f-alpha)*st_y + alpha*nd_y );
-                val st_w = canvas.width.toFloat()
-                val st_h = canvas.height.toFloat()
-                //                float nd_w = galleryButton.width;
-//                float nd_h = galleryButton.height;
-                //int thumbnail_w = (int)( (1.0f-alpha)*st_w + alpha*nd_w );
-                //int thumbnail_h = (int)( (1.0f-alpha)*st_h + alpha*nd_h );
-//                float correction_w = st_w/nd_w - 1.0f;
-//                float correction_h = st_h/nd_h - 1.0f;
-//                int thumbnail_w = (int)(st_w/(1.0f+alpha*correction_w));
-//                int thumbnail_h = (int)(st_h/(1.0f+alpha*correction_h));
-//                thumbnail_anim_dst_rect.left = thumbnail_x - thumbnail_w/2.0f;
-//                thumbnail_anim_dst_rect.top = thumbnail_y - thumbnail_h/2.0f;
-//                thumbnail_anim_dst_rect.right = thumbnail_x + thumbnail_w/2.0f;
-//                thumbnail_anim_dst_rect.bottom = thumbnail_y + thumbnail_h/2.0f;
-                //canvas.drawBitmap(this.thumbnail, thumbnail_anim_src_rect, thumbnail_anim_dst_rect, p);
-                thumbnail_anim_matrix.setRectToRect(
-                    thumbnail_anim_src_rect,
-                    thumbnail_anim_dst_rect,
-                    Matrix.ScaleToFit.FILL
-                )
-                //thumbnail_anim_matrix.reset();
-                if (ui_rotation == 90 || ui_rotation == 270) {
-                    val ratio =
-                        (last_thumbnail!!.width.toFloat()) / last_thumbnail!!.height
-                            .toFloat()
-                    thumbnail_anim_matrix.preScale(
-                        ratio,
-                        1.0f / ratio,
-                        last_thumbnail!!.width / 2.0f,
-                        last_thumbnail!!.height / 2.0f
-                    )
-                }
-                thumbnail_anim_matrix.preRotate(
-                    ui_rotation.toFloat(),
-                    last_thumbnail!!.width / 2.0f,
-                    last_thumbnail!!.height / 2.0f
-                )
-                canvas.drawBitmap(last_thumbnail!!, thumbnail_anim_matrix, p)
-            }
-        }
-    }
-
-    private fun doFocusAnimation(canvas: Canvas, time_ms: Long) {
-        val preview = mainActivity.preview
-        val camera_controller = preview!!.cameraController
-        if (camera_controller != null && continuous_focus_moving && !taking_picture) {
+        val cameraController = preview!!.cameraController
+        if (cameraController != null && continuous_focus_moving && !taking_picture) {
             // we don't display the continuous focusing animation when taking a photo - and can also give the impression of having
             // frozen if we pause because the image saver queue is full
-            val dt = time_ms - continuous_focus_moving_ms
+            val dt = timeMs - continuous_focus_moving_ms
             val length: Long = 1000
-            /*if( MyDebug.LOG )
-				Logger.d(TAG, "continuous focus moving, dt: " + dt);*/
             if (dt <= length) {
                 val frac = (dt.toFloat()) / length.toFloat()
                 val pos_x = canvas.width / 2.0f
@@ -3283,21 +3284,17 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     val alpha = (frac - 0.5f) * 2.0f
                     radius = (1.0f - alpha) * max_radius + alpha * min_radius
                 }
-                /*if( MyDebug.LOG ) {
-					Logger.d(TAG, "dt: " + dt);
-					Logger.d(TAG, "radius: " + radius);
-				}*/
-                p.setColor(Color.WHITE)
-                p.setStyle(Paint.Style.STROKE)
-                p.setStrokeWidth(stroke_width)
+                p.color = Color.WHITE
+                p.style = Paint.Style.STROKE
+                p.strokeWidth = stroke_width
                 canvas.drawCircle(pos_x, pos_y, radius, p)
-                p.setStyle(Paint.Style.FILL) // reset
+                p.style = Paint.Style.FILL // reset
             } else {
                 clearContinuousFocusMove()
             }
         }
 
-        if (preview.isFocusWaiting() || preview.isFocusRecentSuccess() || preview.isFocusRecentFailure()) {
+        if (preview.isFocusWaiting || preview.isFocusRecentSuccess || preview.isFocusRecentFailure) {
             val time_since_focus_started = preview.timeSinceStartedAutoFocus()
             val min_radius = (40 * scale_dp + 0.5f) // convert dps to pixels
             val max_radius = (45 * scale_dp + 0.5f) // convert dps to pixels
@@ -3316,17 +3313,17 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             }
             val size = radius.toInt()
 
-            if (preview.isFocusRecentSuccess()) p.setColor(Color.rgb(20, 231, 21)) // Green A400
-            else if (preview.isFocusRecentFailure()) p.setColor(Color.rgb(244, 67, 54)) // Red 500
-            else p.setColor(Color.WHITE)
-            p.setStyle(Paint.Style.STROKE)
-            p.setStrokeWidth(stroke_width)
+            if (preview.isFocusRecentSuccess) p.color = Color.rgb(20, 231, 21) // Green A400
+            else if (preview.isFocusRecentFailure) p.color = Color.rgb(244, 67, 54) // Red 500
+            else p.color = Color.WHITE
+            p.style = Paint.Style.STROKE
+            p.strokeWidth = stroke_width
             val pos_x: Int
             val pos_y: Int
             if (preview.hasFocusArea()) {
-                val focus_pos = preview.getFocusPos()
-                pos_x = focus_pos.first!!
-                pos_y = focus_pos.second!!
+                val focusPos = preview.getFocusPos()
+                pos_x = focusPos.first!!
+                pos_y = focusPos.second!!
             } else {
                 pos_x = canvas.width / 2
                 pos_y = canvas.height / 2
@@ -3390,17 +3387,17 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 (pos_y + size).toFloat(),
                 p
             )
-            p.setStyle(Paint.Style.FILL) // reset
+            p.style = Paint.Style.FILL // reset
         }
     }
 
     fun setCoverPreview(cover_preview: Boolean) {
-        Logger.d(TAG, "setCoverPreview: " + cover_preview)
-        this.cover_preview = cover_preview
+        Logger.d(TAG, "setCoverPreview: $cover_preview")
+        this.coverPreview = cover_preview
     }
 
     fun setDimPreview(on: Boolean) {
-        Logger.d(TAG, "setDimPreview: " + on)
+        Logger.d(TAG, "setDimPreview: $on")
         if (on) {
             this.dim_preview = DimPreview.DIM_PREVIEW_ON
         } else if (this.dim_preview == DimPreview.DIM_PREVIEW_ON) {
@@ -3413,46 +3410,41 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     }
 
     fun onDrawPreview(canvas: Canvas) {
-        /*if( MyDebug.LOG )
-			Logger.d(TAG, "onDrawPreview");*/
-        /*if( MyDebug.LOG )
-			Logger.d(TAG, "onDrawPreview hardware accelerated: " + canvas.isHardwareAccelerated());*/
+        val timeMs = System.currentTimeMillis()
 
-        val time_ms = System.currentTimeMillis()
-
-        if (!has_settings) {
+        if (!hasSettings) {
             Logger.d(TAG, "onDrawPreview: need to update settings")
             updateSettings()
         }
         val preview = mainActivity.preview
-        val camera_controller = preview!!.cameraController
-        val ui_rotation = preview.getUIRotation()
+        val cameraController = preview!!.cameraController
+        val uiRotation = preview.uiRotation
 
         // set up preview bitmaps (histogram etc)
-        val want_preview_bitmap =
-            want_histogram || want_zebra_stripes || want_focus_peaking || want_pre_shots
-        val use_preview_bitmap_small = want_histogram || want_zebra_stripes || want_focus_peaking
-        val use_preview_bitmap_full = want_pre_shots
-        if (want_preview_bitmap != preview.isPreviewBitmapEnabled() || use_preview_bitmap_small != preview.usePreviewBitmapSmall() || use_preview_bitmap_full != preview.usePreviewBitmapFull()) {
-            if (want_preview_bitmap) {
-                preview.enablePreviewBitmap(use_preview_bitmap_small, use_preview_bitmap_full)
+        val wantPreviewBitmap =
+            wantHistogram || wantZebraStripes || wantFocusPeaking || wantPreShots
+        val usePreviewBitmapSmall = wantHistogram || wantZebraStripes || wantFocusPeaking
+        val usePreviewBitmapFull = wantPreShots
+        if (wantPreviewBitmap != preview.isPreviewBitmapEnabled || usePreviewBitmapSmall != preview.usePreviewBitmapSmall() || usePreviewBitmapFull != preview.usePreviewBitmapFull()) {
+            if (wantPreviewBitmap) {
+                preview.enablePreviewBitmap(usePreviewBitmapSmall, usePreviewBitmapFull)
             } else preview.disablePreviewBitmap()
         }
-        if (want_preview_bitmap) {
-            if (want_histogram) preview.enableHistogram(histogram_type)
+        if (wantPreviewBitmap) {
+            if (wantHistogram) preview.enableHistogram(histogram_type)
             else preview.disableHistogram()
 
-            if (want_zebra_stripes) preview.enableZebraStripes(
+            if (wantZebraStripes) preview.enableZebraStripes(
                 zebra_stripes_threshold,
                 zebra_stripes_color_foreground,
                 zebra_stripes_color_background
             )
             else preview.disableZebraStripes()
 
-            if (want_focus_peaking) preview.enableFocusPeaking()
+            if (wantFocusPeaking) preview.enableFocusPeaking()
             else preview.disableFocusPeaking()
 
-            if (want_pre_shots) preview.enablePreShots()
+            if (wantPreShots) preview.enablePreShots()
             else preview.disablePreShots()
         }
 
@@ -3463,19 +3455,17 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         // cover up the camera when the application is pausing, and to keep it covered up until
         // after we've resumed, and the camera has been reopened and we've received frames.
         if (preview.usingCamera2API()) {
-            val camera_is_active =
-                camera_controller != null && !camera_controller.shouldCoverPreview()
-            if (cover_preview) {
+            val cameraIsActive = cameraController != null && !cameraController.shouldCoverPreview()
+            if (coverPreview) {
                 // see if we have received a frame yet
-                if (camera_is_active) {
+                if (cameraIsActive) {
                     Logger.d(TAG, "no longer need to cover preview")
-                    cover_preview = false
+                    coverPreview = false
                 }
             }
-            if (cover_preview) {
+            if (coverPreview) {
                 // camera has never been active since last resuming
-                p.setColor(Color.BLACK)
-                //p.setColor(Color.RED); // test
+                p.color = Color.BLACK
                 canvas.drawRect(
                     0.0f,
                     0.0f,
@@ -3483,7 +3473,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     canvas.height.toFloat(),
                     p
                 )
-            } else if (dim_preview == DimPreview.DIM_PREVIEW_ON || (!camera_is_active && dim_preview == DimPreview.DIM_PREVIEW_UNTIL)) {
+            } else if (dim_preview == DimPreview.DIM_PREVIEW_ON || (!cameraIsActive && dim_preview == DimPreview.DIM_PREVIEW_UNTIL)) {
                 val time_now = System.currentTimeMillis()
                 if (camera_inactive_time_ms == -1L) {
                     camera_inactive_time_ms = time_now
@@ -3491,13 +3481,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 var frac = ((time_now - camera_inactive_time_ms) / dim_effect_time_c.toFloat())
                 frac = min(frac, 1.0f)
                 val alpha = (frac * 127).toInt()
-                /*if( MyDebug.LOG ) {
-                    Logger.d(TAG, "time diff: " + (time_now - camera_inactive_time_ms));
-                    Logger.d(TAG, "    frac: " + frac);
-                    Logger.d(TAG, "    alpha: " + alpha);
-                }*/
-                p.setColor(Color.BLACK)
-                p.setAlpha(alpha)
+                p.color = Color.BLACK
+                p.alpha = alpha
                 canvas.drawRect(
                     0.0f,
                     0.0f,
@@ -3505,17 +3490,17 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     canvas.height.toFloat(),
                     p
                 )
-                p.setAlpha(255)
+                p.alpha = 255
             } else {
                 camera_inactive_time_ms = -1
-                if (dim_preview == DimPreview.DIM_PREVIEW_UNTIL && camera_is_active) {
+                if (dim_preview == DimPreview.DIM_PREVIEW_UNTIL && cameraIsActive) {
                     dim_preview = DimPreview.DIM_PREVIEW_OFF
                 }
             }
         }
 
-        if (camera_controller != null && front_screen_flash) {
-            p.setColor(Color.WHITE)
+        if (cameraController != null && front_screen_flash) {
+            p.color = Color.WHITE
             canvas.drawRect(
                 0.0f,
                 0.0f,
@@ -3524,8 +3509,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 p
             )
         } else if ("flash_frontscreen_torch" == preview.getCurrentFlashValue()) { // getCurrentFlashValue() may return null
-            p.setColor(Color.WHITE)
-            p.setAlpha(200) // set alpha so user can still see some of the preview
+            p.color = Color.WHITE
+            p.alpha = 200 // set alpha so user can still see some of the preview
             canvas.drawRect(
                 0.0f,
                 0.0f,
@@ -3533,7 +3518,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 canvas.height.toFloat(),
                 p
             )
-            p.setAlpha(255)
+            p.alpha = 255
         }
 
         if (mainActivity.mainUI!!.inImmersiveMode()) {
@@ -3549,20 +3534,20 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         // device; if MainActivity.lock_to_landscape==false then ui_rotation is always 0 as we don't need to
         // apply any orientation ourselves. However, we're we do want to know the true rotation of the
         // device, as it affects how certain elements of the UI are layed out.
-        val device_ui_rotation: Int
+        val deviceUiRotation: Int
         if (MainActivity.lockToLandscape) {
-            device_ui_rotation = ui_rotation
+            deviceUiRotation = uiRotation
         } else {
-            val system_orientation = mainActivity.systemOrientation
-            device_ui_rotation = getRotationFromSystemOrientation(system_orientation)
+            val systemOrientation = mainActivity.systemOrientation
+            deviceUiRotation = getRotationFromSystemOrientation(systemOrientation)
         }
 
-        if (camera_controller != null && taking_picture && !front_screen_flash && take_photo_border_pref) {
-            p.setColor(Color.WHITE)
-            p.setStyle(Paint.Style.STROKE)
-            p.setStrokeWidth(stroke_width)
-            val this_stroke_width = (5.0f * scale_dp + 0.5f) // convert dps to pixels
-            p.setStrokeWidth(this_stroke_width)
+        if (cameraController != null && taking_picture && !front_screen_flash && take_photo_border_pref) {
+            p.color = Color.WHITE
+            p.style = Paint.Style.STROKE
+            p.strokeWidth = this@DrawPreview.stroke_width
+            val stroke_width = (5.0f * scale_dp + 0.5f) // convert dps to pixels
+            p.strokeWidth = stroke_width
             canvas.drawRect(
                 0.0f,
                 0.0f,
@@ -3570,8 +3555,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 canvas.height.toFloat(),
                 p
             )
-            p.setStyle(Paint.Style.FILL) // reset
-            p.setStrokeWidth(stroke_width) // reset
+            p.style = Paint.Style.FILL // reset
+            p.strokeWidth = this@DrawPreview.stroke_width // reset
         }
         drawGrids(canvas)
 
@@ -3579,18 +3564,18 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
 
         // n.b., don't display ghost image if front_screen_flash==true (i.e., frontscreen flash is in operation), otherwise
         // the effectiveness of the "flash" is reduced
-        if (last_thumbnail != null && !last_thumbnail_is_video && camera_controller != null && (show_last_image || (allow_ghost_last_image && !front_screen_flash && ghost_image_pref == "preference_ghost_image_last"))) {
+        if (last_thumbnail != null && !last_thumbnail_is_video && cameraController != null
+            && (show_last_image || (allow_ghost_last_image && !front_screen_flash && ghost_image_pref == "preference_ghost_image_last"))
+        ) {
             // If changing this code, ensure that pause preview still works when:
             // - Taking a photo in portrait or landscape - and check rotating the device while preview paused
             // - Taking a photo with lock to portrait/landscape options still shows the thumbnail with aspect ratio preserved
             // Also check ghost last image works okay!
             if (show_last_image) {
-                p.setColor(
-                    Color.rgb(
-                        0,
-                        0,
-                        0
-                    )
+                p.color = Color.rgb(
+                    0,
+                    0,
+                    0
                 ) // in case image doesn't cover the canvas (due to different aspect ratios)
                 canvas.drawRect(
                     0.0f,
@@ -3600,62 +3585,59 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                     p
                 ) // in case
             }
-            setLastImageMatrix(canvas, last_thumbnail!!, ui_rotation, !show_last_image)
-            if (!show_last_image) p.setAlpha(ghost_image_alpha)
+            setLastImageMatrix(canvas, last_thumbnail!!, uiRotation, !show_last_image)
+            if (!show_last_image) p.alpha = ghost_image_alpha
             canvas.drawBitmap(last_thumbnail!!, last_image_matrix, p)
-            if (!show_last_image) p.setAlpha(255)
-        } else if (camera_controller != null && !front_screen_flash && ghost_selected_image_bitmap != null) {
-            setLastImageMatrix(canvas, ghost_selected_image_bitmap!!, ui_rotation, true)
-            p.setAlpha(ghost_image_alpha)
+            if (!show_last_image) p.alpha = 255
+        } else if (cameraController != null && !front_screen_flash && ghost_selected_image_bitmap != null) {
+            setLastImageMatrix(canvas, ghost_selected_image_bitmap!!, uiRotation, true)
+            p.alpha = ghost_image_alpha
             canvas.drawBitmap(ghost_selected_image_bitmap!!, last_image_matrix, p)
-            p.setAlpha(255)
+            p.alpha = 255
         }
 
-        if (preview.isPreviewBitmapEnabled() && !show_last_image) {
+        if (preview.isPreviewBitmapEnabled && !show_last_image) {
             // draw additional real-time effects
 
             // draw zebra stripes
 
-            val zebra_stripes_bitmap = preview.getZebraStripesBitmap()
+            val zebra_stripes_bitmap = preview.zebraStripesBitmap
             if (zebra_stripes_bitmap != null) {
                 setLastImageMatrix(canvas, zebra_stripes_bitmap, 0, false)
-                p.setAlpha(255)
+                p.alpha = 255
                 canvas.drawBitmap(zebra_stripes_bitmap, last_image_matrix, p)
             }
 
             // draw focus peaking
-            val focus_peaking_bitmap = preview.getFocusPeakingBitmap()
+            val focus_peaking_bitmap = preview.focusPeakingBitmap
             if (focus_peaking_bitmap != null) {
                 setLastImageMatrix(canvas, focus_peaking_bitmap, 0, false)
-                p.setAlpha(127)
+                p.alpha = 127
                 if (focus_peaking_color_pref != Color.WHITE) {
-                    p.setColorFilter(
-                        PorterDuffColorFilter(
-                            focus_peaking_color_pref,
-                            PorterDuff.Mode.SRC_IN
-                        )
+                    p.colorFilter = PorterDuffColorFilter(
+                        focus_peaking_color_pref,
+                        PorterDuff.Mode.SRC_IN
                     )
                 }
                 canvas.drawBitmap(focus_peaking_bitmap, last_image_matrix, p)
                 if (focus_peaking_color_pref != Color.WHITE) {
-                    p.setColorFilter(null)
+                    p.colorFilter = null
                 }
-                p.setAlpha(255)
+                p.alpha = 255
             }
         }
 
-        //        doThumbnailAnimation(canvas, time_ms);
-        drawUI(canvas, device_ui_rotation, time_ms)
+        drawUI(canvas, deviceUiRotation, timeMs)
 
-        drawAngleLines(canvas, device_ui_rotation, time_ms)
+        drawAngleLines(canvas, deviceUiRotation, timeMs)
 
-        doFocusAnimation(canvas, time_ms)
+        doFocusAnimation(canvas, timeMs)
 
         val faces_detected = preview.getFacesDetected()
         if (faces_detected != null) {
-            p.setColor(Color.rgb(255, 235, 59)) // Yellow 500
-            p.setStyle(Paint.Style.STROKE)
-            p.setStrokeWidth(stroke_width)
+            p.color = Color.rgb(255, 235, 59) // Yellow 500
+            p.style = Paint.Style.STROKE
+            p.strokeWidth = stroke_width
             for (face in faces_detected) {
                 // Android doc recommends filtering out faces with score less than 50 (same for both Camera and Camera2 APIs)
                 if (face.score >= 50) {
@@ -3665,9 +3647,9 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             p.setStyle(Paint.Style.FILL) // reset
         }
 
-        if (enable_gyro_target_spot && camera_controller != null) {
+        if (enable_gyro_target_spot && cameraController != null) {
             val gyroSensor = mainActivity.applicationInterface!!.gyroSensor
-            if (gyroSensor.isRecording()) {
+            if (gyroSensor.isRecording) {
                 val system_orientation = mainActivity.systemOrientation
                 val system_orientation_portrait = system_orientation == SystemOrientation.PORTRAIT
                 for (gyro_direction in gyro_directions) {
@@ -3688,7 +3670,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                         angle_y = -asin(transformed_gyro_direction[0].toDouble()).toFloat()
                     }
                     if (abs(angle_x) < 0.5f * Math.PI && abs(angle_y) < 0.5f * Math.PI) {
-                        updateCachedViewAngles(time_ms) // ensure view_angle_x_preview, view_angle_y_preview are computed and up to date
+                        updateCachedViewAngles(timeMs) // ensure view_angle_x_preview, view_angle_y_preview are computed and up to date
                         val camera_angle_x: Float
                         val camera_angle_y: Float
                         if (system_orientation_portrait) {
@@ -3708,7 +3690,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                             angle_scale_x * tan(angle_x.toDouble()).toFloat() // angle_scale is already in pixels rather than dps
                         val distance_y =
                             angle_scale_y * tan(angle_y.toDouble()).toFloat() // angle_scale is already in pixels rather than dps
-                        p.setColor(Color.WHITE)
+                        p.color = Color.WHITE
                         drawGyroSpot(
                             canvas,
                             0.0f,
@@ -3718,23 +3700,10 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                             48,
                             true
                         ) // draw spot for the centre of the screen, to help the user orient the device
-                        p.setColor(Color.BLUE)
+                        p.color = Color.BLUE
                         val dir_x = -transformed_gyro_direction_up[1]
                         val dir_y = -transformed_gyro_direction_up[0]
                         drawGyroSpot(canvas, distance_x, distance_y, dir_x, dir_y, 45, false)
-                        /*{
-						// for debug only, draw the gyro spot that isn't calibrated with the accelerometer
-						gyroSensor.getRelativeInverseVectorGyroOnly(transformed_gyro_direction, gyro_direction);
-						gyroSensor.getRelativeInverseVectorGyroOnly(transformed_gyro_direction_up, gyro_direction_up);
-						p.setColor(Color.YELLOW);
-						angle_x = - (float)Math.asin(transformed_gyro_direction[1]);
-						angle_y = - (float)Math.asin(transformed_gyro_direction[0]);
-						distance_x = angle_scale_x * (float) Math.tan(angle_x); // angle_scale is already in pixels rather than dps
-						distance_y = angle_scale_y * (float) Math.tan(angle_y); // angle_scale is already in pixels rather than dps
-						dir_x = -transformed_gyro_direction_up[1];
-						dir_y = -transformed_gyro_direction_up[0];
-						drawGyroSpot(canvas, distance_x, distance_y, dir_x, dir_y, 45);
-					}*/
                     }
 
                     // show indicator for not being "upright", but only if tilt angle is within 20 degrees
@@ -3742,7 +3711,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                         //applicationInterface.drawTextWithBackground(canvas, p, "not upright", Color.WHITE, Color.BLACK, canvas.width/2, canvas.height/2, MyApplicationInterface.Alignment.ALIGNMENT_CENTRE, null, true);
                         canvas.save()
                         canvas.rotate(
-                            ui_rotation.toFloat(),
+                            uiRotation.toFloat(),
                             canvas.width / 2.0f,
                             canvas.height / 2.0f
                         )
@@ -3756,11 +3725,6 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                             cx + icon_size / 2,
                             cy + icon_size / 2
                         )
-                        /*p.setStyle(Paint.Style.FILL);
-					p.setColor(Color.BLACK);
-					p.setAlpha(64);
-					canvas.drawRect(icon_dest, p);
-					p.setAlpha(255);*/
                         canvas.drawBitmap(
                             (if (gyroSensor.isUpright() > 0) rotate_left_bitmap else rotate_right_bitmap)!!,
                             null,
@@ -3773,28 +3737,23 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             }
         }
 
-        if (time_ms > last_update_focus_seekbar_auto_time + 100) {
-            last_update_focus_seekbar_auto_time = time_ms
+        if (timeMs > last_update_focus_seekbar_auto_time + 100) {
+            last_update_focus_seekbar_auto_time = timeMs
 
-            if (camera_controller != null && photoMode == PhotoMode.FocusBracketing && applicationInterface.isFocusBracketingSourceAutoPref()) {
+            if (cameraController != null && photoMode == PhotoMode.FocusBracketing && applicationInterface.isFocusBracketingSourceAutoPref()) {
                 // not strictly related to drawing on the preview, but a convenient place to do this
                 // also need to wait some time after getSettingTargetFocusDistanceTime(), as when user stops changing target seekbar, it takes time to return to
                 // continuous focus
-                if (!mainActivity.preview!!.isSettingTargetFocusDistance && time_ms > mainActivity.preview!!.settingTargetFocusDistanceTime + 500 &&
-                    camera_controller.captureResultHasFocusDistance()
+                if (!mainActivity.preview!!.isSettingTargetFocusDistance && timeMs > mainActivity.preview!!.settingTargetFocusDistanceTime + 500 &&
+                    cameraController.captureResultHasFocusDistance()
                 ) {
                     mainActivity.setManualFocusSeekbarProgress(
                         false,
-                        camera_controller.captureResultFocusDistance()
+                        cameraController.captureResultFocusDistance()
                     )
                 }
             }
         }
-
-        /*if( MyDebug.LOG ) {
-            long time_taken = System.currentTimeMillis() - time_ms;
-            Logger.d(TAG, "onDrawPreview time: " + time_taken);
-        }*/
     }
 
     private fun setLastImageMatrix(
@@ -3817,10 +3776,6 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         last_image_dst_rect.top = 0f
         last_image_dst_rect.right = canvas.width.toFloat()
         last_image_dst_rect.bottom = canvas.height.toFloat()
-        /*if( MyDebug.LOG ) {
-			Logger.d(TAG, "thumbnail: " + bitmap.width + " x " + bitmap.getHeight());
-			Logger.d(TAG, "canvas: " + canvas.width + " x " + canvas.getHeight());
-		}*/
         last_image_matrix.setRectToRect(
             last_image_src_rect,
             last_image_dst_rect,
@@ -3828,7 +3783,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         ) // use CENTER to preserve aspect ratio
         if (this_ui_rotation == 90 || this_ui_rotation == 270) {
             // the rotation maps (0, 0) to (tw/2 - th/2, th/2 - tw/2), so we translate to undo this
-            val diff = (bitmap.height - bitmap.getWidth()).toFloat()
+            val diff = (bitmap.height - bitmap.width).toFloat()
             last_image_matrix.preTranslate(diff / 2.0f, -diff / 2.0f)
         }
         last_image_matrix.preRotate(
@@ -3837,9 +3792,9 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             bitmap.height / 2.0f
         )
         if (flip_front) {
-            val is_front_facing =
+            val isFrontFacing =
                 camera_controller != null && (camera_controller.getFacing() == CameraController.Facing.FACING_FRONT)
-            if (is_front_facing && sharedPreferences.getString(
+            if (isFrontFacing && sharedPref.getString(
                     PreferenceKeys.FrontCameraMirrorKey,
                     "preference_front_camera_mirror_no"
                 ) != "preference_front_camera_mirror_photo"
@@ -3859,11 +3814,11 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         outline: Boolean
     ) {
         if (outline) {
-            p.setStyle(Paint.Style.STROKE)
-            p.setStrokeWidth(stroke_width)
-            p.setAlpha(255)
+            p.style = Paint.Style.STROKE
+            p.strokeWidth = stroke_width
+            p.alpha = 255
         } else {
-            p.setAlpha(127)
+            p.alpha = 127
         }
         val radius = (radius_dp * scale_dp + 0.5f) // convert dps to pixels
         var cx = canvas.width / 2.0f + distance_x
@@ -3877,8 +3832,8 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         cy = min(cy, canvas.height.toFloat())
 
         canvas.drawCircle(cx, cy, radius, p)
-        p.setAlpha(255)
-        p.setStyle(Paint.Style.FILL) // reset
+        p.alpha = 255
+        p.style = Paint.Style.FILL // reset
 
         // draw crosshairs
         //p.setColor(Color.WHITE);
@@ -3905,12 +3860,6 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
     companion object {
         private const val TAG = "DrawPreview"
 
-        // Time for the dimming effect. This should be quick, because we call Preview.setupCamera() on
-        // the UI thread, which will block redraws:
-        // - When reopening the camera, we want the dimming to have occurred whilst reopening the
-        //   camera, before we call setupCamera() on the UI thread.
-        // - When pausing the preview in MainActivity.updateForSettings(), we call setupCamera() after
-        //   this delay - so we don't want to keep the user waiting too long.
         const val dim_effect_time_c: Long = 50
 
         private val decimalFormat = DecimalFormat("#0.0")
@@ -3921,18 +3870,12 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         private const val crop_shading_alpha_c =
             160 // alpha to use for shading areas not of interest
 
-        /** Formats the level_angle double into a string.
-         * Beware of calling this too often - shouldn't be every frame due to performance of DecimalFormat
-         * (see http://stackoverflow.com/questions/8553672/a-faster-alternative-to-decimalformat-format ).
-         */
-        fun formatLevelAngle(level_angle: Double): String {
-            var number_string = decimalFormat.format(level_angle)
-            if (abs(level_angle) < 0.1) {
-                // avoids displaying "-0.0", see http://stackoverflow.com/questions/11929096/negative-sign-in-case-of-zero-in-java
-                // only do this when level_angle is small, to help performance
-                number_string = number_string.replace("^-(?=0(.0*)?$)".toRegex(), "")
+        fun formatLevelAngle(levelAngle: Double): String {
+            var numberString = decimalFormat.format(levelAngle)
+            if (abs(levelAngle) < 0.1) {
+                numberString = numberString.replace("^-(?=0(.0*)?$)".toRegex(), "")
             }
-            return number_string
+            return numberString
         }
     }
 }
