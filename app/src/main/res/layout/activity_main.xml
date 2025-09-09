@@ -34,7 +34,7 @@
                 android:contentDescription="@string/action_settings"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/outline_crown" />
+                android:src="@drawable/outline_crown" />
 
             <ImageButton
                 android:id="@+id/settings"
@@ -46,7 +46,7 @@
                 android:contentDescription="@string/action_settings"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/settings" />
+                android:src="@drawable/settings" />
 
             <ImageButton
                 android:id="@+id/cycle_flash"
@@ -59,7 +59,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:srcCompat="@drawable/flash_off" />
+                android:src="@drawable/flash_off" />
 
             <ImageButton
                 android:id="@+id/face_detection"
@@ -72,7 +72,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:srcCompat="@drawable/ic_face_white_48dp" />
+                android:src="@drawable/ic_face_white_48dp" />
 
             <ImageButton
                 android:id="@+id/switch_multi_camera"
@@ -84,7 +84,7 @@
                 android:contentDescription="@string/action_settings"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/baseline_add_a_photo_white_48" />
+                android:src="@drawable/baseline_add_a_photo_white_48" />
 
             <ImageButton
                 android:id="@+id/cycle_raw"
@@ -97,7 +97,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:srcCompat="@drawable/raw_off_icon" />
+                android:src="@drawable/raw_off_icon" />
 
             <ImageButton
                 android:id="@+id/store_location"
@@ -110,7 +110,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:srcCompat="@drawable/ic_gps_fixed_white_48dp" />
+                android:src="@drawable/ic_gps_fixed_white_48dp" />
 
             <ImageButton
                 android:id="@+id/text_stamp"
@@ -123,7 +123,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:srcCompat="@drawable/baseline_text_fields_white_48" />
+                android:src="@drawable/baseline_text_fields_white_48" />
 
             <ImageButton
                 android:id="@+id/stamp"
@@ -136,7 +136,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:srcCompat="@drawable/ic_text_format_white_48dp" />
+                android:src="@drawable/ic_text_format_white_48dp" />
 
             <ImageButton
                 android:id="@+id/focus_peaking"
@@ -149,7 +149,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:srcCompat="@drawable/key_visualizer" />
+                android:src="@drawable/key_visualizer" />
 
             <ImageButton
                 android:id="@+id/auto_level"
@@ -162,7 +162,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:srcCompat="@drawable/auto_stabilise_icon" />
+                android:src="@drawable/auto_stabilise_icon" />
 
             <ImageButton
                 android:id="@+id/audio_control"
@@ -175,7 +175,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="gone"
-                app:srcCompat="@drawable/ic_mic_white_48dp" />
+                android:src="@drawable/ic_mic_white_48dp" />
 
             <ImageView
                 android:id="@+id/kraken_icon"
@@ -188,7 +188,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:visibility="gone"
-                app:srcCompat="@drawable/baseline_bluetooth_white_48" />
+                android:src="@drawable/baseline_bluetooth_white_48" />
 
         </LinearLayout>
     </HorizontalScrollView>
@@ -217,7 +217,7 @@
             android:scaleType="fitCenter"
             android:stateListAnimator="@animator/button_animation"
             android:visibility="gone"
-            app:srcCompat="@drawable/baseline_close_white_48" />
+            android:src="@drawable/baseline_close_white_48" />
 
         <ZoomControls
             android:id="@+id/zoom"
@@ -271,7 +271,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:contentDescription="@string/exposure_compensation"
-                    app:srcCompat="@drawable/ic_exposure_white_48dp" />
+                    android:src="@drawable/ic_exposure_white_48dp" />
 
                 <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
                 <SeekBar
@@ -307,7 +307,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:contentDescription="@string/iso"
-                    app:srcCompat="@drawable/iso_icon" />
+                    android:src="@drawable/iso_icon" />
 
                 <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
                 <SeekBar
@@ -326,7 +326,7 @@
                     android:layout_height="30dp"
                     android:layout_below="@+id/iso_seekbar"
                     android:contentDescription="@string/exposure_shutter_speed"
-                    app:srcCompat="@drawable/baseline_shutter_speed_white_48" />
+                    android:src="@drawable/baseline_shutter_speed_white_48" />
 
                 <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
                 <SeekBar
@@ -353,7 +353,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:contentDescription="@string/white_balance"
-                    app:srcCompat="@drawable/ic_colorize_white_48dp" />
+                    android:src="@drawable/ic_colorize_white_48dp" />
 
                 <!-- alpha set as workaround for Android 7 bug where seekbar doesn't show when rotated -->
                 <SeekBar
@@ -447,7 +447,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_source_distance_seekbar"
                         app:layout_constraintEnd_toStartOf="@+id/focus_bracketing_source_distance_seekbar"
                         app:layout_constraintTop_toTopOf="@+id/focus_bracketing_source_distance_seekbar"
-                        app:srcCompat="@drawable/focus_mode_infinity" />
+                        android:src="@drawable/focus_mode_infinity" />
 
                     <SeekBar
                         android:id="@+id/focus_bracketing_source_distance_seekbar"
@@ -471,7 +471,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_source_distance_seekbar"
                         app:layout_constraintStart_toEndOf="@+id/focus_bracketing_source_distance_seekbar"
                         app:layout_constraintTop_toTopOf="@+id/focus_bracketing_source_distance_seekbar"
-                        app:srcCompat="@drawable/ic_macro_focus" />
+                        android:src="@drawable/ic_macro_focus" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -505,7 +505,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_target_seekbar"
                         app:layout_constraintEnd_toStartOf="@+id/focus_bracketing_target_seekbar"
                         app:layout_constraintTop_toTopOf="@+id/focus_bracketing_target_seekbar"
-                        app:srcCompat="@drawable/focus_mode_infinity" />
+                        android:src="@drawable/focus_mode_infinity" />
 
                     <SeekBar
                         android:id="@+id/focus_bracketing_target_seekbar"
@@ -529,7 +529,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_target_seekbar"
                         app:layout_constraintStart_toEndOf="@+id/focus_bracketing_target_seekbar"
                         app:layout_constraintTop_toTopOf="@+id/focus_bracketing_target_seekbar"
-                        app:srcCompat="@drawable/ic_macro_focus" />
+                        android:src="@drawable/ic_macro_focus" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
