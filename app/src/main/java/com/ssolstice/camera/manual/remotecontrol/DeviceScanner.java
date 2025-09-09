@@ -21,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,7 +122,7 @@ public class DeviceScanner extends AppCompatActivity {
         if (useAndroid12BluetoothPermissions()) {
             Logger.INSTANCE.d(TAG, "check for bluetooth connect permission");
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, "bluetooth connect permission not granted!");
+                Logger.INSTANCE.e(TAG, "bluetooth connect permission not granted!");
                 return;
             }
         }
@@ -231,7 +230,7 @@ public class DeviceScanner extends AppCompatActivity {
         Logger.INSTANCE.d(TAG, "showRequestBluetoothScanConnectPermissionRationale");
         if (!useAndroid12BluetoothPermissions()) {
             // just in case!
-            Log.e(TAG, "shouldn't be requesting bluetooth scan/connect permissions!");
+            Logger.INSTANCE.e(TAG, "shouldn't be requesting bluetooth scan/connect permissions!");
             return;
         }
 
@@ -255,7 +254,7 @@ public class DeviceScanner extends AppCompatActivity {
     private void showRequestLocationPermissionRationale() {
         Logger.INSTANCE.d(TAG, "showRequestLocationPermissionRationale");
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            Log.e(TAG, "shouldn't be requesting permissions for pre-Android M!");
+            Logger.INSTANCE.e(TAG, "shouldn't be requesting permissions for pre-Android M!");
             return;
         }
 
@@ -382,7 +381,7 @@ public class DeviceScanner extends AppCompatActivity {
         if (useAndroid12BluetoothPermissions()) {
             Logger.INSTANCE.d(TAG, "check for bluetooth scan permission");
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, "bluetooth scan permission not granted!");
+                Logger.INSTANCE.e(TAG, "bluetooth scan permission not granted!");
                 return;
             }
         }
@@ -475,7 +474,7 @@ public class DeviceScanner extends AppCompatActivity {
             BluetoothDevice device = mLeDevices.get(i);
 
             if (!has_bluetooth_scan_permission) {
-                Log.e(TAG, "bluetooth connect permission not granted!");
+                Logger.INSTANCE.e(TAG, "bluetooth connect permission not granted!");
                 viewHolder.deviceName.setText(R.string.unknown_device_no_permission);
             } else {
                 final String deviceName = device.getName();

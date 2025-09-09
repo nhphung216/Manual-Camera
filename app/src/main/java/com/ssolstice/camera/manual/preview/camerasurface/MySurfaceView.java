@@ -12,7 +12,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.media.MediaRecorder;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -64,7 +63,7 @@ public class MySurfaceView extends SurfaceView implements CameraSurface {
         try {
             camera_controller.setPreviewDisplay(this.getHolder());
         } catch (CameraControllerException e) {
-            Log.e(TAG, "Failed to set preview display: " + e.getMessage());
+            Logger.INSTANCE.e(TAG, "Failed to set preview display: " + e.getMessage());
             e.printStackTrace();
         }
     }

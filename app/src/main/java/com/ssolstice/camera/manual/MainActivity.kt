@@ -864,22 +864,20 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             }
                         },
                         showCameraControls = {
+                            coroutineScope.launch {
+                                currentSheet = CameraSheetType.CONTROLS
+                                sheetState.expand()
+                            }
                             if (preview != null && applicationInterface != null) {
                                 if (preview?.isVideo == true && preview?.isVideoRecording == true) {
                                     Logger.d(
                                         MainActivity.TAG, "don't add any more options"
                                     )
                                 } else {
-                                    if (preview?.cameraController != null && applicationInterface?.isCameraExtensionPref != true) {
-                                        coroutineScope.launch {
-                                            currentSheet = CameraSheetType.CONTROLS
-                                            sheetState.expand()
-                                        }
-                                        viewModel.logViewClicked("showConfigTableSettings")
-                                        viewModel.setupCameraControlsData(
-                                            activity, applicationInterface!!, preview!!
-                                        )
-                                    }
+                                    viewModel.logViewClicked("showConfigTableSettings")
+                                    viewModel.setupCameraControlsData(
+                                        activity, applicationInterface!!, preview!!
+                                    )
                                 }
                             }
 

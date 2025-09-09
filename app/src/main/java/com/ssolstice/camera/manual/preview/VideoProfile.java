@@ -2,11 +2,9 @@ package com.ssolstice.camera.manual.preview;
 
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.ssolstice.camera.manual.MyDebug;
 import com.ssolstice.camera.manual.utils.Logger;
 
 /** This is essentially similar to CamcorderProfile in that it encapsulates a set of video settings

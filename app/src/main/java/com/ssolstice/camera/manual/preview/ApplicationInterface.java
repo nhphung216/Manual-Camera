@@ -11,13 +11,11 @@ import android.graphics.Point;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 
 import androidx.annotation.RequiresApi;
 
-import com.ssolstice.camera.manual.MyDebug;
 import com.ssolstice.camera.manual.cameracontroller.CameraController;
 import com.ssolstice.camera.manual.cameracontroller.RawImage;
 import com.ssolstice.camera.manual.utils.Logger;

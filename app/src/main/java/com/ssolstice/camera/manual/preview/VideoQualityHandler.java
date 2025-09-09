@@ -1,7 +1,6 @@
 package com.ssolstice.camera.manual.preview;
 
 import android.media.CamcorderProfile;
-import android.util.Log;
 
 import com.ssolstice.camera.manual.cameracontroller.CameraController;
 import com.ssolstice.camera.manual.MyDebug;

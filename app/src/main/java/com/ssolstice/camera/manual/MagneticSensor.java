@@ -7,7 +7,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.ssolstice.camera.manual.utils.Logger;
 

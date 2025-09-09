@@ -344,12 +344,12 @@ class MyApplicationInterface internal constructor(
             Logger.d(TAG, "uri: " + last_video_file_uri)
         } catch (e: IllegalArgumentException) {
             // can happen for mediastore method if invalid ContentResolver.insert() call
-            if (MyDebug.LOG) Log.e(TAG, "IllegalArgumentException writing video file: " + e.message)
+            Logger.e(TAG, "IllegalArgumentException writing video file: " + e.message)
             e.printStackTrace()
             throw IOException()
         } catch (e: IllegalStateException) {
             // have received Google Play crashes from ContentResolver.insert() call for mediastore method
-            if (MyDebug.LOG) Log.e(TAG, "IllegalStateException writing video file: " + e.message)
+            Logger.e(TAG, "IllegalStateException writing video file: " + e.message)
             e.printStackTrace()
             throw IOException()
         }
@@ -408,7 +408,7 @@ class MyApplicationInterface internal constructor(
             try {
                 focus_assist = focus_assist_value.toInt()
             } catch (e: NumberFormatException) {
-                if (MyDebug.LOG) Log.e(
+                Logger.e(
                     TAG, "failed to parse focus_assist_value: " + focus_assist_value
                 )
                 e.printStackTrace()
@@ -508,10 +508,10 @@ class MyApplicationInterface internal constructor(
             } else {
                 val resolution_w_s = resolution_value.substring(0, index)
                 val resolution_h_s = resolution_value.substring(index + 1)
-                if (MyDebug.LOG) {
-                    Logger.d(TAG, "resolution_w_s: " + resolution_w_s)
-                    Logger.d(TAG, "resolution_h_s: " + resolution_h_s)
-                }
+
+                Logger.d(TAG, "resolution_w_s: " + resolution_w_s)
+                Logger.d(TAG, "resolution_h_s: " + resolution_h_s)
+
                 try {
                     val resolution_w = resolution_w_s.toInt()
                     Logger.d(TAG, "resolution_w: " + resolution_w)
@@ -556,7 +556,7 @@ class MyApplicationInterface internal constructor(
             try {
                 image_quality = image_quality_s.toInt()
             } catch (exception: NumberFormatException) {
-                if (MyDebug.LOG) Log.e(
+                Logger.e(
                     TAG, "image_quality_s invalid format: " + image_quality_s
                 )
                 image_quality = 90
@@ -690,7 +690,7 @@ class MyApplicationInterface internal constructor(
                 ) return preferred_fps.toString()
             }
             // shouln't happen based on getSupportedSlowMotionRates()
-            Log.e(TAG, "can't find valid fps for slow motion")
+            Logger.e(TAG, "can't find valid fps for slow motion")
             return "default"
         }
         return sharedPreferences.getString(
@@ -720,7 +720,10 @@ class MyApplicationInterface internal constructor(
                 }
             }
             if (!found) {
-                Log.e(TAG, "stored capture_rate_factor: " + capture_rate_factor + " not supported")
+                Logger.e(
+                    TAG,
+                    "stored capture_rate_factor: " + capture_rate_factor + " not supported"
+                )
                 capture_rate_factor = 1.0f
             }
         }
@@ -728,25 +731,25 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun isVideoCaptureRateFactor(): Boolean {
-        Log.e(TAG, "isVideoCaptureRateFactor")
+        Logger.e(TAG, "isVideoCaptureRateFactor")
 
         val cameraId = main_activity.preview!!.getCameraId()
-        Log.e(TAG, "getCameraId " + cameraId)
+        Logger.e(TAG, "getCameraId " + cameraId)
 
         val cameraKey = PreferenceKeys.getVideoCaptureRatePreferenceKey(cameraId, cameraIdSPhysical)
-        Log.e(TAG, "cameraKey " + cameraKey)
+        Logger.e(TAG, "cameraKey " + cameraKey)
 
         val captureRateFactor = sharedPreferences.getFloat(cameraKey, 1.0f)
-        Log.e(TAG, "captureRateFactor " + captureRateFactor)
+        Logger.e(TAG, "captureRateFactor " + captureRateFactor)
 
-        Log.e(TAG, "capture_rate_factor: " + captureRateFactor)
+        Logger.e(TAG, "capture_rate_factor: " + captureRateFactor)
 
         if (abs(captureRateFactor - 1.0f) > 1.0e-5) {
             // check stored capture rate is valid
-            Log.e(TAG, "check stored capture rate is valid")
+            Logger.e(TAG, "check stored capture rate is valid")
 
             val supportedVideoCaptureRates = this.supportedVideoCaptureRates
-            Log.e(TAG, "supported_capture_rates: " + supportedVideoCaptureRates)
+            Logger.e(TAG, "supported_capture_rates: " + supportedVideoCaptureRates)
 
             var found = false
 
@@ -758,7 +761,7 @@ class MyApplicationInterface internal constructor(
             }
 
             if (!found) {
-                Log.e(TAG, "stored capture_rate_factor: " + captureRateFactor + " not supported")
+                Logger.e(TAG, "stored capture_rate_factor: " + captureRateFactor + " not supported")
             }
 
             return found
@@ -856,7 +859,7 @@ class MyApplicationInterface internal constructor(
             gamma = gamma_value.toFloat()
             Logger.d(TAG, "gamma: " + gamma)
         } catch (e: NumberFormatException) {
-            if (MyDebug.LOG) Log.e(TAG, "failed to parse gamma value: " + gamma_value)
+            Logger.e(TAG, "failed to parse gamma value: " + gamma_value)
             e.printStackTrace()
         }
         return gamma
@@ -879,7 +882,7 @@ class MyApplicationInterface internal constructor(
         try {
             video_max_duration = video_max_duration_value.toInt().toLong() * 1000
         } catch (e: NumberFormatException) {
-            if (MyDebug.LOG) Log.e(
+            Logger.e(
                 TAG,
                 "failed to parse preference_video_max_duration value: " + video_max_duration_value
             )
@@ -896,7 +899,7 @@ class MyApplicationInterface internal constructor(
         try {
             remaining_restart_video = restart_value.toInt()
         } catch (e: NumberFormatException) {
-            if (MyDebug.LOG) Log.e(
+            Logger.e(
                 TAG, "failed to parse preference_video_restart value: " + restart_value
             )
             e.printStackTrace()
@@ -931,7 +934,7 @@ class MyApplicationInterface internal constructor(
             try {
                 video_max_filesize = video_max_filesize_value.toLong()
             } catch (e: NumberFormatException) {
-                if (MyDebug.LOG) Log.e(
+                Logger.e(
                     TAG,
                     "failed to parse preference_video_max_filesize value: " + video_max_filesize_value
                 )
@@ -1010,7 +1013,7 @@ class MyApplicationInterface internal constructor(
                 if (test_set_available_memory) {
                     available_memory = test_available_memory
                 }
-                if (MyDebug.LOG) {
+                {
                     Logger.d(TAG, "free_memory: " + free_memory)
                     Logger.d(TAG, "available_memory: " + available_memory)
                 }
@@ -1024,7 +1027,7 @@ class MyApplicationInterface internal constructor(
                         )
                     }
                 } else {
-                    if (MyDebug.LOG) Log.e(TAG, "not enough free storage to record video")
+                    Logger.e(TAG, "not enough free storage to record video")
                     throw NoFreeStorageException()
                 }
             } else {
@@ -1109,7 +1112,7 @@ class MyApplicationInterface internal constructor(
         try {
             timer_delay = timer_value.toInt().toLong() * 1000
         } catch (e: NumberFormatException) {
-            if (MyDebug.LOG) Log.e(TAG, "failed to parse preference_timer value: " + timer_value)
+            Logger.e(TAG, "failed to parse preference_timer value: " + timer_value)
             e.printStackTrace()
             timer_delay = 0
         }
@@ -1131,7 +1134,7 @@ class MyApplicationInterface internal constructor(
             Logger.d(TAG, "timer_delay_s: " + timer_delay_s)
             timer_delay = (timer_delay_s * 1000).toLong()
         } catch (e: NumberFormatException) {
-            if (MyDebug.LOG) Log.e(TAG, "failed to parse repeat interval value: " + timer_value)
+            Logger.e(TAG, "failed to parse repeat interval value: " + timer_value)
             e.printStackTrace()
             timer_delay = 0
         }
@@ -1213,7 +1216,7 @@ class MyApplicationInterface internal constructor(
             try {
                 ghost_image_alpha = ghost_image_alpha_value.toInt()
             } catch (e: NumberFormatException) {
-                if (MyDebug.LOG) Log.e(
+                Logger.e(
                     TAG, "failed to parse ghost_image_alpha_value: " + ghost_image_alpha_value
                 )
                 e.printStackTrace()
@@ -1404,7 +1407,7 @@ class MyApplicationInterface internal constructor(
 
         val rotate_preview: String =
             sharedPreferences.getString(PreferenceKeys.RotatePreviewPreferenceKey, "0")!!
-        if (MyDebug.LOG) Logger.d(TAG, "    rotate_preview = " + rotate_preview)
+        Logger.d(TAG, "    rotate_preview = " + rotate_preview)
         if (rotate_preview == "180") {
             when (rotation) {
                 Surface.ROTATION_0 -> rotation = Surface.ROTATION_180
@@ -1510,18 +1513,23 @@ class MyApplicationInterface internal constructor(
             PhotoMode.X_Auto -> {
                 return CameraExtensionCharacteristics.EXTENSION_AUTOMATIC
             }
+
             PhotoMode.X_HDR -> {
                 return CameraExtensionCharacteristics.EXTENSION_HDR
             }
+
             PhotoMode.X_Night -> {
                 return CameraExtensionCharacteristics.EXTENSION_NIGHT
             }
+
             PhotoMode.X_Bokeh -> {
                 return CameraExtensionCharacteristics.EXTENSION_BOKEH
             }
+
             PhotoMode.X_Beauty -> {
                 return CameraExtensionCharacteristics.EXTENSION_BEAUTY
             }
+
             else -> return 0
         }
     }
@@ -1535,7 +1543,7 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun getExpoBracketingNImagesPref(): Int {
-        if (MyDebug.LOG) Logger.d(TAG, "getExpoBracketingNImagesPref")
+        Logger.d(TAG, "getExpoBracketingNImagesPref")
         var n_images: Int
         val photo_mode = this.photoMode
         if (photo_mode == PhotoMode.HDR) {
@@ -1548,16 +1556,16 @@ class MyApplicationInterface internal constructor(
             try {
                 n_images = n_images_s.toInt()
             } catch (exception: NumberFormatException) {
-                if (MyDebug.LOG) Log.e(TAG, "n_images_s invalid format: " + n_images_s)
+                Logger.e(TAG, "n_images_s invalid format: " + n_images_s)
                 n_images = 3
             }
         }
-        if (MyDebug.LOG) Logger.d(TAG, "n_images = " + n_images)
+        Logger.d(TAG, "n_images = " + n_images)
         return n_images
     }
 
     override fun getExpoBracketingStopsPref(): Double {
-        if (MyDebug.LOG) Logger.d(TAG, "getExpoBracketingStopsPref")
+        Logger.d(TAG, "getExpoBracketingStopsPref")
         var n_stops: Double
         val photo_mode = this.photoMode
         if (photo_mode == PhotoMode.HDR) {
@@ -1569,26 +1577,26 @@ class MyApplicationInterface internal constructor(
             try {
                 n_stops = n_stops_s.toDouble()
             } catch (exception: NumberFormatException) {
-                if (MyDebug.LOG) Log.e(TAG, "n_stops_s invalid format: " + n_stops_s)
+                Logger.e(TAG, "n_stops_s invalid format: " + n_stops_s)
                 n_stops = 2.0
             }
         }
-        if (MyDebug.LOG) Logger.d(TAG, "n_stops = " + n_stops)
+        Logger.d(TAG, "n_stops = " + n_stops)
         return n_stops
     }
 
     override fun getFocusBracketingNImagesPref(): Int {
-        if (MyDebug.LOG) Logger.d(TAG, "getFocusBracketingNImagesPref")
+        Logger.d(TAG, "getFocusBracketingNImagesPref")
         var n_images: Int
         val n_images_s: String =
             sharedPreferences.getString(PreferenceKeys.FocusBracketingNImagesPreferenceKey, "3")!!
         try {
             n_images = n_images_s.toInt()
         } catch (exception: NumberFormatException) {
-            if (MyDebug.LOG) Log.e(TAG, "n_images_s invalid format: " + n_images_s)
+            Logger.e(TAG, "n_images_s invalid format: " + n_images_s)
             n_images = 3
         }
-        if (MyDebug.LOG) Logger.d(TAG, "n_images = " + n_images)
+        Logger.d(TAG, "n_images = " + n_images)
         return n_images
     }
 
@@ -1828,7 +1836,7 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun isTestAlwaysFocus(): Boolean {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "isTestAlwaysFocus: " + main_activity.is_test)
         }
         return main_activity.is_test
@@ -1844,12 +1852,12 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun onContinuousFocusMove(start: Boolean) {
-        if (MyDebug.LOG) Logger.d(TAG, "onContinuousFocusMove: $start")
+        Logger.d(TAG, "onContinuousFocusMove: $start")
         drawPreview!!.onContinuousFocusMove(start)
     }
 
     fun startPanorama() {
-        if (MyDebug.LOG) Logger.d(TAG, "startPanorama")
+        Logger.d(TAG, "startPanorama")
         gyroSensor.startRecording()
         n_panorama_pics = 0
         panorama_pic_accepted = false
@@ -1863,7 +1871,7 @@ class MyApplicationInterface internal constructor(
     /** Ends panorama and submits the panoramic images to be processed.
      */
     fun finishPanorama() {
-        if (MyDebug.LOG) Logger.d(TAG, "finishPanorama")
+        Logger.d(TAG, "finishPanorama")
 
         imageSaver!!.imageBatchRequest.panorama_dir_left_to_right = this.panorama_dir_left_to_right
 
@@ -1878,9 +1886,9 @@ class MyApplicationInterface internal constructor(
      * @param is_cancelled Whether the panorama has been cancelled.
      */
     fun stopPanorama(is_cancelled: Boolean) {
-        if (MyDebug.LOG) Logger.d(TAG, "stopPanorama")
+        Logger.d(TAG, "stopPanorama")
         if (!gyroSensor.isRecording()) {
-            if (MyDebug.LOG) Logger.d(TAG, "...nothing to stop")
+            Logger.d(TAG, "...nothing to stop")
             return
         }
         gyroSensor.stopRecording()
@@ -1895,12 +1903,12 @@ class MyApplicationInterface internal constructor(
     }
 
     private fun setNextPanoramaPoint(repeat: Boolean) {
-        if (MyDebug.LOG) Logger.d(TAG, "setNextPanoramaPoint")
+        Logger.d(TAG, "setNextPanoramaPoint")
         val camera_angle_y = main_activity.preview!!.getViewAngleY(false)
         if (!repeat) n_panorama_pics++
-        if (MyDebug.LOG) Logger.d(TAG, "n_panorama_pics is now: " + n_panorama_pics)
+        Logger.d(TAG, "n_panorama_pics is now: " + n_panorama_pics)
         if (n_panorama_pics == max_panorama_pics_c) {
-            if (MyDebug.LOG) Logger.d(TAG, "reached max panorama limit")
+            Logger.d(TAG, "reached max panorama limit")
             finishPanorama()
             return
         }
@@ -1923,7 +1931,7 @@ class MyApplicationInterface internal constructor(
     }
 
     private fun setNextPanoramaPoint(x: Float, y: Float, z: Float) {
-        if (MyDebug.LOG) Logger.d(
+        Logger.d(
             TAG, "setNextPanoramaPoint : " + x + " , " + y + " , " + z
         )
 
@@ -1938,7 +1946,7 @@ class MyApplicationInterface internal constructor(
         gyroSensor.setTarget(
             x, y, z, target_angle, upright_angle_tol, too_far_angle, object : TargetCallback {
                 override fun onAchieved(indx: Int) {
-                    if (MyDebug.LOG) {
+                    {
                         Logger.d(TAG, "TargetCallback.onAchieved: " + indx)
                         Logger.d(TAG, "    n_panorama_pics: " + n_panorama_pics)
                     }
@@ -1952,7 +1960,7 @@ class MyApplicationInterface internal constructor(
                     gyroSensor.disableTargetCallback()
                     if (n_panorama_pics == 1) {
                         panorama_dir_left_to_right = indx == 0
-                        if (MyDebug.LOG) Logger.d(
+                        Logger.d(
                             TAG, "set panorama_dir_left_to_right to " + panorama_dir_left_to_right
                         )
                     }
@@ -1960,7 +1968,7 @@ class MyApplicationInterface internal constructor(
                 }
 
                 override fun onTooFar() {
-                    if (MyDebug.LOG) Logger.d(TAG, "TargetCallback.onTooFar")
+                    Logger.d(TAG, "TargetCallback.onTooFar")
 
                     // it's better not to cancel the panorama if the user moves the device too far in wrong direction
                     /*if( !main_activity.is_test ) {
@@ -1973,7 +1981,7 @@ class MyApplicationInterface internal constructor(
     }
 
     private fun clearPanoramaPoint() {
-        if (MyDebug.LOG) Logger.d(TAG, "clearPanoramaPoint")
+        Logger.d(TAG, "clearPanoramaPoint")
         gyroSensor.clearTarget()
         drawPreview!!.clearGyroDirectionMarker()
     }
@@ -2010,26 +2018,26 @@ class MyApplicationInterface internal constructor(
 
             fun getSubtitleFilename(video_filename: String): String {
                 var video_filename = video_filename
-                if (MyDebug.LOG) Logger.d(TAG, "getSubtitleFilename")
+                Logger.d(TAG, "getSubtitleFilename")
                 val indx = video_filename.indexOf('.')
                 if (indx != -1) {
                     video_filename = video_filename.substring(0, indx)
                 }
                 video_filename = video_filename + ".srt"
-                if (MyDebug.LOG) Logger.d(TAG, "return filename: " + video_filename)
+                Logger.d(TAG, "return filename: " + video_filename)
                 return video_filename
             }
 
             override fun run() {
-                if (MyDebug.LOG) Logger.d(TAG, "SubtitleVideoTimerTask run")
+                Logger.d(TAG, "SubtitleVideoTimerTask run")
                 val video_time =
                     main_activity.preview!!.getVideoTime(true) // n.b., in case of restarts due to max filesize, we only want the time for this video file!
                 if (!main_activity.preview!!.isVideoRecording()) {
-                    if (MyDebug.LOG) Logger.d(TAG, "no longer video recording")
+                    Logger.d(TAG, "no longer video recording")
                     return
                 }
                 if (main_activity.preview!!.isVideoRecordingPaused()) {
-                    if (MyDebug.LOG) Logger.d(TAG, "video recording is paused")
+                    Logger.d(TAG, "video recording is paused")
                     return
                 }
                 val current_date = Date()
@@ -2038,11 +2046,11 @@ class MyApplicationInterface internal constructor(
                 // We subtract an offset, because if the current time is say 00:00:03.425 and the video has been recording for
                 // 1s, we instead need to record the video time when it became 00:00:03.000. This does mean that the GPS
                 // location is going to be off by up to 1s, but that should be less noticeable than the clock being off.
-                if (MyDebug.LOG) {
-                    Logger.d(TAG, "count: $count")
-                    Logger.d(TAG, "offset_ms: $offset_ms")
-                    Logger.d(TAG, "video_time: $video_time")
-                }
+
+                Logger.d(TAG, "count: $count")
+                Logger.d(TAG, "offset_ms: $offset_ms")
+                Logger.d(TAG, "video_time: $video_time")
+
                 val date_stamp =
                     TextFormatter.getDateString(preference_stamp_dateformat, current_date)
                 val time_stamp =
@@ -2058,11 +2066,11 @@ class MyApplicationInterface internal constructor(
                     store_geo_direction && main_activity.preview!!.hasGeoDirection(),
                     geo_direction
                 )
-                if (MyDebug.LOG) {
-                    Logger.d(TAG, "date_stamp: $date_stamp")
-                    Logger.d(TAG, "time_stamp: $time_stamp")
-                    // don't log gps_stamp, in case of privacy!
-                }
+
+                Logger.d(TAG, "date_stamp: $date_stamp")
+                Logger.d(TAG, "time_stamp: $time_stamp")
+                // don't log gps_stamp, in case of privacy!
+
 
                 var datetime_stamp = ""
                 if (date_stamp.isNotEmpty()) datetime_stamp += date_stamp
@@ -2077,7 +2085,7 @@ class MyApplicationInterface internal constructor(
 
                 if (gps_stamp.isNotEmpty()) {
                     run {
-                        if (MyDebug.LOG) Logger.d(TAG, "display gps coords")
+                        Logger.d(TAG, "display gps coords")
                         subtitles.append(gps_stamp).append("\n")
                     }
                 }
@@ -2102,7 +2110,7 @@ class MyApplicationInterface internal constructor(
                                 subtitle_filename = getSubtitleFilename(subtitle_filename)
                                 writer = FileWriter(subtitle_filename)
                             } else if (video_method == VideoMethod.SAF || video_method == VideoMethod.MEDIASTORE) {
-                                if (MyDebug.LOG) Logger.d(
+                                Logger.d(
                                     TAG, "last_video_file_uri: " + last_video_file_uri
                                 )
                                 var subtitle_filename =
@@ -2130,7 +2138,7 @@ class MyApplicationInterface internal constructor(
                                     )
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                         val relative_path = storageUtils.getSaveRelativeFolder()
-                                        if (MyDebug.LOG) Logger.d(
+                                        Logger.d(
                                             TAG, "relative_path: " + relative_path
                                         )
                                         contentValues.put(
@@ -2148,14 +2156,14 @@ class MyApplicationInterface internal constructor(
                                         )
                                     } catch (e: IllegalArgumentException) {
                                         // can happen for mediastore method if invalid ContentResolver.insert() call
-                                        if (MyDebug.LOG) Log.e(
+                                        Logger.e(
                                             TAG,
                                             "IllegalArgumentException from SubtitleVideoTimerTask inserting to mediastore: " + e.message
                                         )
                                         e.printStackTrace()
                                         throw IOException()
                                     } catch (e: IllegalStateException) {
-                                        if (MyDebug.LOG) Log.e(
+                                        Logger.e(
                                             TAG,
                                             "IllegalStateException from SubtitleVideoTimerTask inserting to mediastore: " + e.message
                                         )
@@ -2166,7 +2174,7 @@ class MyApplicationInterface internal constructor(
                                         throw IOException()
                                     }
                                 }
-                                if (MyDebug.LOG) Logger.d(TAG, "uri: $uri")
+                                Logger.d(TAG, "uri: $uri")
                                 pfd_saf = context.contentResolver.openFileDescriptor(uri!!, "w")
                                 writer = FileWriter(pfd_saf!!.fileDescriptor)
                             }
@@ -2186,17 +2194,17 @@ class MyApplicationInterface internal constructor(
                     }
                     count++
                 } catch (e: IOException) {
-                    if (MyDebug.LOG) Log.e(TAG, "SubtitleVideoTimerTask failed to create or write")
+                    Logger.e(TAG, "SubtitleVideoTimerTask failed to create or write")
                     e.printStackTrace()
                 }
-                if (MyDebug.LOG) Logger.d(TAG, "SubtitleVideoTimerTask exit")
+                Logger.d(TAG, "SubtitleVideoTimerTask exit")
             }
 
             override fun cancel(): Boolean {
-                if (MyDebug.LOG) Logger.d(TAG, "SubtitleVideoTimerTask cancel")
+                Logger.d(TAG, "SubtitleVideoTimerTask cancel")
                 synchronized(this) {
                     if (writer != null) {
-                        if (MyDebug.LOG) Logger.d(TAG, "close writer")
+                        Logger.d(TAG, "close writer")
                         try {
                             writer!!.close()
                         } catch (e: IOException) {
@@ -2229,7 +2237,7 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun startedVideo() {
-        if (MyDebug.LOG) Logger.d(TAG, "startedVideo()")
+        Logger.d(TAG, "startedVideo()")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             main_activity.mainUI!!.setPauseVideoContentDescription()
         }
@@ -2238,7 +2246,7 @@ class MyApplicationInterface internal constructor(
             }
         }
         if (main_activity.mainUI!!.isExposureUIOpen) {
-            if (MyDebug.LOG) Logger.d(
+            Logger.d(
                 TAG, "need to update exposure UI for start video recording"
             )
             // need to update the exposure UI when starting/stopping video recording, to remove/add
@@ -2254,12 +2262,12 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun stoppingVideo() {
-        if (MyDebug.LOG) Logger.d(TAG, "stoppingVideo()")
+        Logger.d(TAG, "stoppingVideo()")
         main_activity.unlockScreen()
     }
 
     override fun stoppedVideo(video_method: VideoMethod?, uri: Uri?, filename: String?) {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "stoppedVideo")
             Logger.d(TAG, "video_method $video_method")
             Logger.d(TAG, "uri $uri")
@@ -2267,7 +2275,7 @@ class MyApplicationInterface internal constructor(
         }
         main_activity.mainUI!!.setPauseVideoContentDescription() // just to be safe
         if (main_activity.mainUI!!.isExposureUIOpen) {
-            if (MyDebug.LOG) Logger.d(
+            Logger.d(
                 TAG, "need to update exposure UI for stop video recording"
             )
             // need to update the exposure UI when starting/stopping video recording, to remove/add
@@ -2347,7 +2355,7 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun restartedVideo(video_method: VideoMethod?, uri: Uri?, filename: String?) {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "restartedVideo")
             Logger.d(TAG, "video_method $video_method")
             Logger.d(TAG, "uri $uri")
@@ -2371,7 +2379,7 @@ class MyApplicationInterface internal constructor(
      * file.
      */
     fun completeVideo(video_method: VideoMethod?, uri: Uri?) {
-        if (MyDebug.LOG) Logger.d(TAG, "completeVideo")
+        Logger.d(TAG, "completeVideo")
         if (video_method == VideoMethod.MEDIASTORE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val contentValues = ContentValues()
@@ -2382,7 +2390,7 @@ class MyApplicationInterface internal constructor(
     }
 
     fun broadcastVideo(video_method: VideoMethod?, uri: Uri?, filename: String?): Boolean {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "broadcastVideo")
             Logger.d(TAG, "video_method $video_method")
             Logger.d(TAG, "uri $uri")
@@ -2420,7 +2428,7 @@ class MyApplicationInterface internal constructor(
         }
         if (done) {
             test_n_videos_scanned++
-            if (MyDebug.LOG) Logger.d(
+            Logger.d(
                 TAG, "test_n_videos_scanned is now: $test_n_videos_scanned"
             )
         }
@@ -2435,7 +2443,7 @@ class MyApplicationInterface internal constructor(
      * caller, and finishes the activity.
      */
     fun finishVideoIntent(uri: Uri?) {
-        if (MyDebug.LOG) Logger.d(TAG, "finishVideoIntent:" + uri)
+        Logger.d(TAG, "finishVideoIntent:" + uri)
         val output = Intent()
         output.setData(uri)
         main_activity.setResult(Activity.RESULT_OK, output)
@@ -2443,7 +2451,7 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun deleteUnusedVideo(video_method: VideoMethod?, uri: Uri?, filename: String?) {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "deleteUnusedVideo")
             Logger.d(TAG, "video_method $video_method")
             Logger.d(TAG, "uri $uri")
@@ -2462,11 +2470,11 @@ class MyApplicationInterface internal constructor(
     override fun onVideoInfo(what: Int, extra: Int) {
         // we don't show a toast for MEDIA_RECORDER_INFO_MAX_DURATION_REACHED - conflicts with "n repeats to go" toast from Preview
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && what == MediaRecorder.MEDIA_RECORDER_INFO_NEXT_OUTPUT_FILE_STARTED) {
-            if (MyDebug.LOG) Logger.d(TAG, "next output file started")
+            Logger.d(TAG, "next output file started")
             val message_id = R.string.video_max_filesize
             main_activity.preview!!.showToast(null, message_id, true)
         } else if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
-            if (MyDebug.LOG) Logger.d(TAG, "max filesize reached")
+            Logger.d(TAG, "max filesize reached")
             val message_id = R.string.video_max_filesize
             main_activity.preview!!.showToast(null, message_id, true)
         }
@@ -2492,12 +2500,12 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun onVideoError(what: Int, extra: Int) {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "onVideoError: $what extra: $extra")
         }
         var message_id = R.string.video_error_unknown
         if (what == MediaRecorder.MEDIA_ERROR_SERVER_DIED) {
-            if (MyDebug.LOG) Logger.d(TAG, "error: server died")
+            Logger.d(TAG, "error: server died")
             message_id = R.string.video_error_server_died
         }
         main_activity.preview!!.showToast(null, message_id)
@@ -2510,7 +2518,7 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun onVideoRecordStartError(profile: VideoProfile?) {
-        if (MyDebug.LOG) Logger.d(TAG, "onVideoRecordStartError")
+        Logger.d(TAG, "onVideoRecordStartError")
         val error_message: String?
         val features = main_activity.preview!!.getErrorFeatures(profile)
         if (features.isNotEmpty()) {
@@ -2523,7 +2531,7 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun onVideoRecordStopError(profile: VideoProfile?) {
-        if (MyDebug.LOG) Logger.d(TAG, "onVideoRecordStopError")
+        Logger.d(TAG, "onVideoRecordStopError")
         //main_activity.getPreview().showToast(null, R.string.failed_to_record_video);
         val features = main_activity.preview!!.getErrorFeatures(profile)
         var error_message = getContext().getResources().getString(R.string.video_may_be_corrupted)
@@ -2539,12 +2547,12 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun onFailedCreateVideoFileError() {
-        if (MyDebug.LOG) Logger.d(TAG, "onFailedCreateVideoFileError")
+        Logger.d(TAG, "onFailedCreateVideoFileError")
         main_activity.preview!!.showToast(null, R.string.failed_to_save_video)
     }
 
     override fun hasPausedPreview(paused: Boolean) {
-        if (MyDebug.LOG) Logger.d(TAG, "hasPausedPreview: $paused")
+        Logger.d(TAG, "hasPausedPreview: $paused")
         if (paused) {
             main_activity.enablePausePreviewOnBackPressedCallback(true) // so that pressing back button instead unpauses the preview
         } else {
@@ -2554,7 +2562,7 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun cameraInOperation(in_operation: Boolean, is_video: Boolean) {
-        if (MyDebug.LOG) Logger.d(TAG, "cameraInOperation: $in_operation")
+        Logger.d(TAG, "cameraInOperation: $in_operation")
         if (!in_operation && used_front_screen_flash) {
             main_activity.setBrightnessForCamera(false) // ensure screen brightness matches user preference, after using front screen flash
             used_front_screen_flash = false
@@ -2564,14 +2572,14 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun turnFrontScreenFlashOn() {
-        if (MyDebug.LOG) Logger.d(TAG, "turnFrontScreenFlashOn")
+        Logger.d(TAG, "turnFrontScreenFlashOn")
         used_front_screen_flash = true
         main_activity.setBrightnessForCamera(true) // ensure we have max screen brightness, even if user preference not set for max brightness
         drawPreview!!.turnFrontScreenFlashOn()
     }
 
     override fun onCaptureStarted() {
-        if (MyDebug.LOG) Logger.d(TAG, "onCaptureStarted")
+        Logger.d(TAG, "onCaptureStarted")
         n_capture_images = 0
         n_capture_images_raw = 0
         drawPreview!!.onCaptureStarted()
@@ -2584,14 +2592,14 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun onPictureCompleted() {
-        if (MyDebug.LOG) Logger.d(TAG, "onPictureCompleted")
+        Logger.d(TAG, "onPictureCompleted")
 
         // clear any toasts displayed during progress (e.g., preference_nr_mode_low_light_message, or onExtensionProgress())
         main_activity.preview!!.clearActiveFakeToast()
 
         var photo_mode = this.photoMode
         if (main_activity.preview!!.isVideo) {
-            if (MyDebug.LOG) Logger.d(TAG, "snapshot mode")
+            Logger.d(TAG, "snapshot mode")
             // must be in photo snapshot while recording video mode, only support standard photo mode
             photo_mode = PhotoMode.Standard
         }
@@ -2601,16 +2609,16 @@ class MyApplicationInterface internal constructor(
             imageSaver!!.finishImageBatch(do_in_background)
         } else if (photo_mode == PhotoMode.Panorama && gyroSensor.isRecording) {
             if (panorama_pic_accepted) {
-                if (MyDebug.LOG) Logger.d(TAG, "set next panorama point")
+                Logger.d(TAG, "set next panorama point")
                 this.setNextPanoramaPoint(false)
             } else {
-                if (MyDebug.LOG) Logger.d(TAG, "panorama pic wasn't accepted")
+                Logger.d(TAG, "panorama pic wasn't accepted")
                 this.setNextPanoramaPoint(true)
             }
         } else if (photo_mode == PhotoMode.FocusBracketing) {
-            if (MyDebug.LOG) Logger.d(TAG, "focus bracketing completed")
+            Logger.d(TAG, "focus bracketing completed")
             if (getShutterSoundPref()) {
-                if (MyDebug.LOG) Logger.d(TAG, "play completion sound")
+                Logger.d(TAG, "play completion sound")
                 val player = MediaPlayer.create(context, Settings.System.DEFAULT_NOTIFICATION_URI)
                 player?.start()
             }
@@ -2631,13 +2639,13 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun cameraClosed() {
-        if (MyDebug.LOG) Logger.d(TAG, "cameraClosed")
+        Logger.d(TAG, "cameraClosed")
         this.stopPanorama(true)
         drawPreview!!.clearContinuousFocusMove()
     }
 
     fun updateThumbnail(thumbnail: Bitmap?, is_video: Boolean) {
-        if (MyDebug.LOG) Logger.d(TAG, "updateThumbnail")
+        Logger.d(TAG, "updateThumbnail")
         main_activity.updateGalleryIcon(thumbnail)
         drawPreview!!.updateThumbnail(thumbnail, is_video, true)
         if (!is_video && this.getPausePreviewPref()) {
@@ -2646,18 +2654,18 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun timerBeep(remaining_time: Long) {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "timerBeep()")
             Logger.d(TAG, "remaining_time: $remaining_time")
         }
         if (sharedPreferences.getBoolean(PreferenceKeys.TimerBeepPreferenceKey, true)) {
-            if (MyDebug.LOG) Logger.d(TAG, "play beep!")
+            Logger.d(TAG, "play beep!")
             val is_last = remaining_time <= 1000
             main_activity.getSoundPoolManager()
                 .playSound(if (is_last) R.raw.mybeep_hi else R.raw.mybeep)
         }
         if (sharedPreferences.getBoolean(PreferenceKeys.TimerSpeakPreferenceKey, false)) {
-            if (MyDebug.LOG) Logger.d(TAG, "speak countdown!")
+            Logger.d(TAG, "speak countdown!")
             val remaining_time_s = (remaining_time / 1000).toInt()
             if (remaining_time_s <= 60) main_activity.speak(remaining_time_s.toString())
         }
@@ -2668,7 +2676,7 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun requestTakePhoto() {
-        if (MyDebug.LOG) Logger.d(TAG, "requestTakePhoto")
+        Logger.d(TAG, "requestTakePhoto")
         main_activity.takePicture(false)
     }
 
@@ -2676,12 +2684,12 @@ class MyApplicationInterface internal constructor(
      * @param front_facing Whether to switch to a front or back facing camera.
      */
     fun switchToCamera(front_facing: Boolean) {
-        if (MyDebug.LOG) Logger.d(TAG, "switchToCamera: $front_facing")
+        Logger.d(TAG, "switchToCamera: $front_facing")
         val n_cameras = main_activity.preview!!.cameraControllerManager.getNumberOfCameras()
         val want_facing = if (front_facing) Facing.FACING_FRONT else Facing.FACING_BACK
         for (i in 0..<n_cameras) {
             if (main_activity.preview!!.cameraControllerManager.getFacing(i) == want_facing) {
-                if (MyDebug.LOG) Logger.d(TAG, "found desired camera: $i")
+                Logger.d(TAG, "found desired camera: $i")
                 this.setCameraIdPref(i, null)
                 break
             }
@@ -2804,7 +2812,7 @@ class MyApplicationInterface internal constructor(
             return
         }
         val resolution_value = "$width $height"
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "save new resolution_value: $resolution_value")
         }
         sharedPreferences.edit {
@@ -2826,29 +2834,29 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun setZoomPref(zoom: Int) {
-        if (MyDebug.LOG) Logger.d(TAG, "setZoomPref: " + zoom)
+        Logger.d(TAG, "setZoomPref: " + zoom)
         this.zoom_factor = zoom
     }
 
     override fun requestCameraPermission() {
-        if (MyDebug.LOG) Logger.d(TAG, "requestCameraPermission")
+        Logger.d(TAG, "requestCameraPermission")
         main_activity.getPermissionHandler().requestCameraPermission()
     }
 
     override fun needsStoragePermission(): Boolean {
-        if (MyDebug.LOG) Logger.d(TAG, "needsStoragePermission")
+        Logger.d(TAG, "needsStoragePermission")
         if (useScopedStorage()) return false // no longer need storage permission with scoped storage - and shouldn't request it either
 
         return true
     }
 
     override fun requestStoragePermission() {
-        if (MyDebug.LOG) Logger.d(TAG, "requestStoragePermission")
+        Logger.d(TAG, "requestStoragePermission")
         main_activity.getPermissionHandler().requestStoragePermission()
     }
 
     override fun requestRecordAudioPermission() {
-        if (MyDebug.LOG) Logger.d(TAG, "requestRecordAudioPermission")
+        Logger.d(TAG, "requestRecordAudioPermission")
         main_activity.getPermissionHandler().requestRecordAudioPermission()
     }
 
@@ -3074,18 +3082,18 @@ class MyApplicationInterface internal constructor(
     private fun saveImage(
         save_expo: Boolean, images: MutableList<ByteArray>?, current_date: Date?
     ): Boolean {
-        if (MyDebug.LOG) Logger.d(TAG, "saveImage")
+        Logger.d(TAG, "saveImage")
 
         System.gc()
 
         val image_capture_intent = this.isImageCaptureIntent
         var image_capture_intent_uri: Uri? = null
         if (image_capture_intent) {
-            if (MyDebug.LOG) Logger.d(TAG, "from image capture intent")
+            Logger.d(TAG, "from image capture intent")
             val myExtras = main_activity.intent.extras
             if (myExtras != null) {
                 image_capture_intent_uri = myExtras.getParcelable<Uri?>(MediaStore.EXTRA_OUTPUT)
-                if (MyDebug.LOG) Logger.d(TAG, "save to: " + image_capture_intent_uri)
+                Logger.d(TAG, "save to: " + image_capture_intent_uri)
             }
         }
 
@@ -3095,16 +3103,16 @@ class MyApplicationInterface internal constructor(
         val store_ypr = sharedPreferences.getBoolean(
             PreferenceKeys.AddYPRToComments, false
         ) && main_activity.preview!!.hasLevelAngle() && main_activity.preview!!.hasPitchAngle() && main_activity.preview!!.hasGeoDirection()
-        if (MyDebug.LOG) {
-            Logger.d(TAG, "store_ypr: $store_ypr")
-            Logger.d(TAG, "has level angle: " + main_activity.preview!!.hasLevelAngle())
-            Logger.d(TAG, "has pitch angle: " + main_activity.preview!!.hasPitchAngle())
-            Logger.d(
-                TAG, "has geo direction: " + main_activity.preview!!.hasGeoDirection()
-            )
-        }
+
+        Logger.d(TAG, "store_ypr: $store_ypr")
+        Logger.d(TAG, "has level angle: " + main_activity.preview!!.hasLevelAngle())
+        Logger.d(TAG, "has pitch angle: " + main_activity.preview!!.hasPitchAngle())
+        Logger.d(
+            TAG, "has geo direction: " + main_activity.preview!!.hasGeoDirection()
+        )
+
         val image_quality = this.saveImageQualityPref
-        if (MyDebug.LOG) Logger.d(TAG, "image_quality: $image_quality")
+        Logger.d(TAG, "image_quality: $image_quality")
         val do_auto_stabilise =
             this.autoStabilisePref && main_activity.preview!!.hasLevelAngleStable()
         var level_angle =
@@ -3152,11 +3160,11 @@ class MyApplicationInterface internal constructor(
         if (main_activity.preview!!.cameraController != null) {
             if (main_activity.preview!!.cameraController.captureResultHasIso()) {
                 iso = main_activity.preview!!.cameraController.captureResultIso()
-                if (MyDebug.LOG) Logger.d(TAG, "iso: $iso")
+                Logger.d(TAG, "iso: $iso")
             }
             if (main_activity.preview!!.cameraController.captureResultHasExposureTime()) {
                 exposure_time = main_activity.preview!!.cameraController.captureResultExposureTime()
-                if (MyDebug.LOG) Logger.d(TAG, "exposure_time: $exposure_time")
+                Logger.d(TAG, "exposure_time: $exposure_time")
             }
 
             zoom_factor = main_activity.preview!!.getZoomRatio()
@@ -3181,12 +3189,12 @@ class MyApplicationInterface internal constructor(
                 sample_factor *= 4
             }
         }
-        if (MyDebug.LOG) Logger.d(TAG, "sample_factor: $sample_factor")
+        Logger.d(TAG, "sample_factor: $sample_factor")
 
         val success: Boolean
         var photo_mode = this.photoMode
         if (main_activity.preview!!.isVideo) {
-            if (MyDebug.LOG) Logger.d(TAG, "snapshot mode")
+            Logger.d(TAG, "snapshot mode")
             // must be in photo snapshot while recording video mode, only support standard photo mode
             photo_mode = PhotoMode.Standard
         }
@@ -3197,7 +3205,7 @@ class MyApplicationInterface internal constructor(
             val ring_buffer = main_activity.preview!!.preShotsRingBuffer
 
             if (ring_buffer.nBitmaps >= 3) {
-                if (MyDebug.LOG) Logger.d(TAG, "save pre-shots")
+                Logger.d(TAG, "save pre-shots")
 
                 preshot_bitmaps = ArrayList<Bitmap?>()
                 while (ring_buffer.hasBitmaps()) {
@@ -3208,7 +3216,7 @@ class MyApplicationInterface internal constructor(
         }
 
         if (!main_activity.is_test && photo_mode == PhotoMode.Panorama && gyroSensor.isRecording() && gyroSensor.hasTarget() && !gyroSensor.isTargetAchieved()) {
-            if (MyDebug.LOG) Logger.d(
+            Logger.d(
                 TAG, "ignore panorama image as target no longer achieved!"
             )
             // n.b., gyroSensor.hasTarget() will be false if this is the first picture in the panorama series
@@ -3325,7 +3333,7 @@ class MyApplicationInterface internal constructor(
                     "preference_hdr_tonemapping_aces" -> preference_hdr_tonemapping_algorithm =
                         TonemappingAlgorithm.TONEMAPALGORITHM_ACES
 
-                    else -> Log.e(
+                    else -> Logger.e(
                         TAG, "unhandled case for tone mapping: " + tonemapping_algorithm_pref
                     )
                 }
@@ -3384,23 +3392,23 @@ class MyApplicationInterface internal constructor(
             )
         }
 
-        if (MyDebug.LOG) Logger.d(TAG, "saveImage complete, success: $success")
+        Logger.d(TAG, "saveImage complete, success: $success")
 
         return success
     }
 
     override fun onPictureTaken(data: ByteArray?, current_date: Date?): Boolean {
-        if (MyDebug.LOG) Logger.d(TAG, "onPictureTaken")
+        Logger.d(TAG, "onPictureTaken")
 
         n_capture_images++
-        if (MyDebug.LOG) Logger.d(TAG, "n_capture_images is now $n_capture_images")
+        Logger.d(TAG, "n_capture_images is now $n_capture_images")
 
         val images: MutableList<ByteArray> = ArrayList()
         data?.let { images.add(data) }
 
         val success = saveImage(false, images, current_date)
 
-        if (MyDebug.LOG) Logger.d(TAG, "onPictureTaken complete, success: $success")
+        Logger.d(TAG, "onPictureTaken complete, success: $success")
 
         return success
     }
@@ -3408,28 +3416,28 @@ class MyApplicationInterface internal constructor(
     override fun onBurstPictureTaken(
         images: MutableList<ByteArray>?, current_date: Date?
     ): Boolean {
-        if (MyDebug.LOG) Logger.d(
+        Logger.d(
             TAG, "onBurstPictureTaken: received " + images?.size + " images"
         )
 
         var success = false
         var photo_mode = this.photoMode
         if (main_activity.preview!!.isVideo) {
-            if (MyDebug.LOG) Logger.d(TAG, "snapshot mode")
+            Logger.d(TAG, "snapshot mode")
             // must be in photo snapshot while recording video mode, only support standard photo mode
             photo_mode = PhotoMode.Standard
         }
         if (photo_mode == PhotoMode.HDR) {
-            if (MyDebug.LOG) Logger.d(TAG, "HDR mode")
+            Logger.d(TAG, "HDR mode")
             val save_expo =
                 sharedPreferences.getBoolean(PreferenceKeys.HDRSaveExpoPreferenceKey, false)
-            if (MyDebug.LOG) Logger.d(TAG, "save_expo: $save_expo")
+            Logger.d(TAG, "save_expo: $save_expo")
 
             images?.let { success = saveImage(save_expo, images, current_date) }
         } else {
-            if (MyDebug.LOG) {
+            {
                 Logger.d(TAG, "exposure/focus bracketing mode mode")
-                if (photo_mode != PhotoMode.ExpoBracketing && photo_mode != PhotoMode.FocusBracketing) Log.e(
+                if (photo_mode != PhotoMode.ExpoBracketing && photo_mode != PhotoMode.FocusBracketing) Logger.e(
                     TAG, "onBurstPictureTaken called with unexpected photo mode?!: $photo_mode"
                 )
             }
@@ -3440,11 +3448,11 @@ class MyApplicationInterface internal constructor(
     }
 
     override fun onRawPictureTaken(raw_image: RawImage?, current_date: Date?): Boolean {
-        if (MyDebug.LOG) Logger.d(TAG, "onRawPictureTaken")
+        Logger.d(TAG, "onRawPictureTaken")
         System.gc()
 
         n_capture_images_raw++
-        if (MyDebug.LOG) Logger.d(
+        Logger.d(
             TAG, "n_capture_images_raw is now " + n_capture_images_raw
         )
 
@@ -3452,7 +3460,7 @@ class MyApplicationInterface internal constructor(
 
         var photo_mode = this.photoMode
         if (main_activity.preview?.isVideo == true) {
-            if (MyDebug.LOG) Logger.d(TAG, "snapshot mode")
+            Logger.d(TAG, "snapshot mode")
             // must be in photo snapshot while recording video mode, only support standard photo mode
             // (RAW not supported anyway for video snapshot mode, but have this code just to be safe)
             photo_mode = PhotoMode.Standard
@@ -3466,14 +3474,14 @@ class MyApplicationInterface internal constructor(
             do_in_background, force_suffix, suffix_offset, raw_image, current_date
         )
 
-        if (MyDebug.LOG) Logger.d(TAG, "onRawPictureTaken complete")
+        Logger.d(TAG, "onRawPictureTaken complete")
         return success
     }
 
     override fun onRawBurstPictureTaken(
         raw_images: MutableList<RawImage>?, current_date: Date?
     ): Boolean {
-        if (MyDebug.LOG) Logger.d(TAG, "onRawBurstPictureTaken")
+        Logger.d(TAG, "onRawBurstPictureTaken")
         System.gc()
 
         val do_in_background = saveInBackground(false)
@@ -3490,12 +3498,12 @@ class MyApplicationInterface internal constructor(
             }
         }
 
-        if (MyDebug.LOG) Logger.d(TAG, "onRawBurstPictureTaken complete")
+        Logger.d(TAG, "onRawBurstPictureTaken complete")
         return success
     }
 
     fun addLastImage(file: File, share: Boolean) {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "addLastImage: " + file)
             Logger.d(TAG, "share?: " + share)
         }
@@ -3505,7 +3513,7 @@ class MyApplicationInterface internal constructor(
     }
 
     fun addLastImageSAF(uri: Uri?, share: Boolean) {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "addLastImageSAF: " + uri)
             Logger.d(TAG, "share?: " + share)
         }
@@ -3515,7 +3523,7 @@ class MyApplicationInterface internal constructor(
     }
 
     fun addLastImageMediaStore(uri: Uri?, share: Boolean) {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "addLastImageMediaStore: " + uri)
             Logger.d(TAG, "share?: " + share)
         }
@@ -3525,14 +3533,14 @@ class MyApplicationInterface internal constructor(
     }
 
     fun clearLastImages() {
-        if (MyDebug.LOG) Logger.d(TAG, "clearLastImages")
+        Logger.d(TAG, "clearLastImages")
         last_images_type = LastImagesType.FILE
         last_images.clear()
         drawPreview!!.clearLastImage()
     }
 
     fun shareLastImage() {
-        if (MyDebug.LOG) Logger.d(TAG, "shareLastImage")
+        Logger.d(TAG, "shareLastImage")
         val preview = main_activity.preview
         if (preview!!.isPreviewPaused()) {
             var share_image: LastImage? = null
@@ -3547,11 +3555,11 @@ class MyApplicationInterface internal constructor(
             var done = true
             if (share_image != null) {
                 val last_image_uri = share_image.uri
-                if (MyDebug.LOG) Logger.d(TAG, "Share: " + last_image_uri)
+                Logger.d(TAG, "Share: " + last_image_uri)
                 if (last_image_uri == null) {
                     // could happen with Android 7+ with non-SAF if the image hasn't been scanned yet,
                     // so we don't know the uri yet
-                    Log.e(TAG, "can't share last image as don't yet have uri")
+                    Logger.e(TAG, "can't share last image as don't yet have uri")
                     done = false
                 } else {
                     val intent = Intent(Intent.ACTION_SEND)
@@ -3570,10 +3578,10 @@ class MyApplicationInterface internal constructor(
     private fun trashImage(
         image_type: LastImagesType?, image_uri: Uri?, image_name: String?, from_user: Boolean
     ) {
-        if (MyDebug.LOG) Logger.d(TAG, "trashImage")
+        Logger.d(TAG, "trashImage")
         val preview = main_activity.preview
         if (image_type == LastImagesType.SAF && image_uri != null) {
-            if (MyDebug.LOG) Logger.d(TAG, "Delete SAF: " + image_uri)
+            Logger.d(TAG, "Delete SAF: " + image_uri)
             val file = storageUtils.getFileFromDocumentUriSAF(
                 image_uri, false
             ) // need to get file before deleting it, as fileFromDocumentUriSAF may depend on the file still existing
@@ -3582,9 +3590,9 @@ class MyApplicationInterface internal constructor(
                         main_activity.getContentResolver(), image_uri
                     )
                 ) {
-                    if (MyDebug.LOG) Log.e(TAG, "failed to delete " + image_uri)
+                    Logger.e(TAG, "failed to delete " + image_uri)
                 } else {
-                    if (MyDebug.LOG) Logger.d(TAG, "successfully deleted " + image_uri)
+                    Logger.d(TAG, "successfully deleted " + image_uri)
                     if (from_user) preview!!.showToast(null, R.string.photo_deleted, true)
                     if (file != null) {
                         // SAF doesn't broadcast when deleting them
@@ -3594,21 +3602,21 @@ class MyApplicationInterface internal constructor(
             } catch (e: FileNotFoundException) {
                 // note, Android Studio reports a warning that FileNotFoundException isn't thrown, but it can be
                 // thrown by DocumentsContract.deleteDocument - and we get an error if we try to remove the catch!
-                if (MyDebug.LOG) Log.e(TAG, "exception when deleting " + image_uri)
+                Logger.e(TAG, "exception when deleting " + image_uri)
                 e.printStackTrace()
             }
         } else if (image_type == LastImagesType.MEDIASTORE && image_uri != null) {
-            if (MyDebug.LOG) Logger.d(TAG, "Delete MediaStore: " + image_uri)
+            Logger.d(TAG, "Delete MediaStore: " + image_uri)
             if (main_activity.getContentResolver().delete(image_uri, null, null) > 0) {
                 if (from_user) preview!!.showToast(photo_delete_toast, R.string.photo_deleted, true)
             }
         } else if (image_name != null) {
-            if (MyDebug.LOG) Logger.d(TAG, "Delete: " + image_name)
+            Logger.d(TAG, "Delete: " + image_name)
             val file = File(image_name)
             if (!file.delete()) {
-                if (MyDebug.LOG) Log.e(TAG, "failed to delete " + image_name)
+                Logger.e(TAG, "failed to delete " + image_name)
             } else {
-                if (MyDebug.LOG) Logger.d(TAG, "successfully deleted " + image_name)
+                Logger.d(TAG, "successfully deleted " + image_name)
                 if (from_user) preview!!.showToast(photo_delete_toast, R.string.photo_deleted, true)
                 storageUtils.broadcastFile(file, false, false, false, false, null)
             }
@@ -3616,7 +3624,7 @@ class MyApplicationInterface internal constructor(
     }
 
     fun trashLastImage() {
-        if (MyDebug.LOG) Logger.d(TAG, "trashLastImage")
+        Logger.d(TAG, "trashLastImage")
         val preview = main_activity.preview
         if (preview!!.isPreviewPaused()) {
             for (i in last_images.indices) {
@@ -3644,7 +3652,7 @@ class MyApplicationInterface internal constructor(
      * @param uri  The file's corresponding uri.
      */
     fun scannedFile(file: File, uri: Uri?) {
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "scannedFile")
             Logger.d(TAG, "file: $file")
             Logger.d(TAG, "uri: $uri")
@@ -3652,9 +3660,9 @@ class MyApplicationInterface internal constructor(
         // see note under LastImage constructor for why we need to update the Uris
         for (i in last_images.indices) {
             val last_image = last_images.get(i)
-            if (MyDebug.LOG) Logger.d(TAG, "compare to last_image: " + last_image.name)
+            Logger.d(TAG, "compare to last_image: " + last_image.name)
             if (last_image.uri == null && last_image.name != null && last_image.name == file.absolutePath) {
-                if (MyDebug.LOG) Logger.d(TAG, "updated last_image : $i")
+                Logger.d(TAG, "updated last_image : $i")
                 last_image.uri = uri
             }
         }
@@ -3676,20 +3684,20 @@ class MyApplicationInterface internal constructor(
 
     init {
         var debug_time: Long = 0
-        if (MyDebug.LOG) {
+        {
             Logger.d(TAG, "MyApplicationInterface")
             debug_time = System.currentTimeMillis()
         }
         this.main_activity = mainActivity
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         this.locationSupplier = LocationSupplier(mainActivity)
-        if (MyDebug.LOG) Logger.d(
+        Logger.d(
             TAG,
             "MyApplicationInterface: time after creating location supplier: " + (System.currentTimeMillis() - debug_time)
         )
         this.gyroSensor = GyroSensor(mainActivity)
         this.storageUtils = StorageUtils(mainActivity, this)
-        if (MyDebug.LOG) Logger.d(
+        Logger.d(
             TAG,
             "MyApplicationInterface: time after creating storage utils: " + (System.currentTimeMillis() - debug_time)
         )
@@ -3701,19 +3709,19 @@ class MyApplicationInterface internal constructor(
         this.reset(false)
         if (savedInstanceState != null) {
             // load the things we saved in onSaveInstanceState().
-            if (MyDebug.LOG) Logger.d(TAG, "read from savedInstanceState")
+            Logger.d(TAG, "read from savedInstanceState")
             has_set_cameraId = true
             cameraId = savedInstanceState.getInt("cameraId", cameraId_default)
-            if (MyDebug.LOG) Logger.d(TAG, "found cameraId: $cameraId")
+            Logger.d(TAG, "found cameraId: $cameraId")
             cameraIdSPhysical = savedInstanceState.getString("cameraIdSPhysical", null)
-            if (MyDebug.LOG) Logger.d(TAG, "found cameraIdSPhysical: $cameraIdSPhysical")
+            Logger.d(TAG, "found cameraIdSPhysical: $cameraIdSPhysical")
             this.nRMode = savedInstanceState.getString("nr_mode", nr_mode_default)
-            if (MyDebug.LOG) Logger.d(TAG, "found nr_mode: " + this.nRMode)
+            Logger.d(TAG, "found nr_mode: " + this.nRMode)
             aperture = savedInstanceState.getFloat("aperture", aperture_default)
-            if (MyDebug.LOG) Logger.d(TAG, "found aperture: $aperture")
+            Logger.d(TAG, "found aperture: $aperture")
         }
 
-        if (MyDebug.LOG) Logger.d(
+        Logger.d(
             TAG,
             "MyApplicationInterface: total time to create MyApplicationInterface: " + (System.currentTimeMillis() - debug_time)
         )

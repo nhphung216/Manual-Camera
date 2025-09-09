@@ -13,11 +13,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.ssolstice.camera.manual.MainActivity;
 import com.ssolstice.camera.manual.MyApplicationInterface;
-import com.ssolstice.camera.manual.MyDebug;
 import com.ssolstice.camera.manual.PreferenceKeys;
 import com.ssolstice.camera.manual.ui.MainUI;
 import com.ssolstice.camera.manual.utils.Logger;
@@ -56,7 +54,7 @@ public class BluetoothRemoteControl {
             }
             bluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!bluetoothLeService.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
+                Logger.INSTANCE.e(TAG, "Unable to initialize Bluetooth");
                 stopRemoteControl();
             }
             // connect to the device
@@ -261,7 +259,7 @@ public class BluetoothRemoteControl {
                 is_connected = false; // Unbinding closes the connection, of course
                 main_activity.getMainUI().updateRemoteConnectionIcon();
             } catch (IllegalArgumentException e) {
-                Log.e(TAG, "Remote Service was not running, that's strange");
+                Logger.INSTANCE.e(TAG, "Remote Service was not running, that's strange");
                 e.printStackTrace();
             }
         }

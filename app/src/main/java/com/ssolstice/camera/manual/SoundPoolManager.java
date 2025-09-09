@@ -4,7 +4,6 @@ import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.util.Log;
 import android.util.SparseIntArray;
 
 import com.ssolstice.camera.manual.utils.Logger;

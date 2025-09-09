@@ -9,7 +9,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.ssolstice.camera.manual.ui.MyEditTextPreference;
 import com.ssolstice.camera.manual.utils.Logger;

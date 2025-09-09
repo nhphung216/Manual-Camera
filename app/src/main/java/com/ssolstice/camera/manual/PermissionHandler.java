@@ -11,8 +11,6 @@ import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import android.util.Log;
-
 import com.ssolstice.camera.manual.utils.Logger;
 
 /** Android 6+ permission handling:

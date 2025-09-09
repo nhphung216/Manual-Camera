@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.ssolstice.camera.manual.utils.Logger;

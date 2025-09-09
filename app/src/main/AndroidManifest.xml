@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
-    android:versionCode="20"
-    android:versionName="1.0.20"
+    android:versionCode="22"
+    android:versionName="1.0.22"
     tools:ignore="GoogleAppIndexingWarning">
 
     <supports-screens

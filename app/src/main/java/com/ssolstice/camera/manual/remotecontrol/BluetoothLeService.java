@@ -23,8 +23,6 @@ import android.os.IBinder;
 
 import androidx.core.content.ContextCompat;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -90,14 +88,14 @@ public class BluetoothLeService extends Service {
             // not bound, as application may be in background!
             // In theory this shouldn't be needed here, as we also check is_bound in connect(), but
             // have it here too just to be safe.
-            Log.e(TAG, "triggerScan shouldn't be called when service not bound");
+            Logger.INSTANCE.e(TAG, "triggerScan shouldn't be called when service not bound");
             return;
         }
 
         // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
         if (DeviceScanner.useAndroid12BluetoothPermissions()) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, "bluetooth scan permission not granted!");
+                Logger.INSTANCE.e(TAG, "bluetooth scan permission not granted!");
                 return;
             }
         }
@@ -109,7 +107,7 @@ public class BluetoothLeService extends Service {
                 // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
                 if (DeviceScanner.useAndroid12BluetoothPermissions()) {
                     if (ContextCompat.checkSelfPermission(BluetoothLeService.this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                        Log.e(TAG, "bluetooth scan permission not granted!");
+                        Logger.INSTANCE.e(TAG, "bluetooth scan permission not granted!");
                         return;
                     }
                 }
@@ -139,7 +137,7 @@ public class BluetoothLeService extends Service {
                 boolean has_bluetooth_permission = true;
                 if (DeviceScanner.useAndroid12BluetoothPermissions()) {
                     if (ContextCompat.checkSelfPermission(BluetoothLeService.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        Log.e(TAG, "bluetooth scan permission not granted!");
+                        Logger.INSTANCE.e(TAG, "bluetooth scan permission not granted!");
                         has_bluetooth_permission = false;
                     }
                 }
@@ -164,7 +162,7 @@ public class BluetoothLeService extends Service {
                 // We check is_bound in connect() itself, but seems pointless to even try if we
                 // know the service is unbound (and if it's later bound again, we'll try connecting
                 // again anyway without needing this).
-                Log.e(TAG, "don't attempt to reconnect when service not bound");
+                Logger.INSTANCE.e(TAG, "don't attempt to reconnect when service not bound");
             }
 
             Timer timer = new Timer();
@@ -356,14 +354,14 @@ public class BluetoothLeService extends Service {
         if (bluetoothManager == null) {
             bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
             if (bluetoothManager == null) {
-                Log.e(TAG, "Unable to initialize BluetoothManager.");
+                Logger.INSTANCE.e(TAG, "Unable to initialize BluetoothManager.");
                 return false;
             }
         }
 
         bluetoothAdapter = bluetoothManager.getAdapter();
         if (bluetoothAdapter == null) {
-            Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
+            Logger.INSTANCE.e(TAG, "Unable to obtain a BluetoothAdapter.");
             return false;
         }
 
@@ -385,14 +383,14 @@ public class BluetoothLeService extends Service {
             // Under normal operation this isn't needed, but there are calls to connect() that can
             // happen from postDelayed() or TimerTask in this class, so a risk that they call
             // connect() after the service is unbound!
-            Log.e(TAG, "connect shouldn't be called when service not bound");
+            Logger.INSTANCE.e(TAG, "connect shouldn't be called when service not bound");
             return false;
         }
 
         // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
         if (DeviceScanner.useAndroid12BluetoothPermissions()) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, "bluetooth scan permission not granted!");
+                Logger.INSTANCE.e(TAG, "bluetooth scan permission not granted!");
                 return false;
             }
         }
@@ -454,7 +452,7 @@ public class BluetoothLeService extends Service {
         // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
         if (DeviceScanner.useAndroid12BluetoothPermissions()) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, "bluetooth scan permission not granted!");
+                Logger.INSTANCE.e(TAG, "bluetooth scan permission not granted!");
                 return;
             }
         }
@@ -475,7 +473,7 @@ public class BluetoothLeService extends Service {
         // Check for Android 12 Bluetooth permission just in case (and for Android lint error)
         if (DeviceScanner.useAndroid12BluetoothPermissions()) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, "bluetooth scan permission not granted!");
+                Logger.INSTANCE.e(TAG, "bluetooth scan permission not granted!");
                 return;
             }
         }

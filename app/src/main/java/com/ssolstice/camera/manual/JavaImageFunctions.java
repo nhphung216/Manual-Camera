@@ -1,7 +1,6 @@
 package com.ssolstice.camera.manual;
 
 import android.graphics.Bitmap;
-//import android.util.Log;
 
 import java.util.List;
 

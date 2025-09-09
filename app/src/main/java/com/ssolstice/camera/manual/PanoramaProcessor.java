@@ -26,9 +26,7 @@ import android.renderscript.Element;
 import android.renderscript.RSInvalidStateException;
 import android.renderscript.RenderScript;
 import android.renderscript.Script;
-//import android.renderscript.ScriptIntrinsicResize;
 import android.renderscript.Type;
-import android.util.Log;
 
 import com.ssolstice.camera.manual.utils.Logger;
 
@@ -2456,7 +2454,7 @@ public class PanoramaProcessor {
             Logger.INSTANCE.e(TAG, "bitmaps have different widths");
             throw new RuntimeException();
         } else if (height != rhs.getHeight()) {
-            Log.e(TAG, "bitmaps have different heights");
+            Logger.INSTANCE.e(TAG, "bitmaps have different heights");
             throw new RuntimeException();
         }
         Paint p = new Paint();
@@ -2772,7 +2770,7 @@ public class PanoramaProcessor {
 
         Matrix matrix = new Matrix();
         if( !matrix.setPolyToPoly(src_points, 0, dst_points, 0, 4) ) {
-            Log.e(TAG, "failed to create matrix");
+            Logger.INSTANCE.e(TAG, "failed to create matrix");
             throw new RuntimeException();
         }
         if( MyDebug.LOG )
@@ -3375,17 +3373,10 @@ public class PanoramaProcessor {
         for (int i = 1; i < bitmaps.size(); i++) {
             Bitmap bitmap = bitmaps.get(i);
             if (bitmap.getWidth() != bitmap_width || bitmap.getHeight() != bitmap_height) {
-                Log.e(TAG, "bitmaps not of equal sizes");
+                Logger.INSTANCE.e(TAG, "bitmaps not of equal sizes");
                 throw new PanoramaProcessorException(PanoramaProcessorException.UNEQUAL_SIZES);
             }
         }
-        /*{
-            // test
-            for(int i=0;i<bitmaps.size();i++) {
-                Bitmap bitmap = bitmaps.get(i);
-                saveBitmap(bitmap, "input_bitmap_" + i +".png");
-            }
-        }*/
 
         final int slice_width = (int) (bitmap_width / panorama_pics_per_screen);
         Logger.INSTANCE.d(TAG, "slice_width: " + slice_width);
@@ -3543,7 +3534,7 @@ public class PanoramaProcessor {
 
             if (panorama_height <= 0) {
                 // can happen if the transforms are such that we move off top or bottom of screen! Better to fail gracefully
-                Log.e(TAG, "crop caused panorama height to become -ve: " + panorama_height);
+                Logger.INSTANCE.e(TAG, "crop caused panorama height to become -ve: " + panorama_height);
                 throw new PanoramaProcessorException(PanoramaProcessorException.FAILED_TO_CROP);
             }
         }

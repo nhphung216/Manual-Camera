@@ -1,9 +1,7 @@
 package com.ssolstice.camera.manual.ui;
 
-import android.util.Log;
 import android.widget.SeekBar;
 
-import com.ssolstice.camera.manual.MyDebug;
 import com.ssolstice.camera.manual.utils.Logger;
 
 import java.util.ArrayList;

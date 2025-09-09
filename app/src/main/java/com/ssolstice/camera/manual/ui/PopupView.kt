@@ -230,7 +230,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 }
                 if (current_mode == null) {
                     // applicationinterface should only report we're in a mode if it's supported, but just in case...
-                    if (MyDebug.LOG) Log.e(TAG, "can't find current mode for mode: " + photo_mode)
+                    if (MyDebug.LOG) Logger.e(TAG, "can't find current mode for mode: " + photo_mode)
                     current_mode = "" // this will mean no photo mode is highlighted in the UI
                 }
 
@@ -296,7 +296,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     getResources().getStringArray(R.array.preference_nr_mode_entries)
 
                 if (nr_mode_values.size != nr_mode_entries.size) {
-                    Log.e(
+                    Logger.e(
                         TAG,
                         "preference_nr_mode_values and preference_nr_mode_entries are different lengths"
                     )
@@ -407,7 +407,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     }
                 }
                 if (picture_size_index == -1) {
-                    Log.e(TAG, "couldn't find index of current picture size")
+                    Logger.e(TAG, "couldn't find index of current picture size")
                 } else {
                     Logger.d(TAG, "picture_size_index: $picture_size_index")
                 }
@@ -487,7 +487,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 var video_sizes =
                     preview.getSupportedVideoQuality(main_activity.applicationInterface!!.getVideoFPSPref())
                 if (video_sizes.size == 0) {
-                    Log.e(TAG, "can't find any supported video sizes for current fps!")
+                    Logger.e(TAG, "can't find any supported video sizes for current fps!")
                     // fall back to unfiltered list
                     video_sizes = preview.getVideoQualityHander().getSupportedVideoQuality()
                 }
@@ -636,7 +636,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                                     preview.getCameraController().setAperture(new_aperture)
                                 }
                             } else {
-                                Log.e(TAG, "unknown aperture: " + option)
+                                Logger.e(TAG, "unknown aperture: " + option)
                             }
                         }
                     })
@@ -653,7 +653,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                 //String [] burst_mode_values = new String[all_burst_mode_values.length];
                 //String [] burst_mode_entries = new String[all_burst_mode_entries.length];
                 if (all_burst_mode_values.size != all_burst_mode_entries.size) {
-                    Log.e(
+                    Logger.e(
                         TAG,
                         "preference_fast_burst_n_images_values and preference_fast_burst_n_images_entries are different lengths"
                     )
@@ -676,7 +676,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     try {
                         n_images = all_burst_mode_values[i]!!.toInt()
                     } catch (e: NumberFormatException) {
-                        Log.e(
+                        Logger.e(
                             TAG,
                             "failed to parse " + i + "th preference_fast_burst_n_images_values value: " + all_burst_mode_values[i]
                         )
@@ -761,7 +761,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     getResources().getStringArray(R.array.preference_focus_bracketing_n_images_entries)
 
                 if (burst_mode_values.size != burst_mode_entries.size) {
-                    Log.e(
+                    Logger.e(
                         TAG,
                         "preference_focus_bracketing_n_images_values and preference_focus_bracketing_n_images_entries are different lengths"
                     )
@@ -913,7 +913,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                         // default to no slow motion or timelapse
                         video_capture_rate_index = capture_rate_std_index
                         if (video_capture_rate_index == -1) {
-                            Log.e(TAG, "can't find capture_rate_std_index")
+                            Logger.e(TAG, "can't find capture_rate_std_index")
                             video_capture_rate_index = 0
                         }
                     }
@@ -1344,7 +1344,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
         }
         Logger.d(TAG, "mode id: $option_id")
         if (option_id == -1) {
-            if (MyDebug.LOG) Log.e(TAG, "unknown mode id: $option_id")
+            if (MyDebug.LOG) Logger.e(TAG, "unknown mode id: $option_id")
         } else {
             val new_photo_mode = photo_mode_values.get(option_id)
             var toast_message: String? = option
@@ -1453,7 +1453,7 @@ class PopupView(context: Context?) : LinearLayout(context) {
                     "preference_photo_mode_x_beauty"
                 )
 
-                else -> if (MyDebug.LOG) Log.e(TAG, "unknown new_photo_mode: " + new_photo_mode)
+                else -> if (MyDebug.LOG) Logger.e(TAG, "unknown new_photo_mode: " + new_photo_mode)
             }
             editor.apply()
 

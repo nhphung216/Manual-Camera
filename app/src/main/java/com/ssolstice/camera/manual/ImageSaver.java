@@ -56,7 +56,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.Range;
 import android.util.TypedValue;
 import android.util.Xml;
@@ -2067,19 +2066,6 @@ public class ImageSaver extends Thread {
                 Logger.INSTANCE.d(TAG, "apply post-processing for preshot bitmap: " + i);
                 Bitmap bitmap = preshot_bitmaps.get(i);
 
-                // applying DRO to preshots disabled, as it's slow...
-                /*if( request.process_type == Request.ProcessType.HDR && request.jpeg_images.size() == 1 ) {
-                    // note, ProcessType.HDR is used for photo modes DRO (if 1 JPEG image) and HDR (if 3 JPEG images) - we only want to apply DRO
-                    // to the former
-                    List<Bitmap> bitmaps = new ArrayList<>();
-                    bitmaps.add(bitmap);
-                    if( !processHDR(bitmaps, request, time_s) ) {
-                        Logger.INSTANCE.e(TAG, "failed to apply DRO to preshot bitmap: " + i);
-                        throw new IOException();
-                    }
-                    bitmap = bitmaps.get(0);
-                }*/
-
                 PostProcessBitmapResult postProcessBitmapResult = postProcessBitmap(preshot_request, null, bitmap, true);
                 bitmap = postProcessBitmapResult.bitmap;
                 preshot_bitmaps.set(i, bitmap);
@@ -2387,13 +2373,6 @@ public class ImageSaver extends Thread {
                 Logger.INSTANCE.d(TAG, "decoded bitmap size " + width + ", " + height);
                 Logger.INSTANCE.d(TAG, "bitmap size: " + width * height * 4);
             }
-                /*for(int y=0;y<height;y++) {
-                    for(int x=0;x<width;x++) {
-                        int col = bitmap.getPixel(x, y);
-                        col = col & 0xffff0000; // mask out red component
-                        bitmap.setPixel(x, y, col);
-                    }
-                }*/
             Matrix matrix = new Matrix();
             double level_angle_rad_abs = Math.abs(Math.toRadians(level_angle));
             int w1 = width, h1 = height;
@@ -2521,7 +2500,7 @@ public class ImageSaver extends Thread {
         }
         //final MyApplicationInterface applicationInterface = main_activity.getApplicationInterface();
         boolean dategeo_stamp = request.preference_stamp.equals("preference_stamp_yes");
-        boolean text_stamp = request.preference_textstamp.length() > 0;
+        boolean text_stamp = !request.preference_textstamp.isEmpty();
         if (dategeo_stamp || text_stamp) {
             if (bitmap == null) {
                 Logger.INSTANCE.d(TAG, "decode bitmap in order to stamp info");
@@ -2593,112 +2572,43 @@ public class ImageSaver extends Thread {
                         Logger.INSTANCE.d(TAG, "date_stamp: " + date_stamp);
                         Logger.INSTANCE.d(TAG, "time_stamp: " + time_stamp);
                     }
-                    if (date_stamp.length() > 0 || time_stamp.length() > 0) {
+                    if (!date_stamp.isEmpty() || !time_stamp.isEmpty()) {
                         String datetime_stamp = "";
-                        if (date_stamp.length() > 0)
+                        if (!date_stamp.isEmpty())
                             datetime_stamp += date_stamp;
-                        if (time_stamp.length() > 0) {
-                            if (datetime_stamp.length() > 0)
+                        if (!time_stamp.isEmpty()) {
+                            if (!datetime_stamp.isEmpty())
                                 datetime_stamp += " ";
                             datetime_stamp += time_stamp;
                         }
                         //applicationInterface.drawTextWithBackground(canvas, p, datetime_stamp, color, Color.BLACK, width - offset_x, ypos, MyApplicationInterface.Alignment.ALIGNMENT_BOTTOM, null, draw_shadowed);
-                        if (stamp_string.length() == 0)
+                        if (stamp_string.isEmpty())
                             stamp_string = datetime_stamp;
                         else
                             stamp_string = datetime_stamp + "\n" + stamp_string;
                     }
                     ypos -= diff_y;
                     String gps_stamp = main_activity.getTextFormatter().getGPSString(preference_stamp_gpsformat, request.preference_units_distance, request.store_location, request.location, request.store_geo_direction, request.geo_direction);
-                    if (gps_stamp.length() > 0) {
+                    if (!gps_stamp.isEmpty()) {
                         // don't log gps_stamp, in case of privacy!
-
-                        /*Address address = null;
-                        if( request.store_location && !request.preference_stamp_geo_address.equals("preference_stamp_geo_address_no") ) {
-                            boolean block_geocoder;
-                            synchronized(this) {
-                                block_geocoder = app_is_paused;
-                            }
-                            // try to find an address
-                            // n.b., if we update the class being used, consider whether the info on Geocoder in preference_stamp_geo_address_summary needs updating
-                            if( block_geocoder ) {
-                                // seems safer to not try to initiate potential network connections (via geocoder) if ManualCamera
-                                // has paused and we're still saving images
-                                if( MyDebug.LOG )
-                                    Logger.INSTANCE.d(TAG, "don't call geocoder for photostamp as app is paused");
-                            }
-                            else if( Geocoder.isPresent() ) {
-                                if( MyDebug.LOG )
-                                    Logger.INSTANCE.d(TAG, "geocoder is present");
-                                Geocoder geocoder = new Geocoder(main_activity, Locale.getDefault());
-                                try {
-                                    List<Address> addresses = geocoder.getFromLocation(request.location.getLatitude(), request.location.getLongitude(), 1);
-                                    if( addresses != null && addresses.size() > 0 ) {
-                                        address = addresses.get(0);
-                                        // don't log address, in case of privacy!
-                                        if( MyDebug.LOG ) {
-                                            Logger.INSTANCE.d(TAG, "max line index: " + address.getMaxAddressLineIndex());
-                                        }
-                                    }
-                                }
-                                catch(Exception e) {
-                                    Log.e(TAG, "failed to read from geocoder");
-                                    e.printStackTrace();
-                                }
-                            }
-                            else {
-                                if( MyDebug.LOG )
-                                    Logger.INSTANCE.d(TAG, "geocoder not present");
-                            }
-                        }*/
-
-                        //if( address == null || request.preference_stamp_geo_address.equals("preference_stamp_geo_address_both") )
                         {
                             Logger.INSTANCE.d(TAG, "display gps coords");
                             // want GPS coords (either in addition to the address, or we don't have an address)
                             // we'll also enter here if store_location is false, but we have geo direction to display
                             //applicationInterface.drawTextWithBackground(canvas, p, gps_stamp, color, Color.BLACK, width - offset_x, ypos, MyApplicationInterface.Alignment.ALIGNMENT_BOTTOM, null, draw_shadowed);
-                            if (stamp_string.length() == 0)
+                            if (stamp_string.isEmpty())
                                 stamp_string = gps_stamp;
                             else
                                 stamp_string = gps_stamp + "\n" + stamp_string;
                             ypos -= diff_y;
                         }
-                        /*else if( request.store_geo_direction ) {
-                            if( MyDebug.LOG )
-                                Logger.INSTANCE.d(TAG, "not displaying gps coords, but need to display geo direction");
-                            // we are displaying an address instead of GPS coords, but we still need to display the geo direction
-                            gps_stamp = main_activity.getTextFormatter().getGPSString(preference_stamp_gpsformat, request.preference_units_distance, false, null, request.store_geo_direction, request.geo_direction);
-                            if( gps_stamp.length() > 0 ) {
-                                // don't log gps_stamp, in case of privacy!
-                                //applicationInterface.drawTextWithBackground(canvas, p, gps_stamp, color, Color.BLACK, width - offset_x, ypos, MyApplicationInterface.Alignment.ALIGNMENT_BOTTOM, null, draw_shadowed);
-                                if( stamp_string.length() == 0 )
-                                    stamp_string = gps_stamp;
-                                else
-                                    stamp_string = gps_stamp + "\n" + stamp_string;
-                                ypos -= diff_y;
-                            }
-                        }*/
-
-                        /*if( address != null ) {
-                            for(int i=0;i<=address.getMaxAddressLineIndex();i++) {
-                                // write in reverse order
-                                String addressLine = address.getAddressLine(address.getMaxAddressLineIndex()-i);
-                                //applicationInterface.drawTextWithBackground(canvas, p, addressLine, color, Color.BLACK, width - offset_x, ypos, MyApplicationInterface.Alignment.ALIGNMENT_BOTTOM, null, draw_shadowed);
-                                if( stamp_string.length() == 0 )
-                                    stamp_string = addressLine;
-                                else
-                                    stamp_string = addressLine + "\n" + stamp_string;
-                                ypos -= diff_y;
-                            }
-                        }*/
                     }
                 }
                 if (text_stamp) {
                     Logger.INSTANCE.d(TAG, "stamp text");
 
                     //applicationInterface.drawTextWithBackground(canvas, p, request.preference_textstamp, color, Color.BLACK, width - offset_x, ypos, MyApplicationInterface.Alignment.ALIGNMENT_BOTTOM, null, draw_shadowed);
-                    if (stamp_string.length() == 0)
+                    if (stamp_string.isEmpty())
                         stamp_string = request.preference_textstamp;
                     else
                         stamp_string = request.preference_textstamp + "\n" + stamp_string;
@@ -2707,7 +2617,7 @@ public class ImageSaver extends Thread {
                     ypos -= diff_y;
                 }
 
-                if (stamp_string.length() > 0) {
+                if (!stamp_string.isEmpty()) {
                     // don't log stamp_string, in case of privacy!
 
                     @SuppressLint("InflateParams") final View stamp_view = LayoutInflater.from(main_activity).inflate(R.layout.stamp_image_text, null);
@@ -2922,7 +2832,7 @@ public class ImageSaver extends Thread {
                             Logger.INSTANCE.d(TAG, "returned bitmap size " + bitmap.getWidth() + ", " + bitmap.getHeight());
                             Logger.INSTANCE.d(TAG, "returned bitmap size: " + bitmap.getWidth() * bitmap.getHeight() * 4);
                         } else {
-                            Log.e(TAG, "no bitmap created");
+                            Logger.INSTANCE.e(TAG, "no bitmap created");
                         }
                     }
                     if (bitmap != null)
@@ -2960,12 +2870,12 @@ public class ImageSaver extends Thread {
                     saveUri = main_activity.getContentResolver().insert(folder, contentValues);
                 } catch (IllegalArgumentException e) {
                     // can happen for mediastore method if invalid ContentResolver.insert() call
-                    Log.e(TAG, "IllegalArgumentException inserting to mediastore: " + e.getMessage());
+                    Logger.INSTANCE.e(TAG, "IllegalArgumentException inserting to mediastore: " + e.getMessage());
                     e.printStackTrace();
                     throw new IOException();
                 } catch (IllegalStateException e) {
                     // have received Google Play crashes from ContentResolver.insert() call for mediastore method
-                    Log.e(TAG, "IllegalStateException inserting to mediastore: " + e.getMessage());
+                    Logger.INSTANCE.e(TAG, "IllegalStateException inserting to mediastore: " + e.getMessage());
                     e.printStackTrace();
                     throw new IOException();
                 }
@@ -3020,7 +2930,7 @@ public class ImageSaver extends Thread {
                                     FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
                                     setExifFromData(request, data, fileDescriptor);
                                 } else {
-                                    Log.e(TAG, "failed to create ParcelFileDescriptor for saveUri: " + saveUri);
+                                    Logger.INSTANCE.e(TAG, "failed to create ParcelFileDescriptor for saveUri: " + saveUri);
                                 }
                             } finally {
                                 if (parcelFileDescriptor != null) {
@@ -3089,17 +2999,17 @@ public class ImageSaver extends Thread {
                 }
             }
         } catch (FileNotFoundException e) {
-            Log.e(TAG, "File not found: " + e.getMessage());
+            Logger.INSTANCE.e(TAG, "File not found: " + e.getMessage());
             e.printStackTrace();
             main_activity.getPreview().showToast(null, R.string.failed_to_save_photo);
         } catch (IOException e) {
-            Log.e(TAG, "I/O error writing file: " + e.getMessage());
+            Logger.INSTANCE.e(TAG, "I/O error writing file: " + e.getMessage());
             e.printStackTrace();
             main_activity.getPreview().showToast(null, R.string.failed_to_save_photo);
         } catch (SecurityException e) {
             // received security exception from copyFileToUri()->openOutputStream() from Google Play
             // update: no longer have copyFileToUri() (as no longer use temporary files for SAF), but might as well keep this
-            Log.e(TAG, "security exception writing file: " + e.getMessage());
+            Logger.INSTANCE.e(TAG, "security exception writing file: " + e.getMessage());
             e.printStackTrace();
             main_activity.getPreview().showToast(null, R.string.failed_to_save_photo);
         }
@@ -3161,14 +3071,14 @@ public class ImageSaver extends Thread {
                     // true here
                     // crashes seem to all be Android 7.1 or earlier, so maybe this is a bug that's been fixed - but catch it anyway
                     // as it's grown popular
-                    Log.e(TAG, "can't create thumbnail bitmap due to IllegalArgumentException?!");
+                    Logger.INSTANCE.e(TAG, "can't create thumbnail bitmap due to IllegalArgumentException?!");
                     e.printStackTrace();
                     thumbnail = null;
                 }
             }
             if (thumbnail == null) {
                 // received crashes on Google Play suggesting that thumbnail could not be created
-                Log.e(TAG, "failed to create thumbnail bitmap");
+                Logger.INSTANCE.e(TAG, "failed to create thumbnail bitmap");
             } else {
                 final Bitmap thumbnail_f = thumbnail;
                 main_activity.runOnUiThread(new Runnable() {
@@ -3842,11 +3752,11 @@ public class ImageSaver extends Thread {
                     saveUri = main_activity.getContentResolver().insert(folder, contentValues);
                 } catch (IllegalArgumentException e) {
                     // can happen for mediastore method if invalid ContentResolver.insert() call
-                    Log.e(TAG, "IllegalArgumentException inserting to mediastore: " + e.getMessage());
+                    Logger.INSTANCE.e(TAG, "IllegalArgumentException inserting to mediastore: " + e.getMessage());
                     e.printStackTrace();
                     throw new IOException();
                 } catch (IllegalStateException e) {
-                    Log.e(TAG, "IllegalStateException inserting to mediastore: " + e.getMessage());
+                    Logger.INSTANCE.e(TAG, "IllegalStateException inserting to mediastore: " + e.getMessage());
                     e.printStackTrace();
                     throw new IOException();
                 }
@@ -3918,11 +3828,11 @@ public class ImageSaver extends Thread {
                 storageUtils.broadcastUri(saveUri, true, false, raw_only, hasnoexifdatetime, false);
             }
         } catch (FileNotFoundException e) {
-            Log.e(TAG, "File not found: " + e.getMessage());
+            Logger.INSTANCE.e(TAG, "File not found: " + e.getMessage());
             e.printStackTrace();
             main_activity.getPreview().showToast(null, R.string.failed_to_save_photo_raw);
         } catch (IOException e) {
-            Log.e(TAG, "ioexception writing raw image file");
+            Logger.INSTANCE.e(TAG, "ioexception writing raw image file");
             e.printStackTrace();
             main_activity.getPreview().showToast(null, R.string.failed_to_save_photo_raw);
         } finally {
@@ -3930,7 +3840,7 @@ public class ImageSaver extends Thread {
                 try {
                     output.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "ioexception closing raw output");
+                    Logger.INSTANCE.e(TAG, "ioexception closing raw output");
                     e.printStackTrace();
                 }
             }
@@ -3990,7 +3900,7 @@ public class ImageSaver extends Thread {
                     break;
                 default:
                     // just leave unchanged for now
-                    Log.e(TAG, "    unsupported exif orientation: " + exif_orientation_s);
+                    Logger.INSTANCE.e(TAG, "    unsupported exif orientation: " + exif_orientation_s);
                     break;
             }
             Logger.INSTANCE.d(TAG, "    exif orientation: " + exif_orientation);
@@ -4006,11 +3916,11 @@ public class ImageSaver extends Thread {
                 }
             }
         } catch (IOException exception) {
-            Log.e(TAG, "exif orientation ioexception");
+            Logger.INSTANCE.e(TAG, "exif orientation ioexception");
             exception.printStackTrace();
         } catch (NoClassDefFoundError exception) {
             // have had Google Play crashes from new ExifInterface() for Galaxy Ace4 (vivalto3g), Galaxy S Duos3 (vivalto3gvn)
-            Log.e(TAG, "exif orientation NoClassDefFoundError");
+            Logger.INSTANCE.e(TAG, "exif orientation NoClassDefFoundError");
             exception.printStackTrace();
         } finally {
             if (inputStream != null) {
@@ -4069,7 +3979,7 @@ public class ImageSaver extends Thread {
                 try {
                     this.pfd.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "failed to close parcelfiledescriptor");
+                    Logger.INSTANCE.e(TAG, "failed to close parcelfiledescriptor");
                     e.printStackTrace();
                 }
             }
@@ -4096,7 +4006,7 @@ public class ImageSaver extends Thread {
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
                 exif = new ExifInterface(fileDescriptor);
             } else {
-                Log.e(TAG, "failed to create ParcelFileDescriptor for saveUri: " + saveUri);
+                Logger.INSTANCE.e(TAG, "failed to create ParcelFileDescriptor for saveUri: " + saveUri);
             }
         }
         return new ExifInterfaceHolder(parcelFileDescriptor, exif);
@@ -4131,7 +4041,7 @@ public class ImageSaver extends Thread {
                 }
             } catch (NoClassDefFoundError exception) {
                 // have had Google Play crashes from new ExifInterface() elsewhere for Galaxy Ace4 (vivalto3g), Galaxy S Duos3 (vivalto3gvn), so also catch here just in case
-                Log.e(TAG, "exif orientation NoClassDefFoundError");
+                Logger.INSTANCE.e(TAG, "exif orientation NoClassDefFoundError");
                 exception.printStackTrace();
             }
             Logger.INSTANCE.d(TAG, "*** time to add additional exif info: " + (System.currentTimeMillis() - time_s));

@@ -1,10 +1,10 @@
 package com.ssolstice.camera.manual.cameracontroller;
 
 import com.ssolstice.camera.manual.R;
+import com.ssolstice.camera.manual.utils.Logger;
 
 import android.content.Context;
 import android.hardware.Camera;
-import android.util.Log;
 
 /** Provides support using Android's original camera API
  *  android.hardware.Camera.
@@ -27,11 +27,11 @@ public class CameraControllerManager1 extends CameraControllerManager {
                 case Camera.CameraInfo.CAMERA_FACING_BACK:
                     return CameraController.Facing.FACING_BACK;
             }
-            Log.e(TAG, "unknown camera_facing: " + camera_info.facing);
+            Logger.INSTANCE.e(TAG, "unknown camera_facing: " + camera_info.facing);
         } catch (RuntimeException e) {
             // Had a report of this crashing on Galaxy Nexus - may be device specific issue, see http://stackoverflow.com/questions/22383708/java-lang-runtimeexception-fail-to-get-camera-info
             // but good to catch it anyway
-            Log.e(TAG, "failed to get facing");
+            Logger.INSTANCE.e(TAG, "failed to get facing");
             e.printStackTrace();
         }
         return CameraController.Facing.FACING_UNKNOWN;

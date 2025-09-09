@@ -806,7 +806,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                 try {
                     ghost_selected_image_bitmap = loadBitmap(uri)
                 } catch (e: IOException) {
-                    Log.e(TAG, "failed to load ghost_selected_image uri: " + uri)
+                    Logger.e(TAG, "failed to load ghost_selected_image uri: " + uri)
                     e.printStackTrace()
                     ghost_selected_image_bitmap = null
                     // don't set ghost_selected_image_pref to null, as we don't want to repeatedly try loading the invalid uri
@@ -852,7 +852,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
         try {
             zebra_stripes_threshold = zebra_stripes_value.toInt()
         } catch (e: NumberFormatException) {
-            if (MyDebug.LOG) Log.e(
+            if (MyDebug.LOG) Logger.e(
                 TAG,
                 "failed to parse zebra_stripes_value: " + zebra_stripes_value
             )
@@ -946,7 +946,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                         Logger.d(TAG, "sample_size: " + sample_size)
                     }
                 } else {
-                    if (MyDebug.LOG) Log.e(TAG, "failed to obtain width/height of bitmap")
+                    if (MyDebug.LOG) Logger.e(TAG, "failed to obtain width/height of bitmap")
                 }
             }
 
@@ -964,13 +964,13 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
             // Although Media.getBitmap() is documented as only throwing FileNotFoundException, IOException
             // (with the former being a subset of IOException anyway), I've had SecurityException from
             // Google Play - best to catch everything just in case.
-            Log.e(TAG, "MediaStore.Images.Media.getBitmap exception")
+            Logger.e(TAG, "MediaStore.Images.Media.getBitmap exception")
             e.printStackTrace()
             throw IOException()
         }
         if (bitmap == null) {
             // just in case!
-            Log.e(TAG, "MediaStore.Images.Media.getBitmap returned null")
+            Logger.e(TAG, "MediaStore.Images.Media.getBitmap returned null")
             throw IOException()
         }
 
@@ -2607,7 +2607,7 @@ class DrawPreview(mainActivity: MainActivity, applicationInterface: MyApplicatio
                                 Logger.d(TAG, "max_amp: " + video_max_amp)
                             }
                             if (video_max_amp > 32767) {
-                                Log.e(TAG, "video_max_amp greater than max: " + video_max_amp)
+                                Logger.e(TAG, "video_max_amp greater than max: " + video_max_amp)
                             }
                         }
                         if (video_max_amp_prev2 > video_max_amp_prev1 && video_max_amp_prev2 > video_max_amp) {

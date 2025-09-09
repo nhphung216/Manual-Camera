@@ -15,7 +15,6 @@ import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import android.util.Log;
 
 import com.ssolstice.camera.manual.utils.Logger;
 

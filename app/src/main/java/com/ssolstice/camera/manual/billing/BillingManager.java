@@ -3,7 +3,6 @@ package com.ssolstice.camera.manual.billing;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -269,7 +268,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                 }
             }
         } else if (result.getResponseCode() != BillingClient.BillingResponseCode.USER_CANCELED) {
-            Log.e(TAG, "Purchase failed: " + result.getDebugMessage());
+            Logger.INSTANCE.e(TAG, "Purchase failed: " + result.getDebugMessage());
             onFailed.run();
         } else {
             onFailed.run();

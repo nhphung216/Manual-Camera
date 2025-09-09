@@ -7,8 +7,6 @@ import android.service.quicksettings.TileService;
 
 import androidx.annotation.RequiresApi;
 
-import android.util.Log;
-
 import com.ssolstice.camera.manual.utils.Logger;
 
 /** Provides service for quick settings tile.

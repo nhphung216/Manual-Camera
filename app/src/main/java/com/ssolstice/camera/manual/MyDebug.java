@@ -4,5 +4,5 @@ package com.ssolstice.camera.manual;
  *  released versions.
  */
 public class MyDebug {
-    public static final boolean LOG = true;
+    public static final boolean LOG = false;
 }

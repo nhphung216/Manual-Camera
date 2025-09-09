@@ -28,6 +28,8 @@ android {
         testApplicationId "com.ssolstice.camera.manual.test"
         //testInstrumentationRunner "android.test.InstrumentationTestRunner"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {

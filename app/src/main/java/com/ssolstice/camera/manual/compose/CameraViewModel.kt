@@ -261,7 +261,7 @@ class CameraViewModel @Inject constructor(
     fun setFlashSelected(
         preview: Preview, item: SettingItemModel
     ) {
-        Logger.e(TAG, "setFlashSelected: $item")
+        Logger.d(TAG, "setFlashSelected: $item")
         logFeatureUsed("setFlashSelected ${item.id}")
         _flashSelected.value = item
         preview.updateFlash(item.id)
@@ -270,7 +270,7 @@ class CameraViewModel @Inject constructor(
     fun setRawSelected(
         activity: MainActivity, item: SettingItemModel
     ) {
-        Logger.e(TAG, "setRawSelected: $item")
+        Logger.d(TAG, "setRawSelected: $item")
         logFeatureUsed("setRawSelected ${item.id}")
         _rawSelected.value = item
 
@@ -287,7 +287,7 @@ class CameraViewModel @Inject constructor(
     fun setRepeatSelected(
         activity: MainActivity, item: SettingItemModel
     ) {
-        Logger.e(TAG, "setRepeatSelected: $item")
+        Logger.d(TAG, "setRepeatSelected: $item")
         logFeatureUsed("setRepeatSelected ${item.id}")
         _repeatSelected.value = item
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -299,7 +299,7 @@ class CameraViewModel @Inject constructor(
     fun setTimerSelected(
         activity: MainActivity, item: SettingItemModel
     ) {
-        Logger.e(TAG, "setTimerSelected: $item")
+        Logger.d(TAG, "setTimerSelected: $item")
         logFeatureUsed("setTimerSelected ${item.id}")
         _timerSelected.value = item
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -322,7 +322,7 @@ class CameraViewModel @Inject constructor(
     fun applySpeedSelectedPreview(
         activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview, rate: Float
     ) {
-        Logger.e(TAG, "setSpeedSelected: $rate")
+        Logger.d(TAG, "setSpeedSelected: $rate")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         sharedPreferences.edit {
             putFloat(
@@ -347,7 +347,7 @@ class CameraViewModel @Inject constructor(
     fun setupCameraData(
         activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ) {
-        Logger.e(TAG, "setupCameraData()")
+        Logger.d(TAG, "setupCameraData()")
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 val photoResolutions =
@@ -361,9 +361,9 @@ class CameraViewModel @Inject constructor(
 
                 // chuyển sang Main thread update UI
                 withContext(Dispatchers.Main) {
-                    Logger.e(TAG, "setupCameraData() withContext(Dispatchers.Main)")
+                    Logger.d(TAG, "setupCameraData() withContext(Dispatchers.Main)")
 
-                    Logger.e(TAG, "photoResolutions: ${photoResolutions.size}")
+                    Logger.d(TAG, "photoResolutions: ${photoResolutions.size}")
                     if (photoResolutions.isNotEmpty()) {
                         setResolutionOfPhoto(photoResolutions)
                         photoResolutions.find { it.selected }?.let { selectedModel ->
@@ -373,7 +373,7 @@ class CameraViewModel @Inject constructor(
                         }
                     }
 
-                    Logger.e(TAG, "timers: ${timers.size}")
+                    Logger.d(TAG, "timers: ${timers.size}")
                     if (timers.isNotEmpty()) {
                         setTimer(timers)
                         timers.find { it.selected }?.let { selectedModel ->
@@ -381,7 +381,7 @@ class CameraViewModel @Inject constructor(
                         }
                     }
 
-                    Logger.e(TAG, "repeats: ${repeats.size}")
+                    Logger.d(TAG, "repeats: ${repeats.size}")
                     if (repeats.isNotEmpty()) {
                         setRepeat(repeats)
                         repeats.find { it.selected }?.let { selectedModel ->
@@ -389,7 +389,7 @@ class CameraViewModel @Inject constructor(
                         }
                     }
 
-                    Logger.e(TAG, "videoOptions: ${videoOptions.size}")
+                    Logger.d(TAG, "videoOptions: ${videoOptions.size}")
                     if (videoOptions.isNotEmpty()) {
                         setResolutionOfVideo(videoOptions)
                         videoOptions.find { it.selected }?.let { selectedModel ->
@@ -399,12 +399,12 @@ class CameraViewModel @Inject constructor(
                         }
                     }
 
-                    Logger.e(TAG, "speedVideo: ${speedVideo.size}")
+                    Logger.d(TAG, "speedVideo: ${speedVideo.size}")
                     if (speedVideo.isNotEmpty()) {
                         setSpeeds(speedVideo)
                     }
 
-                    Logger.e(TAG, "flashModes: ${flashModes.size}")
+                    Logger.d(TAG, "flashModes: ${flashModes.size}")
                     if (flashModes.isNotEmpty()) {
                         setFlashList(flashModes)
                         flashModes.find { it.selected }?.let { selectedModel ->
@@ -412,7 +412,7 @@ class CameraViewModel @Inject constructor(
                         }
                     }
 
-                    Logger.e(TAG, "rawModes: ${rawModes.size}")
+                    Logger.d(TAG, "rawModes: ${rawModes.size}")
                     if (rawModes.isNotEmpty()) {
                         setRawList(rawModes)
                         rawModes.find { it.selected }?.let { selectedModel ->
@@ -421,7 +421,7 @@ class CameraViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                Logger.e(TAG, "setupCameraData() failed: ${e.message}" + e)
+                Logger.d(TAG, "setupCameraData() failed: ${e.message}" + e)
             }
         }
     }
@@ -514,7 +514,7 @@ class CameraViewModel @Inject constructor(
         if (preview.supportsExposureTime()) {
             val minExposure = preview.minimumExposureTime.toFloat()
             val maxExposure = preview.maximumExposureTime.toFloat()
-            Logger.e(TAG, "minExposure: $minExposure, maxExposure: $maxExposure")
+            Logger.d(TAG, "minExposure: $minExposure, maxExposure: $maxExposure")
             return CameraControlModel(
                 id = "shutter",
                 text = activity.getString(R.string.shutter),
@@ -622,7 +622,7 @@ class CameraViewModel @Inject constructor(
     fun setupCameraControlsData(
         activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ) {
-        Logger.e(TAG, "setupCameraData")
+        Logger.d(TAG, "setupCameraData")
         viewModelScope.launch(Dispatchers.Default) {
             val wb = async { buildWhiteBalanceControls(activity, preview) }
             val exp = async { buildExposureControls(activity, preview) }
@@ -909,14 +909,14 @@ class CameraViewModel @Inject constructor(
     ) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         val captureRateValues = appInterface.supportedVideoCaptureRates
-        Logger.e(TAG, "captureRateValues: $captureRateValues")
+        Logger.d(TAG, "captureRateValues: $captureRateValues")
 
         val captureRate = sharedPreferences.getFloat(
             PreferenceKeys.getVideoCaptureRatePreferenceKey(
                 preview.getCameraId(), appInterface.cameraIdSPhysicalPref
             ), 1.0f
         )
-        Logger.e(TAG, "captureRateValue: $captureRate")
+        Logger.d(TAG, "captureRateValue: $captureRate")
 
         val videoModes = arrayListOf<VideoModeUiModel>()
         val slowMotion =
@@ -1012,7 +1012,7 @@ class CameraViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Logger.e(TAG, "setupPhotoResolutions failed: ${e.message}")
+            Logger.d(TAG, "setupPhotoResolutions failed: ${e.message}")
         }
         return result
     }
@@ -1041,7 +1041,7 @@ class CameraViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Logger.e(TAG, "setupTimers failed: ${e.message}")
+            Logger.d(TAG, "setupTimers failed: ${e.message}")
         }
         return result
     }
@@ -1069,7 +1069,7 @@ class CameraViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Logger.e(TAG, "setupRepeats failed: ${e.message}")
+            Logger.d(TAG, "setupRepeats failed: ${e.message}")
         }
         return result
     }
@@ -1083,7 +1083,7 @@ class CameraViewModel @Inject constructor(
             if (preview.isVideo) {
                 var videoSizes = preview.getSupportedVideoQuality(appInterface.getVideoFPSPref())
                 if (videoSizes.isEmpty()) {
-                    Logger.e(TAG, "can't find any supported video sizes for current fps!")
+                    Logger.d(TAG, "can't find any supported video sizes for current fps!")
                     videoSizes = preview.videoQualityHander.getSupportedVideoQuality()
                 }
                 videoSizes = ArrayList<String>(videoSizes)
@@ -1101,12 +1101,12 @@ class CameraViewModel @Inject constructor(
                         selected = value == preview.videoQualityHander.getCurrentVideoQuality(),
                         isPremium = requirePremium
                     )
-                    Logger.e("resolutionOfVideo ", "${model.id} ${model.text}")
+                    Logger.d("resolutionOfVideo ", "${model.id} ${model.text}")
                     result.add(model)
                 }
             }
         } catch (e: Exception) {
-            Logger.e(TAG, "setupVideo failed: ${e.message}")
+            Logger.d(TAG, "setupVideo failed: ${e.message}")
         }
         return result
     }
@@ -1127,7 +1127,7 @@ class CameraViewModel @Inject constructor(
                         ), 1.0f
                     )
                     captureRateValues.mapIndexed { index, value ->
-                        Logger.e("speeds ", "$index $value")
+                        Logger.d("speeds ", "$index $value")
                         val text = if (abs(1.0f - (value ?: 0f)) < 1.0e-5) {
                             activity.getString(R.string.preference_video_capture_rate_normal)
                         } else {
@@ -1145,7 +1145,7 @@ class CameraViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Logger.e(TAG, "setupVideo failed: ${e.message}")
+            Logger.d(TAG, "setupVideo failed: ${e.message}")
         }
         return result
     }
@@ -1172,7 +1172,7 @@ class CameraViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Logger.e(TAG, "setupFlash failed: ${e.message}")
+            Logger.d(TAG, "setupFlash failed: ${e.message}")
         }
         return result
     }
@@ -1204,7 +1204,7 @@ class CameraViewModel @Inject constructor(
                 result.add(model)
             }
         } catch (e: Exception) {
-            Logger.e(TAG, "setupRaw failed: ${e.message}")
+            Logger.d(TAG, "setupRaw failed: ${e.message}")
         }
         return result
     }

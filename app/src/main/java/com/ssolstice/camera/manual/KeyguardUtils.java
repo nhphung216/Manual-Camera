@@ -5,7 +5,6 @@ import static android.content.Context.KEYGUARD_SERVICE;
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.os.Build;
-import android.util.Log;
 
 import com.ssolstice.camera.manual.utils.Logger;
 

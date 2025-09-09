@@ -6,7 +6,7 @@ fun <T : Any> T.tag() = this::class.simpleName ?: "LOGGING_UNKNOWN"
 
 object Logger {
 
-    private var isEnable = true
+    private var isEnable = false
 
     fun d(tag: String?, message: String?) {
         if (isEnable && message != null) {
@@ -18,12 +18,14 @@ object Logger {
         if (isEnable && message != null) {
             Log.e(tag, getClassNameMethodNameAndLineNumber() + message)
         }
+        ErrorLogger.logError(tag ?: "", message ?: "")
     }
 
     fun w(tag: String?, message: String?) {
         if (isEnable && message != null) {
             Log.w(tag, getClassNameMethodNameAndLineNumber() + message)
         }
+        ErrorLogger.logWarning(tag ?: "", message ?: "")
     }
 
     fun i(tag: String?, message: String?) {

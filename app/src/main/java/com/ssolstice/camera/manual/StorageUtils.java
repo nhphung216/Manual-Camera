@@ -38,7 +38,6 @@ import androidx.core.content.ContextCompat;
 
 import android.system.Os;
 import android.system.StructStatVfs;
-import android.util.Log;
 
 import com.ssolstice.camera.manual.utils.Logger;
 
@@ -191,16 +190,16 @@ public class StorageUtils {
 	        Cursor c = context.getContentResolver().query(uri, CONTENT_PROJECTION, null, null, null); 
 	        if( c == null ) { 
 	 			if( MyDebug.LOG )
-	 				Log.e(TAG, "Couldn't resolve given uri [1]: " + uri); 
+	 				Logger.INSTANCE.e(TAG, "Couldn't resolve given uri [1]: " + uri); 
 	        }
 	        else if( !c.moveToFirst() ) { 
 	 			if( MyDebug.LOG )
-	 				Log.e(TAG, "Couldn't resolve given uri [2]: " + uri); 
+	 				Logger.INSTANCE.e(TAG, "Couldn't resolve given uri [2]: " + uri); 
 	        }
 	        else {
     	        long duration = c.getLong(c.getColumnIndex(Video.Media.DURATION)); 
 	 			if( MyDebug.LOG )
-	 				Log.e(TAG, "replace duration: " + duration); 
+	 				Logger.INSTANCE.e(TAG, "replace duration: " + duration); 
 				ContentValues values = new ContentValues(); 
 				values.put(Video.Media.DURATION, 1000); 
 				context.getContentResolver().update(uri, values, null, null);
@@ -238,7 +237,7 @@ public class StorageUtils {
 	        // The picture is still safe and MediaScanner will find it and 
 	        // insert it into MediaProvider. The only problem is that the user 
 	        // cannot click the thumbnail to review the picture. 
-	        Log.e(TAG, "Failed to write MediaStore" + th); 
+	        Logger.INSTANCE.e(TAG, "Failed to write MediaStore" + th); 
 	    }
         return uri;
 	}*/
@@ -537,7 +536,7 @@ public class StorageUtils {
                             file = new File(filename);
                     } catch (NumberFormatException e) {
                         // have had crashes from Google Play from Long.parseLong(id)
-                        Log.e(TAG, "failed to parse id: " + id);
+                        Logger.INSTANCE.e(TAG, "failed to parse id: " + id);
                         e.printStackTrace();
                     }
                 }
@@ -632,7 +631,7 @@ public class StorageUtils {
                     Logger.INSTANCE.d(TAG, "found name from database: " + result);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Exception trying to find filename");
+                Logger.INSTANCE.e(TAG, "Exception trying to find filename");
                 e.printStackTrace();
             } finally {
                 if (cursor != null)
@@ -694,7 +693,7 @@ public class StorageUtils {
             }
             default:
                 // throw exception as this is a programming error
-                Log.e(TAG, "unknown type: " + type);
+                Logger.INSTANCE.e(TAG, "unknown type: " + type);
                 throw new RuntimeException();
         }
         return mediaFilename;
@@ -712,7 +711,7 @@ public class StorageUtils {
         if (!folder.exists()) {
             Logger.INSTANCE.d(TAG, "create directory: " + folder);
             if (!folder.mkdirs()) {
-                Log.e(TAG, "failed to create directory");
+                Logger.INSTANCE.e(TAG, "failed to create directory");
                 throw new IOException();
             }
             broadcastFile(folder, false, false, false, false, null);
@@ -734,7 +733,7 @@ public class StorageUtils {
 				if( !burstFolder.exists() ) {
 					if( !burstFolder.mkdirs() ) {
 						if( MyDebug.LOG )
-							Log.e(TAG, "failed to create burst sub-directory");
+							Logger.INSTANCE.e(TAG, "failed to create burst sub-directory");
 						throw new IOException();
 					}
 					broadcastFile(burstFolder, false, false, false);
@@ -782,22 +781,22 @@ public class StorageUtils {
             return fileUri;
         } catch (IllegalArgumentException e) {
             // DocumentsContract.getTreeDocumentId throws this if URI is invalid
-            Log.e(TAG, "createOutputMediaFileSAF failed with IllegalArgumentException");
+            Logger.INSTANCE.e(TAG, "createOutputMediaFileSAF failed with IllegalArgumentException");
             e.printStackTrace();
             throw new IOException();
         } catch (IllegalStateException e) {
             // Have reports of this from Google Play for DocumentsContract.createDocument - better to fail gracefully and tell user rather than crash!
-            Log.e(TAG, "createOutputMediaFileSAF failed with IllegalStateException");
+            Logger.INSTANCE.e(TAG, "createOutputMediaFileSAF failed with IllegalStateException");
             e.printStackTrace();
             throw new IOException();
         } catch (NullPointerException e) {
             // Have reports of this from Google Play for DocumentsContract.createDocument - better to fail gracefully and tell user rather than crash!
-            Log.e(TAG, "createOutputMediaFileSAF failed with NullPointerException");
+            Logger.INSTANCE.e(TAG, "createOutputMediaFileSAF failed with NullPointerException");
             e.printStackTrace();
             throw new IOException();
         } catch (SecurityException e) {
             // Have reports of this from Google Play - better to fail gracefully and tell user rather than crash!
-            Log.e(TAG, "createOutputMediaFileSAF failed with SecurityException");
+            Logger.INSTANCE.e(TAG, "createOutputMediaFileSAF failed with SecurityException");
             e.printStackTrace();
             throw new IOException();
         }
@@ -860,7 +859,7 @@ public class StorageUtils {
                 break;
             default:
                 // throw exception as this is a programming error
-                Log.e(TAG, "unknown type: " + type);
+                Logger.INSTANCE.e(TAG, "unknown type: " + type);
                 throw new RuntimeException();
         }
         // note that DocumentsContract.createDocument will automatically append to the filename if it already exists
@@ -1206,7 +1205,7 @@ public class StorageUtils {
             }
         } catch (Exception e) {
             // have had exceptions such as SQLiteException, NullPointerException reported on Google Play from within getContentResolver().query() call
-            Log.e(TAG, "Exception trying to find latest media");
+            Logger.INSTANCE.e(TAG, "Exception trying to find latest media");
             e.printStackTrace();
         } finally {
             if (cursor != null) {
@@ -1245,7 +1244,7 @@ public class StorageUtils {
             // thumbnail, rather than crashing!
             // N.B., we catch Exception is otherwise compiler complains IllegalArgumentException
             // isn't ever thrown - even though it is!?
-            Log.e(TAG, "Exception using treeUri: " + treeUri);
+            Logger.INSTANCE.e(TAG, "Exception using treeUri: " + treeUri);
             return media;
         }
         Logger.INSTANCE.d(TAG, "baseUri: " + baseUri);
@@ -1339,7 +1338,7 @@ public class StorageUtils {
                 while (cursor.moveToNext());
 
                 if (latest_uri == null) {
-                    Log.e(TAG, "couldn't find latest uri");
+                    Logger.INSTANCE.e(TAG, "couldn't find latest uri");
                 } else {
                     if (MyDebug.LOG) {
                         Logger.INSTANCE.d(TAG, "latest_uri: " + latest_uri);
@@ -1383,7 +1382,7 @@ public class StorageUtils {
                 Logger.INSTANCE.d(TAG, "mediastore returned no media");
             }
         } catch (Exception e) {
-            Log.e(TAG, "Exception trying to find latest media");
+            Logger.INSTANCE.e(TAG, "Exception trying to find latest media");
             e.printStackTrace();
         } finally {
             if (cursor != null) {
@@ -1404,7 +1403,7 @@ public class StorageUtils {
             // we restrict check to Android 6 or later just in case, see note in LocationSupplier.setupLocationListener()
             // update for scoped storage: here we should no longer need READ_EXTERNAL_STORAGE (which we won't have), instead we'll only be able to see
             // media created by ManualCamera, which is fine
-            Log.e(TAG, "don't have READ_EXTERNAL_STORAGE permission");
+            Logger.INSTANCE.e(TAG, "don't have READ_EXTERNAL_STORAGE permission");
             return null;
         }
 
@@ -1505,7 +1504,7 @@ public class StorageUtils {
             Logger.INSTANCE.d(TAG, "docUri: " + docUri);
             pfd = context.getContentResolver().openFileDescriptor(docUri, "r");
             if (pfd == null) { // just in case
-                Log.e(TAG, "pfd is null!");
+                Logger.INSTANCE.e(TAG, "pfd is null!");
                 throw new FileNotFoundException();
             }
             Logger.INSTANCE.d(TAG, "read direct from SAF uri");

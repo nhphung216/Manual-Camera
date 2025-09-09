@@ -6,7 +6,6 @@ import com.ssolstice.camera.manual.utils.Logger;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;

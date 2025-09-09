@@ -27,8 +27,6 @@ import android.renderscript.Type;
 
 import androidx.annotation.NonNull;
 
-import android.util.Log;
-
 import com.ssolstice.camera.manual.utils.Logger;
 
 public class HDRProcessor {
@@ -354,9 +352,9 @@ public class HDRProcessor {
             if (bitmaps.get(i).getWidth() != bitmaps.get(0).getWidth() ||
                     bitmaps.get(i).getHeight() != bitmaps.get(0).getHeight()) {
                 if (MyDebug.LOG) {
-                    Log.e(TAG, "bitmaps not of same resolution");
+                    Logger.INSTANCE.e(TAG, "bitmaps not of same resolution");
                     for (int j = 0; j < n_bitmaps; j++) {
-                        Log.e(TAG, "bitmaps " + j + " : " + bitmaps.get(j).getWidth() + " x " + bitmaps.get(j).getHeight());
+                        Logger.INSTANCE.e(TAG, "bitmaps " + j + " : " + bitmaps.get(j).getWidth() + " x " + bitmaps.get(j).getHeight());
                     }
                 }
                 throw new HDRProcessorException(HDRProcessorException.UNEQUAL_SIZES);
@@ -382,7 +380,7 @@ public class HDRProcessor {
                 processHDRCore(bitmaps, release_bitmaps, output_bitmap, assume_sorted, sort_cb, hdr_alpha, n_tiles, ce_preserve_blacks, tonemapping_algorithm);
                 break;
             default:
-                Log.e(TAG, "unknown algorithm " + algorithm);
+                Logger.INSTANCE.e(TAG, "unknown algorithm " + algorithm);
                 // throw RuntimeException, as this is a programming error
                 throw new RuntimeException();
         }
@@ -427,7 +425,7 @@ public class HDRProcessor {
             }
         }
         if (x_samples.size() == 0) {
-            Log.e(TAG, "no samples for response function!");
+            Logger.INSTANCE.e(TAG, "no samples for response function!");
             // shouldn't happen, but could do with a very large offset - just make up a dummy sample
             double in_value = 255.0;
             double out_value = 255.0;
@@ -581,7 +579,7 @@ public class HDRProcessor {
             if (a < 1.0e-5f) {
                 // avoid risk of division by 0
                 a = 1.0e-5f;
-                Log.e(TAG, "    clamp a to: " + a);
+                Logger.INSTANCE.e(TAG, "    clamp a to: " + a);
             }
             for (int i = 0; i < n_bitmaps; i++) {
                 float this_A = response_functions[i].parameter_A;
@@ -589,7 +587,7 @@ public class HDRProcessor {
                 response_functions[i].parameter_A = this_A / a;
                 response_functions[i].parameter_B = this_B - this_A * b / a;
                 if (response_functions[i].parameter_B < 1.0e-5f) {
-                    Log.e(TAG, "remapped parameter B too small or negative: " + response_functions[i].parameter_B);
+                    Logger.INSTANCE.e(TAG, "remapped parameter B too small or negative: " + response_functions[i].parameter_B);
                     response_functions[i].parameter_B = 1.0e-5f;
                 }
                 if (MyDebug.LOG) {
@@ -1259,7 +1257,7 @@ public class HDRProcessor {
         if (bitmap_avg.getWidth() != bitmap_new.getWidth() ||
                 bitmap_avg.getHeight() != bitmap_new.getHeight()) {
             if (MyDebug.LOG) {
-                Log.e(TAG, "bitmaps not of same resolution");
+                Logger.INSTANCE.e(TAG, "bitmaps not of same resolution");
             }
             throw new HDRProcessorException(HDRProcessorException.UNEQUAL_SIZES);
         }
@@ -1334,7 +1332,7 @@ public class HDRProcessor {
         if (width != bitmap_new.getWidth() ||
                 height != bitmap_new.getHeight()) {
             if (MyDebug.LOG) {
-                Log.e(TAG, "bitmaps not of same resolution");
+                Logger.INSTANCE.e(TAG, "bitmaps not of same resolution");
             }
             throw new HDRProcessorException(HDRProcessorException.UNEQUAL_SIZES);
         }
@@ -1734,16 +1732,16 @@ public class HDRProcessor {
         }
         int n_bitmaps = bitmaps.size();
         if (n_bitmaps != 8) {
-            Log.e(TAG, "n_bitmaps should be 8, not " + n_bitmaps);
+            Logger.INSTANCE.e(TAG, "n_bitmaps should be 8, not " + n_bitmaps);
             throw new HDRProcessorException(HDRProcessorException.INVALID_N_IMAGES);
         }
         for (int i = 1; i < n_bitmaps; i++) {
             if (bitmaps.get(i).getWidth() != bitmaps.get(0).getWidth() ||
                     bitmaps.get(i).getHeight() != bitmaps.get(0).getHeight()) {
                 if (MyDebug.LOG) {
-                    Log.e(TAG, "bitmaps not of same resolution");
+                    Logger.INSTANCE.e(TAG, "bitmaps not of same resolution");
                     for (int j = 0; j < n_bitmaps; j++) {
-                        Log.e(TAG, "bitmaps " + j + " : " + bitmaps.get(j).getWidth() + " x " + bitmaps.get(j).getHeight());
+                        Logger.INSTANCE.e(TAG, "bitmaps " + j + " : " + bitmaps.get(j).getWidth() + " x " + bitmaps.get(j).getHeight());
                     }
                 }
                 throw new HDRProcessorException(HDRProcessorException.UNEQUAL_SIZES);
@@ -2315,7 +2313,7 @@ public class HDRProcessor {
                 }
                 Logger.INSTANCE.d(TAG, "    best_id " + best_id + " error: " + best_error);
                 if (best_error >= 2000000000) {
-                    Log.e(TAG, "    auto-alignment failed due to overflow");
+                    Logger.INSTANCE.e(TAG, "    auto-alignment failed due to overflow");
                     // hitting overflow means behaviour will be unstable under SMP, and auto-alignment won't be reliable anyway
                     best_id = 4; // default to centre
                     if (is_test) {
@@ -2522,7 +2520,7 @@ public class HDRProcessor {
                 return new LuminanceInfo(min_value, i, hi_value, noisy);
             }
         }
-        Log.e(TAG, "computeMedianLuminance failed");
+        Logger.INSTANCE.e(TAG, "computeMedianLuminance failed");
         return new LuminanceInfo(min_value, 127, hi_value, true);
     }
 

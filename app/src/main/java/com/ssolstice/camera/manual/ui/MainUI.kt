@@ -619,7 +619,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 "flash_red_eye" -> mainActivity.binding.cycleFlash.setImageResource(R.drawable.baseline_remove_red_eye_white_48)
                 else -> {
                     // just in case??
-                    Log.e(TAG, "unknown flash value $flashValue")
+                    Logger.e(TAG, "unknown flash value $flashValue")
                     mainActivity.binding.cycleFlash.setImageResource(R.drawable.flash_off)
                 }
             }

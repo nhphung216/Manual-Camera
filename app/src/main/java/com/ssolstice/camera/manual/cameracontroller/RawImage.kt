@@ -1,53 +1,58 @@
-package com.ssolstice.camera.manual.cameracontroller;
+package com.ssolstice.camera.manual.cameracontroller
 
-import android.hardware.camera2.DngCreator;
-import android.media.Image;
-import android.util.Log;
+import android.hardware.camera2.DngCreator
+import android.media.Image
+import com.ssolstice.camera.manual.utils.ErrorLogger
+import com.ssolstice.camera.manual.utils.Logger
+import java.io.IOException
+import java.io.OutputStream
 
-import com.ssolstice.camera.manual.MyDebug;
-import com.ssolstice.camera.manual.utils.Logger;
-
-import java.io.IOException;
-import java.io.OutputStream;
-
-/** Wrapper class to store DngCreator and Image.
+/**
+ * Wrapper class to store DngCreator and Image.
  */
-public class RawImage {
-    private static final String TAG = "RawImage";
-
-    private final DngCreator dngCreator;
-    private final Image image;
-
-    public RawImage(DngCreator dngCreator, Image image) {
-        this.dngCreator = dngCreator;
-        this.image = image;
-    }
-
-    /** Writes the dng file to the supplied output.
+class RawImage(private val dngCreator: DngCreator, private val image: Image) {
+    /**
+     * Writes the DNG file to the supplied output.
      */
-    public void writeImage(OutputStream dngOutput) throws IOException {
-        Logger.INSTANCE.d(TAG, "writeImage");
+    @Throws(IOException::class)
+    fun writeImage(dngOutput: OutputStream) {
+        Logger.d(TAG, "writeImage")
         try {
-            dngCreator.writeImage(dngOutput, image);
-        } catch (AssertionError e) {
-            // have had AssertionError from OnePlus 5 on Google Play; rethrow as an IOException so it's handled
-            // in the same way
-            e.printStackTrace();
-            throw new IOException();
-        } catch (IllegalStateException e) {
-            // have had IllegalStateException from Galaxy Note 8 on Google Play; rethrow as an IOException so it's handled
-            // in the same way
-            e.printStackTrace();
-            throw new IOException();
+            dngCreator.writeImage(dngOutput, image)
+        } catch (e: AssertionError) {
+            // Một số thiết bị trả metadata thiếu -> IllegalArgumentException
+            // Một số thiết bị OnePlus -> AssertionError
+            // Một số thiết bị Samsung -> IllegalStateException
+            Logger.e(TAG, "Failed to write DNG: " + e.message)
+        } catch (e: IllegalStateException) {
+            Logger.e(TAG, "Failed to write DNG: " + e.message)
+        } catch (e: IllegalArgumentException) {
+            Logger.e(TAG, "Failed to write DNG: " + e.message)
+        } catch (e: Exception) {
+            // Catch-all để tránh crash ngoài ý muốn
+            Logger.e(TAG, "Unexpected error writing DNG: " + e.message)
         }
     }
 
-    /** Closes the image. Must be called to free up resources when no longer needed. After calling
-     *  this method, this object should not be used.
+    /**
+     * Closes the image. Must be called to free up resources when no longer needed.
+     * After calling this method, this object should not be used.
      */
-    public void close() {
-        Logger.INSTANCE.d(TAG, "close");
-        image.close();
-        dngCreator.close();
+    fun close() {
+        Logger.d(TAG, "close")
+        try {
+            image.close()
+        } catch (e: Exception) {
+            Logger.w(TAG, "Error closing Image: " + e.message)
+        }
+        try {
+            dngCreator.close()
+        } catch (e: Exception) {
+            Logger.w(TAG, "Error closing DngCreator: " + e.message)
+        }
+    }
+
+    companion object {
+        private const val TAG = "RawImage"
     }
 }

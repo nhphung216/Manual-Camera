@@ -2,7 +2,6 @@ package com.ssolstice.camera.manual;
 
 import android.content.Context;
 import android.location.Location;
-import android.util.Log;
 
 import com.ssolstice.camera.manual.utils.Logger;
 

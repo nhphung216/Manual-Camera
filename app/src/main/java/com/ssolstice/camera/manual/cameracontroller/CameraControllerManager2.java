@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
-import android.util.Log;
 import android.util.SizeF;
 
 /** Provides support using Android 5's Camera 2 API
@@ -34,7 +33,7 @@ public class CameraControllerManager2 extends CameraControllerManager {
             // from some devices, e.g., AssertionError, IllegalArgumentException, RuntimeException, so just catch everything!
             // We don't want users to experience a crash just because of buggy camera2 drivers - instead the user can switch
             // back to old camera API.
-            Log.e(TAG, "exception trying to get camera ids");
+            Logger.INSTANCE.e(TAG, "exception trying to get camera ids");
             e.printStackTrace();
         }
         return 0;
@@ -54,13 +53,13 @@ public class CameraControllerManager2 extends CameraControllerManager {
                 case CameraMetadata.LENS_FACING_EXTERNAL:
                     return CameraController.Facing.FACING_EXTERNAL;
             }
-            Log.e(TAG, "unknown camera_facing: " + characteristics.get(CameraCharacteristics.LENS_FACING));
+            Logger.INSTANCE.e(TAG, "unknown camera_facing: " + characteristics.get(CameraCharacteristics.LENS_FACING));
         } catch (Throwable e) {
             // in theory we should only get CameraAccessException, but Google Play shows we can get a variety of exceptions
             // from some devices, e.g., AssertionError, IllegalArgumentException, RuntimeException, so just catch everything!
             // We don't want users to experience a crash just because of buggy camera2 drivers - instead the user can switch
             // back to old camera API.
-            Log.e(TAG, "exception trying to get camera characteristics");
+            Logger.INSTANCE.e(TAG, "exception trying to get camera characteristics");
             e.printStackTrace();
         }
         return CameraController.Facing.FACING_UNKNOWN;
@@ -75,7 +74,7 @@ public class CameraControllerManager2 extends CameraControllerManager {
             description = getDescription(null, context, cameraIdS, true, false);
         } catch (Throwable e) {
             // see note under isFrontFacing() why we catch anything, not just CameraAccessException
-            Log.e(TAG, "exception trying to get camera characteristics");
+            Logger.INSTANCE.e(TAG, "exception trying to get camera characteristics");
             e.printStackTrace();
         }
         return description;
@@ -105,7 +104,7 @@ public class CameraControllerManager2 extends CameraControllerManager {
                         description = context.getResources().getString(R.string.external_camera);
                         break;
                     default:
-                        Log.e(TAG, "unknown camera type");
+                        Logger.INSTANCE.e(TAG, "unknown camera type");
                         return null;
                 }
             }
@@ -134,7 +133,7 @@ public class CameraControllerManager2 extends CameraControllerManager {
             }
         } catch (Throwable e) {
             // see note under isFrontFacing() why we catch anything, not just CameraAccessException
-            Log.e(TAG, "exception trying to get camera characteristics");
+            Logger.INSTANCE.e(TAG, "exception trying to get camera characteristics");
             e.printStackTrace();
         }
         return description;
@@ -155,7 +154,7 @@ public class CameraControllerManager2 extends CameraControllerManager {
             // in theory this should never happen according to the documentation, but I've had a report of physical_size (SENSOR_INFO_PHYSICAL_SIZE)
             // being null on an EXTERNAL Camera2 device, see https://sourceforge.net/p/opencamera/tickets/754/
             if (MyDebug.LOG) {
-                Log.e(TAG, "can't get camera view angles");
+                Logger.INSTANCE.e(TAG, "can't get camera view angles");
             }
             // fall back to a default
             return new SizeF(55.0f, 43.0f);
@@ -236,7 +235,7 @@ public class CameraControllerManager2 extends CameraControllerManager {
             // from some devices, e.g., AssertionError, IllegalArgumentException, RuntimeException, so just catch everything!
             // We don't want users to experience a crash just because of buggy camera2 drivers - instead the user can switch
             // back to old camera API.
-            Log.e(TAG, "exception trying to get camera characteristics");
+            Logger.INSTANCE.e(TAG, "exception trying to get camera characteristics");
             e.printStackTrace();
         }
         return false;

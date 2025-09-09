@@ -10,7 +10,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.media.MediaRecorder;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
@@ -46,7 +45,7 @@ public class MyTextureView extends TextureView implements CameraSurface {
         try {
             camera_controller.setPreviewTexture(this);
         } catch (CameraControllerException e) {
-            Log.e(TAG, "Failed to set preview display: " + e.getMessage());
+            Logger.INSTANCE.e(TAG, "Failed to set preview display: " + e.getMessage());
             e.printStackTrace();
         }
     }

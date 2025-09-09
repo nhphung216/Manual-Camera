@@ -1,6 +1,5 @@
 package com.ssolstice.camera.manual.ui;
 
-import com.ssolstice.camera.manual.MyDebug;
 import com.ssolstice.camera.manual.R;
 import com.ssolstice.camera.manual.StorageUtils;
 import com.ssolstice.camera.manual.utils.Logger;
@@ -22,7 +21,6 @@ import androidx.annotation.NonNull;
 
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
