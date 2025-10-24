@@ -24,108 +24,84 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/upgrade"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/action_settings"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/outline_crown" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/settings"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/action_settings"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/settings" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/cycle_flash"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/cycle_flash"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="visible"
-                android:src="@drawable/flash_off" />
+                android:src="@drawable/flash_off"
+                android:visibility="visible" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/face_detection"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/face_detection_enable"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="visible"
-                android:src="@drawable/ic_face_white_48dp" />
+                android:src="@drawable/ic_face_white_48dp"
+                android:visibility="visible" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/switch_multi_camera"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/action_settings"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/baseline_add_a_photo_white_48" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/cycle_raw"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/cycle_raw"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="visible"
-                android:src="@drawable/raw_off_icon" />
+                android:src="@drawable/raw_off_icon"
+                android:visibility="visible" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/store_location"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/preference_location_enable"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="visible"
-                android:src="@drawable/ic_gps_fixed_white_48dp" />
+                android:src="@drawable/ic_gps_fixed_white_48dp"
+                android:visibility="visible" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/text_stamp"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/preference_textstamp_summary"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="visible"
-                android:src="@drawable/baseline_text_fields_white_48" />
+                android:src="@drawable/baseline_text_fields_white_48"
+                android:visibility="visible" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/stamp"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
@@ -135,60 +111,48 @@
                 android:contentDescription="@string/stamp_enable"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="visible"
-                android:src="@drawable/ic_text_format_white_48dp" />
+                android:src="@drawable/ic_text_format_white_48dp"
+                android:visibility="visible" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/focus_peaking"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/focus_peaking_enable"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="visible"
-                android:src="@drawable/key_visualizer" />
+                android:src="@drawable/key_visualizer"
+                android:visibility="visible" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/auto_level"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/auto_level_enable"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="visible"
-                android:src="@drawable/auto_stabilise_icon" />
+                android:src="@drawable/auto_stabilise_icon"
+                android:visibility="visible" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/audio_control"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/audio_control_start"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="gone"
-                android:src="@drawable/ic_mic_white_48dp" />
+                android:src="@drawable/ic_mic_white_48dp"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/kraken_icon"
                 android:layout_width="@dimen/onscreen_button_size"
                 android:layout_height="@dimen/onscreen_button_size"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@android:color/transparent"
-                android:backgroundTintMode="src_in"
                 android:contentDescription="@string/remote_connected"
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
-                android:visibility="gone"
-                android:src="@drawable/baseline_bluetooth_white_48" />
+                android:src="@drawable/baseline_bluetooth_white_48"
+                android:visibility="gone" />
 
         </LinearLayout>
     </HorizontalScrollView>
@@ -215,9 +179,9 @@
             android:contentDescription="@string/cancel_panorama"
             android:padding="10dp"
             android:scaleType="fitCenter"
+            android:src="@drawable/baseline_close_white_48"
             android:stateListAnimator="@animator/button_animation"
-            android:visibility="gone"
-            android:src="@drawable/baseline_close_white_48" />
+            android:visibility="gone" />
 
         <ZoomControls
             android:id="@+id/zoom"
@@ -444,10 +408,10 @@
                         android:layout_height="@dimen/onscreen_button_size_small"
                         android:contentDescription="@string/focus_bracketing_source_distance"
                         android:scaleType="fitCenter"
+                        android:src="@drawable/focus_mode_infinity"
                         app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_source_distance_seekbar"
                         app:layout_constraintEnd_toStartOf="@+id/focus_bracketing_source_distance_seekbar"
-                        app:layout_constraintTop_toTopOf="@+id/focus_bracketing_source_distance_seekbar"
-                        android:src="@drawable/focus_mode_infinity" />
+                        app:layout_constraintTop_toTopOf="@+id/focus_bracketing_source_distance_seekbar" />
 
                     <SeekBar
                         android:id="@+id/focus_bracketing_source_distance_seekbar"
@@ -468,10 +432,10 @@
                         android:layout_height="@dimen/onscreen_button_size_small"
                         android:contentDescription="@string/focus_bracketing_source_distance"
                         android:scaleType="fitCenter"
+                        android:src="@drawable/ic_macro_focus"
                         app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_source_distance_seekbar"
                         app:layout_constraintStart_toEndOf="@+id/focus_bracketing_source_distance_seekbar"
-                        app:layout_constraintTop_toTopOf="@+id/focus_bracketing_source_distance_seekbar"
-                        android:src="@drawable/ic_macro_focus" />
+                        app:layout_constraintTop_toTopOf="@+id/focus_bracketing_source_distance_seekbar" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -502,10 +466,10 @@
                         android:layout_height="@dimen/onscreen_button_size_small"
                         android:contentDescription="@string/focus_bracketing_target_distance"
                         android:scaleType="fitCenter"
+                        android:src="@drawable/focus_mode_infinity"
                         app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_target_seekbar"
                         app:layout_constraintEnd_toStartOf="@+id/focus_bracketing_target_seekbar"
-                        app:layout_constraintTop_toTopOf="@+id/focus_bracketing_target_seekbar"
-                        android:src="@drawable/focus_mode_infinity" />
+                        app:layout_constraintTop_toTopOf="@+id/focus_bracketing_target_seekbar" />
 
                     <SeekBar
                         android:id="@+id/focus_bracketing_target_seekbar"
@@ -526,10 +490,10 @@
                         android:layout_height="@dimen/onscreen_button_size_small"
                         android:contentDescription="@string/focus_bracketing_target_distance"
                         android:scaleType="fitCenter"
+                        android:src="@drawable/ic_macro_focus"
                         app:layout_constraintBottom_toBottomOf="@+id/focus_bracketing_target_seekbar"
                         app:layout_constraintStart_toEndOf="@+id/focus_bracketing_target_seekbar"
-                        app:layout_constraintTop_toTopOf="@+id/focus_bracketing_target_seekbar"
-                        android:src="@drawable/ic_macro_focus" />
+                        app:layout_constraintTop_toTopOf="@+id/focus_bracketing_target_seekbar" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>

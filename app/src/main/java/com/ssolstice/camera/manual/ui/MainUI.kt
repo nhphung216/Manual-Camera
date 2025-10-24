@@ -25,7 +25,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.ScaleAnimation
 import android.widget.Button
 import android.widget.HorizontalScrollView
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
@@ -527,24 +527,14 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     }
 
     fun updateExposureLockIcon() {
-//        val view = mainActivity.findViewById<ImageButton>(R.id.exposure_lock)
-//        val enabled = mainActivity.preview!!.isExposureLocked
-//        view.setImageResource(if (enabled) R.drawable.exposure_locked else R.drawable.exposure_unlocked)
-//        view.contentDescription = mainActivity.getResources()
-//            .getString(if (enabled) R.string.exposure_unlock else R.string.exposure_lock)
     }
 
     fun updateWhiteBalanceLockIcon() {
-//        val view = mainActivity.findViewById<ImageButton>(R.id.white_balance_lock)
-//        val enabled = mainActivity.preview!!.isWhiteBalanceLocked
-//        view.setImageResource(if (enabled) R.drawable.white_balance_locked else R.drawable.white_balance_unlocked)
-//        view.contentDescription = mainActivity.getResources()
-//            .getString(if (enabled) R.string.white_balance_unlock else R.string.white_balance_lock)
     }
 
     fun updateCycleRawIcon() {
         val raw_pref = mainActivity.applicationInterface!!.getRawPref()
-        val view = mainActivity.findViewById<ImageButton>(R.id.cycle_raw)
+        val view = mainActivity.findViewById<ImageView>(R.id.cycle_raw)
         if (raw_pref == RawPref.RAWPREF_JPEG_DNG) {
             if (mainActivity.applicationInterface!!.isRawOnly) {
                 // actually RAW only
@@ -967,8 +957,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         testUIButtonsMap.clear()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity)
         val preview = mainActivity.preview
-//        val view = mainActivity.findViewById<ImageButton>(R.id.exposure)
-//        view.setImageResource(R.drawable.ic_exposure_red_48dp)
 
         mainActivity.binding.slidersContainer.visibility = View.VISIBLE
 
@@ -1354,7 +1342,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             mPopupIcon = (mPopupIcon + count) % count
             val v = mHighlightedLine!!.getChildAt(mPopupIcon)
             Logger.d(TAG, "row: $mPopupIcon view: $v")
-            if (v is ImageButton || v is Button) {
+            if (v is ImageView || v is Button) {
                 if (highlight) {
                     v.setBackgroundColor(highlightColor)
                     //v.setAlpha(0.5f);
@@ -1587,7 +1575,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             }
             if (mHighlightedLine != null) {
                 v = mHighlightedLine!!.getChildAt(mPopupIcon)
-                if (v is ImageButton || v is Button) {
+                if (v is ImageView || v is Button) {
                     v.setBackgroundColor(Color.TRANSPARENT)
                 }
             }
