@@ -1239,7 +1239,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
 
             popup_view_is_open = false
             if (cache_popup && !force_destroy_popup) {
-                popupView!!.visibility = View.GONE
+                popupView?.visibility = View.GONE
             }
             mainActivity.initImmersiveMode() // to reset the timer when closing the popup
         }
@@ -1448,7 +1448,7 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             popup_container.addView(this.popupView)
         } else {
             Logger.d(TAG, "use cached popup_view")
-            popupView!!.visibility = View.VISIBLE
+            popupView?.visibility = View.VISIBLE
         }
         popup_view_is_open = true
 

@@ -171,11 +171,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/cancel_panorama"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:background="@android:color/transparent"
             android:contentDescription="@string/cancel_panorama"
             android:padding="10dp"
             android:scaleType="fitCenter"
