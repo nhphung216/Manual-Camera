@@ -16,6 +16,10 @@ class RemoteConfigManager @Inject constructor(
         }
     }
 
+    fun showAd(): Boolean {
+        return remoteConfig.getBoolean("show_ad")
+    }
+
     fun checkUpdateState(currentVersionCode: Int): UpdateState {
         val required = remoteConfig.getBoolean("update_required")
         val recommended = remoteConfig.getBoolean("update_recommended")

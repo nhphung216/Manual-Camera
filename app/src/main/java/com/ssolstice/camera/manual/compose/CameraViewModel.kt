@@ -70,7 +70,6 @@ class CameraViewModel @Inject constructor(
             ).versionCode
 
             val state = remoteConfigManager.checkUpdateState(currentVersionCode)
-
             when (state) {
                 is UpdateState.Force -> _updateState.postValue(state)
                 is UpdateState.Recommended, is UpdateState.Optional -> {
@@ -80,6 +79,8 @@ class CameraViewModel @Inject constructor(
 
                 UpdateState.None -> Unit
             }
+
+            _showAd.value = remoteConfigManager.showAd()
         }
     }
 
@@ -113,6 +114,9 @@ class CameraViewModel @Inject constructor(
 
     private val _isRecording = MutableStateFlow(false)
     val isRecording: StateFlow<Boolean> = _isRecording
+
+    private val _showAd = MutableStateFlow(false)
+    val showAd: StateFlow<Boolean> = _showAd
 
     private val _isPhotoMode = MutableStateFlow(false)
     val isPhotoMode: StateFlow<Boolean> = _isPhotoMode
