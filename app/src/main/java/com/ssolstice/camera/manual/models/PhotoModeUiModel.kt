@@ -6,5 +6,5 @@ data class PhotoModeUiModel(
     val mode: MyApplicationInterface.PhotoMode,
     val text: String = "",
     val selected: Boolean = false,
-    val options: MutableList<OptionRes> = arrayListOf()
+    val options: List<OptionRes> = emptyList()
 )

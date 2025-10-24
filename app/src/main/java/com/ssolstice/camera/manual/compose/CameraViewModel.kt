@@ -65,9 +65,9 @@ class CameraViewModel @Inject constructor(
             remoteConfigManager.fetchAndActivate()
 
             val currentVersionCode = getApplication<Application>().packageManager.getPackageInfo(
-                    getApplication<Application>().packageName,
-                    0
-                ).versionCode
+                getApplication<Application>().packageName,
+                0
+            ).versionCode
 
             val state = remoteConfigManager.checkUpdateState(currentVersionCode)
 
@@ -821,29 +821,33 @@ class CameraViewModel @Inject constructor(
         appInterface: MyApplicationInterface,
         preview: Preview,
     ) {
-        var currentPhotoMode: PhotoModeUiModel? = null
-        for (mode in photoModes) {
-            if (mode.mode == appInterface.photoMode) {
-                currentPhotoMode = mode
-                break
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(act)
+
+        // Lấy current mode
+        val currentPhotoMode = photoModes.find { it.mode == appInterface.photoMode } ?: return
+
+        // Xử lý riêng cho FastBurst (immutable)
+        val updatedPhotoMode = if (currentPhotoMode.mode == PhotoMode.FastBurst) {
+            val burstModeValue =
+                sharedPref.getString(PreferenceKeys.FastBurstNImagesPreferenceKey, "5") ?: "5"
+
+            val updatedOptions = currentPhotoMode.options.map { option ->
+                val isSelected = option.value == burstModeValue
+                if (isSelected) setSelectedPhotoOption(act, preview, option)
+                option.copy(selected = isSelected)
             }
+
+            currentPhotoMode.copy(options = ArrayList(updatedOptions))
+        } else {
+            currentPhotoMode
         }
-        if (currentPhotoMode != null) {
-            setCurrentPhotoMode(currentPhotoMode)
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(act)
-            if (currentPhotoMode.mode == PhotoMode.FastBurst) {
-                val burstModeValue =
-                    sharedPref.getString(PreferenceKeys.FastBurstNImagesPreferenceKey, "5") ?: "5"
-                currentPhotoMode.options.forEachIndexed { index, option ->
-                    if (option.value == burstModeValue) {
-                        currentPhotoMode.options[index] = option.copy(selected = true)
-                        setSelectedPhotoOption(act, preview, option)
-                    }
-                }
-            }
-            _photoModes.value = photoModes.map {
-                it.copy(selected = it == currentPhotoMode)
-            }
+
+        // Cập nhật current mode
+        setCurrentPhotoMode(updatedPhotoMode)
+
+        // Cập nhật danh sách photo modes
+        _photoModes.value = photoModes.map { mode ->
+            mode.copy(selected = mode.mode == updatedPhotoMode.mode)
         }
     }
 
