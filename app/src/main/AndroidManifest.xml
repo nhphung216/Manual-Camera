@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="auto"
-    android:versionCode="23"
-    android:versionName="1.0.23"
-    tools:ignore="GoogleAppIndexingWarning">
+    android:installLocation="auto">
 
     <supports-screens
         android:anyDensity="true"
@@ -33,9 +30,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="com.android.vending.BILLING" />
-    <uses-permission
-        android:name="com.google.android.gms.permission.AD_ID"
-        tools:ignore="AdvertisingIdPolicy" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.microphone" />

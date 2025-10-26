@@ -35,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssolstice.camera.manual.MyApplicationInterface
 import com.ssolstice.camera.manual.R
-import com.ssolstice.camera.manual.ad.BannerAdView
 import com.ssolstice.camera.manual.compose.ui.theme.colorBackground
 import com.ssolstice.camera.manual.compose.widgets.CaptureCameraControls
 import com.ssolstice.camera.manual.compose.widgets.CaptureRateSelector
@@ -127,7 +126,6 @@ fun CameraScreen(
     updateState: UpdateState? = null,
     onClickUpdate: () -> Unit = {},
     isRecording: Boolean = false,
-    showAd: Boolean = false,
     isVideoRecordingPaused: Boolean = false,
     isPhotoMode: Boolean = true,
     galleryBitmap: Bitmap? = null,
@@ -291,15 +289,6 @@ fun CameraScreen(
                     .padding(bottom = 16.dp)
                     .align(Alignment.CenterHorizontally)
             )
-        }
-
-        if (showAd) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                BannerAdView(adUnitId = stringResource(R.string.banner))
-            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -46,7 +46,6 @@ import android.text.Html
 import android.text.InputFilter
 import android.text.InputType
 import android.text.Spanned
-import android.util.Log
 import android.util.SizeF
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -72,7 +71,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.BottomSheetScaffold
@@ -92,7 +90,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -100,8 +97,8 @@ import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.exifinterface.media.ExifInterface
+import com.google.android.gms.ads.AdRequest
 import com.ssolstice.camera.manual.MyApplicationInterface.PhotoMode
-import com.ssolstice.camera.manual.ad.BannerAdView
 import com.ssolstice.camera.manual.billing.BillingManager
 import com.ssolstice.camera.manual.billing.BillingManager.ActiveSubscription
 import com.ssolstice.camera.manual.billing.BillingManager.BillingProduct
@@ -752,14 +749,22 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
         binding.audioControl.setOnClickListener { clickedAudioControl() }
         binding.switchMultiCamera.setOnClickListener { clickedSwitchMultiCamera() }
 
+        viewModel.showAd.observe(this) { showAd ->
+            Logger.log("showAd: $showAd")
+            if (showAd && !isPremiumUser()) {
+                val adRequest = AdRequest.Builder().build()
+                binding.adView.loadAd(adRequest)
+                binding.adView.visibility = View.VISIBLE
+            } else {
+                binding.adView.visibility = View.GONE
+            }
+        }
+
         binding.composeView.setContent {
             OpenCameraTheme {
                 val activity = this@MainActivity
 
                 val updateAppState by viewModel.updateState.observeAsState(UpdateState.None)
-
-                var isPremiumUser by remember { mutableStateOf(activity.isPremiumUser()) }
-                val showAd by viewModel.showAd.collectAsState()
 
                 val isRecording by viewModel.isRecording.collectAsState()
                 val isPhotoMode by viewModel.isPhotoMode.collectAsState()
@@ -831,8 +836,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
                 var currentSheet by remember { mutableStateOf(CameraSheetType.NONE) }
 
-                Log.e(TAG, "showAd: $showAd, isPremiumUser: $isPremiumUser")
-
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -849,7 +852,6 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
                             )
                         },
                         isRecording = isRecording,
-                        showAd = showAd && !isPremiumUser,
                         isVideoRecordingPaused = isVideoRecordingPaused,
                         isPhotoMode = isPhotoMode,
                         galleryBitmap = galleryBitmap,

@@ -80,7 +80,9 @@ class CameraViewModel @Inject constructor(
                 UpdateState.None -> Unit
             }
 
-            _showAd.value = remoteConfigManager.showAd()
+            withContext(Dispatchers.Main) {
+                showAd.value = remoteConfigManager.showAd()
+            }
         }
     }
 
@@ -115,8 +117,7 @@ class CameraViewModel @Inject constructor(
     private val _isRecording = MutableStateFlow(false)
     val isRecording: StateFlow<Boolean> = _isRecording
 
-    private val _showAd = MutableStateFlow(false)
-    val showAd: StateFlow<Boolean> = _showAd
+    var showAd: MutableLiveData<Boolean> = MutableLiveData()
 
     private val _isPhotoMode = MutableStateFlow(false)
     val isPhotoMode: StateFlow<Boolean> = _isPhotoMode
