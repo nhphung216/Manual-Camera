@@ -65,8 +65,7 @@ class CameraViewModel @Inject constructor(
             remoteConfigManager.fetchAndActivate()
 
             val currentVersionCode = getApplication<Application>().packageManager.getPackageInfo(
-                getApplication<Application>().packageName,
-                0
+                getApplication<Application>().packageName, 0
             ).versionCode
 
             val state = remoteConfigManager.checkUpdateState(currentVersionCode)
@@ -92,10 +91,6 @@ class CameraViewModel @Inject constructor(
 
     fun logViewClicked(viewName: String) {
         analyticsLogger.logViewClicked(viewName)
-    }
-
-    fun logCustom(eventName: String, params: Map<String, String>) {
-        analyticsLogger.logCustom(eventName, params)
     }
 
     fun savePhotoModesToDb(modes: ArrayList<PhotoModeUiModel>) {
@@ -292,7 +287,6 @@ class CameraViewModel @Inject constructor(
     fun setRepeatSelected(
         activity: MainActivity, item: SettingItemModel
     ) {
-        Logger.d(TAG, "setRepeatSelected: $item")
         logFeatureUsed("setRepeatSelected ${item.id}")
         _repeatSelected.value = item
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -304,7 +298,6 @@ class CameraViewModel @Inject constructor(
     fun setTimerSelected(
         activity: MainActivity, item: SettingItemModel
     ) {
-        Logger.d(TAG, "setTimerSelected: $item")
         logFeatureUsed("setTimerSelected ${item.id}")
         _timerSelected.value = item
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
@@ -327,7 +320,6 @@ class CameraViewModel @Inject constructor(
     fun applySpeedSelectedPreview(
         activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview, rate: Float
     ) {
-        Logger.d(TAG, "setSpeedSelected: $rate")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         sharedPreferences.edit {
             putFloat(
@@ -352,7 +344,6 @@ class CameraViewModel @Inject constructor(
     fun setupCameraData(
         activity: MainActivity, appInterface: MyApplicationInterface, preview: Preview
     ) {
-        Logger.d(TAG, "setupCameraData()")
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 val photoResolutions =
@@ -366,9 +357,6 @@ class CameraViewModel @Inject constructor(
 
                 // chuyển sang Main thread update UI
                 withContext(Dispatchers.Main) {
-                    Logger.d(TAG, "setupCameraData() withContext(Dispatchers.Main)")
-
-                    Logger.d(TAG, "photoResolutions: ${photoResolutions.size}")
                     if (photoResolutions.isNotEmpty()) {
                         setResolutionOfPhoto(photoResolutions)
                         photoResolutions.find { it.selected }?.let { selectedModel ->
@@ -378,7 +366,6 @@ class CameraViewModel @Inject constructor(
                         }
                     }
 
-                    Logger.d(TAG, "timers: ${timers.size}")
                     if (timers.isNotEmpty()) {
                         setTimer(timers)
                         timers.find { it.selected }?.let { selectedModel ->
@@ -386,7 +373,6 @@ class CameraViewModel @Inject constructor(
                         }
                     }
 
-                    Logger.d(TAG, "repeats: ${repeats.size}")
                     if (repeats.isNotEmpty()) {
                         setRepeat(repeats)
                         repeats.find { it.selected }?.let { selectedModel ->
@@ -394,7 +380,6 @@ class CameraViewModel @Inject constructor(
                         }
                     }
 
-                    Logger.d(TAG, "videoOptions: ${videoOptions.size}")
                     if (videoOptions.isNotEmpty()) {
                         setResolutionOfVideo(videoOptions)
                         videoOptions.find { it.selected }?.let { selectedModel ->
@@ -404,12 +389,10 @@ class CameraViewModel @Inject constructor(
                         }
                     }
 
-                    Logger.d(TAG, "speedVideo: ${speedVideo.size}")
                     if (speedVideo.isNotEmpty()) {
                         setSpeeds(speedVideo)
                     }
 
-                    Logger.d(TAG, "flashModes: ${flashModes.size}")
                     if (flashModes.isNotEmpty()) {
                         setFlashList(flashModes)
                         flashModes.find { it.selected }?.let { selectedModel ->
@@ -417,7 +400,6 @@ class CameraViewModel @Inject constructor(
                         }
                     }
 
-                    Logger.d(TAG, "rawModes: ${rawModes.size}")
                     if (rawModes.isNotEmpty()) {
                         setRawList(rawModes)
                         rawModes.find { it.selected }?.let { selectedModel ->
@@ -438,14 +420,14 @@ class CameraViewModel @Inject constructor(
     fun buildWhiteBalanceControls(
         activity: MainActivity, preview: Preview
     ): CameraControlModel? {
-        val supportedWhiteBalances = preview.getSupportedWhiteBalances()
+        val supportedWhiteBalances = preview.supportedWhiteBalances
         if (supportedWhiteBalances != null) {
             val options: ArrayList<ControlOptionModel> = arrayListOf()
             for (value in supportedWhiteBalances) {
                 val model = if (value == "manual") {
                     val temperature = preview.cameraController.getWhiteBalanceTemperature()
-                    val minWhiteBalance = preview.getMinimumWhiteBalanceTemperature().toFloat()
-                    val maxWhiteBalance = preview.getMaximumWhiteBalanceTemperature().toFloat()
+                    val minWhiteBalance = preview.minimumWhiteBalanceTemperature.toFloat()
+                    val maxWhiteBalance = preview.maximumWhiteBalanceTemperature.toFloat()
                     ControlOptionModel(
                         id = value,
                         text = activity.mainUI?.getEntryForWhiteBalance(value) ?: "",
@@ -519,7 +501,6 @@ class CameraViewModel @Inject constructor(
         if (preview.supportsExposureTime()) {
             val minExposure = preview.minimumExposureTime.toFloat()
             val maxExposure = preview.maximumExposureTime.toFloat()
-            Logger.d(TAG, "minExposure: $minExposure, maxExposure: $maxExposure")
             return CameraControlModel(
                 id = "shutter",
                 text = activity.getString(R.string.shutter),
@@ -918,14 +899,12 @@ class CameraViewModel @Inject constructor(
     ) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         val captureRateValues = appInterface.supportedVideoCaptureRates
-        Logger.d(TAG, "captureRateValues: $captureRateValues")
 
         val captureRate = sharedPreferences.getFloat(
             PreferenceKeys.getVideoCaptureRatePreferenceKey(
                 preview.getCameraId(), appInterface.cameraIdSPhysicalPref
             ), 1.0f
         )
-        Logger.d(TAG, "captureRateValue: $captureRate")
 
         val videoModes = arrayListOf<VideoModeUiModel>()
         val slowMotion =
@@ -1136,7 +1115,6 @@ class CameraViewModel @Inject constructor(
                         ), 1.0f
                     )
                     captureRateValues.mapIndexed { index, value ->
-                        Logger.d("speeds ", "$index $value")
                         val text = if (abs(1.0f - (value ?: 0f)) < 1.0e-5) {
                             activity.getString(R.string.preference_video_capture_rate_normal)
                         } else {

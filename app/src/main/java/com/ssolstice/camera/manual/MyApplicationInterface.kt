@@ -32,6 +32,7 @@ import android.view.MotionEvent
 import android.view.Surface
 import android.view.View
 import android.view.WindowInsets
+import androidx.annotation.Keep
 import androidx.annotation.RequiresApi
 import com.ssolstice.camera.manual.GyroSensor.TargetCallback
 import com.ssolstice.camera.manual.HDRProcessor.TonemappingAlgorithm
@@ -72,10 +73,9 @@ import androidx.core.content.res.ResourcesCompat
 import com.ssolstice.camera.manual.PreferenceKeys.FocusModeKey
 import com.ssolstice.camera.manual.utils.Logger
 
-//import android.location.Address; // don't use until we have info for data privacy!
-//import android.location.Geocoder; // don't use until we have info for data privacy!
 /** Our implementation of ApplicationInterface, see there for details.
  */
+@Keep
 class MyApplicationInterface internal constructor(
     mainActivity: MainActivity, savedInstanceState: Bundle?
 ) : BasicApplicationInterface() {
@@ -721,8 +721,7 @@ class MyApplicationInterface internal constructor(
             }
             if (!found) {
                 Logger.e(
-                    TAG,
-                    "stored capture_rate_factor: " + capture_rate_factor + " not supported"
+                    TAG, "stored capture_rate_factor: " + capture_rate_factor + " not supported"
                 )
                 capture_rate_factor = 1.0f
             }

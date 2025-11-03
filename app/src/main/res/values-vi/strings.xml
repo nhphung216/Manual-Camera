@@ -86,7 +86,7 @@
     <string name="preference_exposure">Thiết lập bù phơi sáng</string>
     <string name="preference_exposure_summary">0 là giá trị bù phơi sáng mặc định</string>
     <string name="preference_lock_orientation">Khóa hướng ảnh/video</string>
-    <string name="preference_lock_orientation_summary">Nếu kích hoạt, hướng của ảnh/video sẽ đặt theo hướng đã thiết lập, bỏ qua hướng của thiết bị\n%s</string>
+    <string name="preference_lock_orientation_summary">Nếu kích hoạt, hướng của ảnh/video sẽ đặt theo hướng đã thiết lập, bỏ qua hướng của thiết bị</string>
     <string name="preference_face_detection">Nhận diện khuôn mặt</string>
     <string name="preference_face_detection_summary">Sử dụng nhận diện khuôn mặt thay cho chạm để lấy nét</string>
 
@@ -100,7 +100,7 @@
     <string name="preference_burst_interval">Khoảng thời gian chụp liên tục</string>
     <string name="preference_screen_camera_controls_more">Thêm tùy chọn điều khiển máy ảnh</string>
     <string name="preference_touch_capture">Chạm để chụp</string>
-    <string name="preference_touch_capture_summary">Chụp ảnh bằng cách chạm đơn hoặc chạm đúp vào bản xem trước\n%s</string>
+    <string name="preference_touch_capture_summary">Chụp ảnh bằng cách chạm đơn hoặc chạm đúp vào bản xem trước</string>
     <string name="preference_pause_preview">Tạm dừng sau khi chụp</string>
     <string name="preference_pause_preview_summary">Dừng màn hình sau khi chụp, hiện tùy chọn chia sẻ hoặc xóa ảnh</string>
     <string name="preference_shutter_sound">Âm chụp</string>
@@ -124,7 +124,7 @@
     <string name="preference_lock_video">Khóa màn hình khi quay video</string>
     <string name="preference_lock_video_summary">Khi quay video, giao diện người dùng sẽ bị khóa để ngăn việc vô tình dừng quay. Trượt màn hình để mở khóa. Lưu ý video sẽ dừng quay nếu ứng dụng chạy dưới nền hoặc màn hình bị trống.</string>
     <string name="preference_rotate_preview">Xoay xem trước</string>
-    <string name="preference_rotate_preview_summary">Tùy chọn để xoay trong chế độ xem trước (không ảnh hưởng đến kết quả ảnh/video)\n%s</string>
+    <string name="preference_rotate_preview_summary">Tùy chọn để xoay trong chế độ xem trước (không ảnh hưởng đến kết quả ảnh/video)</string>
     <string name="preference_screen_gui">Tùy biến giao diện người dùng</string>
     <string name="preference_preview_size">Kích thước bản xem trước</string>
     <string name="preference_ui_placement">Vị trí các nút điều khiển</string>
@@ -154,7 +154,7 @@
     <string name="preference_grid">Hiển thị lưới</string>
     <string name="grid">Lưới</string> <!-- short form of Show a grid -->
     <string name="preference_crop_guide">Hiển thị hướng dẫn cắt</string>
-    <string name="preference_crop_guide_summary">Hiện một hình chữ nhật cho biết tỷ lệ khung hình đã thiết lập - rất hữu ích khi bạn dự định cắt ảnh/video đã chụp/quay sang tỷ lệ khung hình khác. Yêu cầu chế độ ảnh WYSIWYG hoặc chế độ video.\n%s</string>
+    <string name="preference_crop_guide_summary">Hiện một hình chữ nhật cho biết tỷ lệ khung hình đã thiết lập - rất hữu ích khi bạn dự định cắt ảnh/video đã chụp/quay sang tỷ lệ khung hình khác. Yêu cầu chế độ ảnh WYSIWYG hoặc chế độ video.</string>
     <string name="preference_show_toasts">Hiển thị thông báo ngắn</string>
     <string name="preference_show_toasts_summary">Hiện thông báo bật lên trong khoảng thời gian rất ngắn sau đó tự biến mất</string>
     <string name="preference_thumbnail_animation">Hiển thị hình động thu nhỏ</string>
@@ -172,7 +172,7 @@
     <string name="preference_screen_location_settings">Cài đặt vị trí</string>
     <string name="preference_resolution">Độ phân giải hình ảnh</string>
     <string name="preference_quality">Chất lượng hình ảnh</string>
-    <string name="preference_quality_summary">Thiết lập chất lượng hình ảnh khi lưu tệp JPEG hoặc WebP (giá trị mặc định là 90%%). Không áp dụng cho định dạng hình ảnh PNG.\n%s</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
+    <string name="preference_quality_summary">Thiết lập chất lượng hình ảnh khi lưu tệp JPEG hoặc WebP (giá trị mặc định là 90%%). Không áp dụng cho định dạng hình ảnh PNG.</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
     <string name="preference_raw">RAW</string>
     <string name="preference_location">Lưu dữ liệu vị trí (gắn thẻ địa lý)</string>
     <string name="preference_location_summary">Lưu trữ dữ liệu vị trí GPS trong ảnh và video (đối với ảnh, dữ liệu vị trí chỉ có thể được lưu trữ ở định dạng JPEG và DNG)</string>
@@ -181,18 +181,18 @@
     <string name="preference_require_location">Yêu cầu dữ liệu vị trí</string>
     <string name="preference_require_location_summary">Khi dữ liệu vị trí được kích hoạt, chỉ có thể chụp ảnh/quay video nếu dữ liệu vị trí khả dụng</string>
     <string name="preference_stamp">Đóng dấu hình ảnh</string>
-    <string name="preference_stamp_summary">Gắn vào ảnh ngày và giờ; và thông tin GPS nếu dữ liệu vị trí/hướng được kích hoạt\n%s</string>
+    <string name="preference_stamp_summary">Gắn vào ảnh ngày và giờ; và thông tin GPS nếu dữ liệu vị trí/hướng được kích hoạt</string>
     <string name="preference_stamp_dateformat">Định dạng ngày</string>
     <string name="preference_stamp_timeformat">Định dạng giờ</string>
     <string name="preference_stamp_gpsformat">Định dạng GPS</string>
     <string name="preference_textstamp">Văn bản tùy chỉnh</string>
     <string name="preference_textstamp_summary">Gắn vào ảnh một văn bản tùy chỉnh</string>
     <string name="preference_stamp_fontsize">Kích thước phông</string>
-    <string name="preference_stamp_fontsize_summary">Kích thước phông chữ được sử dụng khi gắn văn bản vào ảnh\n%s</string>
+    <string name="preference_stamp_fontsize_summary">Kích thước phông chữ được sử dụng khi gắn văn bản vào ảnh</string>
     <string name="preference_stamp_font_color">Màu phông</string>
-    <string name="preference_stamp_font_color_summary">Màu phông chữ được sử dụng khi gắn văn bản vào ảnh\n%s</string>
+    <string name="preference_stamp_font_color_summary">Màu phông chữ được sử dụng khi gắn văn bản vào ảnh</string>
     <string name="preference_stamp_style">Kiểu văn bản</string>
-    <string name="preference_stamp_style_summary">Kiểu văn bản được sử dụng khi gắn vào ảnh\n%s</string>
+    <string name="preference_stamp_style_summary">Kiểu văn bản được sử dụng khi gắn vào ảnh</string>
     <string name="preference_background_photo_saving">Chạy dưới nền</string>
     <string name="preference_background_photo_saving_summary">Lưu ảnh dưới nền (giúp thao tác nhanh hơn)</string>
     <string name="video_quality">Độ phân giải video</string>
@@ -201,23 +201,23 @@
     <string name="preference_video_stabilization">Ổn định video</string>
     <string name="preference_video_stabilization_summary">Giảm rung lắc do chuyển động của máy ảnh trong cả bản xem trước và trong video đã quay</string>
     <string name="preference_video_bitrate">Tốc độ bit video</string>
-    <string name="preference_video_bitrate_summary">Đặt tốc độ bit (xấp xỉ) của video (cao hơn sẽ tốt hơn nhưng kích thước cũng lớn hơn, tốc độ bit không được hỗ trợ có thể khiến việc quay video không thành công)\n%s</string>
+    <string name="preference_video_bitrate_summary">Đặt tốc độ bit (xấp xỉ) của video (cao hơn sẽ tốt hơn nhưng kích thước cũng lớn hơn, tốc độ bit không được hỗ trợ có thể khiến việc quay video không thành công)</string>
     <string name="preference_video_fps">Tốc độ khung hình video</string>
-    <string name="preference_video_fps_summary">Đặt tốc độ khung hình (xấp xỉ) của video (tốc độ khung hình không được hỗ trợ có thể khiến việc quay video không thành công). Lưu ý các video chuyển động chậm sẽ bỏ qua thiết lập này.\n%s</string>
+    <string name="preference_video_fps_summary">Đặt tốc độ khung hình (xấp xỉ) của video (tốc độ khung hình không được hỗ trợ có thể khiến việc quay video không thành công). Lưu ý các video chuyển động chậm sẽ bỏ qua thiết lập này.</string>
     <string name="preference_video_max_duration">Thời lượng tối đa của video</string>
-    <string name="preference_video_max_duration_summary">Video sẽ dừng quay khi đạt đến thời lượng tối đa\n%s</string>
+    <string name="preference_video_max_duration_summary">Video sẽ dừng quay khi đạt đến thời lượng tối đa</string>
     <string name="preference_video_restart">Khởi động lại video sau thời lượng tối đa</string>
-    <string name="preference_video_restart_summary">Nếu video đã dừng sau khi chọn thời lượng tối đa (nếu được đặt), tùy chọn này sẽ khiến video khởi động lại theo số lần đã đặt\n%s</string>
+    <string name="preference_video_restart_summary">Nếu video đã dừng sau khi chọn thời lượng tối đa (nếu được đặt), tùy chọn này sẽ khiến video khởi động lại theo số lần đã đặt</string>
     <string name="preference_video_max_filesize">Kích thước tối đa của video</string>
-    <string name="preference_video_max_filesize_summary">Video sẽ dừng quay khi đạt đến kích thước tệp tối đa (xấp xỉ). Lưu ý hầu hết các thiết bị Android đều có kích thước tệp tối đa cho video (thường khoảng 2GB đến 4GB), nhưng tùy chọn này cho phép đặt một giá trị cụ thể.\n%s</string>
+    <string name="preference_video_max_filesize_summary">Video sẽ dừng quay khi đạt đến kích thước tệp tối đa (xấp xỉ). Lưu ý hầu hết các thiết bị Android đều có kích thước tệp tối đa cho video (thường khoảng 2GB đến 4GB), nhưng tùy chọn này cho phép đặt một giá trị cụ thể.</string>
     <string name="preference_video_restart_max_filesize">Khởi động lại video sau kích thước tối đa</string>
     <string name="preference_video_restart_max_filesize_summary">Tự khởi động lại video khi đạt kích thước tệp tối đa (dù là kích thước tệp tối đa mặc định của thiết bị hay do người dùng thiết lập)</string>
     <string name="preference_record_audio">Ghi âm</string>
     <string name="preference_record_audio_summary">Ghi âm khi quay video</string>
     <string name="preference_record_audio_src">Nguồn âm thanh</string>
-    <string name="preference_record_audio_src_summary">Micrô được sử dụng để ghi âm\n%s</string>
+    <string name="preference_record_audio_src_summary">Micrô được sử dụng để ghi âm</string>
     <string name="preference_record_audio_channels">Kênh âm thanh</string>
-    <string name="preference_record_audio_channels_summary">Thiết lập âm thanh đơn hoặc nổi (chỉ hỗ trợ âm thanh nổi trên một số thiết bị)\n%s</string>
+    <string name="preference_record_audio_channels_summary">Thiết lập âm thanh đơn hoặc nổi (chỉ hỗ trợ âm thanh nổi trên một số thiết bị)</string>
     <string name="preference_video_flash">Nháy đèn flash khi quay video</string>
     <string name="preference_video_flash_summary">Nếu kích hoạt, đèn flash sẽ nháy khi quay video (có thể được sử dụng để cảnh báo camera vẫn đang quay ở khoảng cách xa)</string>
 
@@ -310,12 +310,12 @@
     <string name="preference_camera2_fake_flash_summary">Kích hoạt tính năng này nếu thiết bị của bạn gặp sự cố flash với Camera2 API</string>
 
     <string name="preference_expo_bracketing_n_images">Phơi sáng mở rộng</string>
-    <string name="preference_expo_bracketing_n_images_summary">Số ảnh được chụp ở chế độ phơi sáng mở rộng\n%s</string>
+    <string name="preference_expo_bracketing_n_images_summary">Số ảnh được chụp ở chế độ phơi sáng mở rộng</string>
     <string name="preference_expo_bracketing_stops">Điểm dừng phơi sáng mở rộng</string>
-    <string name="preference_expo_bracketing_stops_summary">Đặt số điểm dừng để thêm/bớt cho hình ảnh sáng/tối nhất\n%s</string>
+    <string name="preference_expo_bracketing_stops_summary">Đặt số điểm dừng để thêm/bớt cho hình ảnh sáng/tối nhất</string>
 
     <string name="preference_nr_save">Giảm nhiễu ảnh gốc</string>
-    <string name="preference_nr_save_summary">Lưu ảnh gốc ở chế độ giảm nhiễu. Lưu ý việc lưu ảnh sẽ chậm hơn rất nhiều.\n%s</string>
+    <string name="preference_nr_save_summary">Lưu ảnh gốc ở chế độ giảm nhiễu. Lưu ý việc lưu ảnh sẽ chậm hơn rất nhiều.</string>
 
     <string name="preference_nr_save_no">Không lưu ảnh gốc</string>
     <string name="preference_nr_save_single">Lưu ảnh gốc duy nhất</string>
@@ -342,7 +342,7 @@
     <string name="selfie">Tự sướng</string>
 
     <string name="preference_front_camera_mirror">Chế độ phản chiếu</string>
-    <string name="preference_front_camera_mirror_summary">Phản chiếu hình ảnh khi sử dụng camera trước\n%s</string>
+    <string name="preference_front_camera_mirror_summary">Phản chiếu hình ảnh khi sử dụng camera trước</string>
 
     <string name="preference_calibrate_level">Hiệu chỉnh cân bằng góc</string>
     <string name="preference_calibrate_level_summary">Tùy chọn này sẽ hiệu chỉnh gia tốc kế của thiết bị, nhờ đó các tùy chọn chống rung tự động và cân bằng góc trên màn hình hoạt động chính xác</string>
@@ -359,7 +359,7 @@
     <string name="preference_show_geo_direction_lines">Hiển thị đường hướng la bàn</string>
     <string name="preference_show_geo_direction_lines_summary">>Hiện đường hướng la bàn</string>
     <string name="preference_video_subtitle">Phụ đề video</string>
-    <string name="preference_video_subtitle_summary">Tạo một tệp phụ đề (.SRT) lưu trữ dữ liệu ngày và giờ; và thông tin GPS nếu dữ liệu vị trí/hướng được kích hoạt\n%s</string>
+    <string name="preference_video_subtitle_summary">Tạo một tệp phụ đề (.SRT) lưu trữ dữ liệu ngày và giờ; và thông tin GPS nếu dữ liệu vị trí/hướng được kích hoạt</string>
 
     <string name="duration_unlimited">Không giới hạn</string>
     <string name="duration_3s">3 giây</string>
@@ -515,14 +515,14 @@
     <string name="flash_frontscreen_torch">Đèn pin</string>
 
     <string name="preference_antibanding">Chống vạch sọc</string>
-    <string name="preference_antibanding_summary">Khi kích hoạt, tính năng này sẽ giúp tránh hiện tượng vạch sọc gây ra bởi ánh đèn.\n%s</string>
+    <string name="preference_antibanding_summary">Khi kích hoạt, tính năng này sẽ giúp tránh hiện tượng vạch sọc gây ra bởi ánh đèn.</string>
     <string name="anti_banding_auto">Tự động</string>
     <string name="anti_banding_50hz">50Hz</string>
     <string name="anti_banding_60hz">60Hz</string>
     <string name="anti_banding_off">Tắt</string>
 
     <string name="preference_ghost_image">Ảnh ma</string>
-    <string name="preference_ghost_image_summary">Xếp chồng hình ảnh để tạo hiệu ứng phơi sáng kép\n%s</string>
+    <string name="preference_ghost_image_summary">Xếp chồng hình ảnh để tạo hiệu ứng phơi sáng kép</string>
     <string name="preference_ghost_image_off">Tắt</string>
     <string name="preference_ghost_image_last">Chọn ảnh chụp cuối</string>
     <string name="preference_ghost_image_selected">Chọn một ảnh khác</string>
@@ -534,7 +534,7 @@
     <string name="preference_camera2_photo_video_recording_summary">Cho phép chụp ảnh khi đang quay video. Vô hiệu hóa tùy chọn này nếu quay video có vấn đề khi Camera2 API được kích hoạt trên thiết bị.</string>
 
     <string name="preference_video_log">Hồ sơ video (bản ghi)</string>
-    <string name="preference_video_log_summary">Kích hoạt một hồ sơ (bản ghi) ở chế độ video\n%s</string>
+    <string name="preference_video_log_summary">Kích hoạt một hồ sơ (bản ghi) ở chế độ video</string>
     <string name="preference_video_log_off">Tắt</string>
     <string name="preference_video_log_fine">Ổn</string>
     <string name="preference_video_log_low">Thấp</string>
@@ -600,7 +600,7 @@
     <string name="accuracy_unknown">Không xác định</string>
 
     <string name="preference_units_distance">Đơn vị khoảng cách</string>
-    <string name="preference_units_distance_summary">Được sử dụng cho độ cao GPS trong đóng dấu hình ảnh và phụ đề video\n%s</string>
+    <string name="preference_units_distance_summary">Được sử dụng cho độ cao GPS trong đóng dấu hình ảnh và phụ đề video</string>
     <string name="preference_units_distance_m">Mét</string>
     <string name="preference_units_distance_ft">Feet</string>
     <string name="feet_abbreviation">ft</string> <!-- symbol short for feet -->
@@ -609,12 +609,12 @@
     <string name="preference_show_whats_new_summary">Hiện hộp thoại thông tin về các tính năng và cải tiến mới sau khi ứng dụng được cập nhật</string>
 
     <string name="preference_edge_mode">Chế độ cạnh</string>
-    <string name="preference_edge_mode_summary">Sử dụng thuật toán để cải tiến cạnh, cải thiện độ sắc nét và chi tiết trong ảnh chụp (thiết lập này bị bỏ qua trong chế độ NR)\n%s</string>
+    <string name="preference_edge_mode_summary">Sử dụng thuật toán để cải tiến cạnh, cải thiện độ sắc nét và chi tiết trong ảnh chụp (thiết lập này bị bỏ qua trong chế độ NR)</string>
 
     <string name="preference_screen_processing_settings">Cài đặt xử lý</string>
 
     <string name="preference_noise_reduction_mode">Chế độ giảm nhiễu</string>
-    <string name="preference_noise_reduction_mode_summary">Sử dụng thuật toán để giảm nhiễu, cải thiện chất lượng ảnh bằng cách loại bỏ nhiễu sinh ra trong quá trình chụp, đặc biệt là trong điều kiện tối (lưu ý thiết lập này không liên quan đến chế độ Giảm nhiễu và trên thực tế bị bỏ qua ở chế độ NR)\n%s</string>
+    <string name="preference_noise_reduction_mode_summary">Sử dụng thuật toán để giảm nhiễu, cải thiện chất lượng ảnh bằng cách loại bỏ nhiễu sinh ra trong quá trình chụp, đặc biệt là trong điều kiện tối (lưu ý thiết lập này không liên quan đến chế độ Giảm nhiễu và trên thực tế bị bỏ qua ở chế độ NR)</string>
     <string name="noise_reduction_mode_default">Mặc định</string>
     <string name="noise_reduction_mode_off">Tắt</string>
     <string name="noise_reduction_mode_minimal">Tối thiểu</string>
@@ -622,7 +622,7 @@
     <string name="noise_reduction_mode_high_quality">Chất lượng cao</string>
 
     <string name="preference_focus_assist">Hỗ trợ lấy nét</string>
-    <string name="preference_focus_assist_summary">Phóng to khi điều chỉnh khoảng cách lấy nét thủ công\n%s</string>
+    <string name="preference_focus_assist_summary">Phóng to khi điều chỉnh khoảng cách lấy nét thủ công</string>
     <string name="preference_focus_assist_off">Tắt</string>
     <string name="preference_focus_assist_2x">2x</string>
     <string name="preference_focus_assist_4x">4x</string>
@@ -700,13 +700,13 @@
     <string name="preference_audio_noise_control_sensitivity_m3">-3 (độ nhạy thấp)</string>
 
     <string name="preference_hdr_contrast_enhancement">Tăng cường độ tương phản HDR</string>
-    <string name="preference_hdr_contrast_enhancement_summary">Sử dụng thuật toán để tăng cường độ tương phản cho HDR, cải thiện chất lượng ảnh trong trường hợp khung cảnh có dải tương phản động mở rộng cao, và cung cấp kết quả của HDR\n%s</string>
+    <string name="preference_hdr_contrast_enhancement_summary">Sử dụng thuật toán để tăng cường độ tương phản cho HDR, cải thiện chất lượng ảnh trong trường hợp khung cảnh có dải tương phản động mở rộng cao, và cung cấp kết quả của HDR</string>
     <string name="preference_hdr_contrast_enhancement_off">Tắt</string>
     <string name="preference_hdr_contrast_enhancement_smart">Thông minh</string>
     <string name="preference_hdr_contrast_enhancement_always">Luôn luôn</string>
 
     <string name="preference_video_output_format">Định dạng video</string>
-    <string name="preference_video_output_format_summary">Định dạng tệp tin video/âm thanh và chuẩn mã hóa\n%s</string>
+    <string name="preference_video_output_format_summary">Định dạng tệp tin video/âm thanh và chuẩn mã hóa</string>
 
     <string name="preference_video_output_format_default">Mặc định</string>
     <string name="preference_video_output_format_mpeg4_h264">MPEG4 H264</string>
@@ -848,13 +848,13 @@
     <string name="unlock_pro">Mở khóa Pro</string>
     <string name="later">Để sau</string>
     <string name="preference_hdr_tonemapping">Ánh xạ tông HDR</string>
-    <string name="preference_hdr_tonemapping_summary">Thuật toán sử dụng để ánh xạ tông trong chế độ chụp ảnh HDR\n%s</string>
+    <string name="preference_hdr_tonemapping_summary">Thuật toán sử dụng để ánh xạ tông trong chế độ chụp ảnh HDR</string>
     <string name="preference_hdr_tonemapping_clamp">Clamp đơn giản</string>
     <string name="preference_hdr_tonemapping_exponential">Hàm mũ</string>
     <string name="preference_hdr_tonemapping_default">Mặc định</string>
     <string name="preference_hdr_tonemapping_aces">ACES</string>
     <string name="preference_remove_device_exif">Xóa dữ liệu EXIF thiết bị</string>
-    <string name="preference_remove_device_exif_summary">Có nên xóa siêu dữ liệu EXIF của thiết bị khỏi ảnh JPEG. Việc này không ảnh hưởng đến các thẻ EXIF khác như vị trí hoặc gắn thẻ địa lý. Các tùy chọn đó là độc lập và sẽ ghi đè thiết lập này. Không áp dụng cho ảnh RAW/DNG và video.\n%s</string>
+    <string name="preference_remove_device_exif_summary">Có nên xóa siêu dữ liệu EXIF của thiết bị khỏi ảnh JPEG. Việc này không ảnh hưởng đến các thẻ EXIF khác như vị trí hoặc gắn thẻ địa lý. Các tùy chọn đó là độc lập và sẽ ghi đè thiết lập này. Không áp dụng cho ảnh RAW/DNG và video.</string>
     <string name="preference_remove_device_exif_off">Không xóa EXIF của thiết bị</string>
     <string name="preference_remove_device_exif_on">Xóa EXIF của thiết bị</string>
     <string name="preference_remove_device_exif_keep_datetime">Xóa ngoại trừ ngày/giờ</string>
@@ -864,11 +864,11 @@
     <string name="focus_peaking_enable">Bật focus peaking</string>
     <string name="focus_peaking_disable">Tắt focus peaking</string>
     <string name="preference_photo_optimise_focus">Tối ưu lấy nét cho…</string>
-    <string name="preference_photo_optimise_focus_summary">Khi chụp ảnh, lựa chọn giữa tối ưu độ trễ hoặc chất lượng. Chỉ áp dụng khi dùng chế độ lấy nét liên tục. Tối ưu cho chất lượng đảm bảo ảnh được lấy nét kỹ, nhưng có thể gây trễ khi chụp.\n%s</string>
+    <string name="preference_photo_optimise_focus_summary">Khi chụp ảnh, lựa chọn giữa tối ưu độ trễ hoặc chất lượng. Chỉ áp dụng khi dùng chế độ lấy nét liên tục. Tối ưu cho chất lượng đảm bảo ảnh được lấy nét kỹ, nhưng có thể gây trễ khi chụp.</string>
     <string name="preference_photo_optimise_focus_latency">Độ trễ</string>
     <string name="preference_photo_optimise_focus_quality">Chất lượng</string>
     <string name="preference_save_preshots">Lưu ảnh trước khi chụp</string>
-    <string name="preference_save_preshots_summary">Khi bật, một đoạn video ngắn sẽ được lưu kèm với mỗi ảnh, ghi lại khoảnh khắc trước khi chụp. Không hỗ trợ với các chế độ phơi sáng, lấy nét bracketing hoặc panorama.\n%s</string>
+    <string name="preference_save_preshots_summary">Khi bật, một đoạn video ngắn sẽ được lưu kèm với mỗi ảnh, ghi lại khoảnh khắc trước khi chụp. Không hỗ trợ với các chế độ phơi sáng, lấy nét bracketing hoặc panorama.</string>
     <string name="telephoto">Tele</string>
     <string name="auto_lens">Ống kính tự động</string>
     <string name="lens">Ống kính</string>
@@ -915,7 +915,7 @@
     <string name="preference_location_enable">Lưu dữ liệu vị trí</string>
     <string name="preference_location_disable">Dừng lưu dữ liệu vị trí</string>
     <string name="preference_histogram">Hiển thị biểu đồ</string>
-    <string name="preference_histogram_summary">Hiển thị biểu đồ màu sắc trên màn hình\n%s</string>
+    <string name="preference_histogram_summary">Hiển thị biểu đồ màu sắc trên màn hình</string>
     <string name="preference_histogram_off">Tắt</string>
     <string name="preference_histogram_rgb">Màu RGB</string>
     <string name="preference_histogram_luminance">Độ sáng</string>
@@ -923,30 +923,30 @@
     <string name="preference_histogram_intensity">Cường độ (Trung bình)</string>
     <string name="preference_histogram_lightness">Độ sáng (Trung bình min‑max)</string>
     <string name="preference_zebra_stripes">Hiển thị sọc zebra</string>
-    <string name="preference_zebra_stripes_summary">Nếu bật, sẽ hiển thị sọc zebra ở vùng ảnh xem trước bị cháy sáng.\n%s</string>
+    <string name="preference_zebra_stripes_summary">Nếu bật, sẽ hiển thị sọc zebra ở vùng ảnh xem trước bị cháy sáng.</string>
     <string name="preference_zebra_stripes_off">Tắt</string>
     <string name="preference_focus_peaking">Focus peaking</string>
-    <string name="preference_focus_peaking_summary">Nếu bật, sẽ làm nổi bật các cạnh đang được lấy nét. Hữu ích khi lấy nét thủ công.\n%s</string>
+    <string name="preference_focus_peaking_summary">Nếu bật, sẽ làm nổi bật các cạnh đang được lấy nét. Hữu ích khi lấy nét thủ công.</string>
     <string name="preference_focus_peaking_off">Tắt</string>
     <string name="preference_focus_peaking_on">Bật</string>
     <string name="preference_focus_peaking_color">Màu focus peaking</string>
-    <string name="preference_focus_peaking_color_summary">Màu để làm nổi bật các cạnh rõ nét\n%s</string>
+    <string name="preference_focus_peaking_color_summary">Màu để làm nổi bật các cạnh rõ nét</string>
     <string name="permission_rationale_storage">Cần có quyền đọc/ghi bộ nhớ để lưu các tệp kết quả như ảnh hoặc video</string>
     <string name="permission_rationale_location">Cần có quyền vị trí để gắn thẻ địa lý (lưu trữ dữ liệu vị trí trong ảnh và video, bao gồm các tùy chọn dấu thời gian và phụ đề). Quyền vị trí cũng được yêu cầu (ít nhất đối với Android 11 trở về trước) để kết nối với các thiết bị điều khiển từ xa Bluetooth LE.</string>
     <string name="preference_image_format_jpeg_r">UltraHDR JPEG</string>
     <string name="preference_panorama_crop">Tự động cắt ảnh toàn cảnh</string>
-    <string name="preference_panorama_crop_summary">Đối với chế độ toàn cảnh, có xóa các đường ranh giới lượn sóng hay không\n%s</string>
+    <string name="preference_panorama_crop_summary">Đối với chế độ toàn cảnh, có xóa các đường ranh giới lượn sóng hay không</string>
     <string name="panorama_info">Để chụp ảnh toàn cảnh, hãy giữ thiết bị của bạn theo hướng dọc và nhấp để chụp ảnh để bắt đầu ảnh toàn cảnh. Sau đó xoay thiết bị của bạn sang trái hoặc phải để di chuyển vòng tròn trắng ở giữa qua chấm màu xanh lam. Sau mỗi lần chụp ảnh mới, hãy tiếp tục xoay thiết bị của bạn để bao phủ từng chấm màu xanh lam mới xuất hiện lần lượt.\n\nNhấp vào biểu tượng dấu kiểm để lưu ảnh toàn cảnh hoặc biểu tượng dấu thập để hủy.\n\nLưu ý rằng ảnh toàn cảnh có thể mất thời gian để xử lý và lưu.</string>
     <string name="preference_panorama_save">Ảnh gốc toàn cảnh</string>
-    <string name="preference_panorama_save_summary">Có lưu ảnh gốc ở chế độ toàn cảnh hay không. Lưu ý điều này sẽ làm cho việc lưu ảnh toàn cảnh chậm hơn. Cũng cho phép tùy chọn lưu tệp XML có thể hữu ích khi báo cáo sự cố với ảnh toàn cảnh.\n%s</string>
+    <string name="preference_panorama_save_summary">Có lưu ảnh gốc ở chế độ toàn cảnh hay không. Lưu ý điều này sẽ làm cho việc lưu ảnh toàn cảnh chậm hơn. Cũng cho phép tùy chọn lưu tệp XML có thể hữu ích khi báo cáo sự cố với ảnh toàn cảnh.</string>
     <string name="preference_panorama_save_no">Không lưu ảnh gốc</string>
     <string name="preference_panorama_save_all">Lưu ảnh gốc</string>
     <string name="preference_panorama_save_all_plus_debug">Lưu ảnh gốc cộng với XML gỡ lỗi</string>
     <string name="camera_id">ID</string>
     <string name="exposure_compensation_seekbar">Thanh tìm kiếm để thay đổi bù phơi sáng</string>
-    <string name="preference_image_format_summary">Chọn định dạng tệp được sử dụng để lưu ảnh. Điều này ảnh hưởng đến ảnh "tiêu chuẩn" (không phải RAW). Chỉ các định dạng JPEG mới hỗ trợ lưu siêu dữ liệu Exif. UltraHDR không được hỗ trợ cho các chế độ NR, HDR, Pano, X-. Lưu ý rằng định dạng PNG không thực sự không mất dữ liệu, thay vào đó nó được chuyển đổi từ JPEG ở chất lượng 100%%.\n%s</string>
+    <string name="preference_image_format_summary">Chọn định dạng tệp được sử dụng để lưu ảnh. Điều này ảnh hưởng đến ảnh "tiêu chuẩn" (không phải RAW). Chỉ các định dạng JPEG mới hỗ trợ lưu siêu dữ liệu Exif. UltraHDR không được hỗ trợ cho các chế độ NR, HDR, Pano, X-. Lưu ý rằng định dạng PNG không thực sự không mất dữ liệu, thay vào đó nó được chuyển đổi từ JPEG ở chất lượng 100%%.</string>
     <string name="preference_camera_api">API máy ảnh</string>
-    <string name="preference_camera_api_summary">Chọn API Camera2 để bật các tính năng bổ sung như chế độ thủ công cho phơi sáng, lấy nét, cân bằng trắng, cùng với RAW (nếu được thiết bị hỗ trợ). Thay đổi API sẽ gây ra khởi động lại.\n%s</string>
+    <string name="preference_camera_api_summary">Chọn API Camera2 để bật các tính năng bổ sung như chế độ thủ công cho phơi sáng, lấy nét, cân bằng trắng, cùng với RAW (nếu được thiết bị hỗ trợ). Thay đổi API sẽ gây ra khởi động lại.</string>
     <string name="preference_camera_api_old">API máy ảnh gốc</string>
     <string name="preference_camera_api_camera2">API Camera2</string>
     <string name="preference_save_include_milliseconds">Sử dụng mili giây trong tên tệp</string>
@@ -1003,7 +1003,7 @@
     <string name="remote_connected">Đã kết nối điều khiển từ xa</string>
     <string name="preference_audio_control_summary">Chụp ảnh/quay video khi phát hiện tiếng ồn.
         Khi được bật, hãy sử dụng nút micrô trên màn hình để bắt đầu/dừng nghe.
-        \n%s</string>
+        </string>
     <string name="intro_text">Chạm để lấy nét và nhấn nút chụp màu xanh lam hình tròn để chụp ảnh.
         \n\nĐể lưu vào thẻ SD, hãy xem Cài đặt/Điều khiển máy ảnh khác/\"Khung truy cập bộ nhớ\".
         Để được trợ giúp thêm, hãy nhấp vào \"Trợ giúp trực tuyến\" từ Cài đặt.
@@ -1013,13 +1013,13 @@
     <string name="preference_video_srgb">sRGB</string>
     <string name="preference_video_gamma">Gamma</string>
     <string name="preference_video_profile_gamma">Giá trị gamma video</string>
-    <string name="preference_video_profile_gamma_summary">Giá trị gamma để sử dụng cho video nếu cấu hình ảnh video được đặt thành Gamma\n%s</string>
+    <string name="preference_video_profile_gamma_summary">Giá trị gamma để sử dụng cho video nếu cấu hình ảnh video được đặt thành Gamma</string>
     <string name="preference_ghost_image_alpha">Độ mờ của ảnh ma</string>
-    <string name="preference_ghost_image_alpha_summary">Giá trị alpha để sử dụng cho ảnh ma. Giá trị thấp hơn có nghĩa là trong suốt hơn, giá trị cao hơn có nghĩa là mờ hơn.\n%s</string>
+    <string name="preference_ghost_image_alpha_summary">Giá trị alpha để sử dụng cho ảnh ma. Giá trị thấp hơn có nghĩa là trong suốt hơn, giá trị cao hơn có nghĩa là mờ hơn.</string>
     <string name="preference_zebra_stripes_foreground_color">Màu nền trước của sọc ngựa vằn</string>
-    <string name="preference_zebra_stripes_foreground_color_summary">Màu để sử dụng cho sọc nền trước khi hiển thị sọc ngựa vằn.\n%s</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">Màu để sử dụng cho sọc nền trước khi hiển thị sọc ngựa vằn.</string>
     <string name="preference_zebra_stripes_background_color">Màu nền sau của sọc ngựa vằn</string>
-    <string name="preference_zebra_stripes_background_color_summary">Màu để sử dụng cho sọc nền sau khi hiển thị sọc ngựa vằn.\n%s</string>
+    <string name="preference_zebra_stripes_background_color_summary">Màu để sử dụng cho sọc nền sau khi hiển thị sọc ngựa vằn.</string>
     <string name="preference_zebra_stripes_color_black">Đen</string>
     <string name="preference_zebra_stripes_color_red">Đỏ</string>
     <string name="preference_zebra_stripes_color_orange">Cam</string>

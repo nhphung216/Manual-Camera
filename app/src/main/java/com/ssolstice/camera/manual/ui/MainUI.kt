@@ -41,7 +41,6 @@ import com.ssolstice.camera.manual.R
 import com.ssolstice.camera.manual.cameracontroller.CameraController
 import com.ssolstice.camera.manual.compose.CameraViewModel
 import com.ssolstice.camera.manual.preview.ApplicationInterface.RawPref
-import com.ssolstice.camera.manual.ui.PopupView.ButtonOptionsPopupListener
 import com.ssolstice.camera.manual.utils.Logger
 import java.util.Hashtable
 import kotlin.concurrent.Volatile
@@ -55,13 +54,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     private val mainActivity: MainActivity
 
     private val cameraViewModel: CameraViewModel
-
-    @Volatile
-    private var popup_view_is_open = false // must be volatile for test project reading the state
-    var popupView: PopupView? = null
-        private set
-    private var force_destroy_popup =
-        false // if true, then the popup isn't cached for only the next time the popup is closed
 
     private var current_orientation = 0
 
@@ -819,18 +811,15 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 val button = view as Button
                 val buttonText = button.text.toString()
                 if (ISOTextEquals(buttonText, currentIso)) {
-                    PopupView.setButtonSelected(button, true)
                     found = true
                 } else {
                     if (buttonText.contains("m")) {
                         manualButton = button
                     }
-                    PopupView.setButtonSelected(button, false)
                     button.setBackgroundColor(Color.TRANSPARENT)
                 }
             }
             if (!found && manualButton != null) {
-                PopupView.setButtonSelected(manualButton, true)
                 manualButton.setBackgroundColor(highlightColorExposureUIElement)
             }
             mSelectingExposureUIElement = true
@@ -1006,132 +995,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         Logger.d(TAG, "total_width_dp: $totalWidthDp")
 
         // n.b., we hardcode the string "ISO" as this isn't a user displayed string, rather it's used to filter out "ISO" included in old Camera API parameters
-        isoButtons = PopupView.createButtonOptions(
-            isoButtonsContainer,
-            mainActivity,
-            totalWidthDp,
-            this.testUIButtonsMap,
-            supportedIsos,
-            -1,
-            -1,
-            "ISO",
-            false,
-            currentIso,
-            0,
-            "TEST_ISO",
-            object : ButtonOptionsPopupListener() {
-                override fun onClick(option: String?) {
-                    Logger.d(TAG, "clicked iso: $option")
-                    val editor = sharedPreferences.edit()
-                    val oldIso: String = sharedPreferences.getString(
-                        PreferenceKeys.ISOPreferenceKey,
-                        CameraController.ISO_DEFAULT
-                    )!!
-                    if (MyDebug.LOG) {
-                        Logger.d(TAG, "old_iso: $oldIso")
-                    }
-                    editor.putString(PreferenceKeys.ISOPreferenceKey, option)
-                    var toastOption: String? = option
-
-                    if (preview.supportsISORange()) {
-                        if (option == CameraController.ISO_DEFAULT) {
-                            Logger.d(TAG, "switched from manual to auto iso")
-                            // also reset exposure time when changing from manual to auto from the popup menu:
-                            editor.putLong(
-                                PreferenceKeys.ExposureTimePreferenceKey,
-                                CameraController.EXPOSURE_TIME_DEFAULT
-                            )
-                            editor.apply()
-                            preview.showToast(
-                                null,
-                                "ISO: $toastOption",
-                                0,
-                                true
-                            ) // supply offset_y_dp to be consistent with preview.setExposure(), preview.setISO()
-                            mainActivity.updateForSettings(
-                                true,
-                                ""
-                            ) // already showed the toast, so block from showing again
-                        } else if (oldIso == CameraController.ISO_DEFAULT) {
-                            Logger.d(TAG, "switched from auto to manual iso")
-                            if (option == "m") {
-                                // if we used the generic "manual", then instead try to preserve the current iso if it exists
-                                if (preview.cameraController != null && preview.cameraController.captureResultHasIso()
-                                ) {
-                                    val iso = preview.cameraController.captureResultIso()
-                                    Logger.d(TAG, "apply existing iso of $iso")
-                                    editor.putString(
-                                        PreferenceKeys.ISOPreferenceKey,
-                                        iso.toString()
-                                    )
-                                    toastOption = iso.toString()
-                                } else {
-                                    Logger.d(TAG, "no existing iso available")
-                                    // use a default
-                                    val iso = 800
-                                    editor.putString(PreferenceKeys.ISOPreferenceKey, "" + iso)
-                                    toastOption = "" + iso
-                                }
-                            }
-
-                            // if changing from auto to manual, preserve the current exposure time if it exists
-                            if (preview.cameraController != null && preview.cameraController
-                                    .captureResultHasExposureTime()
-                            ) {
-                                val exposureTime =
-                                    preview.cameraController.captureResultExposureTime()
-                                Logger.d(
-                                    TAG,
-                                    "apply existing exposure time of $exposureTime"
-                                )
-                                editor.putLong(
-                                    PreferenceKeys.ExposureTimePreferenceKey,
-                                    exposureTime
-                                )
-                            } else {
-                                Logger.d(TAG, "no existing exposure time available")
-                            }
-
-                            editor.apply()
-                            preview.showToast(
-                                null,
-                                "ISO: $toastOption",
-                                0,
-                                true
-                            ) // supply offset_y_dp to be consistent with preview.setExposure(), preview.setISO()
-                            mainActivity.updateForSettings(
-                                true,
-                                ""
-                            ) // already showed the toast, so block from showing again
-                        } else {
-                            Logger.d(TAG, "changed manual iso")
-                            if (option == "m") {
-                                // if user selected the generic "manual", then just keep the previous non-ISO option
-                                Logger.d(TAG, "keep existing iso of $oldIso")
-                                editor.putString(PreferenceKeys.ISOPreferenceKey, oldIso)
-                            }
-
-                            editor.apply()
-                            val iso = preview.parseManualISOValue(option)
-                            if (iso >= 0) {
-                                // if changing between manual ISOs, no need to call updateForSettings, just change the ISO directly (as with changing the ISO via manual slider)
-                                //preview.setISO(iso);
-                                //updateSelectedISOButton();
-                                // rather than set ISO directly, we move the seekbar, and the ISO will be changed via the seekbar listener
-                                val isoSeekBar =
-                                    mainActivity.findViewById<SeekBar?>(R.id.iso_seekbar)
-                                mainActivity.getManualSeekbars()
-                                    .setISOProgressBarToClosest(isoSeekBar, iso.toLong())
-                            }
-                        }
-                    } else {
-                        editor.apply()
-                        preview.cameraController?.setISO(option)
-                    }
-
-                    setupExposureUI()
-                }
-            })
         val isoContainerView = mainActivity.binding.isoContainer
         isoContainerView.visibility = View.VISIBLE
 
@@ -1194,16 +1057,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 val button = view as Button
                 val buttonText = button.text.toString()
                 if (ISOTextEquals(buttonText, currentIso)) {
-                    PopupView.setButtonSelected(button, true)
                     found = true
-                } else {
-                    PopupView.setButtonSelected(button, false)
                 }
             }
             if (!found && currentIso != CameraController.ISO_DEFAULT) {
                 if (isoButtonManualIndex >= 0 && isoButtonManualIndex < isoButtons!!.size) {
                     val button = isoButtons!![isoButtonManualIndex] as Button
-                    PopupView.setButtonSelected(button, true)
                 }
             }
         }
@@ -1237,16 +1096,12 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             clearRemoteControlForPopup() // must be called before we set popup_view_is_open to false; and before clearSelectionState() so we know which highlighting to disable
             clearSelectionState()
 
-            popup_view_is_open = false
-            if (cache_popup && !force_destroy_popup) {
-                popupView?.visibility = View.GONE
-            }
             mainActivity.initImmersiveMode() // to reset the timer when closing the popup
         }
     }
 
     fun popupIsOpen(): Boolean {
-        return popup_view_is_open
+        return false
     }
 
     fun selectingIcons(): Boolean {
@@ -1257,26 +1112,10 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         return mSelectingLines
     }
 
-    fun destroyPopup() {
-        Logger.d(TAG, "destroyPopup")
-        force_destroy_popup = false
-        if (popupIsOpen()) {
-            closePopup()
-        }
-        val popupContainer = mainActivity.findViewById<ViewGroup>(R.id.popup_container)
-        popupContainer.removeAllViews()
-        this.popupView = null
-    }
-
     /**
      * Higlights the next LinearLayout view
      */
     private fun highlightPopupLine(highlight: Boolean, goUp: Boolean) {
-        if (MyDebug.LOG) {
-            Logger.d(TAG, "highlightPopupLine")
-            Logger.d(TAG, "highlight: $highlight")
-            Logger.d(TAG, "goUp: $goUp")
-        }
         if (!popupIsOpen()) { // Safety check
             clearSelectionState()
             return
@@ -1324,11 +1163,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
      * wrongly called, so that it doesn't crash the app.
      */
     private fun highlightPopupIcon(highlight: Boolean, goLeft: Boolean) {
-        if (MyDebug.LOG) {
-            Logger.d(TAG, "highlightPopupIcon")
-            Logger.d(TAG, "highlight: $highlight")
-            Logger.d(TAG, "goLeft: $goLeft")
-        }
         if (!popupIsOpen()) { // Safety check
             clearSelectionState()
             return
@@ -1341,7 +1175,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             // (careful, modulo in Java will allow negative numbers, hence the line below:
             mPopupIcon = (mPopupIcon + count) % count
             val v = mHighlightedLine!!.getChildAt(mPopupIcon)
-            Logger.d(TAG, "row: $mPopupIcon view: $v")
             if (v is ImageView || v is Button) {
                 if (highlight) {
                     v.setBackgroundColor(highlightColor)
@@ -1351,7 +1184,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
                 } else {
                     v.setBackgroundColor(Color.TRANSPARENT)
                 }
-                Logger.d(TAG, "found icon at row: $mPopupIcon")
                 foundIcon = true
             } else {
                 mPopupIcon += if (goLeft) -1 else 1
@@ -1441,17 +1273,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
             popup_container.alpha = 0.9f
         }
 
-        if (this.popupView == null) {
-            Logger.d(TAG, "create new popup_view")
-            testUIButtonsMap.clear()
-            this.popupView = PopupView(mainActivity)
-            popup_container.addView(this.popupView)
-        } else {
-            Logger.d(TAG, "use cached popup_view")
-            popupView?.visibility = View.VISIBLE
-        }
-        popup_view_is_open = true
-
         if (mainActivity.getBluetoothRemoteControl().remoteEnabled()) {
             initRemoteControlForPopup()
         }
@@ -1463,16 +1284,6 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
         popup_container.viewTreeObserver.addOnGlobalLayoutListener(
             object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    Logger.d(TAG, "onGlobalLayout()")
-                    Logger.d(
-                        TAG,
-                        "time after global layout: " + (System.currentTimeMillis() - time_s)
-                    )
-                    //layoutUI(true)
-                    Logger.d(
-                        TAG,
-                        "time after layoutUI: " + (System.currentTimeMillis() - time_s)
-                    )
                     // stop listening - only want to call this once!
                     popup_container.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
@@ -2175,10 +1986,8 @@ class MainUI(mainActivity: MainActivity, cameraViewModel: CameraViewModel) {
     companion object {
         private const val TAG = "MainUI"
 
-        private const val cache_popup = true // if false, we recreate the popup each time
         private const val view_rotate_animation_duration =
             100 // duration in ms of the icon rotation animation
-        const val privacy_indicator_gap_dp: Int = 24
 
         private const val manual_iso_value = "m"
 

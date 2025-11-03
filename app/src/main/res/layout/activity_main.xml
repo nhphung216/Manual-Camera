@@ -6,14 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
+    <LinearLayout
+        android:id="@+id/adLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:visibility="gone"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +22,7 @@
         android:layout_height="wrap_content"
         android:background="@color/black"
         android:foregroundGravity="center_vertical"
-        ads:layout_constraintTop_toBottomOf="@+id/adView"
+        ads:layout_constraintTop_toBottomOf="@+id/adLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -73,7 +71,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_face_white_48dp"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/switch_multi_camera"
@@ -92,7 +90,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/raw_off_icon"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/store_location"
@@ -102,7 +100,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_gps_fixed_white_48dp"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/text_stamp"
@@ -112,7 +110,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/baseline_text_fields_white_48"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/stamp"
@@ -125,7 +123,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_text_format_white_48dp"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/focus_peaking"
@@ -135,7 +133,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/key_visualizer"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/auto_level"
@@ -145,7 +143,7 @@
                 android:padding="@dimen/onscreen_button_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/auto_stabilise_icon"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/audio_control"

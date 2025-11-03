@@ -86,7 +86,7 @@
     <string name="preference_exposure">Expozíció kompenzáció beállítása</string>
     <string name="preference_exposure_summary">Az alapértelmezett kompenzációhoz állítsd 0-ra</string>
     <string name="preference_lock_orientation">Fotó/videó tájolás zárolása</string>
-    <string name="preference_lock_orientation_summary">Ha be van állítva, a készülék tájolása figyelmen kívül lesz hagyva, és a fotó/videó a megadott tájolás szerint fog állni\n%s</string>
+    <string name="preference_lock_orientation_summary">Ha be van állítva, a készülék tájolása figyelmen kívül lesz hagyva, és a fotó/videó a megadott tájolás szerint fog állni</string>
     <string name="preference_face_detection">Arcfelismerés</string>
     <string name="preference_face_detection_summary">Arcfelismerés használata fókuszterületek helyett</string>
 
@@ -100,7 +100,7 @@
     <string name="preference_burst_interval">Sorozatfelvétel intervallum</string>
     <string name="preference_screen_camera_controls_more">További kamera beállítások…</string>
     <string name="preference_touch_capture">Exponálás érintéssel</string>
-    <string name="preference_touch_capture_summary">Fénykép készítése az előnézet érintésével, vagy dupla koppintással\n%s</string>
+    <string name="preference_touch_capture_summary">Fénykép készítése az előnézet érintésével, vagy dupla koppintással</string>
     <string name="preference_pause_preview">Fotózás utáni szünet</string>
     <string name="preference_pause_preview_summary">Kép kimerevítése a fotó elkészítése után, a fotó megosztásának és törlésének lehetőségével</string>
     <string name="preference_shutter_sound">Zárhang</string>
@@ -124,7 +124,7 @@
     <string name="preference_lock_video">Képernyő zárolása videofelvétel alatt</string>
     <string name="preference_lock_video_summary">Videó készítése alatt a felhasználói felület zárolva lesz, megakadályozva a felvétel véletlen leállítását. Feloldáshoz csúsztad az ujjad a képernyőn. Megjegyzendő, hogy a felvétel le fog állni, ha az alkalmazás háttérbe kerül vagy a képernyő kikapcsol.</string>
     <string name="preference_rotate_preview">Előnézet forgatása</string>
-    <string name="preference_rotate_preview_summary">Az előnézet forgatásának lehetősége (nem befolyásolja az elkészített fotót, videót)\n%s</string>
+    <string name="preference_rotate_preview_summary">Az előnézet forgatásának lehetősége (nem befolyásolja az elkészített fotót, videót)</string>
     <string name="preference_screen_gui">Kezelőfelület…</string>
     <string name="preference_preview_size">Előnézet mérete</string>
     <string name="preference_ui_placement">Kezelőfelület elhelyezés</string>
@@ -154,7 +154,7 @@
     <string name="preference_grid">Rács megjelenítése</string>
     <string name="grid">Rács</string> <!-- short form of Show a grid -->
     <string name="preference_crop_guide">Vágási segédvonal megjelenítése</string>
-    <string name="preference_crop_guide_summary">A vágási segéd egy négyzetet jelenít meg, mutatva, hogy nézne ki a megadott oldalarány – hasznos, ha a fotót/videót később más oldalarányúra tervezed vágni. WYSIWYG fényképmód, vagy videózás mód szükséges hozzá\n%s</string>
+    <string name="preference_crop_guide_summary">A vágási segéd egy négyzetet jelenít meg, mutatva, hogy nézne ki a megadott oldalarány – hasznos, ha a fotót/videót később más oldalarányúra tervezed vágni. WYSIWYG fényképmód, vagy videózás mód szükséges hozzá</string>
     <string name="preference_show_toasts">\"toast\" üzenetek megjelenítése</string>
     <string name="preference_show_toasts_summary">Megjelenjenek-e felugró \"toast\" üzenetek</string>
     <string name="preference_thumbnail_animation">Bélyegkép animáció megjelenítése</string>
@@ -172,7 +172,7 @@
     <string name="preference_screen_location_settings">Helymeghatározás beállítások…</string>
     <string name="preference_resolution">Kamera felbontása</string>
     <string name="preference_quality">Képminőség</string>
-    <string name="preference_quality_summary">Beállítja, hogy a képek milyen JPEG minőséggel legyenek elmentve (ajánlott érték 90%%)\n%s</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
+    <string name="preference_quality_summary">Beállítja, hogy a képek milyen JPEG minőséggel legyenek elmentve (ajánlott érték 90%%)</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
     <string name="preference_raw">RAW</string>
     <string name="preference_location">Helyadatok eltárolása (geotaggelés)</string>
     <string name="preference_location_summary">Eltárolja a GPS helyadatot a fotóban/videóban</string>
@@ -181,18 +181,18 @@
     <string name="preference_require_location">Helyadatok megkövetelése</string>
     <string name="preference_require_location_summary">Ha a helymeghatározás engedélyezve van, csak akkor enged fotózni/videózni, ha a helyadat rendelkezésre áll</string>
     <string name="preference_stamp">Fotók feliratozása</string>
-    <string name="preference_stamp_summary">A fotók feliratozása dátum- és időbélyeggel, valamint GPS információval, ha a hely/irány adat elérhető\n%s</string>
+    <string name="preference_stamp_summary">A fotók feliratozása dátum- és időbélyeggel, valamint GPS információval, ha a hely/irány adat elérhető</string>
     <string name="preference_stamp_dateformat">Dátumbélyeg formátum</string>
     <string name="preference_stamp_timeformat">Időbélyeg formátum</string>
     <string name="preference_stamp_gpsformat">GPS bélyeg formátum</string>
     <string name="preference_textstamp">Egyéni szöveg</string>
     <string name="preference_textstamp_summary">Képek feliratozása egyéni szöveggel</string>
     <string name="preference_stamp_fontsize">Betűméret</string>
-    <string name="preference_stamp_fontsize_summary">A feliratozás szövegének betűmérete\n%s</string>
+    <string name="preference_stamp_fontsize_summary">A feliratozás szövegének betűmérete</string>
     <string name="preference_stamp_font_color">Betűszín</string>
-    <string name="preference_stamp_font_color_summary">A feliratozás szövegének betűszíne\n%s</string>
+    <string name="preference_stamp_font_color_summary">A feliratozás szövegének betűszíne</string>
     <string name="preference_stamp_style">Szövegstílus</string>
-    <string name="preference_stamp_style_summary">A feliratozás szövegének stílusa\n%s</string>
+    <string name="preference_stamp_style_summary">A feliratozás szövegének stílusa</string>
     <string name="preference_background_photo_saving">Háttérszál használata</string>
     <string name="preference_background_photo_saving_summary">A fotók mentése háttérben futó programszálon (gyorsabb műveletek)</string>
     <string name="video_quality">Videó felbontása</string>
@@ -201,23 +201,23 @@
     <string name="preference_video_stabilization">Videó stabilizáció engedélyezése</string>
     <string name="preference_video_stabilization_summary">A videó stabilizálása csökkenti a kamera mozgásából származó remegést az előnézeten és a felvett videón.</string>
     <string name="preference_video_bitrate">Videó bitráta (nagyjából)</string>
-    <string name="preference_video_bitrate_summary">A videók hozzávetőleges bitrátájának beállítása (a magasabb jobb minőséget jelent, de több tárhelyet foglal; ha a bitráta nem támogatott, sikertelen lehet a felvétel)\n%s</string>
+    <string name="preference_video_bitrate_summary">A videók hozzávetőleges bitrátájának beállítása (a magasabb jobb minőséget jelent, de több tárhelyet foglal; ha a bitráta nem támogatott, sikertelen lehet a felvétel)</string>
     <string name="preference_video_fps">Videó képkockaszám (nagyjából)</string>
-    <string name="preference_video_fps_summary">A videók képkockasebességének (FPS) beállítása (hozzávetőleges, az elérése nem garantálható és ha a képkockaszám nem támogatott, sikertelen lehet a felvétel)\n%s</string>
+    <string name="preference_video_fps_summary">A videók képkockasebességének (FPS) beállítása (hozzávetőleges, az elérése nem garantálható és ha a képkockaszám nem támogatott, sikertelen lehet a felvétel)</string>
     <string name="preference_video_max_duration">Videó maximális időtartama</string>
-    <string name="preference_video_max_duration_summary">A videofelvétel leáll a megadott idő után\n%s</string>
+    <string name="preference_video_max_duration_summary">A videofelvétel leáll a megadott idő után</string>
     <string name="preference_video_restart">Újraindítás a maximális időtartam után</string>
-    <string name="preference_video_restart_summary">Ha a videó elérte a maximális időtartamot (ha be lett állítva) és megállt, újraindítja a felvételt a megadott számú alkalommal\n%s</string>
+    <string name="preference_video_restart_summary">Ha a videó elérte a maximális időtartamot (ha be lett állítva) és megállt, újraindítja a felvételt a megadott számú alkalommal</string>
     <string name="preference_video_max_filesize">Videó maximális fáljmérete</string>
-    <string name="preference_video_max_filesize_summary">A felvétel leáll és/vagy újraindul (lásd a beállítást alább), ha (nagyjából) elérte a maximális fájlméretet. Megjegyezzük, hogy az Androidos eszközökön korlátozott a videofájlok mérete (általában 2GB vagy 4GB körül), de ez a beállítás lehetővé teszi egyedi érték megadását\n%s</string>
+    <string name="preference_video_max_filesize_summary">A felvétel leáll és/vagy újraindul (lásd a beállítást alább), ha (nagyjából) elérte a maximális fájlméretet. Megjegyezzük, hogy az Androidos eszközökön korlátozott a videofájlok mérete (általában 2GB vagy 4GB körül), de ez a beállítás lehetővé teszi egyedi érték megadását</string>
     <string name="preference_video_restart_max_filesize">Újraindítás a maximális méret után</string>
     <string name="preference_video_restart_max_filesize_summary">Újrainduljon-e a videofelvétel, miután elérte a maximális fájlméretet (az eszközön alapértelmezett, vagy a beállított)</string>
     <string name="preference_record_audio">Hangrögzítés</string>
     <string name="preference_record_audio_summary">Hangrögzítés videofelvétel alatt</string>
     <string name="preference_record_audio_src">Hangforrás</string>
-    <string name="preference_record_audio_src_summary">Hangrögzítésre használandó mikrofon\n%s</string>
+    <string name="preference_record_audio_src_summary">Hangrögzítésre használandó mikrofon</string>
     <string name="preference_record_audio_channels">Hangcsatornák</string>
-    <string name="preference_record_audio_channels_summary">Monó vagy sztereó hangfelvétel készítése (sztereó felvételre nem minden eszköz képes)\n%s</string>
+    <string name="preference_record_audio_channels_summary">Monó vagy sztereó hangfelvétel készítése (sztereó felvételre nem minden eszköz képes)</string>
     <string name="preference_video_flash">Villogás felvétel alatt</string>
     <string name="preference_video_flash_summary">Ha engedélyezve van, a vaku ki-be kapcsol a felvétel alatt (ezzel jelezhető, hogy egy kamera épp rögzít a távolban)</string>
 
@@ -304,9 +304,9 @@
     <string name="preference_camera2_fake_flash_summary">Engedélyezd, ha a készülék vakuja hibásan működik Camera2 API-val</string>
 
     <string name="preference_expo_bracketing_n_images">Expozíciósorozat</string>
-    <string name="preference_expo_bracketing_n_images_summary">Képek száma az expozíciósorozat módban\n%s</string>
+    <string name="preference_expo_bracketing_n_images_summary">Képek száma az expozíciósorozat módban</string>
     <string name="preference_expo_bracketing_stops">Expozíciósorozat lépésköz</string>
-    <string name="preference_expo_bracketing_stops_summary">Az egyes képek készítése ennyi fényérték eltéréssel\n%s</string>
+    <string name="preference_expo_bracketing_stops_summary">Az egyes képek készítése ennyi fényérték eltéréssel</string>
 
     <string name="seconds_abbreviation">mp</string> <!-- short for seconds -->
 
@@ -329,7 +329,7 @@
     <string name="selfie">Szelfi</string>
 
     <string name="preference_front_camera_mirror">Előlapi kamera tükrözés</string>
-    <string name="preference_front_camera_mirror_summary">Az előlapi kamera használatakor a kép tükrözése\n%s</string>
+    <string name="preference_front_camera_mirror_summary">Az előlapi kamera használatakor a kép tükrözése</string>
 
     <string name="preference_calibrate_level">Vízszint kalibrálása</string>
     <string name="preference_calibrate_level_summary">Ez a beállítás kalibrálja a készülék gyorsulásmérőjét, így az auto-stabilizálás és a képernyőn megjelenő vízszintező jól fog működni</string>
@@ -346,7 +346,7 @@
     <string name="preference_show_geo_direction_lines">Iránytű irányvonalak megjelenítése</string>
     <string name="preference_show_geo_direction_lines_summary">Irányvonalakat jelenít meg az iránytű alapján</string>
     <string name="preference_video_subtitle">Videó feliratok</string>
-    <string name="preference_video_subtitle_summary">Felirat (.srt) fájl létrehozása dátummal, idővel és GPS szélesség/hosszúság adatokkal\n%s</string>
+    <string name="preference_video_subtitle_summary">Felirat (.srt) fájl létrehozása dátummal, idővel és GPS szélesség/hosszúság adatokkal</string>
 
     <string name="duration_unlimited">Korlátlan</string>
     <string name="duration_3s">3 másodperc</string>
@@ -603,13 +603,13 @@
     <string name="color_effect_solarize">Szolarizálás</string>
     <string name="color_effect_whiteboard">Fehér tábla</string>
     <string name="preference_hdr_tonemapping">HDR tónustérképezés</string>
-    <string name="preference_hdr_tonemapping_summary">Tonemapping algoritmus HDR fényképmódhoz\n%s</string>
+    <string name="preference_hdr_tonemapping_summary">Tonemapping algoritmus HDR fényképmódhoz</string>
     <string name="preference_hdr_tonemapping_clamp">Egyszerű határérték</string>
     <string name="preference_hdr_tonemapping_exponential">Exponenciális</string>
     <string name="preference_hdr_tonemapping_default">Alapértelmezett</string>
     <string name="preference_hdr_tonemapping_aces">ACES</string>
     <string name="preference_remove_device_exif">Eszköz EXIF adatok eltávolítása</string>
-    <string name="preference_remove_device_exif_summary">Döntse el, hogy eltávolítsa-e az eszköz EXIF metaadatait JPEG fényképekből. Egyéb EXIF címkék (pl. helyadatok) nem kerülnek eltávolításra. RAW/DNG és videók nem érintettek.\n%s</string>
+    <string name="preference_remove_device_exif_summary">Döntse el, hogy eltávolítsa-e az eszköz EXIF metaadatait JPEG fényképekből. Egyéb EXIF címkék (pl. helyadatok) nem kerülnek eltávolításra. RAW/DNG és videók nem érintettek.</string>
     <string name="preference_remove_device_exif_off">Ne távolítsa el az eszköz EXIF adatokat</string>
     <string name="preference_remove_device_exif_on">Távolítsa el az eszköz EXIF adatokat</string>
     <string name="preference_remove_device_exif_keep_datetime">Eltávolítás a dátum/idő kivételével</string>
@@ -619,11 +619,11 @@
     <string name="focus_peaking_enable">Fókusz-peaking engedélyezése</string>
     <string name="focus_peaking_disable">Fókusz-peaking letiltása</string>
     <string name="preference_photo_optimise_focus">Fókusz optimalizálása…</string>
-    <string name="preference_photo_optimise_focus_summary">Fényképezésnél optimalizálhatja a fókuszt késleltetés vagy minőség szerint. Csak folyamatos fókuszmód esetén releváns.\n%s</string>
+    <string name="preference_photo_optimise_focus_summary">Fényképezésnél optimalizálhatja a fókuszt késleltetés vagy minőség szerint. Csak folyamatos fókuszmód esetén releváns.</string>
     <string name="preference_photo_optimise_focus_latency">Késleltetés</string>
     <string name="preference_photo_optimise_focus_quality">Minőség</string>
     <string name="preference_save_preshots">Előnézeti képek mentése</string>
-    <string name="preference_save_preshots_summary">Ha engedélyezve van, egy rövid videó mentésre kerül a kép előtti pillanatokról. Nem támogatott kiélezés, fókuszbracketing vagy panoráma módban.\n%s</string>
+    <string name="preference_save_preshots_summary">Ha engedélyezve van, egy rövid videó mentésre kerül a kép előtti pillanatokról. Nem támogatott kiélezés, fókuszbracketing vagy panoráma módban.</string>
     <string name="telephoto">Teleobjektív</string>
     <string name="auto_lens">Automatikus objektív</string>
     <string name="lens">Objektív</string>
@@ -650,7 +650,7 @@
     <string name="preference_location_enable">Helyadatok tárolása</string>
     <string name="preference_location_disable">Ne tárolj több helyadatot</string>
     <string name="preference_histogram">Mutass hisztogramot</string>
-    <string name="preference_histogram_summary">Mutasd a képernyőn látható színek hisztogramját\n%s</string>
+    <string name="preference_histogram_summary">Mutasd a képernyőn látható színek hisztogramját</string>
     <string name="preference_histogram_off">Ki</string>
     <string name="preference_histogram_rgb">RGB színek</string>
     <string name="preference_histogram_luminance">Fényerő</string>
@@ -658,14 +658,14 @@
     <string name="preference_histogram_intensity">Intenzitás (Átlag)</string>
     <string name="preference_histogram_lightness">Világosság (Min‑max átlaga)</string>
     <string name="preference_zebra_stripes">Mutass zebracsíkokat</string>
-    <string name="preference_zebra_stripes_summary">Ha engedélyezve van, zebracsíkok jelzik a túlexponált területeket.\n%s</string>
+    <string name="preference_zebra_stripes_summary">Ha engedélyezve van, zebracsíkok jelzik a túlexponált területeket.</string>
     <string name="preference_zebra_stripes_off">Ki</string>
     <string name="preference_focus_peaking">Fókusz kiemelés</string>
-    <string name="preference_focus_peaking_summary">Ha engedélyezve van, kiemeli az éles élek kontúrjait. Hasznos kézi fókuszhoz.\n%s</string>
+    <string name="preference_focus_peaking_summary">Ha engedélyezve van, kiemeli az éles élek kontúrjait. Hasznos kézi fókuszhoz.</string>
     <string name="preference_focus_peaking_off">Ki</string>
     <string name="preference_focus_peaking_on">Be</string>
     <string name="preference_focus_peaking_color">Fókusz kiemelés színe</string>
-    <string name="preference_focus_peaking_color_summary">Milyen színt használjunk az éles élek kiemeléséhez\n%s</string>
+    <string name="preference_focus_peaking_color_summary">Milyen színt használjunk az éles élek kiemeléséhez</string>
     <string name="preference_video_capture_rate">Sebesség</string>
     <string name="preference_video_capture_rate_normal">Normál</string>
     <string name="slow_motion_enabled">Lassított felvétel engedélyezve</string>
@@ -674,14 +674,14 @@
     <string name="flash_frontscreen_torch">Képernyő zseblámpa</string>
 
     <string name="preference_antibanding">Villódzásgátló</string>
-    <string name="preference_antibanding_summary">Algoritmusok a fényvillódzás csökkentésére.\n%s</string>
+    <string name="preference_antibanding_summary">Algoritmusok a fényvillódzás csökkentésére.</string>
     <string name="anti_banding_auto">Automata</string>
     <string name="anti_banding_50hz">50Hz</string>
     <string name="anti_banding_60hz">60Hz</string>
     <string name="anti_banding_off">Ki</string>
 
     <string name="preference_ghost_image">Szellemkép</string>
-    <string name="preference_ghost_image_summary">Kép megjelenítése az előnézet felett az igazítás segítéséhez.\n%s</string>
+    <string name="preference_ghost_image_summary">Kép megjelenítése az előnézet felett az igazítás segítéséhez.</string>
     <string name="preference_ghost_image_off">Ki</string>
     <string name="preference_ghost_image_last">Utoljára készített fotó</string>
     <string name="preference_ghost_image_selected">Kiválasztott kép</string>
@@ -689,7 +689,7 @@
     <string name="permission_rationale_record_audio">A hangos videofelvételhez, valamint a „Hangvezérlés” opciók használatához mikrofonengedély szükséges</string>
     <string name="permission_rationale_location">Helymeghatározási engedély szükséges a geotagginghez (helyadatok tárolása fényképeken és videókon, beleértve a bélyegző- és feliratopciókat is). Helymeghatározási engedély szükséges továbbá (legalább Android 11 és korábbi verziók esetén) a Bluetooth LE távvezérlő eszközökhöz való csatlakozáshoz.</string>
     <string name="preference_nr_save">Zajcsökkentés eredeti képei</string>
-    <string name="preference_nr_save_summary">Eredeti képek mentése zajcsökkentési módban. Figyelem, ez jelentősen lelassíthatja a fényképek mentését.\n%s</string>
+    <string name="preference_nr_save_summary">Eredeti képek mentése zajcsökkentési módban. Figyelem, ez jelentősen lelassíthatja a fényképek mentését.</string>
     <string name="preference_nr_save_no">Ne mentse az eredeti képeket</string>
     <string name="preference_nr_save_single">Egyetlen eredeti kép mentése</string>
     <string name="preference_nr_save_all">Összes eredeti kép mentése (lassú)</string>
@@ -699,12 +699,12 @@
     <string name="preference_video_max_filesize_9gb">9 GB</string>
     <string name="cancelled_focus_bracketing">Fókuszsorozat megszakítva</string>
     <string name="preference_hdr_contrast_enhancement">HDR kontrasztjavítás</string>
-    <string name="preference_hdr_contrast_enhancement_summary">Mikor használjon kontrasztjavító algoritmust a HDR-hez. Ez javíthatja a megjelenést olyan esetekben, amikor a jelenet dinamikatartománya nagyon magas, és „HDR-megjelenést” is kölcsönöz az eredményeknek.\n%s</string>
+    <string name="preference_hdr_contrast_enhancement_summary">Mikor használjon kontrasztjavító algoritmust a HDR-hez. Ez javíthatja a megjelenést olyan esetekben, amikor a jelenet dinamikatartománya nagyon magas, és „HDR-megjelenést” is kölcsönöz az eredményeknek.</string>
     <string name="preference_hdr_contrast_enhancement_off">Ki</string>
     <string name="preference_hdr_contrast_enhancement_smart">Intelligens</string>
     <string name="preference_hdr_contrast_enhancement_always">Mindig</string>
     <string name="preference_video_output_format">Videó formátum</string>
-    <string name="preference_video_output_format_summary">Videó- és hangfájlformátum és kodekek\n%s</string>
+    <string name="preference_video_output_format_summary">Videó- és hangfájlformátum és kodekek</string>
     <string name="preference_video_output_format_default">Alapértelmezett</string>
     <string name="preference_video_output_format_mpeg4_h264">MPEG4 H264</string>
     <string name="preference_video_output_format_mpeg4_hevc">MPEG4 HEVC</string>
@@ -758,7 +758,7 @@
     <string name="preference_camera2_photo_video_recording">Fényképek engedélyezése videofelvétel közben</string>
     <string name="preference_camera2_photo_video_recording_summary">Lehetővé teszi fényképek készítését videofelvétel közben. Tiltsa le ezt, ha problémák merülnek fel a videofelvétellel, miközben a Camera2 API engedélyezve van az eszközén.</string>
     <string name="preference_video_log">Videó kép profilok</string>
-    <string name="preference_video_log_summary">Normál vagy lapos kép profil beállítása videó módhoz\n%s</string>
+    <string name="preference_video_log_summary">Normál vagy lapos kép profil beállítása videó módhoz</string>
     <string name="preference_video_log_off">Alapértelmezett</string>
     <string name="preference_video_log_fine">Log (Finom)</string>
     <string name="preference_video_log_low">Log (Alacsony)</string>
@@ -791,18 +791,18 @@
     <string name="panorama_cancelled">Panoráma megszakítva</string>
     <string name="failed_to_process_panorama">Nem sikerült létrehozni a panorámaképet</string>
     <string name="preference_panorama_crop">Panoráma automatikus körülvágása</string>
-    <string name="preference_panorama_crop_summary">Panoráma módban eltávolítsa-e a hullámos határokat\n%s</string>
+    <string name="preference_panorama_crop_summary">Panoráma módban eltávolítsa-e a hullámos határokat</string>
     <string name="panorama_info">Panorámakép készítéséhez tartsa a készüléket álló tájolásban, és kattintson a fénykép készítéséhez a panoráma elindításához. Ezután forgassa el a készüléket balra vagy jobbra, hogy a középen lévő fehér kört a kék pont fölé mozgassa. Minden új kép rögzítése után 계속 forgassa a készüléket, hogy lefedje az egymás után megjelenő új kék pontokat.\n\nA panoráma mentéséhez kattintson a pipa ikonra, a megszakításhoz pedig a kereszt ikonra.\n\nVegye figyelembe, hogy a panorámaképek feldolgozása és mentése időt vehet igénybe.</string>
     <string name="preference_panorama_save">Panoráma eredeti képek</string>
-    <string name="preference_panorama_save_summary">Elmentse-e az eredeti képeket panoráma módban. Vegye figyelembe, hogy ez lassítja a panorámaképek mentését. Lehetővé teszi továbbá egy XML-fájl mentését, amely hasznos lehet a panorámával kapcsolatos problémák jelentéséhez.\n%s</string>
+    <string name="preference_panorama_save_summary">Elmentse-e az eredeti képeket panoráma módban. Vegye figyelembe, hogy ez lassítja a panorámaképek mentését. Lehetővé teszi továbbá egy XML-fájl mentését, amely hasznos lehet a panorámával kapcsolatos problémák jelentéséhez.</string>
     <string name="preference_panorama_save_no">Ne mentse az eredeti képeket</string>
     <string name="preference_panorama_save_all">Eredeti képek mentése</string>
     <string name="preference_panorama_save_all_plus_debug">Eredeti képek és hibakeresési XML mentése</string>
     <string name="camera_id">Azonosító</string>
     <string name="exposure_compensation_seekbar">Csúszka az expozíciókompenzáció módosításához</string>
-    <string name="preference_image_format_summary">Válassza ki a fényképek mentéséhez használt fájlformátumot. Ez a \"normál\" (nem RAW) fényképeket érinti. Csak a JPEG formátumok támogatják az Exif metaadatok mentését. Az UltraHDR nem támogatott az NR, HDR, Pano, X- módokban. Vegye figyelembe, hogy a PNG formátum nem valóban veszteségmentes, ehelyett egy 100%%-os minőségű JPEG-ből konvertálódik.\n%s</string>
+    <string name="preference_image_format_summary">Válassza ki a fényképek mentéséhez használt fájlformátumot. Ez a \"normál\" (nem RAW) fényképeket érinti. Csak a JPEG formátumok támogatják az Exif metaadatok mentését. Az UltraHDR nem támogatott az NR, HDR, Pano, X- módokban. Vegye figyelembe, hogy a PNG formátum nem valóban veszteségmentes, ehelyett egy 100%%-os minőségű JPEG-ből konvertálódik.</string>
     <string name="preference_camera_api">Kamera API</string>
-    <string name="preference_camera_api_summary">Válassza ki a Camera2 API-t az olyan extra funkciók engedélyezéséhez, mint a manuális módok az expozícióhoz, a fókuszhoz, a fehéregyensúlyhoz, valamint a RAW (ha az eszköz támogatja). Az API megváltoztatása újraindítást eredményez.\n%s</string>
+    <string name="preference_camera_api_summary">Válassza ki a Camera2 API-t az olyan extra funkciók engedélyezéséhez, mint a manuális módok az expozícióhoz, a fókuszhoz, a fehéregyensúlyhoz, valamint a RAW (ha az eszköz támogatja). Az API megváltoztatása újraindítást eredményez.</string>
     <string name="preference_camera_api_old">Eredeti kamera API</string>
     <string name="preference_camera_api_camera2">Camera2 API</string>
     <string name="no_burst">nincs sorozatfelvétel</string>
@@ -821,24 +821,24 @@
     <string name="accuracy_high">Magas</string>
     <string name="accuracy_unknown">Ismeretlen</string>
     <string name="preference_units_distance">Távolság mértékegysége</string>
-    <string name="preference_units_distance_summary">A fényképbélyegző és a videó feliratainak GPS magasságához használatos\n%s</string>
+    <string name="preference_units_distance_summary">A fényképbélyegző és a videó feliratainak GPS magasságához használatos</string>
     <string name="preference_units_distance_m">Méter</string>
     <string name="preference_units_distance_ft">Láb</string>
     <string name="feet_abbreviation">láb</string>
     <string name="preference_show_whats_new">"Újdonságok" párbeszédpanel megjelenítése</string>
     <string name="preference_show_whats_new_summary">Megjelenítse-e az új funkciókról és fejlesztésekről szóló információkat az alkalmazás frissítésekor</string>
     <string name="preference_edge_mode">Élkiemelés algoritmusa</string>
-    <string name="preference_edge_mode_summary">Algoritmus, amelyet a kameraillesztőnek az élkiemelés alkalmazásához kell használnia. Az élkiemelés javítja a rögzített kép élességét és részletességét. (Ez a beállítás figyelmen kívül marad NR fotómódban.)\n%s</string>
+    <string name="preference_edge_mode_summary">Algoritmus, amelyet a kameraillesztőnek az élkiemelés alkalmazásához kell használnia. Az élkiemelés javítja a rögzített kép élességét és részletességét. (Ez a beállítás figyelmen kívül marad NR fotómódban.)</string>
     <string name="preference_screen_processing_settings">Feldolgozási beállítások…</string>
     <string name="preference_noise_reduction_mode">Zajcsökkentő algoritmus</string>
-    <string name="preference_noise_reduction_mode_summary">Algoritmus, amelyet a kameraillesztőnek a zajcsökkentés alkalmazásához kell használnia. A zajcsökkentő algoritmus megpróbálja javítani a képminőséget a rögzítési folyamat során hozzáadott túlzott zaj eltávolításával, különösen sötét körülmények között. (Vegye figyelembe, hogy ez nem kapcsolódik a Zajcsökkentés fotómódhoz, és valójában ez a beállítás figyelmen kívül marad NR fotómódban.)\n%s</string>
+    <string name="preference_noise_reduction_mode_summary">Algoritmus, amelyet a kameraillesztőnek a zajcsökkentés alkalmazásához kell használnia. A zajcsökkentő algoritmus megpróbálja javítani a képminőséget a rögzítési folyamat során hozzáadott túlzott zaj eltávolításával, különösen sötét körülmények között. (Vegye figyelembe, hogy ez nem kapcsolódik a Zajcsökkentés fotómódhoz, és valójában ez a beállítás figyelmen kívül marad NR fotómódban.)</string>
     <string name="noise_reduction_mode_default">Alapértelmezett</string>
     <string name="noise_reduction_mode_off">Kikapcsolva</string>
     <string name="noise_reduction_mode_minimal">Minimális</string>
     <string name="noise_reduction_mode_fast">Gyors</string>
     <string name="noise_reduction_mode_high_quality">Kiváló minőség</string>
     <string name="preference_focus_assist">Fókuszsegéd</string>
-    <string name="preference_focus_assist_summary">Nagyítson-e a kézi fókusztávolság beállításakor\n%s</string>
+    <string name="preference_focus_assist_summary">Nagyítson-e a kézi fókusztávolság beállításakor</string>
     <string name="preference_focus_assist_off">Kikapcsolva</string>
     <string name="preference_focus_assist_2x">2x</string>
     <string name="preference_focus_assist_4x">4x</string>
@@ -917,7 +917,7 @@
     <string name="remote_connected">Távirányító csatlakoztatva</string>
     <string name="preference_audio_control_summary">Fénykép/videó készítése zaj észlelésekor.
         Engedélyezve használja a képernyőn megjelenő mikrofon gombot a figyelés elindításához/leállításához.
-        \n%s</string>
+        </string>
     <string name="intro_text">Érintse meg a fókuszáláshoz, és nyomja meg a kör alakú kék exponáló gombot a fényképezéshez.
         \n\nSD-kártyára mentéshez lásd: Beállítások/További kameravezérlők/\"Tárolási hozzáférési keretrendszer\".
         További segítségért kattintson a Beállításokban az \"Online súgó\" elemre.
@@ -927,13 +927,13 @@
     <string name="preference_video_srgb">sRGB</string>
     <string name="preference_video_gamma">Gamma</string>
     <string name="preference_video_profile_gamma">Videó gamma értéke</string>
-    <string name="preference_video_profile_gamma_summary">A videóhoz használandó gammaérték, ha a videó kép profilja Gamma értékre van állítva\n%s</string>
+    <string name="preference_video_profile_gamma_summary">A videóhoz használandó gammaérték, ha a videó kép profilja Gamma értékre van állítva</string>
     <string name="preference_ghost_image_alpha">Szellemkép átlátszósága</string>
-    <string name="preference_ghost_image_alpha_summary">Szellemképekhez használandó alfaérték. Az alacsonyabb érték átlátszóbbat, a magasabb átlátszatlanabbat jelent.\n%s</string>
+    <string name="preference_ghost_image_alpha_summary">Szellemképekhez használandó alfaérték. Az alacsonyabb érték átlátszóbbat, a magasabb átlátszatlanabbat jelent.</string>
     <string name="preference_zebra_stripes_foreground_color">Zebracsíkok előtérszíne</string>
-    <string name="preference_zebra_stripes_foreground_color_summary">A zebracsíkok megjelenítésekor az előtércsíkhoz használandó szín.\n%s</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">A zebracsíkok megjelenítésekor az előtércsíkhoz használandó szín.</string>
     <string name="preference_zebra_stripes_background_color">Zebracsíkok háttérszíne</string>
-    <string name="preference_zebra_stripes_background_color_summary">A zebracsíkok megjelenítésekor a háttércsíkhoz használandó szín.\n%s</string>
+    <string name="preference_zebra_stripes_background_color_summary">A zebracsíkok megjelenítésekor a háttércsíkhoz használandó szín.</string>
     <string name="preference_zebra_stripes_color_black">Fekete</string>
     <string name="preference_zebra_stripes_color_red">Piros</string>
     <string name="preference_zebra_stripes_color_orange">Narancssárga</string>

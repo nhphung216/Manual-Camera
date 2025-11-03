@@ -7,7 +7,8 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdk 35
+    namespace "com.ssolstice.camera.manual"
+    compileSdk 36
     compileOptions.encoding = 'UTF-8'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -17,11 +18,11 @@ android {
     defaultConfig {
         applicationId "com.ssolstice.camera.manual"
         minSdkVersion 23
-        targetSdkVersion 35
+        targetSdkVersion 36
         //compileSdkVersion 31 // needed to support appcompat:1.4.0 (which we need for emoji policy support, and not yet ready to target SDK 30)
 
-        versionCode = 24
-        versionName = "1.0.24"
+        versionCode = 25
+        versionName = "1.0.25"
 
         renderscriptTargetApi 23
         //renderscriptSupportModeEnabled true // don't use support library as it bloats the APK, and we don't need pre-4.4 support

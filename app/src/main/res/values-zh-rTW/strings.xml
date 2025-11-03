@@ -86,7 +86,7 @@
     <string name="preference_exposure">設定曝光補償</string>
     <string name="preference_exposure_summary">設為 0 使用預設曝光補償</string>
     <string name="preference_lock_orientation">鎖定照片/影片方向</string>
-    <string name="preference_lock_orientation_summary">如果設定，裝置的方向將被忽略，且照片/影片的方向將相對於指定的方向\n%s</string>
+    <string name="preference_lock_orientation_summary">如果設定，裝置的方向將被忽略，且照片/影片的方向將相對於指定的方向</string>
     <string name="preference_face_detection">臉部偵測</string>
     <string name="preference_face_detection_summary">用臉部偵測代替對焦區</string>
 
@@ -100,7 +100,7 @@
     <string name="preference_burst_interval">連拍模式間隔</string>
     <string name="preference_screen_camera_controls_more">更多相機控制…</string>
     <string name="preference_touch_capture">點擊拍照</string>
-    <string name="preference_touch_capture_summary">在預覽畫面按一次或兩次來拍照\n%s</string>
+    <string name="preference_touch_capture_summary">在預覽畫面按一次或兩次來拍照</string>
     <string name="preference_pause_preview">拍照後暫停</string>
     <string name="preference_pause_preview_summary">拍照後暫停螢幕，顯示分享或刪除照片選項</string>
     <string name="preference_shutter_sound">快門聲音</string>
@@ -125,7 +125,7 @@
     <string name="preference_lock_video">錄影時鎖定螢幕</string>
     <string name="preference_lock_video_summary">當錄製影片時，圖形化使用者介面將被鎖定以防止意外的停止錄影。滑動螢幕以解鎖。注意，如果程式進入背景或螢幕關閉，影片錄製會停止。</string>
     <string name="preference_rotate_preview">旋轉預覽</string>
-    <string name="preference_rotate_preview_summary">旋轉預覽選項 (不會影響最終的照片/影片)\n%s</string>
+    <string name="preference_rotate_preview_summary">旋轉預覽選項 (不會影響最終的照片/影片)</string>
     <string name="preference_screen_gui">螢幕 GUI…</string>
     <string name="preference_preview_size">預覽大小</string>
     <string name="preference_ui_placement">UI 佈局</string>
@@ -155,7 +155,7 @@
     <string name="preference_grid">顯示格線</string>
     <string name="grid">格線</string> <!-- short form of Show a grid -->
     <string name="preference_crop_guide">顯示裁切輔助</string>
-    <string name="preference_crop_guide_summary">裁切輔助顯示一個矩形來表示指定的長寬比看起來如何 - 如果您計畫以後裁切照片/影片為不同的長寬比很有用。需要所見即所得拍照模式，或處於錄影模式中。\n%s</string>
+    <string name="preference_crop_guide_summary">裁切輔助顯示一個矩形來表示指定的長寬比看起來如何 - 如果您計畫以後裁切照片/影片為不同的長寬比很有用。需要所見即所得拍照模式，或處於錄影模式中。</string>
     <string name="preference_show_toasts">在螢幕上顯示訊息</string>
     <string name="preference_show_toasts_summary">是否要在螢幕上顯示暫時的資訊訊息</string>
     <string name="preference_thumbnail_animation">顯示縮圖動畫</string>
@@ -173,7 +173,7 @@
     <string name="preference_screen_location_settings">位置設定…</string>
     <string name="preference_resolution">相機解析度</string>
     <string name="preference_quality">圖片品質</string>
-    <string name="preference_quality_summary">設定儲存的 JPEG 或 WebP 照片的圖片品質（預設值是 90%%）。對於 PNG 圖片格式沒有作用。\n%s</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
+    <string name="preference_quality_summary">設定儲存的 JPEG 或 WebP 照片的圖片品質（預設值是 90%%）。對於 PNG 圖片格式沒有作用。</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
     <string name="preference_raw">RAW</string>
     <string name="preference_location">儲存位置資料 (地理標記)</string>
     <string name="preference_location_summary">在照片/影片中儲存 GPS 位置資料（對於照片，位置資料只能儲存在 JPEG 和 DNG 格式）</string>
@@ -182,18 +182,18 @@
     <string name="preference_require_location">需要位置資料</string>
     <string name="preference_require_location_summary">如果啟用位置資料，只在位置資料可用時拍照/錄影</string>
     <string name="preference_stamp">標記照片</string>
-    <string name="preference_stamp_summary">用日期和時間標記照片；如果啟用了位置/方向資料，也標記 GPS 資訊\n%s</string>
+    <string name="preference_stamp_summary">用日期和時間標記照片；如果啟用了位置/方向資料，也標記 GPS 資訊</string>
     <string name="preference_stamp_dateformat">日期標記格式</string>
     <string name="preference_stamp_timeformat">時間標記格式</string>
     <string name="preference_stamp_gpsformat">GPS 標記格式</string>
     <string name="preference_textstamp">自訂文字</string>
     <string name="preference_textstamp_summary">用自訂文字標記照片</string>
     <string name="preference_stamp_fontsize">字型大小</string>
-    <string name="preference_stamp_fontsize_summary">當在照片上標記文字時使用的字型大小\n%s</string>
+    <string name="preference_stamp_fontsize_summary">當在照片上標記文字時使用的字型大小</string>
     <string name="preference_stamp_font_color">字型顏色</string>
-    <string name="preference_stamp_font_color_summary">當在照片上標記文字時使用的字型顏色\n%s</string>
+    <string name="preference_stamp_font_color_summary">當在照片上標記文字時使用的字型顏色</string>
     <string name="preference_stamp_style">文字樣式</string>
-    <string name="preference_stamp_style_summary">當在照片上標記文字時使用的樣式\n%s</string>
+    <string name="preference_stamp_style_summary">當在照片上標記文字時使用的樣式</string>
     <string name="preference_background_photo_saving">使用背景執行緒</string>
     <string name="preference_background_photo_saving_summary">是否要在背景執行緒儲存照片（操作較快）</string>
     <string name="video_quality">影片解析度</string>
@@ -202,23 +202,23 @@
     <string name="preference_video_stabilization">啟用數位影片防手震</string>
     <string name="preference_video_stabilization_summary">影片防手震減少在預覽和錄影中由於相機移動引起的晃動。如果您的裝置支援光學防手震 (OIS)，可能不需要這個選項。</string>
     <string name="preference_video_bitrate">影片位元率 (大約)</string>
-    <string name="preference_video_bitrate_summary">設定影片的大致位元率 (越高表示越好的品質，但佔用更多磁碟空間；如果位元率不支援可能造成錄影失敗)\n%s</string>
+    <string name="preference_video_bitrate_summary">設定影片的大致位元率 (越高表示越好的品質，但佔用更多磁碟空間；如果位元率不支援可能造成錄影失敗)</string>
     <string name="preference_video_fps">影片影格率 (大約)</string>
-    <string name="preference_video_fps_summary">設定影片的影格率 (FPS)（大約值，不能保證有用，且如果不支援可能造成錄影失敗）。請檢查產生的影片來找出真正使用的影格率。注意，這個設定在慢動作影片會被忽略。\n%s</string>
+    <string name="preference_video_fps_summary">設定影片的影格率 (FPS)（大約值，不能保證有用，且如果不支援可能造成錄影失敗）。請檢查產生的影片來找出真正使用的影格率。注意，這個設定在慢動作影片會被忽略。</string>
     <string name="preference_video_max_duration">影片最長持續時間</string>
-    <string name="preference_video_max_duration_summary">在指定的時間後錄影將停止\n%s</string>
+    <string name="preference_video_max_duration_summary">在指定的時間後錄影將停止</string>
     <string name="preference_video_restart">在最大持續時間後重啟錄影</string>
-    <string name="preference_video_restart_summary">如果在達到最大持續時間(如果有設定)後影片停止，此選項將使錄影重新開始，最多為指定的次數\n%s</string>
+    <string name="preference_video_restart_summary">如果在達到最大持續時間(如果有設定)後影片停止，此選項將使錄影重新開始，最多為指定的次數</string>
     <string name="preference_video_max_filesize">最大影片檔案大小</string>
-    <string name="preference_video_max_filesize_summary">當到達（大約）最大檔案大小，錄影會停止和/或重新開始（見下面選項）。注意許多 Android 裝置對影片有最大檔案大小（通常約為 2GB 或 4GB），但是這個選項允許設定特定值。注意這個選項無法用於增加裝置內建的最大大小。\n%s</string>
+    <string name="preference_video_max_filesize_summary">當到達（大約）最大檔案大小，錄影會停止和/或重新開始（見下面選項）。注意許多 Android 裝置對影片有最大檔案大小（通常約為 2GB 或 4GB），但是這個選項允許設定特定值。注意這個選項無法用於增加裝置內建的最大大小。</string>
     <string name="preference_video_restart_max_filesize">到達最大檔案大小時重新開始</string>
     <string name="preference_video_restart_max_filesize_summary">當到達最大檔案大小時，是否要自動重新開始（無論是裝置預設最大檔案大小或使用者指定）</string>
     <string name="preference_record_audio">錄音</string>
     <string name="preference_record_audio_summary">錄影時錄音</string>
     <string name="preference_record_audio_src">音源</string>
-    <string name="preference_record_audio_src_summary">用於錄製音訊的麥克風。請注意，這個選項真正的行為取決於您的裝置如何實作這個選項。\n%s</string>
+    <string name="preference_record_audio_src_summary">用於錄製音訊的麥克風。請注意，這個選項真正的行為取決於您的裝置如何實作這個選項。</string>
     <string name="preference_record_audio_channels">音源頻道</string>
-    <string name="preference_record_audio_channels_summary">指定使用單聲道或立體聲來錄音 (立體聲只支援某些裝置)\n%s</string>
+    <string name="preference_record_audio_channels_summary">指定使用單聲道或立體聲來錄音 (立體聲只支援某些裝置)</string>
     <string name="preference_video_flash">錄影時閃光</string>
     <string name="preference_video_flash_summary">如果啟用，錄影時閃光將開啟/關閉 (在一段距離外可以用來判斷相機仍然在錄製)</string>
 
@@ -312,12 +312,12 @@
     <string name="preference_camera2_fake_flash_summary">如果您的裝置使用 Camera2 API 時閃光燈有異常，請啟用此功能</string>
 
     <string name="preference_expo_bracketing_n_images">包圍曝光</string>
-    <string name="preference_expo_bracketing_n_images_summary">包圍曝光的圖片數\n%s</string>
+    <string name="preference_expo_bracketing_n_images_summary">包圍曝光的圖片數</string>
     <string name="preference_expo_bracketing_stops">包圍曝光光圈 (Stops)</string>
-    <string name="preference_expo_bracketing_stops_summary">最暗/最亮圖片要減少/增加多少光圈 (Stops)\n%s</string>
+    <string name="preference_expo_bracketing_stops_summary">最暗/最亮圖片要減少/增加多少光圈 (Stops)</string>
 
     <string name="preference_nr_save">雜訊抑制原圖</string>
-    <string name="preference_nr_save_summary">是否在雜訊抑制模式中儲存原圖。注意這會讓儲存照片慢很多。\n%s</string>
+    <string name="preference_nr_save_summary">是否在雜訊抑制模式中儲存原圖。注意這會讓儲存照片慢很多。</string>
 
     <string name="preference_nr_save_no">不儲存原圖</string>
     <string name="preference_nr_save_single">儲存一張原圖</string>
@@ -344,7 +344,7 @@
     <string name="selfie">自拍</string>
 
     <string name="preference_front_camera_mirror">前置相機鏡像</string>
-    <string name="preference_front_camera_mirror_summary">是否在使用前置相機時反轉左右方向\n%s</string>
+    <string name="preference_front_camera_mirror_summary">是否在使用前置相機時反轉左右方向</string>
 
     <string name="preference_calibrate_level">校正水平角度</string>
     <string name="preference_calibrate_level_summary">此選項可以校正裝置的加速計，使自動水平和螢幕顯示的水平/角度正常運作</string>
@@ -361,7 +361,7 @@
     <string name="preference_show_geo_direction_lines">顯示羅盤方向線</string>
     <string name="preference_show_geo_direction_lines_summary">顯示羅盤方向線</string>
     <string name="preference_video_subtitle">影片字幕</string>
-    <string name="preference_video_subtitle_summary">建立儲存日期和時間的字幕檔案 (.SRT)。如果啟用了位置/方向資料，也會記錄 GPS 資訊\n%s</string>
+    <string name="preference_video_subtitle_summary">建立儲存日期和時間的字幕檔案 (.SRT)。如果啟用了位置/方向資料，也會記錄 GPS 資訊</string>
 
     <string name="duration_unlimited">無限</string>
     <string name="duration_3s">3 秒</string>
@@ -518,14 +518,14 @@
     <string name="flash_frontscreen_torch">螢幕手電筒</string>
 
     <string name="preference_antibanding">去除條紋</string>
-    <string name="preference_antibanding_summary">消除燈光閃爍造成的條紋使用的演算法。\n%s</string>
+    <string name="preference_antibanding_summary">消除燈光閃爍造成的條紋使用的演算法。</string>
     <string name="anti_banding_auto">自動</string>
     <string name="anti_banding_50hz">50Hz</string>
     <string name="anti_banding_60hz">60Hz</string>
     <string name="anti_banding_off">關閉</string>
 
     <string name="preference_ghost_image">輔助圖片</string>
-    <string name="preference_ghost_image_summary">在取景框內顯示一張半透明的圖片，輔助你對正鏡頭。\n%s</string>
+    <string name="preference_ghost_image_summary">在取景框內顯示一張半透明的圖片，輔助你對正鏡頭。</string>
     <string name="preference_ghost_image_off">關閉</string>
     <string name="preference_ghost_image_last">上次拍攝的照片</string>
     <string name="preference_ghost_image_selected">選擇一張圖片</string>
@@ -537,7 +537,7 @@
     <string name="preference_camera2_photo_video_recording_summary">允許在錄影時拍照。如果您啟用了 Camera2 API 後發現錄製影片有問題，請停用此功能。</string>
 
     <string name="preference_video_log">影片影像設定檔 (picture profile)</string>
-    <string name="preference_video_log_summary">設定影片模式要使用標準或扁平 (flat) 影像設定檔 (picture profile)\n%s</string>
+    <string name="preference_video_log_summary">設定影片模式要使用標準或扁平 (flat) 影像設定檔 (picture profile)</string>
     <string name="preference_video_log_off">預設</string>
     <string name="preference_video_log_fine">Log (細微)</string>
     <string name="preference_video_log_low">Log (低)</string>
@@ -603,7 +603,7 @@
     <string name="accuracy_unknown">未知</string>
 
     <string name="preference_units_distance">距離單位</string>
-    <string name="preference_units_distance_summary">在照片標記和影片字幕中使用的 GPS 高度的單位\n%s</string>
+    <string name="preference_units_distance_summary">在照片標記和影片字幕中使用的 GPS 高度的單位</string>
     <string name="preference_units_distance_m">公尺</string>
     <string name="preference_units_distance_ft">英尺</string>
     <string name="feet_abbreviation">英尺</string> <!-- symbol short for feet -->
@@ -612,12 +612,12 @@
     <string name="preference_show_whats_new_summary">是否在應用程式更新後顯示新功能和改進資訊</string>
 
     <string name="preference_edge_mode">邊緣銳化演算法</string>
-    <string name="preference_edge_mode_summary">相機驅動程序套用邊緣銳化應該使用的演算法。邊緣銳化可以提高拍攝圖片的銳度和細節。（在 NR 拍照模式下這個設定會被忽略。）\n%s</string>
+    <string name="preference_edge_mode_summary">相機驅動程序套用邊緣銳化應該使用的演算法。邊緣銳化可以提高拍攝圖片的銳度和細節。（在 NR 拍照模式下這個設定會被忽略。）</string>
 
     <string name="preference_screen_processing_settings">處理設定…</string>
 
     <string name="preference_noise_reduction_mode">雜訊抑制演算法</string>
-    <string name="preference_noise_reduction_mode_summary">相機驅動程式套用雜訊抑制應該使用的演算法。雜訊抑制演算法會試圖去除相機拍攝的噪點（特別是在黑暗環境），改善圖片品質。（注意這與雜訊抑制照片模式無關，實際上在 NR 照片模式下此設定會被忽略。）\n%s</string>
+    <string name="preference_noise_reduction_mode_summary">相機驅動程式套用雜訊抑制應該使用的演算法。雜訊抑制演算法會試圖去除相機拍攝的噪點（特別是在黑暗環境），改善圖片品質。（注意這與雜訊抑制照片模式無關，實際上在 NR 照片模式下此設定會被忽略。）</string>
     <string name="noise_reduction_mode_default">預設</string>
     <string name="noise_reduction_mode_off">關閉</string>
     <string name="noise_reduction_mode_minimal">最小</string>
@@ -625,7 +625,7 @@
     <string name="noise_reduction_mode_high_quality">高品質</string>
 
     <string name="preference_focus_assist">輔助對焦</string>
-    <string name="preference_focus_assist_summary">調整手動對焦距離時是否放大顯示\n%s</string>
+    <string name="preference_focus_assist_summary">調整手動對焦距離時是否放大顯示</string>
     <string name="preference_focus_assist_off">關閉</string>
     <string name="preference_focus_assist_2x">2倍</string>
     <string name="preference_focus_assist_4x">4倍</string>
@@ -703,13 +703,13 @@
     <string name="preference_audio_noise_control_sensitivity_m3">-3 (低靈敏度)</string>
 
     <string name="preference_hdr_contrast_enhancement">HDR 對比度增強</string>
-    <string name="preference_hdr_contrast_enhancement_summary">HDR 何時使用對比度增強演算法。在動態範圍非常大的場景中能夠提高成像品質。這也會讓照片多出一種 HDR 的味道。\n%s</string>
+    <string name="preference_hdr_contrast_enhancement_summary">HDR 何時使用對比度增強演算法。在動態範圍非常大的場景中能夠提高成像品質。這也會讓照片多出一種 HDR 的味道。</string>
     <string name="preference_hdr_contrast_enhancement_off">關閉</string>
     <string name="preference_hdr_contrast_enhancement_smart">自動</string>
     <string name="preference_hdr_contrast_enhancement_always">總是</string>
 
     <string name="preference_video_output_format">影片格式</string>
-    <string name="preference_video_output_format_summary">影片和音訊檔案格式和編解碼器\n%s</string>
+    <string name="preference_video_output_format_summary">影片和音訊檔案格式和編解碼器</string>
 
     <string name="preference_video_output_format_default">預設</string>
     <string name="preference_video_output_format_mpeg4_h264">MPEG4 H264</string>
@@ -810,7 +810,7 @@
     <string name="preference_location_disable">停止儲存位置資訊</string>
 
     <string name="preference_histogram">顯示色階分佈圖</string>
-    <string name="preference_histogram_summary">是否要顯示色彩的色階分佈圖\n%s</string>
+    <string name="preference_histogram_summary">是否要顯示色彩的色階分佈圖</string>
     <string name="preference_histogram_off">關閉</string>
     <string name="preference_histogram_rgb">RGB 色彩</string>
     <string name="preference_histogram_luminance">亮度 (Luminance)</string>
@@ -819,7 +819,7 @@
     <string name="preference_histogram_lightness">亮度 (Lightness)（最小-最大的平均）</string>
 
     <string name="preference_zebra_stripes">顯示斑馬條紋</string>
-    <string name="preference_zebra_stripes_summary">如果啟用此選項，螢幕上會顯示斑馬條紋，顯示哪裡相機預覽曝光過度。\n%s</string>
+    <string name="preference_zebra_stripes_summary">如果啟用此選項，螢幕上會顯示斑馬條紋，顯示哪裡相機預覽曝光過度。</string>
     <string name="preference_zebra_stripes_off">關閉</string>
     <string name="preference_zebra_stripes_70pc">70%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
     <string name="preference_zebra_stripes_80pc">80%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
@@ -832,11 +832,11 @@
     <string name="preference_zebra_stripes_100pc">100%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
 
     <string name="preference_focus_peaking">峰值對焦</string>
-    <string name="preference_focus_peaking_summary">如果啟用此選項，會標明對焦的邊緣（輪廓）。這主要用於手動對焦，可用於幫助確定圖片的哪些區域處於焦點。\n%s</string>
+    <string name="preference_focus_peaking_summary">如果啟用此選項，會標明對焦的邊緣（輪廓）。這主要用於手動對焦，可用於幫助確定圖片的哪些區域處於焦點。</string>
     <string name="preference_focus_peaking_off">關閉</string>
     <string name="preference_focus_peaking_on">開啟</string>
     <string name="preference_focus_peaking_color">峰值對焦顏色</string>
-    <string name="preference_focus_peaking_color_summary">標明對焦的邊緣要使用的顏色\n%s</string>
+    <string name="preference_focus_peaking_color_summary">標明對焦的邊緣要使用的顏色</string>
 
     <string name="remaining">剩餘</string> <!-- images remaining for "processing" -->
 
@@ -871,12 +871,12 @@
     <string name="failed_to_process_panorama">無法建立全景圖片</string>
 
     <string name="preference_panorama_crop">自動裁剪全景照片</string>
-    <string name="preference_panorama_crop_summary">在全景模式，是否裁剪照片沒有對齊的邊緣\n%s</string>
+    <string name="preference_panorama_crop_summary">在全景模式，是否裁剪照片沒有對齊的邊緣</string>
 
     <string name="panorama_info">拍攝全景照片時，請將裝置保持直向。點擊拍照按鈕後，向左或向右旋轉裝置，將居中的白色圓圈移到藍點上。拍攝新圖片後，繼續旋轉裝置以覆蓋依次顯示的每個新藍點。\n\n點擊打勾圖示來儲存全景照片，或者點擊打叉圖示取消全景照片。\n\n注意處理和儲存全景照片需要耗費一些時間。</string>
 
     <string name="preference_panorama_save">全景照片原圖</string>
-    <string name="preference_panorama_save_summary">在全景模式是否儲存原圖。注意這會耗費更多的時間。也有選項可以儲存有助於回報全景問題的 XML 檔案。\n%s</string>
+    <string name="preference_panorama_save_summary">在全景模式是否儲存原圖。注意這會耗費更多的時間。也有選項可以儲存有助於回報全景問題的 XML 檔案。</string>
 
     <string name="preference_panorama_save_no">不儲存原圖</string>
     <string name="preference_panorama_save_all">儲存原圖</string>
@@ -886,16 +886,16 @@
 
     <string name="exposure_compensation_seekbar">變更曝光補償的搜尋欄</string>
 
-    <string name="preference_image_format_summary">選擇照片的檔案格式。這會影響「標準」（非 RAW）的照片。注意 PNG 格式不是真的無損，而是以 100%% 品質從 JPEG 轉換過來。\n%s</string>
+    <string name="preference_image_format_summary">選擇照片的檔案格式。這會影響「標準」（非 RAW）的照片。注意 PNG 格式不是真的無損，而是以 100%% 品質從 JPEG 轉換過來。</string>
 
     <string name="preference_camera_api">Camera API</string>
-    <string name="preference_camera_api_summary">選擇 Camera2 API 來啟用額外的功能，例如手動曝光模式、對焦、白平衡和 RAW（如果裝置支援）。變更 API 會造成重新啟動\n%s</string>
+    <string name="preference_camera_api_summary">選擇 Camera2 API 來啟用額外的功能，例如手動曝光模式、對焦、白平衡和 RAW（如果裝置支援）。變更 API 會造成重新啟動</string>
     <string name="preference_camera_api_old">原本的 camera API</string>
     <string name="preference_camera_api_camera2">Camera2 API</string>
 
     <string name="preference_audio_control_summary">檢測到聲音時拍照/錄像。
         當啟用時，使用螢幕上的麥克風按鈕來開始/停止監聽。
-        \n%s</string>
+        </string>
 
     <string name="intro_text">點擊以對焦，按下藍色相機按鈕來拍照。
         \n\n要在 Android 5+ 儲存到 SD 卡，請到設定/更多相機控制/Storage Access Framework」。
@@ -908,7 +908,7 @@
     <string name="preference_video_gamma">Gamma</string>
 
     <string name="preference_video_profile_gamma">影片 gamma 值</string>
-    <string name="preference_video_profile_gamma_summary">如果影片的影像設定檔 (picture profile) 設定為 Gamma，影片要使用的 gamma 值\n%s</string>
+    <string name="preference_video_profile_gamma_summary">如果影片的影像設定檔 (picture profile) 設定為 Gamma，影片要使用的 gamma 值</string>
     <string name="preference_video_profile_gamma_1_6">1.6</string>
     <string name="preference_video_profile_gamma_1_8">1.8</string>
     <string name="preference_video_profile_gamma_1_9">1.9</string>
@@ -926,12 +926,12 @@
     <string name="preference_immersive_mode_everything">隱藏全部</string>
 
     <string name="preference_ghost_image_alpha">輔助圖片不透明度</string>
-    <string name="preference_ghost_image_alpha_summary">輔助圖片的 Alpha 值。較低的值代表較透明，較高的值代表較不透明。\n%s</string>
+    <string name="preference_ghost_image_alpha_summary">輔助圖片的 Alpha 值。較低的值代表較透明，較高的值代表較不透明。</string>
 
     <string name="preference_zebra_stripes_foreground_color">斑馬條紋前景顏色</string>
-    <string name="preference_zebra_stripes_foreground_color_summary">當顯示斑馬條紋時，前景條紋要使用的顏色。\n%s</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">當顯示斑馬條紋時，前景條紋要使用的顏色。</string>
     <string name="preference_zebra_stripes_background_color">斑馬條紋背景顏色</string>
-    <string name="preference_zebra_stripes_background_color_summary">當顯示斑馬條紋時，背景條紋要使用的顏色。\n%s</string>
+    <string name="preference_zebra_stripes_background_color_summary">當顯示斑馬條紋時，背景條紋要使用的顏色。</string>
 
     <string name="preference_zebra_stripes_color_black">黑色</string>
     <string name="preference_zebra_stripes_color_red">紅色</string>
@@ -1028,13 +1028,13 @@
     <string name="unlock_pro">解鎖專業版</string>
     <string name="later">稍後</string>
     <string name="preference_hdr_tonemapping">HDR 色調映射</string>
-    <string name="preference_hdr_tonemapping_summary">HDR 照片模式中用於色調映射的算法\n%s</string>
+    <string name="preference_hdr_tonemapping_summary">HDR 照片模式中用於色調映射的算法</string>
     <string name="preference_hdr_tonemapping_clamp">簡單截斷</string>
     <string name="preference_hdr_tonemapping_exponential">指數</string>
     <string name="preference_hdr_tonemapping_default">預設</string>
     <string name="preference_hdr_tonemapping_aces">ACES</string>
     <string name="preference_remove_device_exif">移除裝置 EXIF 資料</string>
-    <string name="preference_remove_device_exif_summary">是否從 JPEG 照片中移除裝置 EXIF 元資料。這不會移除由其他設定加入的 EXIF 標籤（例如位置標籤）。這些選項是獨立的，且可能覆蓋此設定。RAW/DNG 和影片不受影響。\n%s</string>
+    <string name="preference_remove_device_exif_summary">是否從 JPEG 照片中移除裝置 EXIF 元資料。這不會移除由其他設定加入的 EXIF 標籤（例如位置標籤）。這些選項是獨立的，且可能覆蓋此設定。RAW/DNG 和影片不受影響。</string>
     <string name="preference_remove_device_exif_off">不移除裝置 EXIF 資料</string>
     <string name="preference_remove_device_exif_on">移除裝置 EXIF 資料</string>
     <string name="preference_remove_device_exif_keep_datetime">除日期/時間外移除</string>
@@ -1044,18 +1044,18 @@
     <string name="focus_peaking_enable">啟用對焦峰值</string>
     <string name="focus_peaking_disable">停用對焦峰值</string>
     <string name="preference_photo_optimise_focus">最佳化對焦以…</string>
-    <string name="preference_photo_optimise_focus_summary">拍攝時，可選擇最佳化延遲或品質。僅在連續對焦模式下相關。最佳化品質可確保場景對焦，但可能導致拍攝延遲。\n%s</string>
+    <string name="preference_photo_optimise_focus_summary">拍攝時，可選擇最佳化延遲或品質。僅在連續對焦模式下相關。最佳化品質可確保場景對焦，但可能導致拍攝延遲。</string>
     <string name="preference_photo_optimise_focus_latency">延遲</string>
     <string name="preference_photo_optimise_focus_quality">品質</string>
     <string name="preference_save_preshots">保存預覽鏡頭</string>
-    <string name="preference_save_preshots_summary">啟用時，每張照片都會保存一段短影片，其中包含拍攝前的畫面。不支援曝光、對焦包圍或全景模式。\n%s</string>
+    <string name="preference_save_preshots_summary">啟用時，每張照片都會保存一段短影片，其中包含拍攝前的畫面。不支援曝光、對焦包圍或全景模式。</string>
     <string name="telephoto">長焦</string>
     <string name="auto_lens">自動鏡頭</string>
     <string name="lens">鏡頭</string>
     <string name="physical_cameras_info">&#9432; 預設情況下，相機會使用自動鏡頭選擇，變焦級別決定使用哪個鏡頭。但此選單允許您明確選擇鏡頭。</string>
     <string name="focus_bracketing_auto_source_distance">自動來源</string>
     <string name="preference_allow_haptic_feedback">允許觸覺反饋</string>
-    <string name="preference_allow_haptic_feedback_summary">是否允許振動反饋，例如在調整某些控件時。注意，這也需要在裝置的設定中啟用觸摸互動。\n%s</string>
+    <string name="preference_allow_haptic_feedback_summary">是否允許振動反饋，例如在調整某些控件時。注意，這也需要在裝置的設定中啟用觸摸互動。</string>
     <string name="preference_using_saf">Storage Access Framework</string>
     <string name="color_effects">色彩效果</string>
     <string name="preference_languages">語言</string>

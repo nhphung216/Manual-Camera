@@ -86,7 +86,7 @@
     <string name="preference_exposure">Belichtungskorrektur</string>
     <string name="preference_exposure_summary">Für die Standardbelichtung auf 0 setzen</string>
     <string name="preference_lock_orientation">Foto-/Video-Orientierung sperren</string>
-    <string name="preference_lock_orientation_summary">Wenn aktiviert, wird die Lage des Gerätes ignoriert und die Orientierung der Aufnahme auf diesen Wert fest eingestellt\n%s</string>
+    <string name="preference_lock_orientation_summary">Wenn aktiviert, wird die Lage des Gerätes ignoriert und die Orientierung der Aufnahme auf diesen Wert fest eingestellt</string>
     <string name="preference_face_detection">Gesichtserkennung</string>
     <string name="preference_face_detection_summary">Stellt die Schärfe auf die Gesichter ein</string>
 
@@ -100,7 +100,7 @@
     <string name="preference_burst_interval">Serienbild-Intervall</string>
     <string name="preference_screen_camera_controls_more">Mehr Kamera-Einstellungen…</string>
     <string name="preference_touch_capture">Aufnahme bei Berührung</string>
-    <string name="preference_touch_capture_summary">Fotoaufnahme durch Berührung oder Doppelklick der Vorschau starten\n%s</string>
+    <string name="preference_touch_capture_summary">Fotoaufnahme durch Berührung oder Doppelklick der Vorschau starten</string>
     <string name="preference_pause_preview">Pause nach der Fotoaufnahme</string>
     <string name="preference_pause_preview_summary">Nach der Aufnahme pausieren mit der Möglichkeit, das Foto zu teilen oder zu löschen</string>
     <string name="preference_shutter_sound">Auslöseton</string>
@@ -124,7 +124,7 @@
     <string name="preference_lock_video">Bildschirm bei Videoaufnahme sperren</string>
     <string name="preference_lock_video_summary">Wenn aktiviert, wird bei Videoaufnahmen die Oberfläche gesperrt, um versehentliches Stoppen zu verhindern. Zum Entsperren einfach wischen.</string>
     <string name="preference_rotate_preview">Vorschau drehen</string>
-    <string name="preference_rotate_preview_summary">Vorschaubild drehen (hat keinen Einfluss auf die Aufnahme)\n%s</string>
+    <string name="preference_rotate_preview_summary">Vorschaubild drehen (hat keinen Einfluss auf die Aufnahme)</string>
     <string name="preference_screen_gui">Benutzeroberfläche…</string>
     <string name="preference_preview_size">Vorschaugröße</string>
     <string name="preference_ui_placement">Ausrichtung der Oberfläche</string>
@@ -154,7 +154,7 @@
     <string name="preference_grid">Gitter-Hilfslinien</string>
     <string name="grid">Gitter</string> <!-- short form of Show a grid -->
     <string name="preference_crop_guide">Beschnitt-Hilfslinien</string>
-    <string name="preference_crop_guide_summary">Anzeige einer rechteckigen Hilfslinie entsprechend dem gewählten Seitenverhältnis (nützlich, wenn ein Beschnitt geplant ist). Nur in der WYSIWYG-Vorschau oder bei Videoaufnahme möglich\n%s</string>
+    <string name="preference_crop_guide_summary">Anzeige einer rechteckigen Hilfslinie entsprechend dem gewählten Seitenverhältnis (nützlich, wenn ein Beschnitt geplant ist). Nur in der WYSIWYG-Vorschau oder bei Videoaufnahme möglich</string>
     <string name="preference_show_toasts">Toast-Benachrichtigungen</string>
     <string name="preference_show_toasts_summary">Anzeige von Popup-Meldungen aktivieren/deaktivieren</string>
     <string name="preference_thumbnail_animation">Vorschau-Animation</string>
@@ -172,7 +172,7 @@
     <string name="preference_screen_location_settings">Standort-Einstellungen…</string>
     <string name="preference_resolution">Kamera-Auflösung</string>
     <string name="preference_quality">Bildqualität</string>
-    <string name="preference_quality_summary">Die Qualität beim Speichern der Fotos einstellen (Empfehlung: 90%%)\n%s</string>
+    <string name="preference_quality_summary">Die Qualität beim Speichern der Fotos einstellen (Empfehlung: 90%%)</string>
     <string name="preference_raw">RAW</string>
     <string name="preference_location">Geotagging</string>
     <string name="preference_location_summary">Wenn aktiviert, werden die GPS-Standortdaten in den Aufnahmen gespeichert.</string>
@@ -181,18 +181,18 @@
     <string name="preference_require_location">Standortdaten erforderlich</string>
     <string name="preference_require_location_summary">Wenn aktiviert, werden die Aufnahmen nur bei Verfügbarkeit der Standortdaten ausgelöst.</string>
     <string name="preference_stamp">Fotos stempeln</string>
-    <string name="preference_stamp_summary">Wenn aktiviert, werden die Fotos mit Datum, Zeit, eigenem Text und/oder GPS-Daten (sofern aktiviert) gestempelt\n%s</string>
+    <string name="preference_stamp_summary">Wenn aktiviert, werden die Fotos mit Datum, Zeit, eigenem Text und/oder GPS-Daten (sofern aktiviert) gestempelt</string>
     <string name="preference_stamp_dateformat">Datumsstempel</string>
     <string name="preference_stamp_timeformat">Zeitstempel</string>
     <string name="preference_stamp_gpsformat">GPS-Stempel</string>
     <string name="preference_textstamp">Textstempel</string>
     <string name="preference_textstamp_summary">Definition eines eigenen Textstempels</string>
     <string name="preference_stamp_fontsize">Stempel-Schriftgröße</string>
-    <string name="preference_stamp_fontsize_summary">Einstellung der Stempel-Schriftgröße\n%s</string>
+    <string name="preference_stamp_fontsize_summary">Einstellung der Stempel-Schriftgröße</string>
     <string name="preference_stamp_font_color">Stempel-Schriftfarbe</string>
-    <string name="preference_stamp_font_color_summary">Einstellung der Stempel-Schriftfarbe\n%s</string>
+    <string name="preference_stamp_font_color_summary">Einstellung der Stempel-Schriftfarbe</string>
     <string name="preference_stamp_style">Stempelstil</string>
-    <string name="preference_stamp_style_summary">Einstellung der Stempelart\n%s</string>
+    <string name="preference_stamp_style_summary">Einstellung der Stempelart</string>
     <string name="preference_background_photo_saving">Benutze Hintergrund-Thread</string>
     <string name="preference_background_photo_saving_summary">Legt fest, ob ein Hintergrund-Thread zum Speichern eines Bildes zur schnelleren Ausführung benutzt wird</string>
     <string name="video_quality">Video-Auflösung</string>
@@ -202,23 +202,23 @@
     <string name="preference_video_stabilization">Video-Stabilisierung</string>
     <string name="preference_video_stabilization_summary">Die Video-Stabilisierung reduziert das Bildwackeln in der Vorschau und der Aufnahme</string>
     <string name="preference_video_bitrate">Video-Bitrate (durchschnittlich)</string>
-    <string name="preference_video_bitrate_summary">Einstellung der durchschnittlichen Bitrate der Videoaufnahme (je höher umso besser die Qualität und höher die Dateigröße). Nicht alle Geräte unterstützen alle Bitraten\n%s</string>
+    <string name="preference_video_bitrate_summary">Einstellung der durchschnittlichen Bitrate der Videoaufnahme (je höher umso besser die Qualität und höher die Dateigröße). Nicht alle Geräte unterstützen alle Bitraten</string>
     <string name="preference_video_fps">Bildwiederholfrequenz</string>
-    <string name="preference_video_fps_summary">Einstellung der Bildwiederholrate (FPS) der Videoaufnahme. Dieser Wert kann nicht immer garantiert werden. Nicht alle Geräte unterstützen alle Raten\n%s</string>
+    <string name="preference_video_fps_summary">Einstellung der Bildwiederholrate (FPS) der Videoaufnahme. Dieser Wert kann nicht immer garantiert werden. Nicht alle Geräte unterstützen alle Raten</string>
     <string name="preference_video_max_duration">Maximaldauer</string>
-    <string name="preference_video_max_duration_summary">Die Videoaufnahme wird nach dieser Zeit abgebrochen.\n%s</string>
+    <string name="preference_video_max_duration_summary">Die Videoaufnahme wird nach dieser Zeit abgebrochen.</string>
     <string name="preference_video_restart">Neustart der Aufnahme nach Maximaldauer</string>
-    <string name="preference_video_restart_summary">Nach dem Erreichen der Maximaldauer wird die Aufnahme so oft wie angegeben neu gestartet\n%s</string>
+    <string name="preference_video_restart_summary">Nach dem Erreichen der Maximaldauer wird die Aufnahme so oft wie angegeben neu gestartet</string>
     <string name="preference_video_max_filesize">Maximale Dateigröße für Video</string>
-    <string name="preference_video_max_filesize_summary">Die Videoaufnahme stoppt und/oder started (siehe nächste Optionen), wenn die maximale Dateigröße fast erreicht ist. Alle Android Geräte haben eine maximale Größe von 2GB oder 4GB für Videos. Mit diesem Wert läßt sich ein bestimmter Wert einstellen.\n%s</string>
+    <string name="preference_video_max_filesize_summary">Die Videoaufnahme stoppt und/oder started (siehe nächste Optionen), wenn die maximale Dateigröße fast erreicht ist. Alle Android Geräte haben eine maximale Größe von 2GB oder 4GB für Videos. Mit diesem Wert läßt sich ein bestimmter Wert einstellen.</string>
     <string name="preference_video_restart_max_filesize">Neustart bei maximaler Dateigröße</string>
     <string name="preference_video_restart_max_filesize_summary">Legt fest, ob die Videoaufnahme neugestartet wird, sobald das geräte-definierte oder das benutzerdefinierte Maximum erreicht ist.</string>
     <string name="preference_record_audio">Ton aufzeichnen</string>
     <string name="preference_record_audio_summary">Wenn aktiviert, wird das Video mit Ton aufgenommen.</string>
     <string name="preference_record_audio_src">Audio-Quelle</string>
-    <string name="preference_record_audio_src_summary">Einstellung der Mikrofonquelle für die Tonaufnahme\n%s</string>
+    <string name="preference_record_audio_src_summary">Einstellung der Mikrofonquelle für die Tonaufnahme</string>
     <string name="preference_record_audio_channels">Audio-Kanäle</string>
-    <string name="preference_record_audio_channels_summary">Mono- oder Stereo-Aufnahme (Stereo wird nur von einigen Geräten unterstützt)\n%s</string>
+    <string name="preference_record_audio_channels_summary">Mono- oder Stereo-Aufnahme (Stereo wird nur von einigen Geräten unterstützt)</string>
     <string name="preference_video_flash">Blitzlicht während der Videoaufnahme</string>
     <string name="preference_video_flash_summary">Wenn aktiviert, blinkt der Blitz während der Videoaufnahme.</string>
 
@@ -311,16 +311,16 @@
     <string name="preference_camera2_fake_flash_summary">Aktiviere dies, wenn dein Gerät Probleme mit der Camera2-API hat</string>
 
     <string name="preference_expo_bracketing_n_images">Belichtungsreihe</string>
-    <string name="preference_expo_bracketing_n_images_summary">Anzahl der Bilder für die Belichtungsreihe\n%s</string>
+    <string name="preference_expo_bracketing_n_images_summary">Anzahl der Bilder für die Belichtungsreihe</string>
     <string name="preference_expo_bracketing_stops">Blendenschritte in der Belichtungsreihe</string>
-    <string name="preference_expo_bracketing_stops_summary">Anzahl der Blendenschritte pro Foto\n%s</string>
+    <string name="preference_expo_bracketing_stops_summary">Anzahl der Blendenschritte pro Foto</string>
 
     <string name="preference_nr_save">Rauschminderung im Originalbild</string>
     <string name="preference_nr_save_all">Speichere alle Originalbilder mit Rauschminderung (langsam)</string>
 
     <string name="preference_nr_save_no">Keine Rauschminderung im Originalbild</string>
     <string name="preference_nr_save_single">Speichere einzelnes Originalbild</string>
-    <string name="preference_nr_save_summary">Sollen Originalbilder mit Rauschminderung gespeichert werden? (Benötigt mehr Zeit)\n%s</string>
+    <string name="preference_nr_save_summary">Sollen Originalbilder mit Rauschminderung gespeichert werden? (Benötigt mehr Zeit)</string>
 
     <string name="seconds_abbreviation">s</string> <!-- short for seconds -->
 
@@ -343,7 +343,7 @@
     <string name="selfie">Selfie</string>
 
     <string name="preference_front_camera_mirror">Spiegele Front Kamera</string>
-    <string name="preference_front_camera_mirror_summary">Bestimmt, ob Bilder der Front Kamera gespiegelt werden\n%s</string>
+    <string name="preference_front_camera_mirror_summary">Bestimmt, ob Bilder der Front Kamera gespiegelt werden</string>
 
     <string name="preference_calibrate_level">Kalibriere den Gyro</string>
     <string name="preference_calibrate_level_summary">Diese Option kalibriert den Lagesensor, sodaß die Bilderausrichtung korrekt bestimmt wird.</string>
@@ -360,7 +360,7 @@
     <string name="preference_show_geo_direction_lines">Zeige Kompass-Richtungslinien</string>
     <string name="preference_show_geo_direction_lines_summary">Zeige Kompass Richtungslinien</string>
     <string name="preference_video_subtitle">Video Untertitel</string>
-    <string name="preference_video_subtitle_summary">Erzeuge eine Untertiteldatei (.SRT) mit Datum und Uhrzeit sowie mit GPS-Daten, sofern GPS aktiviert ist\n%s</string>
+    <string name="preference_video_subtitle_summary">Erzeuge eine Untertiteldatei (.SRT) mit Datum und Uhrzeit sowie mit GPS-Daten, sofern GPS aktiviert ist</string>
 
     <string name="duration_unlimited">Unbegrenzt</string>
     <string name="duration_3s">3 Sekunden</string>
@@ -517,14 +517,14 @@
     <string name="flash_frontscreen_torch">Bildschirmleuchte</string>
 
     <string name="preference_antibanding">Anti-Banding</string>
-    <string name="preference_antibanding_summary">Algorithmen gegen Flackern.\n%s</string>
+    <string name="preference_antibanding_summary">Algorithmen gegen Flackern.</string>
     <string name="anti_banding_auto">Auto</string>
     <string name="anti_banding_50hz">50 Hz</string>
     <string name="anti_banding_60hz">60 Hz</string>
     <string name="anti_banding_off">Aus</string>
 
     <string name="preference_ghost_image">Geisterbilder</string>
-    <string name="preference_ghost_image_summary">Überlagere ein Bild zwecks Ausrichtung.\n%s</string>
+    <string name="preference_ghost_image_summary">Überlagere ein Bild zwecks Ausrichtung.</string>
     <string name="preference_ghost_image_off">Aus</string>
     <string name="preference_ghost_image_last">Zuletzt aufgenommenes Foto</string>
     <string name="preference_ghost_image_selected">Ausgewähltes Bild</string>
@@ -536,7 +536,7 @@
     <string name="preference_camera2_photo_video_recording_summary">Ermögliche Fotos während der Videoaudnahme. Diese Option ausschalten, falls Probleme mit dem Camera-2-API auftreten.</string>
 
     <string name="preference_video_log">Flaches (Log-) Video-Profil</string>
-    <string name="preference_video_log_summary">Aktiviere ein flaches (Log-) Profil für den Video-Modus\n%s</string>
+    <string name="preference_video_log_summary">Aktiviere ein flaches (Log-) Profil für den Video-Modus</string>
     <string name="preference_video_log_off">Aus</string>
     <string name="preference_video_log_fine">Fein</string>
     <string name="preference_video_log_low">Schwach</string>
@@ -602,7 +602,7 @@
     <string name="accuracy_unknown">Unbekannt</string>
 
     <string name="preference_units_distance">Entfernungseinheit</string>
-    <string name="preference_units_distance_summary">Verwendet für GPS-Höhe, Fotostempel und Video-Untertitel\n%s</string>
+    <string name="preference_units_distance_summary">Verwendet für GPS-Höhe, Fotostempel und Video-Untertitel</string>
     <string name="preference_units_distance_m">Meter</string>
     <string name="preference_units_distance_ft">Fuß</string>
     <string name="feet_abbreviation">ft</string> <!-- symbol short for feet -->
@@ -613,7 +613,7 @@
     <string name="preference_screen_processing_settings">Verarbeitungseinstellungen…</string>
 
     <string name="preference_noise_reduction_mode">Algorithmus zur Rauschunterdrückung</string>
-    <string name="preference_noise_reduction_mode_summary">Algorithmus, den der Kameratreiber zur Unterdrückung des Rauschens verwenden soll. Der Algorithmus zur Rauschunterdrückung versucht, die Bildqualität zu verbessern, indem er übermäßiges Rauschen das bei der Bildaufnahme entstanden ist (besonders be wenig einfallendem Licht) entfernt. (Beachte, dass diese Option im NR Aufnahme-Modus nicht verwendet wird.)\n%s</string>
+    <string name="preference_noise_reduction_mode_summary">Algorithmus, den der Kameratreiber zur Unterdrückung des Rauschens verwenden soll. Der Algorithmus zur Rauschunterdrückung versucht, die Bildqualität zu verbessern, indem er übermäßiges Rauschen das bei der Bildaufnahme entstanden ist (besonders be wenig einfallendem Licht) entfernt. (Beachte, dass diese Option im NR Aufnahme-Modus nicht verwendet wird.)</string>
     <string name="noise_reduction_mode_default">Standard</string>
     <string name="noise_reduction_mode_off">Aus</string>
     <string name="noise_reduction_mode_minimal">Minimal</string>
@@ -621,7 +621,7 @@
     <string name="noise_reduction_mode_high_quality">Hohe Qualität</string>
 
     <string name="preference_focus_assist">Fokus-Assistenz</string>
-    <string name="preference_focus_assist_summary">Zoomt näher bei manueller Fokussierung\n%s</string>
+    <string name="preference_focus_assist_summary">Zoomt näher bei manueller Fokussierung</string>
     <string name="preference_focus_assist_off">Aus</string>
     <string name="preference_focus_assist_2x">2x</string>
     <string name="preference_focus_assist_4x">4x</string>
@@ -699,13 +699,13 @@
     <string name="preference_audio_noise_control_sensitivity_m3">-3 (Niedrige Empfindlichkeit)</string>
 
     <string name="preference_hdr_contrast_enhancement">HDR-Kontrastverstärkung</string>
-    <string name="preference_hdr_contrast_enhancement_summary">Verwendet einen Algorithmus zur Verstärkung des HDR-Kontrasts. Das kann die Aufnahme verbessern, wenn eine Szene einen sehr hohen Dynamikumfang hat aber einen "HDR-Look" bekommen soll.\n%s</string>
+    <string name="preference_hdr_contrast_enhancement_summary">Verwendet einen Algorithmus zur Verstärkung des HDR-Kontrasts. Das kann die Aufnahme verbessern, wenn eine Szene einen sehr hohen Dynamikumfang hat aber einen "HDR-Look" bekommen soll.</string>
     <string name="preference_hdr_contrast_enhancement_off">Aus</string>
     <string name="preference_hdr_contrast_enhancement_smart">Smart</string>
     <string name="preference_hdr_contrast_enhancement_always">Immer</string>
 
     <string name="preference_video_output_format">Video-Format</string>
-    <string name="preference_video_output_format_summary">Video- und Audio-Dateiformat and -Codecs\n%s</string>
+    <string name="preference_video_output_format_summary">Video- und Audio-Dateiformat and -Codecs</string>
 
     <string name="preference_video_output_format_default">Standard</string>
     <string name="preference_video_output_format_mpeg4_h264">MPEG4 H264</string>
@@ -806,7 +806,7 @@
     <string name="preference_location_disable">Beende das Speichern von Standortdaten</string>
 
     <string name="preference_histogram">Zeige ein Histogramm</string>
-    <string name="preference_histogram_summary">Zeigt ein Farb-Histogramm an\n%s</string>
+    <string name="preference_histogram_summary">Zeigt ein Farb-Histogramm an</string>
     <string name="preference_histogram_off">Aus</string>
     <string name="preference_histogram_rgb">RGB-Farben</string>
     <string name="preference_histogram_luminance">Leuchtdichte</string>
@@ -815,7 +815,7 @@
     <string name="preference_histogram_lightness">Helligkeit (Durchschnitt des Min.-Max.)</string>
 
     <string name="preference_zebra_stripes">Zeige Zebrastreifen</string>
-    <string name="preference_zebra_stripes_summary">Zeigt in der Vorschau Zebrastreifen in den überbelichteten Stellen der Aufnahme.\n%s</string>
+    <string name="preference_zebra_stripes_summary">Zeigt in der Vorschau Zebrastreifen in den überbelichteten Stellen der Aufnahme.</string>
     <string name="preference_zebra_stripes_off">Aus</string>
     <string name="preference_zebra_stripes_70pc">70%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
     <string name="preference_zebra_stripes_80pc">80%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
@@ -828,11 +828,11 @@
     <string name="preference_zebra_stripes_100pc">100%</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
 
     <string name="preference_focus_peaking">Fokus-Peaking</string>
-    <string name="preference_focus_peaking_summary">Fokus-Peaking hebt scharf abgebildete Konturen hervor. Das ist vorrangig bei manuellem Fokus nützlich und hilft die scharf eingestellten Bereiche des Bilds zu erkennen.\n%s</string>
+    <string name="preference_focus_peaking_summary">Fokus-Peaking hebt scharf abgebildete Konturen hervor. Das ist vorrangig bei manuellem Fokus nützlich und hilft die scharf eingestellten Bereiche des Bilds zu erkennen.</string>
     <string name="preference_focus_peaking_off">Aus</string>
     <string name="preference_focus_peaking_on">An</string>
     <string name="preference_focus_peaking_color">Fokus-Peaking-Farbe</string>
-    <string name="preference_focus_peaking_color_summary">Bestimmt die Farbe zur Hervorhebung der fokussierten Konturen.\n%s</string>
+    <string name="preference_focus_peaking_color_summary">Bestimmt die Farbe zur Hervorhebung der fokussierten Konturen.</string>
 
     <string name="remaining">Verbleibende</string> <!-- images remaining for "processing" -->
 
@@ -867,12 +867,12 @@
     <string name="failed_to_process_panorama">Panorama-Bild konnte nicht erstellt werden</string>
 
     <string name="preference_panorama_crop">Panorama Auto-Crop</string>
-    <string name="preference_panorama_crop_summary">Im Panorama Modus wellige Bereiche entfernen\n%s</string>
+    <string name="preference_panorama_crop_summary">Im Panorama Modus wellige Bereiche entfernen</string>
 
     <string name="panorama_info">Um ein Panoramabild aufzunehmen, halte das Gerät im Hochformat und klicke auf den Auslöser zum Start des Panoramas. Drehe dann das Gerät entweder nach links oder rechts, um den zentrierten weißen Kreis über den blauen Punkt zu bewegen. Nachdem jedes neue Bild aufgenommen wurde, drehe das Gerät weiter, um jeden neuen blauen Punkt, der nacheinander erscheint, abzudecken.\n\nKlicke auf das Häkchen-Symbol, um das Panorama zu speichern oder auf das Kreuz-Symbol, um abzubrechen.\n\nBeachte, dass die Verarbeitung und Speicherung von Panoramafotos Zeit in Anspruch nehmen kann.</string>
 
     <string name="preference_panorama_save">Panorama Originalbilder</string>
-    <string name="preference_panorama_save_summary">Ob Originalbilder im Panorama-Modus gespeichert werden sollen. Die Speicherung der Panoramafotos wird dadurch langsamer. Ermöglicht auch die Option eine XML-Datei zu speichern, was bei der Meldung von Problemen mit Panoramafotos hilfreich sein kann.\n%s</string>
+    <string name="preference_panorama_save_summary">Ob Originalbilder im Panorama-Modus gespeichert werden sollen. Die Speicherung der Panoramafotos wird dadurch langsamer. Ermöglicht auch die Option eine XML-Datei zu speichern, was bei der Meldung von Problemen mit Panoramafotos hilfreich sein kann.</string>
 
     <string name="preference_panorama_save_no">Originalbilder nicht speichern</string>
     <string name="preference_panorama_save_all">Originalbilder speichern</string>
@@ -882,16 +882,16 @@
 
     <string name="exposure_compensation_seekbar">Suchfeld zur Änderung der Belichtungskorrektur</string>
 
-    <string name="preference_image_format_summary">Wähle das Dateiformat zum Speichern der Fotos. Das wirkt sich nur auf \"Standard-\" (nicht RAW-) Fotos aus. Merke: Das PNG-Format ist nicht verlustlos, es wird aus einem JPEG mit 100%%iger Qualität konvertiert.\n%s</string>
+    <string name="preference_image_format_summary">Wähle das Dateiformat zum Speichern der Fotos. Das wirkt sich nur auf \"Standard-\" (nicht RAW-) Fotos aus. Merke: Das PNG-Format ist nicht verlustlos, es wird aus einem JPEG mit 100%%iger Qualität konvertiert.</string>
 
     <string name="preference_camera_api">Camera-API</string>
-    <string name="preference_camera_api_summary">Wähle das Camera2-API um extra Features wie manuelle Modi für Belichtung, Fokus, Weißabgleich sowie RAW-Format (falls vom Gerät unterstützt) zu nutzen. Die Änderung des API verursacht einen Neustart der App.\n%s</string>
+    <string name="preference_camera_api_summary">Wähle das Camera2-API um extra Features wie manuelle Modi für Belichtung, Fokus, Weißabgleich sowie RAW-Format (falls vom Gerät unterstützt) zu nutzen. Die Änderung des API verursacht einen Neustart der App.</string>
     <string name="preference_camera_api_old">Original Camera-API</string>
     <string name="preference_camera_api_camera2">Camera2-API</string>
 
     <string name="preference_audio_control_summary">Foto/Video aufnehmen, wenn ein Geräusch erkannt wird.
         Wenn aktiviert, nutze die Mikrofon-Taste auf dem Bildschirm, um die Erkennung zu starten/stoppen.
-        \n%s</string>
+        </string>
 
     <!-- beware of string being too long to display! -->
     <string name="intro_text">Zum Fokussieren berühren und blaue Kamerataste drücken, um Bilder aufzunehmen.
@@ -905,7 +905,7 @@
     <string name="preference_video_srgb">sRGB</string>
     <string name="preference_video_gamma">Gamma</string>
     <string name="preference_video_profile_gamma">Video Gamma-Wert</string>
-    <string name="preference_video_profile_gamma_summary">Gamma-Wert für Videos, wenn Video-Profil Gamma ausgewählt wurde\n%s</string>
+    <string name="preference_video_profile_gamma_summary">Gamma-Wert für Videos, wenn Video-Profil Gamma ausgewählt wurde</string>
     <string name="preference_video_profile_gamma_1_6">1,6</string>
     <string name="preference_video_profile_gamma_1_8">1,8</string>
     <string name="preference_video_profile_gamma_1_9">1,9</string>
@@ -923,12 +923,12 @@
     <string name="preference_immersive_mode_everything">Alles ausblenden</string>
 
     <string name="preference_ghost_image_alpha">Geisterbild-Durchsichtigkeit</string>
-    <string name="preference_ghost_image_alpha_summary">Alpha-Wert für Geisterbilder. Umso niedriger der Wert, desto transparenter das Geisterbild.\n%s</string>
+    <string name="preference_ghost_image_alpha_summary">Alpha-Wert für Geisterbilder. Umso niedriger der Wert, desto transparenter das Geisterbild.</string>
 
     <string name="preference_zebra_stripes_foreground_color">Zebrastreifen-Vordergrundfarbe</string>
-    <string name="preference_zebra_stripes_foreground_color_summary">Zu verwendende Vorderundfarbe für Zebrastreifen.\n%s</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">Zu verwendende Vorderundfarbe für Zebrastreifen.</string>
     <string name="preference_zebra_stripes_background_color">Zebrastreifen-Hintergrundfarbe</string>
-    <string name="preference_zebra_stripes_background_color_summary">Zu verwendende Hintergrundfarbe für Zebrastreifen.\n%s</string>
+    <string name="preference_zebra_stripes_background_color_summary">Zu verwendende Hintergrundfarbe für Zebrastreifen.</string>
 
     <string name="preference_zebra_stripes_color_black">Schwarz</string>
     <string name="preference_zebra_stripes_color_red">Rot</string>
@@ -1035,13 +1035,13 @@
     <string name="photo_mode_x_beauty">X‑Bty</string>
     <string name="photo_mode_x_beauty_full">Beauty / Face Retouch</string>
     <string name="preference_hdr_tonemapping">HDR Tonemapping</string>
-    <string name="preference_hdr_tonemapping_summary">Algorithmus für Tonemapping im HDR‑Foto‑Modus\n%s</string>
+    <string name="preference_hdr_tonemapping_summary">Algorithmus für Tonemapping im HDR‑Foto‑Modus</string>
     <string name="preference_hdr_tonemapping_clamp">Einfache Beschneidung</string>
     <string name="preference_hdr_tonemapping_exponential">Exponentiell</string>
     <string name="preference_hdr_tonemapping_default">Standard</string>
     <string name="preference_hdr_tonemapping_aces">ACES</string>
     <string name="preference_remove_device_exif">Geräte‑EXIF entfernen</string>
-    <string name="preference_remove_device_exif_summary">Ob EXIF‑Gerätedaten aus JPEG‑Fotos gelöscht werden sollen. Andere EXIF‑Tags bleiben erhalten.\n%s</string>
+    <string name="preference_remove_device_exif_summary">Ob EXIF‑Gerätedaten aus JPEG‑Fotos gelöscht werden sollen. Andere EXIF‑Tags bleiben erhalten.</string>
     <string name="preference_remove_device_exif_off">Geräte‑EXIF nicht entfernen</string>
     <string name="preference_remove_device_exif_on">Geräte‑EXIF entfernen</string>
     <string name="preference_remove_device_exif_keep_datetime">Außer Datum/Uhrzeit entfernen</string>
@@ -1051,11 +1051,11 @@
     <string name="focus_peaking_enable">Fokus‑Peaking aktivieren</string>
     <string name="focus_peaking_disable">Fokus‑Peaking deaktivieren</string>
     <string name="preference_photo_optimise_focus">Fokus optimieren für…</string>
-    <string name="preference_photo_optimise_focus_summary">Beim Fotografieren Fokus auf Latenz oder Qualität optimieren.\n%s</string>
+    <string name="preference_photo_optimise_focus_summary">Beim Fotografieren Fokus auf Latenz oder Qualität optimieren.</string>
     <string name="preference_photo_optimise_focus_latency">Latenz</string>
     <string name="preference_photo_optimise_focus_quality">Qualität</string>
     <string name="preference_save_preshots">Vorschau‑Aufnahmen speichern</string>
-    <string name="preference_save_preshots_summary">Wenn aktiviert, wird ein kurzes Video vor dem Foto gespeichert.\n%s</string>
+    <string name="preference_save_preshots_summary">Wenn aktiviert, wird ein kurzes Video vor dem Foto gespeichert.</string>
     <string name="telephoto">Teleobjektiv</string>
     <string name="auto_lens">Auto‑Objektiv</string>
     <string name="lens">Objektiv</string>
@@ -1073,7 +1073,7 @@
     <string name="permission_rationale_record_audio">Die Mikrofonberechtigung ist erforderlich, um Videos mit Audio aufzunehmen und die Optionen „Audiosteuerung“ zu verwenden</string>
     <string name="preference_image_format_jpeg_r">UltraHDR JPEG</string>
     <string name="preference_edge_mode">Kantenmodus-Algorithmus</string>
-    <string name="preference_edge_mode_summary">Algorithmus, den der Kameratreiber zur Anwendung der Kantenanhebung verwenden sollte. Kantenanhebung verbessert die Schärfe und Details im aufgenommenen Bild. (Diese Einstellung wird im NR-Fotomodus ignoriert.)\n%s</string>
+    <string name="preference_edge_mode_summary">Algorithmus, den der Kameratreiber zur Anwendung der Kantenanhebung verwenden sollte. Kantenanhebung verbessert die Schärfe und Details im aufgenommenen Bild. (Diese Einstellung wird im NR-Fotomodus ignoriert.)</string>
     <string name="array_seekbar_preference_seekbar">Schieberegler zum Ändern des aktuellen Einstellungswerts</string>
     <string name="preference_camera2_dummy_capture_hack">Dummy-Aufnahme-HDR/Belichtungs-Fix aktivieren</string>
     <string name="preference_camera2_dummy_capture_hack_summary">Versuchen Sie, dies zu aktivieren, wenn Ihr Gerät Probleme beim Aufnehmen von Fotos im HDR- oder Belichtungs-Fotomodus hat (wenn Belichtungsbilder mit denselben Belichtungen herauskommen). Nur relevant, wenn die Option „Schnelles HDR/Belichtung“ unten ebenfalls aktiviert ist.</string>

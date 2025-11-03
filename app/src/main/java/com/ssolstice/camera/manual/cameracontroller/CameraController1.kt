@@ -1,94 +1,92 @@
-package com.ssolstice.camera.manual.cameracontroller;
+package com.ssolstice.camera.manual.cameracontroller
 
-import com.ssolstice.camera.manual.MyDebug;
-import com.ssolstice.camera.manual.utils.Logger;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-
-import android.hardware.Camera;
-import android.hardware.Camera.AutoFocusMoveCallback;
-import android.location.Location;
-import android.media.MediaRecorder;
-import android.os.Build;
-import android.os.Handler;
-import android.view.SurfaceHolder;
-import android.view.TextureView;
+import android.hardware.Camera
+import android.hardware.Camera.AutoFocusMoveCallback
+import android.hardware.Camera.ShutterCallback
+import android.location.Location
+import android.media.MediaRecorder
+import android.os.Build
+import android.os.Handler
+import android.view.SurfaceHolder
+import android.view.TextureView
+import com.ssolstice.camera.manual.MyDebug
+import com.ssolstice.camera.manual.utils.Logger.d
+import com.ssolstice.camera.manual.utils.Logger.e
+import java.io.IOException
+import java.util.Collections
+import kotlin.math.max
+import kotlin.math.min
 
 /** Provides support using Android's original camera API
- *  android.hardware.Camera.
+ * android.hardware.Camera.
  */
-public class CameraController1 extends CameraController {
-    private static final String TAG = "CameraController1";
+class CameraController1(cameraId: Int, camera_error_cb: ErrorCallback?) :
+    CameraController(cameraId) {
+    private var camera: Camera? = null
+    private var display_orientation = 0
+    private val camera_info = Camera.CameraInfo()
+    private var iso_key: String? = null
+    private var frontscreen_flash = false
+    private val camera_error_cb: ErrorCallback?
+    private var sounds_enabled = true
 
-    private Camera camera;
-    private int display_orientation;
-    private final Camera.CameraInfo camera_info = new Camera.CameraInfo();
-    private String iso_key;
-    private boolean frontscreen_flash;
-    private final ErrorCallback camera_error_cb;
-    private boolean sounds_enabled = true;
+    private var n_burst = 0 // number of expected burst images in this capture
+    private val pending_burst_images: MutableList<ByteArray?> =
+        ArrayList<ByteArray?>() // burst images that have been captured so far, but not yet sent to the application
+    private var burst_exposures: MutableList<Int?>? = null
+    private var want_expo_bracketing = false
+    private var expo_bracketing_n_images = 3
+    private var expo_bracketing_stops = 2.0
 
-    private int n_burst; // number of expected burst images in this capture
-    private final List<byte[]> pending_burst_images = new ArrayList<>(); // burst images that have been captured so far, but not yet sent to the application
-    private List<Integer> burst_exposures;
-    private boolean want_expo_bracketing;
-    private final static int max_expo_bracketing_n_images = 3; // seem to have problems with 5 images in some cases, e.g., images coming out same brightness on OnePlus 3T
-    private int expo_bracketing_n_images = 3;
-    private double expo_bracketing_stops = 2.0;
-
-    private Handler autofocus_timeout_handler; // handler for tracking autofocus timeout
-    private Runnable autofocus_timeout_runnable; // runnable set for tracking autofocus timeout
+    private var autofocus_timeout_handler: Handler? = null // handler for tracking autofocus timeout
+    private var autofocus_timeout_runnable: Runnable? =
+        null // runnable set for tracking autofocus timeout
 
     // we keep track of some camera settings rather than reading from Camera.getParameters() every time. Firstly this is important
     // for performance (affects UI rendering times, e.g., see profiling of GPU rendering). Secondly runtimeexceptions from
     // Camera.getParameters() seem to be common in Google Play, particularly for getZoom().
-    private int current_zoom_value;
-    private int current_exposure_compensation;
-    private int picture_width;
-    private int picture_height;
+    private var current_zoom_value = 0
+    private var current_exposure_compensation = 0
+    private var picture_width = 0
+    private var picture_height = 0
 
     /** Opens the camera device.
      * @param cameraId Which camera to open (must be between 0 and CameraControllerManager1.getNumberOfCameras()-1).
      * @param camera_error_cb onError() will be called if the camera closes due to serious error. No more calls to the CameraController1 object should be made (though a new one can be created, to try reopening the camera).
      * @throws CameraControllerException if the camera device fails to open.
      */
-    public CameraController1(int cameraId, final ErrorCallback camera_error_cb) throws CameraControllerException {
-        super(cameraId);
-        Logger.INSTANCE.d(TAG, "create new CameraController1: " + cameraId);
-        this.camera_error_cb = camera_error_cb;
+    init {
+        d(TAG, "create new CameraController1: " + cameraId)
+        this.camera_error_cb = camera_error_cb
         try {
-            camera = Camera.open(cameraId);
-        } catch (RuntimeException e) {
-            Logger.INSTANCE.e(TAG, "failed to open camera");
-            e.printStackTrace();
-            throw new CameraControllerException();
+            camera = Camera.open(cameraId)
+        } catch (e: RuntimeException) {
+            e(TAG, "failed to open camera")
+            e.printStackTrace()
+            throw CameraControllerException()
         }
         if (camera == null) {
             // Although the documentation says Camera.open() should throw a RuntimeException, it seems that it some cases it can return null
             // I've seen this in some crashes reported in Google Play; also see:
             // http://stackoverflow.com/questions/12054022/camera-open-returns-null
-            Logger.INSTANCE.e(TAG, "camera.open returned null");
-            throw new CameraControllerException();
+            e(TAG, "camera.open returned null")
+            throw CameraControllerException()
         }
         try {
-            Camera.getCameraInfo(cameraId, camera_info);
-        } catch (RuntimeException e) {
+            Camera.getCameraInfo(cameraId, camera_info)
+        } catch (e: RuntimeException) {
             // Had reported RuntimeExceptions from Google Play
             // also see http://stackoverflow.com/questions/22383708/java-lang-runtimeexception-fail-to-get-camera-info
-            Logger.INSTANCE.e(TAG, "failed to get camera info");
-            e.printStackTrace();
-            this.release();
-            throw new CameraControllerException();
+            e(TAG, "failed to get camera info")
+            e.printStackTrace()
+            this.release()
+            throw CameraControllerException()
         }
 
-        final CameraErrorCallback camera_error_callback = new CameraErrorCallback();
-        camera.setErrorCallback(camera_error_callback);
+        val camera_error_callback = CameraErrorCallback()
+        camera!!.setErrorCallback(camera_error_callback)
 
-		/*{
+        /*{
 			// test error handling
 			final Handler handler = new Handler();
 			handler.postDelayed(new Runnable() {
@@ -102,86 +100,87 @@ public class CameraController1 extends CameraController {
 		}*/
     }
 
-    @Override
-    public void onError() {
-        Logger.INSTANCE.e(TAG, "onError");
+    override fun onError() {
+        e(TAG, "onError")
         if (this.camera != null) { // I got Google Play crash reports due to camera being null in v1.36
-            this.camera.release();
-            this.camera = null;
+            this.camera!!.release()
+            this.camera = null
         }
         if (this.camera_error_cb != null) {
             // need to communicate the problem to the application
-            this.camera_error_cb.onError();
+            this.camera_error_cb.onError()
         }
     }
 
-    private class CameraErrorCallback implements Camera.ErrorCallback {
-        @Override
-        public void onError(int error, Camera cam) {
+    private inner class CameraErrorCallback : Camera.ErrorCallback {
+        override fun onError(error: Int, cam: Camera?) {
             // n.b., as this is potentially serious error, we always log even if MyDebug.LOG is false
-            Logger.INSTANCE.e(TAG, "camera onError: " + error);
+            e(TAG, "camera onError: " + error)
             if (error == Camera.CAMERA_ERROR_SERVER_DIED) {
-                Logger.INSTANCE.e(TAG, "    CAMERA_ERROR_SERVER_DIED");
-                CameraController1.this.onError();
+                e(TAG, "    CAMERA_ERROR_SERVER_DIED")
+                this@CameraController1.onError()
             } else if (error == Camera.CAMERA_ERROR_UNKNOWN) {
-                Logger.INSTANCE.e(TAG, "    CAMERA_ERROR_UNKNOWN ");
+                e(TAG, "    CAMERA_ERROR_UNKNOWN ")
             }
         }
     }
 
-    public void release() {
+    override fun release() {
         if (camera != null) {
             // have had crashes when this is called from Preview/CloseCameraTask.
-            camera.release();
-            camera = null;
+            camera!!.release()
+            camera = null
         }
     }
 
-    private Camera.Parameters getParameters() {
-        Logger.INSTANCE.d(TAG, "getParameters");
-        return camera.getParameters();
-    }
+    private val parameters: Camera.Parameters
+        get() {
+            d(
+                TAG, "getParameters"
+            )
+            return camera!!.getParameters()
+        }
 
-    private void setCameraParameters(Camera.Parameters parameters) {
-        Logger.INSTANCE.d(TAG, "setCameraParameters");
+    private fun setCameraParameters(parameters: Camera.Parameters?) {
+        d(TAG, "setCameraParameters")
         try {
-            camera.setParameters(parameters);
-            Logger.INSTANCE.d(TAG, "done");
-        } catch (RuntimeException e) {
+            camera!!.setParameters(parameters)
+            d(TAG, "done")
+        } catch (e: RuntimeException) {
             // just in case something has gone wrong
-            Logger.INSTANCE.d(TAG, "failed to set parameters");
-            e.printStackTrace();
-            count_camera_parameters_exception++;
+            d(TAG, "failed to set parameters")
+            e.printStackTrace()
+            count_camera_parameters_exception++
         }
     }
 
-    private List<String> convertFlashModesToValues(List<String> supported_flash_modes) {
+    private fun convertFlashModesToValues(supported_flash_modes: MutableList<String?>?): MutableList<String?> {
         if (MyDebug.LOG) {
-            Logger.INSTANCE.d(TAG, "convertFlashModesToValues()");
-            Logger.INSTANCE.d(TAG, "supported_flash_modes: " + supported_flash_modes);
+            d(TAG, "convertFlashModesToValues()")
+            d(TAG, "supported_flash_modes: " + supported_flash_modes)
         }
-        List<String> output_modes = new ArrayList<>();
+        val output_modes: MutableList<String?> = ArrayList<String?>()
         if (supported_flash_modes != null) {
             // also resort as well as converting
             if (supported_flash_modes.contains(Camera.Parameters.FLASH_MODE_OFF)) {
-                output_modes.add("flash_off");
-                Logger.INSTANCE.d(TAG, " supports flash_off");
+                output_modes.add("flash_off")
+                d(TAG, " supports flash_off")
             }
             if (supported_flash_modes.contains(Camera.Parameters.FLASH_MODE_AUTO)) {
-                output_modes.add("flash_auto");
-                Logger.INSTANCE.d(TAG, " supports flash_auto");
+                output_modes.add("flash_auto")
+                d(TAG, " supports flash_auto")
             }
             if (supported_flash_modes.contains(Camera.Parameters.FLASH_MODE_ON)) {
-                output_modes.add("flash_on");
-                Logger.INSTANCE.d(TAG, " supports flash_on");
+                output_modes.add("flash_on")
+                d(TAG, " supports flash_on")
             }
             if (supported_flash_modes.contains(Camera.Parameters.FLASH_MODE_TORCH)) {
-                output_modes.add("flash_torch");
-                Logger.INSTANCE.d(TAG, " supports flash_torch");
+                output_modes.add("flash_torch")
+                d(TAG, " supports flash_torch")
             }
             if (supported_flash_modes.contains(Camera.Parameters.FLASH_MODE_RED_EYE)) {
-                output_modes.add("flash_red_eye");
-                Logger.INSTANCE.d(TAG, " supports flash_red_eye");
+                output_modes.add("flash_red_eye")
+                d(TAG, " supports flash_red_eye")
             }
         }
 
@@ -189,1025 +188,919 @@ public class CameraController1 extends CameraController {
         // so rather than checking supported_flash_modes, we should check output_modes here
         // this is always why we check whether the size is greater than 1, rather than 0 (this also matches
         // the check we do in Preview.setupCameraParameters()).
-        if (output_modes.size() > 1) {
-            Logger.INSTANCE.d(TAG, "flash supported");
+        if (output_modes.size > 1) {
+            d(TAG, "flash supported")
         } else {
             if (getFacing() == Facing.FACING_FRONT) {
-                Logger.INSTANCE.d(TAG, "front-screen with no flash");
-                output_modes.clear(); // clear any pre-existing mode (see note above about Samsung Galaxy S7)
-                output_modes.add("flash_off");
-                output_modes.add("flash_frontscreen_on");
-                output_modes.add("flash_frontscreen_torch");
+                d(TAG, "front-screen with no flash")
+                output_modes.clear() // clear any pre-existing mode (see note above about Samsung Galaxy S7)
+                output_modes.add("flash_off")
+                output_modes.add("flash_frontscreen_on")
+                output_modes.add("flash_frontscreen_torch")
             } else {
-                Logger.INSTANCE.d(TAG, "no flash");
+                d(TAG, "no flash")
                 // probably best to not return any modes, rather than one mode (see note about about Samsung Galaxy S7)
-                output_modes.clear();
+                output_modes.clear()
             }
         }
 
-        return output_modes;
+        return output_modes
     }
 
-    private List<String> convertFocusModesToValues(List<String> supported_focus_modes) {
-        Logger.INSTANCE.d(TAG, "convertFocusModesToValues()");
-        List<String> output_modes = new ArrayList<>();
+    private fun convertFocusModesToValues(supported_focus_modes: MutableList<String?>?): MutableList<String?> {
+        d(TAG, "convertFocusModesToValues()")
+        val output_modes: MutableList<String?> = ArrayList<String?>()
         if (supported_focus_modes != null) {
             // also resort as well as converting
             if (supported_focus_modes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
-                output_modes.add("focus_mode_auto");
+                output_modes.add("focus_mode_auto")
                 if (MyDebug.LOG) {
-                    Logger.INSTANCE.d(TAG, " supports focus_mode_auto");
+                    d(TAG, " supports focus_mode_auto")
                 }
             }
             if (supported_focus_modes.contains(Camera.Parameters.FOCUS_MODE_INFINITY)) {
-                output_modes.add("focus_mode_infinity");
-                Logger.INSTANCE.d(TAG, " supports focus_mode_infinity");
+                output_modes.add("focus_mode_infinity")
+                d(TAG, " supports focus_mode_infinity")
             }
             if (supported_focus_modes.contains(Camera.Parameters.FOCUS_MODE_MACRO)) {
-                output_modes.add("focus_mode_macro");
-                Logger.INSTANCE.d(TAG, " supports focus_mode_macro");
+                output_modes.add("focus_mode_macro")
+                d(TAG, " supports focus_mode_macro")
             }
             if (supported_focus_modes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
-                output_modes.add("focus_mode_locked");
+                output_modes.add("focus_mode_locked")
                 if (MyDebug.LOG) {
-                    Logger.INSTANCE.d(TAG, " supports focus_mode_locked");
+                    d(TAG, " supports focus_mode_locked")
                 }
             }
             if (supported_focus_modes.contains(Camera.Parameters.FOCUS_MODE_FIXED)) {
-                output_modes.add("focus_mode_fixed");
-                Logger.INSTANCE.d(TAG, " supports focus_mode_fixed");
+                output_modes.add("focus_mode_fixed")
+                d(TAG, " supports focus_mode_fixed")
             }
             if (supported_focus_modes.contains(Camera.Parameters.FOCUS_MODE_EDOF)) {
-                output_modes.add("focus_mode_edof");
-                Logger.INSTANCE.d(TAG, " supports focus_mode_edof");
+                output_modes.add("focus_mode_edof")
+                d(TAG, " supports focus_mode_edof")
             }
             if (supported_focus_modes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                output_modes.add("focus_mode_continuous_picture");
-                Logger.INSTANCE.d(TAG, " supports focus_mode_continuous_picture");
+                output_modes.add("focus_mode_continuous_picture")
+                d(TAG, " supports focus_mode_continuous_picture")
             }
             if (supported_focus_modes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-                output_modes.add("focus_mode_continuous_video");
-                Logger.INSTANCE.d(TAG, " supports focus_mode_continuous_video");
+                output_modes.add("focus_mode_continuous_video")
+                d(TAG, " supports focus_mode_continuous_video")
             }
         }
-        return output_modes;
+        return output_modes
     }
 
-    public String getAPI() {
-        return "Camera";
+    override fun getAPI(): String {
+        return "Camera"
     }
 
-    public CameraFeatures getCameraFeatures() throws CameraControllerException {
-        Logger.INSTANCE.d(TAG, "getCameraFeatures()");
-        Camera.Parameters parameters;
+    @Throws(CameraControllerException::class)
+    override fun getCameraFeatures(): CameraFeatures {
+        d(TAG, "getCameraFeatures()")
+        val parameters: Camera.Parameters
         try {
-            parameters = this.getParameters();
-        } catch (RuntimeException e) {
-            Logger.INSTANCE.e(TAG, "failed to get camera parameters");
-            e.printStackTrace();
-            throw new CameraControllerException();
+            parameters = this.parameters
+        } catch (e: RuntimeException) {
+            e(TAG, "failed to get camera parameters")
+            e.printStackTrace()
+            throw CameraControllerException()
         }
-        CameraFeatures camera_features = new CameraFeatures();
-        camera_features.is_zoom_supported = parameters.isZoomSupported();
+        val camera_features = CameraFeatures()
+        camera_features.is_zoom_supported = parameters.isZoomSupported()
         if (camera_features.is_zoom_supported) {
-            camera_features.max_zoom = parameters.getMaxZoom();
+            camera_features.max_zoom = parameters.getMaxZoom()
             try {
-                camera_features.zoom_ratios = parameters.getZoomRatios();
-            } catch (NumberFormatException e) {
+                camera_features.zoom_ratios = parameters.getZoomRatios()
+            } catch (e: NumberFormatException) {
                 // crash java.lang.NumberFormatException: Invalid int: " 500" reported in v1.4 on device "es209ra", Android 4.1, 3 Jan 2014
                 // this is from java.lang.Integer.invalidInt(Integer.java:138) - unclear if this is a bug in ManualCamera, all we can do for now is catch it
-                Logger.INSTANCE.e(TAG, "NumberFormatException in getZoomRatios()");
-                e.printStackTrace();
-                camera_features.is_zoom_supported = false;
-                camera_features.max_zoom = 0;
-                camera_features.zoom_ratios = null;
+                e(TAG, "NumberFormatException in getZoomRatios()")
+                e.printStackTrace()
+                camera_features.is_zoom_supported = false
+                camera_features.max_zoom = 0
+                camera_features.zoom_ratios = null
             }
         }
 
-        camera_features.supports_face_detection = parameters.getMaxNumDetectedFaces() > 0;
+        camera_features.supports_face_detection = parameters.getMaxNumDetectedFaces() > 0
 
         // get available sizes
-        List<Camera.Size> camera_picture_sizes = parameters.getSupportedPictureSizes();
+        val camera_picture_sizes = parameters.getSupportedPictureSizes()
         if (camera_picture_sizes == null) {
             // Google Play crashes suggest that getSupportedPictureSizes() can be null?! Better to fail gracefully
             // instead of crashing
-            Logger.INSTANCE.e(TAG, "getSupportedPictureSizes() returned null!");
-            throw new CameraControllerException();
+            e(TAG, "getSupportedPictureSizes() returned null!")
+            throw CameraControllerException()
         }
-        camera_features.picture_sizes = new ArrayList<>();
+        camera_features.picture_sizes = ArrayList<Size?>()
         //camera_features.picture_sizes.add(new CameraController.Size(1920, 1080)); // test
-        for (Camera.Size camera_size : camera_picture_sizes) {
+        for (camera_size in camera_picture_sizes) {
             // we leave supports_burst as true - strictly speaking it should be false, but we'll never use a fast burst mode
             // with CameraController1 anyway
-            camera_features.picture_sizes.add(new CameraController.Size(camera_size.width, camera_size.height));
+            camera_features.picture_sizes.add(Size(camera_size.width, camera_size.height))
         }
         // sizes are usually already sorted from high to low, but sort just in case
         // note some devices do have sizes in a not fully sorted order (e.g., Nokia 8)
-        Collections.sort(camera_features.picture_sizes, new CameraController.SizeSorter());
+        Collections.sort<Size?>(camera_features.picture_sizes, SizeSorter())
 
         //camera_features.supported_flash_modes = parameters.getSupportedFlashModes(); // Android format
-        List<String> supported_flash_modes = parameters.getSupportedFlashModes(); // Android format
-        camera_features.supported_flash_values = convertFlashModesToValues(supported_flash_modes); // convert to our format (also resorts)
+        val supported_flash_modes = parameters.supportedFlashModes // Android format
+        camera_features.supported_flash_values =
+            convertFlashModesToValues(supported_flash_modes) // convert to our format (also resorts)
 
-        List<String> supported_focus_modes = parameters.getSupportedFocusModes(); // Android format
-        camera_features.supported_focus_values = convertFocusModesToValues(supported_focus_modes); // convert to our format (also resorts)
-        camera_features.max_num_focus_areas = parameters.getMaxNumFocusAreas();
+        val supported_focus_modes = parameters.supportedFocusModes // Android format
+        camera_features.supported_focus_values =
+            convertFocusModesToValues(supported_focus_modes) // convert to our format (also resorts)
+        camera_features.max_num_focus_areas = parameters.maxNumFocusAreas
 
-        camera_features.is_exposure_lock_supported = parameters.isAutoExposureLockSupported();
+        camera_features.is_exposure_lock_supported = parameters.isAutoExposureLockSupported
 
-        camera_features.is_white_balance_lock_supported = parameters.isAutoWhiteBalanceLockSupported();
+        camera_features.is_white_balance_lock_supported = parameters.isAutoWhiteBalanceLockSupported
 
-        camera_features.is_video_stabilization_supported = parameters.isVideoStabilizationSupported();
+        camera_features.is_video_stabilization_supported = parameters.isVideoStabilizationSupported
 
-        camera_features.is_photo_video_recording_supported = parameters.isVideoSnapshotSupported();
+        camera_features.is_photo_video_recording_supported = parameters.isVideoSnapshotSupported
 
-        camera_features.min_exposure = parameters.getMinExposureCompensation();
-        camera_features.max_exposure = parameters.getMaxExposureCompensation();
-        camera_features.exposure_step = getExposureCompensationStep();
-        camera_features.supports_expo_bracketing = (camera_features.min_exposure != 0 && camera_features.max_exposure != 0); // require both a darker and brighter exposure, in order to support expo bracketing
-        camera_features.max_expo_bracketing_n_images = max_expo_bracketing_n_images;
+        camera_features.min_exposure = parameters.minExposureCompensation
+        camera_features.max_exposure = parameters.maxExposureCompensation
+        camera_features.exposure_step = this.exposureCompensationStep
+        camera_features.supports_expo_bracketing =
+            (camera_features.min_exposure != 0 && camera_features.max_exposure != 0) // require both a darker and brighter exposure, in order to support expo bracketing
+        camera_features.max_expo_bracketing_n_images = max_expo_bracketing_n_images
 
-        List<Camera.Size> camera_video_sizes = parameters.getSupportedVideoSizes();
+        var camera_video_sizes = parameters.supportedVideoSizes
         if (camera_video_sizes == null) {
             // if null, we should use the preview sizes - see http://stackoverflow.com/questions/14263521/android-getsupportedvideosizes-allways-returns-null
-            Logger.INSTANCE.d(TAG, "take video_sizes from preview sizes");
-            camera_video_sizes = parameters.getSupportedPreviewSizes();
+            d(TAG, "take video_sizes from preview sizes")
+            camera_video_sizes = parameters.supportedPreviewSizes
         }
-        camera_features.video_sizes = new ArrayList<>();
+        camera_features.video_sizes = ArrayList<Size?>()
         //camera_features.video_sizes.add(new CameraController.Size(1920, 1080)); // test
-        for (Camera.Size camera_size : camera_video_sizes) {
-            camera_features.video_sizes.add(new CameraController.Size(camera_size.width, camera_size.height));
+        for (camera_size in camera_video_sizes) {
+            camera_features.video_sizes.add(Size(camera_size.width, camera_size.height))
         }
         // sizes are usually already sorted from high to low, but sort just in case
-        Collections.sort(camera_features.video_sizes, new CameraController.SizeSorter());
+        Collections.sort<Size?>(camera_features.video_sizes, SizeSorter())
 
-        List<Camera.Size> camera_preview_sizes = parameters.getSupportedPreviewSizes();
-        camera_features.preview_sizes = new ArrayList<>();
-        for (Camera.Size camera_size : camera_preview_sizes) {
-            camera_features.preview_sizes.add(new CameraController.Size(camera_size.width, camera_size.height));
+        val camera_preview_sizes = parameters.supportedPreviewSizes
+        camera_features.preview_sizes = ArrayList<Size?>()
+        for (camera_size in camera_preview_sizes) {
+            camera_features.preview_sizes.add(Size(camera_size.width, camera_size.height))
         }
 
-        Logger.INSTANCE.d(TAG, "camera parameters: " + parameters.flatten());
+        d(TAG, "camera parameters: " + parameters.flatten())
 
-        camera_features.can_disable_shutter_sound = camera_info.canDisableShutterSound;
+        camera_features.can_disable_shutter_sound = camera_info.canDisableShutterSound
 
         // Determine view angles. Note that these can vary based on the resolution - and since we read these before the caller has
         // set the desired resolution, this isn't strictly correct. However these are presumably view angles for the photo anyway,
         // when some callers (e.g., DrawPreview) want view angles for the preview anyway - so these will only be an approximation for
         // what we want anyway.
-        final float default_view_angle_x = 55.0f;
-        final float default_view_angle_y = 43.0f;
+        val default_view_angle_x = 55.0f
+        val default_view_angle_y = 43.0f
         try {
-            camera_features.view_angle_x = parameters.getHorizontalViewAngle();
-            camera_features.view_angle_y = parameters.getVerticalViewAngle();
-        } catch (Exception e) {
+            camera_features.view_angle_x = parameters.horizontalViewAngle
+            camera_features.view_angle_y = parameters.verticalViewAngle
+        } catch (e: Exception) {
             // apparently some devices throw exceptions...
-            e.printStackTrace();
-            Logger.INSTANCE.e(TAG, "exception reading horizontal or vertical view angles");
-            camera_features.view_angle_x = default_view_angle_x;
-            camera_features.view_angle_y = default_view_angle_y;
-        }
-        if (MyDebug.LOG) {
-            Logger.INSTANCE.d(TAG, "view_angle_x: " + camera_features.view_angle_x);
-            Logger.INSTANCE.d(TAG, "view_angle_y: " + camera_features.view_angle_y);
+            e.printStackTrace()
+            e(TAG, "exception reading horizontal or vertical view angles")
+            camera_features.view_angle_x = default_view_angle_x
+            camera_features.view_angle_y = default_view_angle_y
         }
         // need to handle some devices reporting rubbish
         if (camera_features.view_angle_x > 150.0f || camera_features.view_angle_y > 150.0f) {
-            Logger.INSTANCE.e(TAG, "camera API reporting stupid view angles, set to sensible defaults");
-            camera_features.view_angle_x = default_view_angle_x;
-            camera_features.view_angle_y = default_view_angle_y;
+            e(TAG, "camera API reporting stupid view angles, set to sensible defaults")
+            camera_features.view_angle_x = default_view_angle_x
+            camera_features.view_angle_y = default_view_angle_y
         }
 
-        return camera_features;
+        return camera_features
     }
 
     /** Important, from docs:
-     *  "Changing scene mode may override other parameters (such as flash mode, focus mode, white balance).
-     *  For example, suppose originally flash mode is on and supported flash modes are on/off. In night
-     *  scene mode, both flash mode and supported flash mode may be changed to off. After setting scene
-     *  mode, applications should call getParameters to know if some parameters are changed."
+     * "Changing scene mode may override other parameters (such as flash mode, focus mode, white balance).
+     * For example, suppose originally flash mode is on and supported flash modes are on/off. In night
+     * scene mode, both flash mode and supported flash mode may be changed to off. After setting scene
+     * mode, applications should call getParameters to know if some parameters are changed."
      */
-    @Override
-    public SupportedValues setSceneMode(String value) {
-        Camera.Parameters parameters;
+    override fun setSceneMode(value: String?): SupportedValues? {
+        val parameters: Camera.Parameters
         try {
-            parameters = this.getParameters();
-        } catch (RuntimeException e) {
-            Logger.INSTANCE.e(TAG, "exception from getParameters");
-            e.printStackTrace();
-            count_camera_parameters_exception++;
-            return null;
+            parameters = this.parameters
+        } catch (e: RuntimeException) {
+            e(TAG, "exception from getParameters")
+            e.printStackTrace()
+            count_camera_parameters_exception++
+            return null
         }
-        List<String> values = parameters.getSupportedSceneModes();
-		/*{
+        val values = parameters.supportedSceneModes/*{
 			// test
 			values = new ArrayList<>();
 			values.add(ISO_DEFAULT);
 		}*/
-        SupportedValues supported_values = checkModeIsSupported(values, value, SCENE_MODE_DEFAULT);
+        val supported_values = checkModeIsSupported(values, value, SCENE_MODE_DEFAULT)
         if (supported_values != null) {
-            String scene_mode = parameters.getSceneMode();
+            val scene_mode = parameters.sceneMode
             // if scene mode is null, it should mean scene modes aren't supported anyway
-            if (scene_mode != null && !scene_mode.equals(supported_values.selected_value)) {
-                parameters.setSceneMode(supported_values.selected_value);
-                setCameraParameters(parameters);
+            if (scene_mode != null && scene_mode != supported_values.selected_value) {
+                parameters.sceneMode = supported_values.selected_value
+                setCameraParameters(parameters)
             }
         }
-        return supported_values;
+        return supported_values
     }
 
-    @Override
-    public String getSceneMode() {
-        Camera.Parameters parameters = this.getParameters();
-        return parameters.getSceneMode();
+    override fun getSceneMode(): String? {
+        val parameters = this.parameters
+        return parameters.getSceneMode()
     }
 
-    @Override
-    public boolean sceneModeAffectsFunctionality() {
+    override fun sceneModeAffectsFunctionality(): Boolean {
         // see https://developer.android.com/reference/android/hardware/Camera.Parameters.html#setSceneMode(java.lang.String)
         // "Changing scene mode may override other parameters ... After setting scene mode, applications should call
         // getParameters to know if some parameters are changed."
-        return true;
+        return true
     }
 
-    public SupportedValues setColorEffect(String value) {
-        Camera.Parameters parameters = this.getParameters();
-        List<String> values = parameters.getSupportedColorEffects();
-        SupportedValues supported_values = checkModeIsSupported(values, value, COLOR_EFFECT_DEFAULT);
+    override fun setColorEffect(value: String?): SupportedValues? {
+        val parameters = this.parameters
+        val values = parameters.getSupportedColorEffects()
+        val supported_values = checkModeIsSupported(values, value, COLOR_EFFECT_DEFAULT)
         if (supported_values != null) {
-            String color_effect = parameters.getColorEffect();
+            val color_effect = parameters.getColorEffect()
             // have got nullpointerexception from Google Play, so now check for null
-            if (color_effect == null || !color_effect.equals(supported_values.selected_value)) {
-                parameters.setColorEffect(supported_values.selected_value);
-                setCameraParameters(parameters);
+            if (color_effect == null || color_effect != supported_values.selected_value) {
+                parameters.setColorEffect(supported_values.selected_value)
+                setCameraParameters(parameters)
             }
         }
-        return supported_values;
+        return supported_values
     }
 
-    public String getColorEffect() {
-        Camera.Parameters parameters = this.getParameters();
-        return parameters.getColorEffect();
+    override fun getColorEffect(): String? {
+        val parameters = this.parameters
+        return parameters.getColorEffect()
     }
 
-    public SupportedValues setWhiteBalance(String value) {
-        Logger.INSTANCE.d(TAG, "setWhiteBalance: " + value);
-        Camera.Parameters parameters = this.getParameters();
-        List<String> values = parameters.getSupportedWhiteBalance();
+    override fun setWhiteBalance(value: String?): SupportedValues? {
+        d(TAG, "setWhiteBalance: " + value)
+        val parameters = this.parameters
+        val values = parameters.getSupportedWhiteBalance()
         if (values != null) {
             // Some devices (e.g., OnePlus 3T) claim to support a "manual" mode, even though this
             // isn't one of the possible white balances defined in Camera.Parameters.
             // Since the old API doesn't support white balance temperatures, and this mode seems to
             // have no useful effect, we remove it to avoid confusion.
             while (values.contains("manual")) {
-                values.remove("manual");
+                values.remove("manual")
             }
         }
-        SupportedValues supported_values = checkModeIsSupported(values, value, WHITE_BALANCE_DEFAULT);
+        val supported_values = checkModeIsSupported(values, value, WHITE_BALANCE_DEFAULT)
         if (supported_values != null) {
-            String white_balance = parameters.getWhiteBalance();
+            val white_balance = parameters.getWhiteBalance()
             // if white balance is null, it should mean white balances aren't supported anyway
-            if (white_balance != null && !white_balance.equals(supported_values.selected_value)) {
-                parameters.setWhiteBalance(supported_values.selected_value);
-                setCameraParameters(parameters);
+            if (white_balance != null && white_balance != supported_values.selected_value) {
+                parameters.setWhiteBalance(supported_values.selected_value)
+                setCameraParameters(parameters)
             }
         }
-        return supported_values;
+        return supported_values
     }
 
-    public String getWhiteBalance() {
-        Camera.Parameters parameters = this.getParameters();
-        return parameters.getWhiteBalance();
+    override fun getWhiteBalance(): String? {
+        val parameters = this.parameters
+        return parameters.getWhiteBalance()
     }
 
-    @Override
-    public boolean setWhiteBalanceTemperature(int temperature) {
+    override fun setWhiteBalanceTemperature(temperature: Int): Boolean {
         // not supported for CameraController1
-        return false;
+        return false
     }
 
-    @Override
-    public int getWhiteBalanceTemperature() {
+    override fun getWhiteBalanceTemperature(): Int {
         // not supported for CameraController1
-        return 0;
+        return 0
     }
 
-    @Override
-    public SupportedValues setAntiBanding(String value) {
-        Camera.Parameters parameters = this.getParameters();
-        List<String> values = parameters.getSupportedAntibanding();
-        SupportedValues supported_values = checkModeIsSupported(values, value, ANTIBANDING_DEFAULT);
+    override fun setAntiBanding(value: String?): SupportedValues? {
+        val parameters = this.parameters
+        val values = parameters.getSupportedAntibanding()
+        val supported_values = checkModeIsSupported(values, value, ANTIBANDING_DEFAULT)
         if (supported_values != null) {
             // for antibanding, if the requested value isn't available, we don't modify it at all
             // (so we stick with the device's default setting)
-            if (supported_values.selected_value.equals(value)) {
-                String antibanding = parameters.getAntibanding();
-                if (antibanding == null || !antibanding.equals(supported_values.selected_value)) {
-                    parameters.setAntibanding(supported_values.selected_value);
-                    setCameraParameters(parameters);
+            if (supported_values.selected_value == value) {
+                val antibanding = parameters.getAntibanding()
+                if (antibanding == null || antibanding != supported_values.selected_value) {
+                    parameters.setAntibanding(supported_values.selected_value)
+                    setCameraParameters(parameters)
                 }
             }
         }
-        return supported_values;
+        return supported_values
     }
 
-    @Override
-    public String getAntiBanding() {
-        Camera.Parameters parameters = this.getParameters();
-        return parameters.getAntibanding();
+    override fun getAntiBanding(): String? {
+        val parameters = this.parameters
+        return parameters.getAntibanding()
     }
 
-    @Override
-    public SupportedValues setEdgeMode(String value) {
-        return null;
+    override fun setEdgeMode(value: String?): SupportedValues? {
+        return null
     }
 
-    @Override
-    public String getEdgeMode() {
-        return null;
+    override fun getEdgeMode(): String? {
+        return null
     }
 
-    @Override
-    public SupportedValues setNoiseReductionMode(String value) {
-        return null;
+    override fun setNoiseReductionMode(value: String?): SupportedValues? {
+        return null
     }
 
-    @Override
-    public String getNoiseReductionMode() {
-        return null;
+    override fun getNoiseReductionMode(): String? {
+        return null
     }
 
-    @Override
-    public SupportedValues setISO(String value) {
-        Camera.Parameters parameters = this.getParameters();
+    override fun setISO(value: String?): SupportedValues? {
+        val parameters = this.parameters
         // get available isos - no standard value for this, see http://stackoverflow.com/questions/2978095/android-camera-api-iso-setting
-        String iso_values = parameters.get("iso-values");
+        var iso_values = parameters.get("iso-values")
         if (iso_values == null) {
-            iso_values = parameters.get("iso-mode-values"); // Galaxy Nexus
+            iso_values = parameters.get("iso-mode-values") // Galaxy Nexus
             if (iso_values == null) {
-                iso_values = parameters.get("iso-speed-values"); // Micromax A101
-                if (iso_values == null)
-                    iso_values = parameters.get("nv-picture-iso-values"); // LG dual P990
+                iso_values = parameters.get("iso-speed-values") // Micromax A101
+                if (iso_values == null) iso_values =
+                    parameters.get("nv-picture-iso-values") // LG dual P990
             }
         }
-        List<String> values = null;
-        if (iso_values != null && iso_values.length() > 0) {
-            Logger.INSTANCE.d(TAG, "iso_values: " + iso_values);
-            String[] isos_array = iso_values.split(",");
+        var values: MutableList<String?>? = null
+        if (iso_values != null && iso_values.isNotEmpty()) {
+            d(TAG, "iso_values: " + iso_values)
+            val isos_array: Array<String?> =
+                iso_values.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             // split shouldn't return null
-            if (isos_array.length > 0) {
+            if (isos_array.isNotEmpty()) {
                 // remove duplicates (OnePlus 3T has several duplicate "auto" entries)
-                HashSet<String> hashSet = new HashSet<>();
-                values = new ArrayList<>();
+                val hashSet = HashSet<String?>()
+                values = ArrayList<String?>()
                 // use hashset for efficiency
                 // make sure we alo preserve the order
-                for (String iso : isos_array) {
+                for (iso in isos_array) {
                     if (!hashSet.contains(iso)) {
-                        values.add(iso);
-                        hashSet.add(iso);
+                        values.add(iso)
+                        hashSet.add(iso)
                     }
                 }
             }
         }
 
-        iso_key = "iso";
+        iso_key = "iso"
         if (parameters.get(iso_key) == null) {
-            iso_key = "iso-speed"; // Micromax A101
+            iso_key = "iso-speed" // Micromax A101
             if (parameters.get(iso_key) == null) {
-                iso_key = "nv-picture-iso"; // LG dual P990
+                iso_key = "nv-picture-iso" // LG dual P990
                 if (parameters.get(iso_key) == null) {
-                    if (Build.MODEL.contains("Z00"))
-                        iso_key = "iso"; // Asus Zenfone 2 Z00A and Z008: see https://sourceforge.net/p/opencamera/tickets/183/
-                    else
-                        iso_key = null; // not supported
+                    if (Build.MODEL.contains("Z00")) iso_key =
+                        "iso" // Asus Zenfone 2 Z00A and Z008: see https://sourceforge.net/p/opencamera/tickets/183/
+                    else iso_key = null // not supported
                 }
             }
         }
-		/*values = new ArrayList<>();
-		//values.add(ISO_DEFAULT);
-		//values.add("ISO_HJR");
-		values.add("ISO50");
-		values.add("ISO64");
-		values.add("ISO80");
-		values.add("ISO100");
-		values.add("ISO125");
-		values.add("ISO160");
-		values.add("ISO200");
-		values.add("ISO250");
-		values.add("ISO320");
-		values.add("ISO400");
-		values.add("ISO500");
-		values.add("ISO640");
-		values.add("ISO800");
-		values.add("ISO1000");
-		values.add("ISO1250");
-		values.add("ISO1600");
-		values.add("ISO2000");
-		values.add("ISO2500");
-		values.add("ISO3200");
-		values.add(ISO_DEFAULT);
-		//values.add("400");
-		//values.add("800");
-		//values.add("1600");
-		iso_key = "iso";*/
         if (iso_key != null) {
             if (values == null) {
                 // set a default for some devices which have an iso_key, but don't give a list of supported ISOs
-                values = new ArrayList<>();
-                values.add(ISO_DEFAULT);
-                values.add("50");
-                values.add("100");
-                values.add("200");
-                values.add("400");
-                values.add("800");
-                values.add("1600");
+                values = ArrayList()
+                values.add(ISO_DEFAULT)
+                values.add("50")
+                values.add("100")
+                values.add("200")
+                values.add("400")
+                values.add("800")
+                values.add("1600")
             }
-            SupportedValues supported_values = checkModeIsSupported(values, value, ISO_DEFAULT);
+            val supported_values = checkModeIsSupported(values, value, ISO_DEFAULT)
             if (supported_values != null) {
-                Logger.INSTANCE.d(TAG, "set: " + iso_key + " to: " + supported_values.selected_value);
-                parameters.set(iso_key, supported_values.selected_value);
-                setCameraParameters(parameters);
+                d(TAG, "set: " + iso_key + " to: " + supported_values.selected_value)
+                parameters.set(iso_key, supported_values.selected_value)
+                setCameraParameters(parameters)
             }
-            return supported_values;
+            return supported_values
         }
-        return null;
+        return null
     }
 
-    @Override
-    public String getISOKey() {
-        Logger.INSTANCE.d(TAG, "getISOKey");
-        return this.iso_key;
+    override fun getISOKey(): String? {
+        d(TAG, "getISOKey")
+        return this.iso_key
     }
 
-    @Override
-    public void setManualISO(boolean manual_iso, int iso) {
+    override fun setManualISO(manual_iso: Boolean, iso: Int) {
         // not supported for CameraController1
     }
 
-    @Override
-    public boolean isManualISO() {
+    override fun isManualISO(): Boolean {
         // not supported for CameraController1
-        return false;
+        return false
     }
 
-    @Override
-    public boolean setISO(int iso) {
+    override fun setISO(iso: Int): Boolean {
         // not supported for CameraController1
-        return false;
+        return false
     }
 
-    @Override
-    public int getISO() {
+    override fun getISO(): Int {
         // not supported for CameraController1
-        return 0;
+        return 0
     }
 
-    @Override
-    public long getExposureTime() {
+    override fun getExposureTime(): Long {
         // not supported for CameraController1
-        return 0L;
+        return 0L
     }
 
-    @Override
-    public boolean setExposureTime(long exposure_time) {
+    override fun setExposureTime(exposure_time: Long): Boolean {
         // not supported for CameraController1
-        return false;
+        return false
     }
 
-    @Override
-    public void setAperture(float aperture) {
+    override fun setAperture(aperture: Float) {
         // not supported for CameraController1
     }
 
-    @Override
-    public CameraController.Size getPictureSize() {
-    	/*Camera.Parameters parameters = this.getParameters();
+    override fun getPictureSize(): Size {/*Camera.Parameters parameters = this.getParameters();
     	Camera.Size camera_size = parameters.getPictureSize();
     	return new CameraController.Size(camera_size.width, camera_size.height);*/
-        return new CameraController.Size(picture_width, picture_height);
+        return Size(picture_width, picture_height)
     }
 
-    @Override
-    public void setPictureSize(int width, int height) {
-        Camera.Parameters parameters = this.getParameters();
-        this.picture_width = width;
-        this.picture_height = height;
-        parameters.setPictureSize(width, height);
-        Logger.INSTANCE.d(TAG, "set picture size: " + parameters.getPictureSize().width + ", " + parameters.getPictureSize().height);
-        setCameraParameters(parameters);
+    override fun setPictureSize(width: Int, height: Int) {
+        val parameters = this.parameters
+        this.picture_width = width
+        this.picture_height = height
+        parameters.setPictureSize(width, height)
+        setCameraParameters(parameters)
     }
 
-    @Override
-    public CameraController.Size getPreviewSize() {
-        Camera.Parameters parameters = this.getParameters();
-        Camera.Size camera_size = parameters.getPreviewSize();
-        return new CameraController.Size(camera_size.width, camera_size.height);
+    override fun getPreviewSize(): Size {
+        val parameters = this.parameters
+        val camera_size = parameters.previewSize
+        return Size(camera_size.width, camera_size.height)
     }
 
-    @Override
-    public void setPreviewSize(int width, int height) {
-        Camera.Parameters parameters = this.getParameters();
-        Logger.INSTANCE.d(TAG, "current preview size: " + parameters.getPreviewSize().width + ", " + parameters.getPreviewSize().height);
-        parameters.setPreviewSize(width, height);
-        Logger.INSTANCE.d(TAG, "new preview size: " + parameters.getPreviewSize().width + ", " + parameters.getPreviewSize().height);
-        setCameraParameters(parameters);
+    override fun setPreviewSize(width: Int, height: Int) {
+        val parameters = this.parameters
+        parameters.setPreviewSize(width, height)
+        setCameraParameters(parameters)
     }
 
-    @Override
-    public void setCameraExtension(boolean enabled, int extension) {
+    override fun setCameraExtension(enabled: Boolean, extension: Int) {
         // not supported
     }
 
-    @Override
-    public boolean isCameraExtension() {
-        return false;
+    override fun isCameraExtension(): Boolean {
+        return false
     }
 
-    @Override
-    public int getCameraExtension() {
-        return -1;
+    override fun getCameraExtension(): Int {
+        return -1
     }
 
-    @Override
-    public void setBurstType(BurstType burst_type) {
-        Logger.INSTANCE.d(TAG, "setBurstType: " + burst_type);
+    override fun setBurstType(burst_type: BurstType?) {
+        d(TAG, "setBurstType: $burst_type")
         if (camera == null) {
-            Logger.INSTANCE.e(TAG, "no camera");
-            return;
+            e(TAG, "no camera")
+            return
         }
         if (burst_type != BurstType.BURSTTYPE_NONE && burst_type != BurstType.BURSTTYPE_EXPO) {
-            Logger.INSTANCE.e(TAG, "burst type not supported");
-            return;
+            e(TAG, "burst type not supported")
+            return
         }
-        this.want_expo_bracketing = burst_type == BurstType.BURSTTYPE_EXPO;
+        this.want_expo_bracketing = burst_type == BurstType.BURSTTYPE_EXPO
     }
 
-    @Override
-    public BurstType getBurstType() {
-        return want_expo_bracketing ? BurstType.BURSTTYPE_EXPO : BurstType.BURSTTYPE_NONE;
+    override fun getBurstType(): BurstType {
+        return if (want_expo_bracketing) BurstType.BURSTTYPE_EXPO else BurstType.BURSTTYPE_NONE
     }
 
-    @Override
-    public void setBurstNImages(int burst_requested_n_images) {
+    override fun setBurstNImages(burst_requested_n_images: Int) {
         // not supported
     }
 
-    @Override
-    public void setBurstForNoiseReduction(boolean burst_for_noise_reduction, boolean noise_reduction_low_light) {
+    override fun setBurstForNoiseReduction(
+        burst_for_noise_reduction: Boolean, noise_reduction_low_light: Boolean
+    ) {
         // not supported
     }
 
-    @Override
-    public boolean isContinuousBurstInProgress() {
+    override fun isContinuousBurstInProgress(): Boolean {
         // not supported
-        return false;
+        return false
     }
 
-    @Override
-    public void stopContinuousBurst() {
+    override fun stopContinuousBurst() {
         // not supported
     }
 
-    @Override
-    public void stopFocusBracketingBurst() {
+    override fun stopFocusBracketingBurst() {
         // not supported
     }
 
-    @Override
-    public void setExpoBracketingNImages(int n_images) {
-        Logger.INSTANCE.d(TAG, "setExpoBracketingNImages: " + n_images);
+    override fun setExpoBracketingNImages(n_images: Int) {
+        var n_images = n_images
+        d(TAG, "setExpoBracketingNImages: $n_images")
         if (n_images <= 1 || (n_images % 2) == 0) {
-            Logger.INSTANCE.e(TAG, "n_images should be an odd number greater than 1");
-            throw new RuntimeException(); // throw as RuntimeException, as this is a programming error
+            e(TAG, "n_images should be an odd number greater than 1")
+            throw RuntimeException() // throw as RuntimeException, as this is a programming error
         }
         if (n_images > max_expo_bracketing_n_images) {
-            n_images = max_expo_bracketing_n_images;
-            Logger.INSTANCE.e(TAG, "limiting n_images to max of " + n_images);
+            n_images = max_expo_bracketing_n_images
+            e(TAG, "limiting n_images to max of $n_images")
         }
-        this.expo_bracketing_n_images = n_images;
+        this.expo_bracketing_n_images = n_images
     }
 
-    @Override
-    public void setExpoBracketingStops(double stops) {
-        Logger.INSTANCE.d(TAG, "setExpoBracketingStops: " + stops);
+    override fun setExpoBracketingStops(stops: Double) {
+        d(TAG, "setExpoBracketingStops: $stops")
         if (stops <= 0.0) {
-            Logger.INSTANCE.e(TAG, "stops should be positive");
-            throw new RuntimeException(); // throw as RuntimeException, as this is a programming error
+            e(TAG, "stops should be positive")
+            throw RuntimeException() // throw as RuntimeException, as this is a programming error
         }
-        this.expo_bracketing_stops = stops;
+        this.expo_bracketing_stops = stops
     }
 
-    @Override
-    public void setDummyCaptureHack(boolean dummy_capture_hack) {
+    override fun setDummyCaptureHack(dummy_capture_hack: Boolean) {
         // not supported for CameraController1
     }
 
-    @Override
-    public void setUseExpoFastBurst(boolean use_expo_fast_burst) {
+    override fun setUseExpoFastBurst(use_expo_fast_burst: Boolean) {
         // not supported for CameraController1
     }
 
-    @Override
-    public boolean isCaptureFastBurst() {
+    override fun isCaptureFastBurst(): Boolean {
         // not supported for CameraController1
-        return false;
+        return false
     }
 
-    @Override
-    public boolean isCapturingBurst() {
-        return getBurstTotal() > 1 && getNBurstTaken() < getBurstTotal();
+    override fun isCapturingBurst(): Boolean {
+        return getBurstTotal() > 1 && getNBurstTaken() < getBurstTotal()
     }
 
-    @Override
-    public int getNBurstTaken() {
-        return pending_burst_images.size();
+    override fun getNBurstTaken(): Int {
+        return pending_burst_images.size
     }
 
-    @Override
-    public int getBurstTotal() {
-        return n_burst;
+    override fun getBurstTotal(): Int {
+        return n_burst
     }
 
-    @Override
-    public void setJpegR(boolean want_jpeg_r) {
+    override fun setJpegR(want_jpeg_r: Boolean) {
         // not supported for CameraController1
     }
 
-    @Override
-    public void setRaw(boolean want_raw, int max_raw_images) {
+    override fun setRaw(want_raw: Boolean, max_raw_images: Int) {
         // not supported for CameraController1
     }
 
-    @Override
-    public void setVideoHighSpeed(boolean setVideoHighSpeed) {
+    override fun setVideoHighSpeed(setVideoHighSpeed: Boolean) {
         // not supported for CameraController1
     }
 
-    @Override
-    public boolean getOpticalStabilization() {
+    override fun getOpticalStabilization(): Boolean {
         // not supported for CameraController1
-        return false;
+        return false
     }
 
-    @Override
-    public void setVideoStabilization(boolean enabled) {
-        Camera.Parameters parameters = this.getParameters();
-        parameters.setVideoStabilization(enabled);
-        setCameraParameters(parameters);
+    override fun setVideoStabilization(enabled: Boolean) {
+        val parameters = this.parameters
+        parameters.setVideoStabilization(enabled)
+        setCameraParameters(parameters)
     }
 
-    public boolean getVideoStabilization() {
+    override fun getVideoStabilization(): Boolean {
         try {
-            Camera.Parameters parameters = this.getParameters();
-            return parameters.getVideoStabilization();
-        } catch (RuntimeException e) {
+            val parameters = this.parameters
+            return parameters.getVideoStabilization()
+        } catch (e: RuntimeException) {
             // have had crashes from Google Play for getParameters - assume video stabilization not enabled
-            Logger.INSTANCE.e(TAG, "failed to get parameters for video stabilization");
-            e.printStackTrace();
-            count_camera_parameters_exception++;
-            return false;
+            e(TAG, "failed to get parameters for video stabilization")
+            e.printStackTrace()
+            count_camera_parameters_exception++
+            return false
         }
     }
 
-    @Override
-    public void setTonemapProfile(TonemapProfile tonemap_profile, float log_profile_strength, float gamma) {
+    override fun setTonemapProfile(
+        tonemap_profile: TonemapProfile?, log_profile_strength: Float, gamma: Float
+    ) {
         // not supported for CameraController1!
     }
 
-    @Override
-    public TonemapProfile getTonemapProfile() {
+    override fun getTonemapProfile(): TonemapProfile {
         // not supported for CameraController1!
-        return TonemapProfile.TONEMAPPROFILE_OFF;
+        return TonemapProfile.TONEMAPPROFILE_OFF
     }
 
-    public int getJpegQuality() {
-        Camera.Parameters parameters = this.getParameters();
-        return parameters.getJpegQuality();
+    override fun getJpegQuality(): Int {
+        val parameters = this.parameters
+        return parameters.getJpegQuality()
     }
 
-    public void setJpegQuality(int quality) {
-        Camera.Parameters parameters = this.getParameters();
-        parameters.setJpegQuality(quality);
-        setCameraParameters(parameters);
+    override fun setJpegQuality(quality: Int) {
+        val parameters = this.parameters
+        parameters.setJpegQuality(quality)
+        setCameraParameters(parameters)
     }
 
-    public int getZoom() {
-		/*Camera.Parameters parameters = this.getParameters();
+    override fun getZoom(): Int {/*Camera.Parameters parameters = this.getParameters();
 		return parameters.getZoom();*/
-        return this.current_zoom_value;
+        return this.current_zoom_value
     }
 
-    public void setZoom(int value) {
+    override fun setZoom(value: Int) {
         try {
-            Camera.Parameters parameters = this.getParameters();
-            Logger.INSTANCE.d(TAG, "zoom was: " + parameters.getZoom());
-            this.current_zoom_value = value;
-            parameters.setZoom(value);
-            setCameraParameters(parameters);
-        } catch (RuntimeException e) {
-            Logger.INSTANCE.e(TAG, "failed to set parameters for zoom");
-            e.printStackTrace();
-            count_camera_parameters_exception++;
+            val parameters = this.parameters
+            this.current_zoom_value = value
+            parameters.zoom = value
+            setCameraParameters(parameters)
+        } catch (e: RuntimeException) {
+            e(TAG, "failed to set parameters for zoom")
+            e.printStackTrace()
+            count_camera_parameters_exception++
         }
     }
 
-    @Override
-    public void setZoom(int value, float smooth_zoom) {
-        setZoom(value);
+    override fun setZoom(value: Int, smooth_zoom: Float) {
+        zoom = value
     }
 
-    @Override
-    public void resetZoom() {
-        setZoom(0);
+    override fun resetZoom() {
+        zoom = 0
     }
 
-    public int getExposureCompensation() {
-		/*Camera.Parameters parameters = this.getParameters();
+    override fun getExposureCompensation(): Int {/*Camera.Parameters parameters = this.getParameters();
 		return parameters.getExposureCompensation();*/
-        return this.current_exposure_compensation;
+        return this.current_exposure_compensation
     }
 
-    private float getExposureCompensationStep() {
-        float exposure_step;
-        Camera.Parameters parameters = this.getParameters();
-        try {
-            exposure_step = parameters.getExposureCompensationStep();
-        } catch (Exception e) {
-            // received a NullPointerException from StringToReal.parseFloat() beneath getExposureCompensationStep() on Google Play!
-            Logger.INSTANCE.e(TAG, "exception from getExposureCompensationStep()");
-            e.printStackTrace();
-            exposure_step = 1.0f / 3.0f; // make up a typical example
+    private val exposureCompensationStep: Float
+        get() {
+            var exposure_step: Float
+            val parameters = this.parameters
+            try {
+                exposure_step = parameters.exposureCompensationStep
+            } catch (e: Exception) {
+                // received a NullPointerException from StringToReal.parseFloat() beneath getExposureCompensationStep() on Google Play!
+                e(
+                    TAG, "exception from getExposureCompensationStep()"
+                )
+                e.printStackTrace()
+                exposure_step = 1.0f / 3.0f // make up a typical example
+            }
+            return exposure_step
         }
-        return exposure_step;
-    }
 
     // Returns whether exposure was modified
-    public boolean setExposureCompensation(int new_exposure) {
-		/*Camera.Parameters parameters = this.getParameters();
-		int current_exposure = parameters.getExposureCompensation();
-		if( new_exposure != current_exposure ) {*/
+    override fun setExposureCompensation(new_exposure: Int): Boolean {
         if (new_exposure != current_exposure_compensation) {
-            Logger.INSTANCE.d(TAG, "change exposure from " + current_exposure_compensation + " to " + new_exposure);
-            Camera.Parameters parameters = this.getParameters();
-            this.current_exposure_compensation = new_exposure;
-            parameters.setExposureCompensation(new_exposure);
-            setCameraParameters(parameters);
-            return true;
+            val parameters = this.parameters
+            this.current_exposure_compensation = new_exposure
+            parameters.exposureCompensation = new_exposure
+            setCameraParameters(parameters)
+            return true
         }
-        return false;
+        return false
     }
 
-    @Override
-    public void setPreviewFpsRange(int min, int max) {
-        Logger.INSTANCE.d(TAG, "setPreviewFpsRange: " + min + " to " + max);
+    override fun setPreviewFpsRange(min: Int, max: Int) {
         try {
-            Camera.Parameters parameters = this.getParameters();
-            parameters.setPreviewFpsRange(min, max);
-            setCameraParameters(parameters);
-        } catch (RuntimeException e) {
+            val parameters = this.parameters
+            parameters.setPreviewFpsRange(min, max)
+            setCameraParameters(parameters)
+        } catch (e: RuntimeException) {
             // can get RuntimeException from getParameters - we don't catch within that function because callers may not be able to recover,
             // but here it doesn't really matter if we fail to set the fps range
-            Logger.INSTANCE.e(TAG, "setPreviewFpsRange failed to get parameters");
-            e.printStackTrace();
-            count_camera_parameters_exception++;
+            e(TAG, "setPreviewFpsRange failed to get parameters")
+            e.printStackTrace()
+            count_camera_parameters_exception++
         }
     }
 
-    @Override
-    public void clearPreviewFpsRange() {
-        Logger.INSTANCE.d(TAG, "clearPreviewFpsRange");
+    override fun clearPreviewFpsRange() {
+        d(TAG, "clearPreviewFpsRange")
         // not supported for old API
     }
 
-    public List<int[]> getSupportedPreviewFpsRange() {
+    override fun getSupportedPreviewFpsRange(): MutableList<IntArray?>? {
         try {
-            Camera.Parameters parameters = this.getParameters();
-            return parameters.getSupportedPreviewFpsRange();
-        } catch (RuntimeException e) {
-			/* N.B, have had reports of StringIndexOutOfBoundsException on Google Play on Sony Xperia M devices
+            val parameters = this.parameters
+            return parameters.supportedPreviewFpsRange
+        } catch (e: RuntimeException) {/* N.B, have had reports of StringIndexOutOfBoundsException on Google Play on Sony Xperia M devices
 				at android.hardware.Camera$Parameters.splitRange(Camera.java:4098)
 				at android.hardware.Camera$Parameters.getSupportedPreviewFpsRange(Camera.java:2799)
 			  But that's a subclass of RuntimeException which we now catch anyway.
 			  */
-            e.printStackTrace();
-            count_camera_parameters_exception++;
+            e.printStackTrace()
+            count_camera_parameters_exception++
         }
-        return null;
+        return null
     }
 
-    @Override
-    public void setFocusValue(String focus_value) {
-        Camera.Parameters parameters = this.getParameters();
-        switch (focus_value) {
-            case "focus_mode_auto":
-            case "focus_mode_locked":
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                break;
-            case "focus_mode_infinity":
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY);
-                break;
-            case "focus_mode_macro":
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_MACRO);
-                break;
-            case "focus_mode_fixed":
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
-                break;
-            case "focus_mode_edof":
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_EDOF);
-                break;
-            case "focus_mode_continuous_picture":
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                break;
-            case "focus_mode_continuous_video":
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-                break;
-            default:
-                Logger.INSTANCE.d(TAG, "setFocusValue() received unknown focus value " + focus_value);
-                break;
+    override fun setFocusValue(focus_value: String) {
+        val parameters = this.parameters
+        when (focus_value) {
+            "focus_mode_auto", "focus_mode_locked" -> parameters.focusMode =
+                Camera.Parameters.FOCUS_MODE_AUTO
+
+            "focus_mode_infinity" -> parameters.focusMode = Camera.Parameters.FOCUS_MODE_INFINITY
+            "focus_mode_macro" -> parameters.focusMode = Camera.Parameters.FOCUS_MODE_MACRO
+            "focus_mode_fixed" -> parameters.focusMode = Camera.Parameters.FOCUS_MODE_FIXED
+            "focus_mode_edof" -> parameters.focusMode = Camera.Parameters.FOCUS_MODE_EDOF
+            "focus_mode_continuous_picture" -> parameters.focusMode =
+                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+
+            "focus_mode_continuous_video" -> parameters.focusMode =
+                Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO
+
+            else -> d(TAG, "setFocusValue() received unknown focus value $focus_value")
         }
-        setCameraParameters(parameters);
+        setCameraParameters(parameters)
     }
 
-    private String convertFocusModeToValue(String focus_mode) {
+    private fun convertFocusModeToValue(focus_mode: String?): String {
         // focus_mode may be null on some devices; we return ""
-        Logger.INSTANCE.d(TAG, "convertFocusModeToValue: " + focus_mode);
-        String focus_value = "";
-        if (focus_mode == null) {
-            // ignore, leave focus_value at ""
-        } else if (focus_mode.equals(Camera.Parameters.FOCUS_MODE_AUTO)) {
-            focus_value = "focus_mode_auto";
-        } else if (focus_mode.equals(Camera.Parameters.FOCUS_MODE_INFINITY)) {
-            focus_value = "focus_mode_infinity";
-        } else if (focus_mode.equals(Camera.Parameters.FOCUS_MODE_MACRO)) {
-            focus_value = "focus_mode_macro";
-        } else if (focus_mode.equals(Camera.Parameters.FOCUS_MODE_FIXED)) {
-            focus_value = "focus_mode_fixed";
-        } else if (focus_mode.equals(Camera.Parameters.FOCUS_MODE_EDOF)) {
-            focus_value = "focus_mode_edof";
-        } else if (focus_mode.equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-            focus_value = "focus_mode_continuous_picture";
-        } else if (focus_mode.equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-            focus_value = "focus_mode_continuous_video";
+        var focus_value = ""
+        when (focus_mode) {
+            null -> {
+                // ignore, leave focus_value at ""
+            }
+
+            Camera.Parameters.FOCUS_MODE_AUTO -> {
+                focus_value = "focus_mode_auto"
+            }
+
+            Camera.Parameters.FOCUS_MODE_INFINITY -> {
+                focus_value = "focus_mode_infinity"
+            }
+
+            Camera.Parameters.FOCUS_MODE_MACRO -> {
+                focus_value = "focus_mode_macro"
+            }
+
+            Camera.Parameters.FOCUS_MODE_FIXED -> {
+                focus_value = "focus_mode_fixed"
+            }
+
+            Camera.Parameters.FOCUS_MODE_EDOF -> {
+                focus_value = "focus_mode_edof"
+            }
+
+            Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE -> {
+                focus_value = "focus_mode_continuous_picture"
+            }
+
+            Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO -> {
+                focus_value = "focus_mode_continuous_video"
+            }
         }
-        return focus_value;
+        return focus_value
     }
 
-    @Override
-    public String getFocusValue() {
+    override fun getFocusValue(): String {
         // returns "" if Parameters.getFocusMode() returns null
-        Camera.Parameters parameters = this.getParameters();
-        String focus_mode = parameters.getFocusMode();
+        val parameters = this.parameters
+        val focus_mode = parameters.focusMode
         // getFocusMode() is documented as never returning null, however I've had null pointer exceptions reported in Google Play
-        return convertFocusModeToValue(focus_mode);
+        return convertFocusModeToValue(focus_mode)
     }
 
-    @Override
-    public float getFocusDistance() {
+    override fun getFocusDistance(): Float {
         // not supported for CameraController1!
-        return 0.0f;
+        return 0.0f
     }
 
-    @Override
-    public boolean setFocusDistance(float focus_distance) {
+    override fun setFocusDistance(focus_distance: Float): Boolean {
         // not supported for CameraController1!
-        return false;
+        return false
     }
 
-    @Override
-    public void setFocusBracketingNImages(int n_images) {
+    override fun setFocusBracketingNImages(n_images: Int) {
         // not supported for CameraController1
     }
 
-    @Override
-    public void setFocusBracketingAddInfinity(boolean focus_bracketing_add_infinity) {
+    override fun setFocusBracketingAddInfinity(focus_bracketing_add_infinity: Boolean) {
         // not supported for CameraController1
     }
 
-    @Override
-    public void setFocusBracketingSourceDistance(float focus_bracketing_source_distance) {
+    override fun setFocusBracketingSourceDistance(focus_bracketing_source_distance: Float) {
         // not supported for CameraController1!
     }
 
-    @Override
-    public float getFocusBracketingSourceDistance() {
+    override fun getFocusBracketingSourceDistance(): Float {
         // not supported for CameraController1!
-        return 0.0f;
+        return 0.0f
     }
 
-    @Override
-    public void setFocusBracketingSourceDistanceFromCurrent() {
+    override fun setFocusBracketingSourceDistanceFromCurrent() {
         // not supported for CameraController1!
     }
 
-    @Override
-    public void setFocusBracketingTargetDistance(float focus_bracketing_target_distance) {
+    override fun setFocusBracketingTargetDistance(focus_bracketing_target_distance: Float) {
         // not supported for CameraController1!
     }
 
-    @Override
-    public float getFocusBracketingTargetDistance() {
+    override fun getFocusBracketingTargetDistance(): Float {
         // not supported for CameraController1!
-        return 0.0f;
+        return 0.0f
     }
 
-    private String convertFlashValueToMode(String flash_value) {
-        String flash_mode = "";
-        switch (flash_value) {
-            case "flash_off":
-            case "flash_frontscreen_on":
-            case "flash_frontscreen_torch":
-                flash_mode = Camera.Parameters.FLASH_MODE_OFF;
-                break;
-            case "flash_auto":
-                flash_mode = Camera.Parameters.FLASH_MODE_AUTO;
-                break;
-            case "flash_on":
-                flash_mode = Camera.Parameters.FLASH_MODE_ON;
-                break;
-            case "flash_torch":
-                flash_mode = Camera.Parameters.FLASH_MODE_TORCH;
-                break;
-            case "flash_red_eye":
-                flash_mode = Camera.Parameters.FLASH_MODE_RED_EYE;
-                break;
+    private fun convertFlashValueToMode(flash_value: String): String {
+        var flash_mode = ""
+        when (flash_value) {
+            "flash_off", "flash_frontscreen_on", "flash_frontscreen_torch" -> flash_mode =
+                Camera.Parameters.FLASH_MODE_OFF
+
+            "flash_auto" -> flash_mode = Camera.Parameters.FLASH_MODE_AUTO
+            "flash_on" -> flash_mode = Camera.Parameters.FLASH_MODE_ON
+            "flash_torch" -> flash_mode = Camera.Parameters.FLASH_MODE_TORCH
+            "flash_red_eye" -> flash_mode = Camera.Parameters.FLASH_MODE_RED_EYE
         }
-        return flash_mode;
+        return flash_mode
     }
 
-    public void setFlashValue(String flash_value) {
-        Camera.Parameters parameters = this.getParameters();
-        Logger.INSTANCE.d(TAG, "setFlashValue: " + flash_value);
+    override fun setFlashValue(flash_value: String) {
+        val parameters = this.parameters
+        d(TAG, "setFlashValue: $flash_value")
 
-        this.frontscreen_flash = false;
-        if (flash_value.equals("flash_frontscreen_on")) {
+        this.frontscreen_flash = false
+        if (flash_value == "flash_frontscreen_on") {
             // we do this check first due to weird behaviour on Samsung Galaxy S7 front camera where parameters.getFlashMode() returns values (auto, beach, portrait)
-            this.frontscreen_flash = true;
-            return;
+            this.frontscreen_flash = true
+            return
         }
 
-        if (parameters.getFlashMode() == null) {
-            Logger.INSTANCE.d(TAG, "flash mode not supported");
-            return;
+        if (parameters.flashMode == null) {
+            d(TAG, "flash mode not supported")
+            return
         }
 
-        final String flash_mode = convertFlashValueToMode(flash_value);
-        if (flash_mode.length() > 0 && !flash_mode.equals(parameters.getFlashMode())) {
-            if (parameters.getFlashMode().equals(Camera.Parameters.FLASH_MODE_TORCH) && !flash_mode.equals(Camera.Parameters.FLASH_MODE_OFF)) {
+        val flash_mode = convertFlashValueToMode(flash_value)
+        if (flash_mode.isNotEmpty() && flash_mode != parameters.flashMode) {
+            if (parameters.flashMode == Camera.Parameters.FLASH_MODE_TORCH && flash_mode != Camera.Parameters.FLASH_MODE_OFF) {
                 // workaround for bug on Nexus 5 and Nexus 6 where torch doesn't switch off until we set FLASH_MODE_OFF
-                Logger.INSTANCE.d(TAG, "first turn torch off");
-                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                setCameraParameters(parameters);
+                d(TAG, "first turn torch off")
+                parameters.flashMode = Camera.Parameters.FLASH_MODE_OFF
+                setCameraParameters(parameters)
                 // need to set the correct flash mode after a delay
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Logger.INSTANCE.d(TAG, "now set actual flash mode after turning torch off");
-                        if (camera != null) { // make sure camera wasn't released in the meantime (has a Google Play crash as a result of this)
-                            Camera.Parameters parameters = getParameters();
-                            parameters.setFlashMode(flash_mode);
-                            setCameraParameters(parameters);
-                        }
+                val handler = Handler()
+                handler.postDelayed({
+                    d(TAG, "now set actual flash mode after turning torch off")
+                    if (camera != null) { // make sure camera wasn't released in the meantime (has a Google Play crash as a result of this)
+                        val parameters: Camera.Parameters = parameters
+                        parameters.flashMode = flash_mode
+                        setCameraParameters(parameters)
                     }
-                }, 100);
+                }, 100)
             } else {
-                parameters.setFlashMode(flash_mode);
-                setCameraParameters(parameters);
+                parameters.flashMode = flash_mode
+                setCameraParameters(parameters)
             }
         }
     }
 
-    private String convertFlashModeToValue(String flash_mode) {
+    private fun convertFlashModeToValue(flash_mode: String?): String {
         // flash_mode may be null, meaning flash isn't supported; we return ""
-        Logger.INSTANCE.d(TAG, "convertFlashModeToValue: " + flash_mode);
-        String flash_value = "";
+        d(TAG, "convertFlashModeToValue: $flash_mode")
+        var flash_value = ""
         if (flash_mode == null) {
             // ignore, leave focus_value at ""
-        } else if (flash_mode.equals(Camera.Parameters.FLASH_MODE_OFF)) {
-            flash_value = "flash_off";
-        } else if (flash_mode.equals(Camera.Parameters.FLASH_MODE_AUTO)) {
-            flash_value = "flash_auto";
-        } else if (flash_mode.equals(Camera.Parameters.FLASH_MODE_ON)) {
-            flash_value = "flash_on";
-        } else if (flash_mode.equals(Camera.Parameters.FLASH_MODE_TORCH)) {
-            flash_value = "flash_torch";
-        } else if (flash_mode.equals(Camera.Parameters.FLASH_MODE_RED_EYE)) {
-            flash_value = "flash_red_eye";
+        } else if (flash_mode == Camera.Parameters.FLASH_MODE_OFF) {
+            flash_value = "flash_off"
+        } else if (flash_mode == Camera.Parameters.FLASH_MODE_AUTO) {
+            flash_value = "flash_auto"
+        } else if (flash_mode == Camera.Parameters.FLASH_MODE_ON) {
+            flash_value = "flash_on"
+        } else if (flash_mode == Camera.Parameters.FLASH_MODE_TORCH) {
+            flash_value = "flash_torch"
+        } else if (flash_mode == Camera.Parameters.FLASH_MODE_RED_EYE) {
+            flash_value = "flash_red_eye"
         }
-        return flash_value;
+        return flash_value
     }
 
-    public String getFlashValue() {
+    override fun getFlashValue(): String {
         // returns "" if flash isn't supported
-        Camera.Parameters parameters = this.getParameters();
-        String flash_mode = parameters.getFlashMode(); // will be null if flash mode not supported
-        return convertFlashModeToValue(flash_mode);
+        val parameters = this.parameters
+        val flash_mode = parameters.flashMode // will be null if flash mode not supported
+        return convertFlashModeToValue(flash_mode)
     }
 
-    public void setRecordingHint(boolean hint) {
-        Logger.INSTANCE.d(TAG, "setRecordingHint: " + hint);
+    override fun setRecordingHint(hint: Boolean) {
+        d(TAG, "setRecordingHint: " + hint)
         try {
-            Camera.Parameters parameters = this.getParameters();
+            val parameters = this.parameters
             // Calling setParameters here with continuous video focus mode causes preview to not restart after taking a photo on Galaxy Nexus?! (fine on my Nexus 7).
             // The issue seems to specifically be with setParameters (i.e., the problem occurs even if we don't setRecordingHint).
             // In addition, I had a report of a bug on HTC Desire X, Android 4.0.4 where the saved video was corrupted.
@@ -1217,677 +1110,664 @@ public class CameraController1 extends CameraController {
             // Update for v1.23: the bug with Galaxy Nexus has come back (see comments in Preview.setPreviewFps()) and is now unavoidable,
             // but I've still kept this check here - if nothing else, because it apparently caused video recording problems on other devices too.
             // Update for v1.29: this doesn't seem to happen on Galaxy Nexus with continuous picture focus mode, which is what we now use; but again, still keepin the check here due to possible problems on other devices
-            String focus_mode = parameters.getFocusMode();
+            val focus_mode = parameters.getFocusMode()
             // getFocusMode() is documented as never returning null, however I've had null pointer exceptions reported in Google Play
-            if (focus_mode != null && !focus_mode.equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-                parameters.setRecordingHint(hint);
-                setCameraParameters(parameters);
+            if (focus_mode != null && focus_mode != Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO) {
+                parameters.setRecordingHint(hint)
+                setCameraParameters(parameters)
             }
-        } catch (RuntimeException e) {
+        } catch (e: RuntimeException) {
             // can get RuntimeException from getParameters - we don't catch within that function because callers may not be able to recover,
             // but here it doesn't really matter if we fail to set the recording hint
-            Logger.INSTANCE.e(TAG, "setRecordingHint failed to get parameters");
-            e.printStackTrace();
-            count_camera_parameters_exception++;
+            e(TAG, "setRecordingHint failed to get parameters")
+            e.printStackTrace()
+            count_camera_parameters_exception++
         }
     }
 
-    @Override
-    public void setAutoExposureLock(boolean enabled) {
-        Camera.Parameters parameters = this.getParameters();
-        parameters.setAutoExposureLock(enabled);
-        setCameraParameters(parameters);
+    override fun setAutoExposureLock(enabled: Boolean) {
+        val parameters = this.parameters
+        parameters.autoExposureLock = enabled
+        setCameraParameters(parameters)
     }
 
-    @Override
-    public boolean getAutoExposureLock() {
-        Camera.Parameters parameters = this.getParameters();
-        if (!parameters.isAutoExposureLockSupported())
-            return false;
-        return parameters.getAutoExposureLock();
+    override fun getAutoExposureLock(): Boolean {
+        val parameters = this.parameters
+        if (!parameters.isAutoExposureLockSupported) return false
+        return parameters.autoExposureLock
     }
 
-    @Override
-    public void setAutoWhiteBalanceLock(boolean enabled) {
-        Camera.Parameters parameters = this.getParameters();
-        parameters.setAutoWhiteBalanceLock(enabled);
-        setCameraParameters(parameters);
+    override fun setAutoWhiteBalanceLock(enabled: Boolean) {
+        val parameters = this.parameters
+        parameters.autoWhiteBalanceLock = enabled
+        setCameraParameters(parameters)
     }
 
-    @Override
-    public boolean getAutoWhiteBalanceLock() {
-        Camera.Parameters parameters = this.getParameters();
-        if (!parameters.isAutoWhiteBalanceLockSupported())
-            return false;
-        return parameters.getAutoWhiteBalanceLock();
+    override fun getAutoWhiteBalanceLock(): Boolean {
+        val parameters = this.parameters
+        if (!parameters.isAutoWhiteBalanceLockSupported) return false
+        return parameters.autoWhiteBalanceLock
     }
 
-    public void setRotation(int rotation) {
-        Camera.Parameters parameters = this.getParameters();
-        parameters.setRotation(rotation);
-        setCameraParameters(parameters);
+    override fun setRotation(rotation: Int) {
+        val parameters = this.parameters
+        parameters.setRotation(rotation)
+        setCameraParameters(parameters)
     }
 
-    public void setLocationInfo(Location location) {
+    override fun setLocationInfo(location: Location) {
         // don't log location, in case of privacy!
-        Logger.INSTANCE.d(TAG, "setLocationInfo");
-        Camera.Parameters parameters = this.getParameters();
-        parameters.removeGpsData();
-        parameters.setGpsTimestamp(System.currentTimeMillis() / 1000); // initialise to a value (from Android camera source)
-        parameters.setGpsLatitude(location.getLatitude());
-        parameters.setGpsLongitude(location.getLongitude());
-        parameters.setGpsProcessingMethod(location.getProvider()); // from http://boundarydevices.com/how-to-write-an-android-camera-app/
+        d(TAG, "setLocationInfo")
+        val parameters = this.parameters
+        parameters.removeGpsData()
+        parameters.setGpsTimestamp(System.currentTimeMillis() / 1000) // initialise to a value (from Android camera source)
+        parameters.setGpsLatitude(location.latitude)
+        parameters.setGpsLongitude(location.longitude)
+        parameters.setGpsProcessingMethod(location.provider) // from http://boundarydevices.com/how-to-write-an-android-camera-app/
         if (location.hasAltitude()) {
-            parameters.setGpsAltitude(location.getAltitude());
+            parameters.setGpsAltitude(location.altitude)
         } else {
             // Android camera source claims we need to fake one if not present
             // and indeed, this is needed to fix crash on Nexus 7
-            parameters.setGpsAltitude(0);
+            parameters.setGpsAltitude(0.0)
         }
-        if (location.getTime() != 0) { // from Android camera source
-            parameters.setGpsTimestamp(location.getTime() / 1000);
+        if (location.time != 0L) { // from Android camera source
+            parameters.setGpsTimestamp(location.time / 1000)
         }
-        setCameraParameters(parameters);
+        setCameraParameters(parameters)
     }
 
-    public void removeLocationInfo() {
-        Camera.Parameters parameters = this.getParameters();
-        parameters.removeGpsData();
-        setCameraParameters(parameters);
+    override fun removeLocationInfo() {
+        val parameters = this.parameters
+        parameters.removeGpsData()
+        setCameraParameters(parameters)
     }
 
-    public void enableShutterSound(boolean enabled) {
-        camera.enableShutterSound(enabled);
-        sounds_enabled = enabled;
+    override fun enableShutterSound(enabled: Boolean) {
+        camera!!.enableShutterSound(enabled)
+        sounds_enabled = enabled
     }
 
-    public boolean setFocusAndMeteringArea(List<CameraController.Area> areas) {
-        List<Camera.Area> camera_areas = new ArrayList<>();
-        for (CameraController.Area area : areas) {
-            camera_areas.add(new Camera.Area(area.rect, area.weight));
+    override fun setFocusAndMeteringArea(areas: MutableList<Area>): Boolean {
+        val camera_areas: MutableList<Camera.Area?> = ArrayList<Camera.Area?>()
+        for (area in areas) {
+            camera_areas.add(Camera.Area(area.rect, area.weight))
         }
         try {
-            Camera.Parameters parameters = this.getParameters();
-            String focus_mode = parameters.getFocusMode();
+            val parameters = this.parameters
+            val focus_mode = parameters.focusMode
             // getFocusMode() is documented as never returning null, however I've had null pointer exceptions reported in Google Play
-            if (parameters.getMaxNumFocusAreas() != 0 && focus_mode != null && (focus_mode.equals(Camera.Parameters.FOCUS_MODE_AUTO) || focus_mode.equals(Camera.Parameters.FOCUS_MODE_MACRO) || focus_mode.equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE) || focus_mode.equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))) {
-                parameters.setFocusAreas(camera_areas);
+            if (parameters.maxNumFocusAreas != 0 && focus_mode != null && (focus_mode == Camera.Parameters.FOCUS_MODE_AUTO || focus_mode == Camera.Parameters.FOCUS_MODE_MACRO || focus_mode == Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE || focus_mode == Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                parameters.focusAreas = camera_areas
 
                 // also set metering areas
-                if (parameters.getMaxNumMeteringAreas() == 0) {
-                    Logger.INSTANCE.d(TAG, "metering areas not supported");
+                if (parameters.maxNumMeteringAreas == 0) {
+                    d(TAG, "metering areas not supported")
                 } else {
-                    parameters.setMeteringAreas(camera_areas);
+                    parameters.meteringAreas = camera_areas
                 }
 
-                setCameraParameters(parameters);
+                setCameraParameters(parameters)
 
-                return true;
-            } else if (parameters.getMaxNumMeteringAreas() != 0) {
-                parameters.setMeteringAreas(camera_areas);
+                return true
+            } else if (parameters.maxNumMeteringAreas != 0) {
+                parameters.meteringAreas = camera_areas
 
-                setCameraParameters(parameters);
+                setCameraParameters(parameters)
             } else {
-                Logger.INSTANCE.d(TAG, "metering areas not supported");
+                d(TAG, "metering areas not supported")
             }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            count_camera_parameters_exception++;
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
+            count_camera_parameters_exception++
         }
-        return false;
+        return false
     }
 
-    public void clearFocusAndMetering() {
+    override fun clearFocusAndMetering() {
         try {
-            Camera.Parameters parameters = this.getParameters();
-            boolean update_parameters = false;
-            if (parameters.getMaxNumFocusAreas() > 0) {
-                parameters.setFocusAreas(null);
-                update_parameters = true;
+            val parameters = this.parameters
+            var update_parameters = false
+            if (parameters.maxNumFocusAreas > 0) {
+                parameters.focusAreas = null
+                update_parameters = true
             }
-            if (parameters.getMaxNumMeteringAreas() > 0) {
-                parameters.setMeteringAreas(null);
-                update_parameters = true;
+            if (parameters.maxNumMeteringAreas > 0) {
+                parameters.meteringAreas = null
+                update_parameters = true
             }
             if (update_parameters) {
-                setCameraParameters(parameters);
+                setCameraParameters(parameters)
             }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            count_camera_parameters_exception++;
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
+            count_camera_parameters_exception++
         }
     }
 
-    public List<CameraController.Area> getFocusAreas() {
-        Camera.Parameters parameters = this.getParameters();
-        List<Camera.Area> camera_areas = parameters.getFocusAreas();
-        if (camera_areas == null)
-            return null;
-        List<CameraController.Area> areas = new ArrayList<>();
-        for (Camera.Area camera_area : camera_areas) {
-            areas.add(new CameraController.Area(camera_area.rect, camera_area.weight));
+    override fun getFocusAreas(): MutableList<Area?>? {
+        val parameters = this.parameters
+        val camera_areas = parameters.focusAreas
+        if (camera_areas == null) return null
+        val areas: MutableList<Area?> = ArrayList()
+        for (camera_area in camera_areas) {
+            areas.add(Area(camera_area.rect, camera_area.weight))
         }
-        return areas;
+        return areas
     }
 
-    public List<CameraController.Area> getMeteringAreas() {
-        Camera.Parameters parameters = this.getParameters();
-        List<Camera.Area> camera_areas = parameters.getMeteringAreas();
-        if (camera_areas == null)
-            return null;
-        List<CameraController.Area> areas = new ArrayList<>();
-        for (Camera.Area camera_area : camera_areas) {
-            areas.add(new CameraController.Area(camera_area.rect, camera_area.weight));
+    override fun getMeteringAreas(): MutableList<Area?>? {
+        val parameters = this.parameters
+        val camera_areas = parameters.meteringAreas
+        if (camera_areas == null) return null
+        val areas: MutableList<Area?> = ArrayList()
+        for (camera_area in camera_areas) {
+            areas.add(Area(camera_area.rect, camera_area.weight))
         }
-        return areas;
+        return areas
     }
 
-    @Override
-    public boolean supportsAutoFocus() {
+    override fun supportsAutoFocus(): Boolean {
         try {
-            Camera.Parameters parameters = this.getParameters();
-            String focus_mode = parameters.getFocusMode();
+            val parameters = this.parameters
+            val focus_mode = parameters.focusMode
             // getFocusMode() is documented as never returning null, however I've had null pointer exceptions reported in Google Play from the below line (v1.7),
             // on Galaxy Tab 10.1 (GT-P7500), Android 4.0.3 - 4.0.4; HTC EVO 3D X515m (shooteru), Android 4.0.3 - 4.0.4
-            if (focus_mode != null && (focus_mode.equals(Camera.Parameters.FOCUS_MODE_AUTO) || focus_mode.equals(Camera.Parameters.FOCUS_MODE_MACRO))) {
-                return true;
+            if (focus_mode != null && (focus_mode == Camera.Parameters.FOCUS_MODE_AUTO || focus_mode == Camera.Parameters.FOCUS_MODE_MACRO)) {
+                return true
             }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            count_camera_parameters_exception++;
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
+            count_camera_parameters_exception++
         }
-        return false;
+        return false
     }
 
-    @Override
-    public boolean supportsMetering() {
+    override fun supportsMetering(): Boolean {
         try {
-            Camera.Parameters parameters = this.getParameters();
-            return parameters.getMaxNumMeteringAreas() > 0;
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            count_camera_parameters_exception++;
+            val parameters = this.parameters
+            return parameters.getMaxNumMeteringAreas() > 0
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
+            count_camera_parameters_exception++
         }
-        return false;
+        return false
     }
 
-    @Override
-    public boolean focusIsContinuous() {
+    override fun focusIsContinuous(): Boolean {
         try {
-            Camera.Parameters parameters = this.getParameters();
-            String focus_mode = parameters.getFocusMode();
+            val parameters = this.parameters
+            val focus_mode = parameters.getFocusMode()
             // getFocusMode() is documented as never returning null, however I've had null pointer exceptions reported in Google Play from the below line (v1.7),
             // on Galaxy Tab 10.1 (GT-P7500), Android 4.0.3 - 4.0.4; HTC EVO 3D X515m (shooteru), Android 4.0.3 - 4.0.4
-            if (focus_mode != null && (focus_mode.equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE) || focus_mode.equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))) {
-                return true;
+            if (focus_mode != null && (focus_mode == Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE || focus_mode == Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                return true
             }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            count_camera_parameters_exception++;
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
+            count_camera_parameters_exception++
         }
-        return false;
+        return false
     }
 
-    public boolean focusIsVideo() {
-        Camera.Parameters parameters = this.getParameters();
-        String current_focus_mode = parameters.getFocusMode();
+    override fun focusIsVideo(): Boolean {
+        val parameters = this.parameters
+        val current_focus_mode = parameters.getFocusMode()
         // getFocusMode() is documented as never returning null, however I've had null pointer exceptions reported in Google Play
-        boolean focus_is_video = current_focus_mode != null && current_focus_mode.equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+        val focus_is_video =
+            current_focus_mode != null && current_focus_mode == Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO
         if (MyDebug.LOG) {
-            Logger.INSTANCE.d(TAG, "current_focus_mode: " + current_focus_mode);
-            Logger.INSTANCE.d(TAG, "focus_is_video: " + focus_is_video);
+            d(TAG, "current_focus_mode: " + current_focus_mode)
+            d(TAG, "focus_is_video: " + focus_is_video)
         }
-        return focus_is_video;
+        return focus_is_video
     }
 
-    @Override
-    public void reconnect() throws CameraControllerException {
-        Logger.INSTANCE.d(TAG, "reconnect");
+    @Throws(CameraControllerException::class)
+    override fun reconnect() {
+        d(TAG, "reconnect")
         try {
-            camera.reconnect();
-        } catch (IOException e) {
-            Logger.INSTANCE.e(TAG, "reconnect threw IOException");
-            e.printStackTrace();
-            throw new CameraControllerException();
+            camera!!.reconnect()
+        } catch (e: IOException) {
+            e(TAG, "reconnect threw IOException")
+            e.printStackTrace()
+            throw CameraControllerException()
         }
     }
 
-    @Override
-    public void setPreviewDisplay(SurfaceHolder holder) throws CameraControllerException {
-        Logger.INSTANCE.d(TAG, "setPreviewDisplay");
+    @Throws(CameraControllerException::class)
+    override fun setPreviewDisplay(holder: SurfaceHolder?) {
+        d(TAG, "setPreviewDisplay")
         try {
-            camera.setPreviewDisplay(holder);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new CameraControllerException();
+            camera!!.setPreviewDisplay(holder)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            throw CameraControllerException()
         }
     }
 
-    @Override
-    public void setPreviewTexture(TextureView texture) throws CameraControllerException {
-        Logger.INSTANCE.d(TAG, "setPreviewTexture");
+    @Throws(CameraControllerException::class)
+    override fun setPreviewTexture(texture: TextureView) {
+        d(TAG, "setPreviewTexture")
         try {
-            camera.setPreviewTexture(texture.getSurfaceTexture());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new CameraControllerException();
+            camera!!.setPreviewTexture(texture.getSurfaceTexture())
+        } catch (e: IOException) {
+            e.printStackTrace()
+            throw CameraControllerException()
         }
     }
 
-    @Override
-    public void startPreview() throws CameraControllerException {
-        Logger.INSTANCE.d(TAG, "startPreview");
+    @Throws(CameraControllerException::class)
+    override fun startPreview() {
+        d(TAG, "startPreview")
         try {
-            camera.startPreview();
-        } catch (RuntimeException e) {
-            Logger.INSTANCE.e(TAG, "failed to start preview");
-            e.printStackTrace();
-            throw new CameraControllerException();
+            camera!!.startPreview()
+        } catch (e: RuntimeException) {
+            e(TAG, "failed to start preview")
+            e.printStackTrace()
+            throw CameraControllerException()
         }
     }
 
-    @Override
-    public void stopRepeating() {
+    override fun stopRepeating() {
         // not relevant for old camera API
     }
 
-    @Override
-    public void stopPreview() {
+    override fun stopPreview() {
         if (camera != null) {
             // have had crashes when this is called from Preview/CloseCameraTask.
-            camera.stopPreview();
+            camera!!.stopPreview()
         }
     }
 
     // returns false if RuntimeException thrown (may include if face-detection already started)
-    public boolean startFaceDetection() {
-        Logger.INSTANCE.d(TAG, "startFaceDetection");
+    override fun startFaceDetection(): Boolean {
+        d(TAG, "startFaceDetection")
         try {
-            camera.startFaceDetection();
-        } catch (RuntimeException e) {
-            Logger.INSTANCE.d(TAG, "face detection failed or already started");
-            count_camera_parameters_exception++;
-            return false;
+            camera!!.startFaceDetection()
+        } catch (e: RuntimeException) {
+            d(TAG, "face detection failed or already started")
+            count_camera_parameters_exception++
+            return false
         }
-        return true;
+        return true
     }
 
-    public void setFaceDetectionListener(final CameraController.FaceDetectionListener listener) {
+    override fun setFaceDetectionListener(listener: FaceDetectionListener?) {
         if (listener != null) {
-            class CameraFaceDetectionListener implements Camera.FaceDetectionListener {
-                @Override
-                public void onFaceDetection(Camera.Face[] camera_faces, Camera camera) {
-                    Face[] faces = new Face[camera_faces.length];
-                    for (int i = 0; i < camera_faces.length; i++) {
-                        faces[i] = new Face(camera_faces[i].score, camera_faces[i].rect);
+            class CameraFaceDetectionListener : Camera.FaceDetectionListener {
+                override fun onFaceDetection(camera_faces: Array<Camera.Face?>, camera: Camera?) {
+                    val faces = arrayOfNulls<Face>(camera_faces.size)
+                    for (i in camera_faces.indices) {
+                        faces[i] = Face(camera_faces[i]!!.score, camera_faces[i]!!.rect)
                     }
-                    listener.onFaceDetection(faces);
+                    listener.onFaceDetection(faces)
                 }
             }
-            camera.setFaceDetectionListener(new CameraFaceDetectionListener());
+            camera!!.setFaceDetectionListener(CameraFaceDetectionListener())
         } else {
-            camera.setFaceDetectionListener(null);
+            camera!!.setFaceDetectionListener(null)
         }
     }
 
-    @Override
-    public void autoFocus(final CameraController.AutoFocusCallback cb, boolean capture_follows_autofocus_hint) {
-        Logger.INSTANCE.d(TAG, "autoFocus");
-        class MyAutoFocusCallback implements Camera.AutoFocusCallback {
-            boolean done_autofocus = false;
-            private final Handler handler = new Handler();
-            private final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    Logger.INSTANCE.d(TAG, "autofocus timeout check");
-                    autofocus_timeout_runnable = null;
-                    autofocus_timeout_handler = null;
+    override fun autoFocus(cb: AutoFocusCallback, capture_follows_autofocus_hint: Boolean) {
+        d(TAG, "autoFocus")
+        class MyAutoFocusCallback : Camera.AutoFocusCallback {
+            var done_autofocus: Boolean = false
+            val handler = Handler()
+            val runnable: Runnable = object : Runnable {
+                override fun run() {
+                    d(TAG, "autofocus timeout check")
+                    autofocus_timeout_runnable = null
+                    autofocus_timeout_handler = null
                     if (!done_autofocus) {
-                        Logger.INSTANCE.e(TAG, "autofocus timeout!");
-                        done_autofocus = true;
-                        cb.onAutoFocus(false);
+                        e(TAG, "autofocus timeout!")
+                        done_autofocus = true
+                        cb.onAutoFocus(false)
                     }
                 }
-            };
-
-            private void setTimeout() {
-                handler.postDelayed(runnable, 2000); // set autofocus timeout
             }
 
-            @Override
-            public void onAutoFocus(boolean success, Camera camera) {
-                Logger.INSTANCE.d(TAG, "autoFocus.onAutoFocus");
-                handler.removeCallbacks(runnable);
-                autofocus_timeout_runnable = null;
-                autofocus_timeout_handler = null;
+            fun setTimeout() {
+                handler.postDelayed(runnable, 2000) // set autofocus timeout
+            }
+
+            override fun onAutoFocus(success: Boolean, camera: Camera?) {
+                d(TAG, "autoFocus.onAutoFocus")
+                handler.removeCallbacks(runnable)
+                autofocus_timeout_runnable = null
+                autofocus_timeout_handler = null
                 // in theory we should only ever get one call to onAutoFocus(), but some Samsung phones at least can call the callback multiple times
                 // see http://stackoverflow.com/questions/36316195/take-picture-fails-on-samsung-phones
                 // needed to fix problem on Samsung S7 with flash auto/on and continuous picture focus where it would claim failed to take picture even though it'd succeeded,
                 // because we repeatedly call takePicture(), and the subsequent ones cause a runtime exception
                 // update: also the done_autofocus flag is needed in case we had an autofocus timeout, see above
                 if (!done_autofocus) {
-                    done_autofocus = true;
-                    cb.onAutoFocus(success);
+                    done_autofocus = true
+                    cb.onAutoFocus(success)
                 } else {
-                    Logger.INSTANCE.e(TAG, "ignore repeated autofocus");
+                    e(TAG, "ignore repeated autofocus")
                 }
             }
         }
-        MyAutoFocusCallback camera_cb = new MyAutoFocusCallback();
-        autofocus_timeout_handler = camera_cb.handler;
-        autofocus_timeout_runnable = camera_cb.runnable;
+
+        val camera_cb = MyAutoFocusCallback()
+        autofocus_timeout_handler = camera_cb.handler
+        autofocus_timeout_runnable = camera_cb.runnable
 
         try {
-            camera_cb.setTimeout();
-            camera.autoFocus(camera_cb);
-        } catch (RuntimeException e) {
+            camera_cb.setTimeout()
+            camera!!.autoFocus(camera_cb)
+        } catch (e: RuntimeException) {
             // just in case? We got a RuntimeException report here from 1 user on Google Play:
             // 21 Dec 2013, Xperia Go, Android 4.1
-            Logger.INSTANCE.e(TAG, "runtime exception from autoFocus");
-            e.printStackTrace();
+            e(TAG, "runtime exception from autoFocus")
+            e.printStackTrace()
             if (autofocus_timeout_handler != null) {
                 if (autofocus_timeout_runnable != null) {
-                    autofocus_timeout_handler.removeCallbacks(autofocus_timeout_runnable);
-                    autofocus_timeout_runnable = null;
+                    autofocus_timeout_handler!!.removeCallbacks(autofocus_timeout_runnable!!)
+                    autofocus_timeout_runnable = null
                 }
-                autofocus_timeout_handler = null;
+                autofocus_timeout_handler = null
             }
             // should call the callback, so the application isn't left waiting (e.g., when we autofocus before trying to take a photo)
-            cb.onAutoFocus(false);
+            cb.onAutoFocus(false)
         }
     }
 
-    @Override
-    public void setCaptureFollowAutofocusHint(boolean capture_follows_autofocus_hint) {
+    override fun setCaptureFollowAutofocusHint(capture_follows_autofocus_hint: Boolean) {
         // unused by this API
     }
 
-    @Override
-    public void cancelAutoFocus() {
+    override fun cancelAutoFocus() {
         try {
-            camera.cancelAutoFocus();
+            camera!!.cancelAutoFocus()
             if (autofocus_timeout_handler != null) {
                 if (autofocus_timeout_runnable != null) {
                     // so we don't trigger autofocus timeout
-                    autofocus_timeout_handler.removeCallbacks(autofocus_timeout_runnable);
-                    autofocus_timeout_runnable = null;
+                    autofocus_timeout_handler!!.removeCallbacks(autofocus_timeout_runnable!!)
+                    autofocus_timeout_runnable = null
                 }
-                autofocus_timeout_handler = null;
+                autofocus_timeout_handler = null
             }
-        } catch (RuntimeException e) {
+        } catch (e: RuntimeException) {
             // had a report of crash on some devices, see comment at https://sourceforge.net/p/opencamera/tickets/4/ made on 20140520
-            Logger.INSTANCE.d(TAG, "cancelAutoFocus() failed");
-            e.printStackTrace();
+            d(TAG, "cancelAutoFocus() failed")
+            e.printStackTrace()
         }
     }
 
-    @Override
-    public void setContinuousFocusMoveCallback(final ContinuousFocusMoveCallback cb) {
-        Logger.INSTANCE.d(TAG, "setContinuousFocusMoveCallback");
-        {
+    override fun setContinuousFocusMoveCallback(cb: ContinuousFocusMoveCallback?) {
+        d(TAG, "setContinuousFocusMoveCallback")
+        run {
             try {
                 if (cb != null) {
-                    camera.setAutoFocusMoveCallback(new AutoFocusMoveCallback() {
-                        @Override
-                        public void onAutoFocusMoving(boolean start, Camera camera) {
-                            Logger.INSTANCE.d(TAG, "onAutoFocusMoving: " + start);
-                            cb.onContinuousFocusMove(start);
+                    camera!!.setAutoFocusMoveCallback(object : AutoFocusMoveCallback {
+                        override fun onAutoFocusMoving(start: Boolean, camera: Camera?) {
+                            d(TAG, "onAutoFocusMoving: " + start)
+                            cb.onContinuousFocusMove(start)
                         }
-                    });
+                    })
                 } else {
-                    camera.setAutoFocusMoveCallback(null);
+                    camera!!.setAutoFocusMoveCallback(null)
                 }
-            } catch (RuntimeException e) {
+            } catch (e: RuntimeException) {
                 // received RuntimeException reports from some users on Google Play - seems to be older devices, but still important to catch!
-                Logger.INSTANCE.e(TAG, "runtime exception from setAutoFocusMoveCallback");
-                e.printStackTrace();
+                e(TAG, "runtime exception from setAutoFocusMoveCallback")
+                e.printStackTrace()
             }
         }
     }
 
-    private static class TakePictureShutterCallback implements Camera.ShutterCallback {
+    private class TakePictureShutterCallback : ShutterCallback {
         // don't do anything here, but we need to implement the callback to get the shutter sound (at least on Galaxy Nexus and Nexus 7)
-        @Override
-        public void onShutter() {
-            Logger.INSTANCE.d(TAG, "shutterCallback.onShutter()");
+        override fun onShutter() {
+            d(TAG, "shutterCallback.onShutter()")
         }
     }
 
-    private void clearPending() {
-        Logger.INSTANCE.d(TAG, "clearPending");
-        pending_burst_images.clear();
-        burst_exposures = null;
-        n_burst = 0;
+    private fun clearPending() {
+        d(TAG, "clearPending")
+        pending_burst_images.clear()
+        burst_exposures = null
+        n_burst = 0
     }
 
-    private void takePictureNow(final CameraController.PictureCallback picture, final ErrorCallback error) {
-        Logger.INSTANCE.d(TAG, "takePictureNow");
+    private fun takePictureNow(picture: PictureCallback?, error: ErrorCallback) {
+        d(TAG, "takePictureNow")
 
         // only set the shutter callback if sounds enabled
-        final Camera.ShutterCallback shutter = sounds_enabled ? new TakePictureShutterCallback() : null;
-        final Camera.PictureCallback camera_jpeg = picture == null ? null : new Camera.PictureCallback() {
-            public void onPictureTaken(byte[] data, Camera cam) {
-                Logger.INSTANCE.d(TAG, "onPictureTaken");
-                // n.b., this is automatically run in a different thread
+        val shutter: ShutterCallback? = if (sounds_enabled) TakePictureShutterCallback() else null
+        val camera_jpeg: Camera.PictureCallback? =
+            if (picture == null) null else object : Camera.PictureCallback {
+                override fun onPictureTaken(data: ByteArray?, cam: Camera?) {
+                    d(TAG, "onPictureTaken")
 
-                if (want_expo_bracketing && n_burst > 1) {
-                    pending_burst_images.add(data);
-                    if (pending_burst_images.size() >= n_burst) { // shouldn't ever be greater, but just in case
-                        Logger.INSTANCE.d(TAG, "all burst images available");
-                        if (pending_burst_images.size() > n_burst) {
-                            Logger.INSTANCE.e(TAG, "pending_burst_images size " + pending_burst_images.size() + " is greater than n_burst " + n_burst);
-                        }
-
-                        // set exposure compensation back to original
-                        setExposureCompensation(burst_exposures.get(0));
-
-                        // take a copy, so that we can clear pending_burst_images
-                        // also allows us to reorder from dark to light
-                        // since we took the images with the base exposure being first
-                        int n_half_images = pending_burst_images.size() / 2;
-                        List<byte[]> images = new ArrayList<>();
-                        // darker images
-                        for (int i = 0; i < n_half_images; i++) {
-                            images.add(pending_burst_images.get(i + 1));
-                        }
-                        // base image
-                        images.add(pending_burst_images.get(0));
-                        // lighter images
-                        for (int i = 0; i < n_half_images; i++) {
-                            images.add(pending_burst_images.get(n_half_images + 1));
-                        }
-
-                        picture.onBurstPictureTaken(images);
-                        pending_burst_images.clear();
-                        picture.onCompleted();
-                    } else {
-                        Logger.INSTANCE.d(TAG, "number of burst images is now: " + pending_burst_images.size());
-                        // set exposure compensation for next image
-                        setExposureCompensation(burst_exposures.get(pending_burst_images.size()));
-
-                        // need to start preview again: otherwise fail to take subsequent photos on Nexus 6
-                        // and Nexus 7; on Galaxy Nexus we succeed, but exposure compensation has no effect
-                        try {
-                            startPreview();
-                        } catch (CameraControllerException e) {
-                            Logger.INSTANCE.d(TAG, "CameraControllerException trying to startPreview");
-                            e.printStackTrace();
-                        }
-
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Logger.INSTANCE.d(TAG, "take picture after delay for next expo");
-                                if (camera != null) { // make sure camera wasn't released in the meantime
-                                    takePictureNow(picture, error);
-                                }
+                    // n.b., this is automatically run in a different thread
+                    if (want_expo_bracketing && n_burst > 1) {
+                        pending_burst_images.add(data)
+                        if (pending_burst_images.size >= n_burst) { // shouldn't ever be greater, but just in case
+                            d(TAG, "all burst images available")
+                            if (pending_burst_images.size > n_burst) {
+                                e(
+                                    TAG,
+                                    "pending_burst_images size " + pending_burst_images.size + " is greater than n_burst " + n_burst
+                                )
                             }
-                        }, 1000);
+
+                            // set exposure compensation back to original
+                            setExposureCompensation(burst_exposures!!.get(0)!!)
+
+                            // take a copy, so that we can clear pending_burst_images
+                            // also allows us to reorder from dark to light
+                            // since we took the images with the base exposure being first
+                            val n_half_images = pending_burst_images.size / 2
+                            val images: MutableList<ByteArray?> = ArrayList<ByteArray?>()
+                            // darker images
+                            for (i in 0..<n_half_images) {
+                                images.add(pending_burst_images.get(i + 1))
+                            }
+                            // base image
+                            images.add(pending_burst_images.get(0))
+                            // lighter images
+                            for (i in 0..<n_half_images) {
+                                images.add(pending_burst_images.get(n_half_images + 1))
+                            }
+
+                            picture.onBurstPictureTaken(images)
+                            pending_burst_images.clear()
+                            picture.onCompleted()
+                        } else {
+                            d(TAG, "number of burst images is now: " + pending_burst_images.size)
+                            // set exposure compensation for next image
+                            setExposureCompensation(burst_exposures!!.get(pending_burst_images.size)!!)
+
+                            // need to start preview again: otherwise fail to take subsequent photos on Nexus 6
+                            // and Nexus 7; on Galaxy Nexus we succeed, but exposure compensation has no effect
+                            try {
+                                startPreview()
+                            } catch (e: CameraControllerException) {
+                                d(TAG, "CameraControllerException trying to startPreview")
+                                e.printStackTrace()
+                            }
+
+                            val handler = Handler()
+                            handler.postDelayed(object : Runnable {
+                                override fun run() {
+                                    d(TAG, "take picture after delay for next expo")
+                                    if (camera != null) { // make sure camera wasn't released in the meantime
+                                        takePictureNow(picture, error)
+                                    }
+                                }
+                            }, 1000)
+                        }
+                    } else {
+                        picture.onPictureTaken(data)
+                        picture.onCompleted()
                     }
-                } else {
-                    picture.onPictureTaken(data);
-                    picture.onCompleted();
                 }
             }
-        };
 
         if (picture != null) {
-            Logger.INSTANCE.d(TAG, "call onStarted() in callback");
-            picture.onStarted();
+            d(TAG, "call onStarted() in callback")
+            picture.onStarted()
         }
         try {
-            camera.takePicture(shutter, null, camera_jpeg);
-        } catch (RuntimeException e) {
+            camera!!.takePicture(shutter, null, camera_jpeg)
+        } catch (e: RuntimeException) {
             // just in case? We got a RuntimeException report here from 1 user on Google Play; I also encountered it myself once of Galaxy Nexus when starting up
-            Logger.INSTANCE.e(TAG, "runtime exception from takePicture");
-            e.printStackTrace();
-            error.onError();
+            e(TAG, "runtime exception from takePicture")
+            e.printStackTrace()
+            error.onError()
         }
     }
 
-    public void takePicture(final CameraController.PictureCallback picture, final ErrorCallback error) {
-        Logger.INSTANCE.d(TAG, "takePicture");
+    override fun takePicture(picture: PictureCallback, error: ErrorCallback) {
+        d(TAG, "takePicture")
 
-        clearPending();
+        clearPending()
         if (want_expo_bracketing) {
-            Logger.INSTANCE.d(TAG, "set up expo bracketing");
-            Camera.Parameters parameters = this.getParameters();
-            int n_half_images = expo_bracketing_n_images / 2;
-            int min_exposure = parameters.getMinExposureCompensation();
-            int max_exposure = parameters.getMaxExposureCompensation();
-            float exposure_step = getExposureCompensationStep();
-            if (exposure_step == 0.0f) // just in case?
-                exposure_step = 1.0f / 3.0f; // make up a typical example
-            int exposure_current = getExposureCompensation();
-            double stops_per_image = expo_bracketing_stops / (double) n_half_images;
-            int steps = (int) ((stops_per_image + 1.0e-5) / exposure_step); // need to add a small amount, otherwise we can round down
-            steps = Math.max(steps, 1);
+            d(TAG, "set up expo bracketing")
+            val parameters = this.parameters
+            val n_half_images = expo_bracketing_n_images / 2
+            val min_exposure = parameters.getMinExposureCompensation()
+            val max_exposure = parameters.getMaxExposureCompensation()
+            var exposure_step = this.exposureCompensationStep
+            if (exposure_step == 0.0f)  // just in case?
+                exposure_step = 1.0f / 3.0f // make up a typical example
+
+            val exposure_current = getExposureCompensation()
+            val stops_per_image = expo_bracketing_stops / n_half_images.toDouble()
+            var steps =
+                ((stops_per_image + 1.0e-5) / exposure_step).toInt() // need to add a small amount, otherwise we can round down
+            steps = max(steps, 1)
             if (MyDebug.LOG) {
-                Logger.INSTANCE.d(TAG, "steps: " + steps);
-                Logger.INSTANCE.d(TAG, "exposure_current: " + exposure_current);
+                d(TAG, "steps: " + steps)
+                d(TAG, "exposure_current: " + exposure_current)
             }
 
-            List<Integer> requests = new ArrayList<>();
+            val requests: MutableList<Int?> = ArrayList<Int?>()
 
             // do the current exposure first, so we can take the first shot immediately
             // if we change the order, remember to update the code that re-orders for passing resultant images back to picture.onBurstPictureTaken()
-            requests.add(exposure_current);
+            requests.add(exposure_current)
 
             // darker images
-            for (int i = 0; i < n_half_images; i++) {
-                int exposure = exposure_current - (n_half_images - i) * steps;
-                exposure = Math.max(exposure, min_exposure);
-                requests.add(exposure);
+            for (i in 0..<n_half_images) {
+                var exposure = exposure_current - (n_half_images - i) * steps
+                exposure = max(exposure, min_exposure)
+                requests.add(exposure)
                 if (MyDebug.LOG) {
-                    Logger.INSTANCE.d(TAG, "add burst request for " + i + "th dark image:");
-                    Logger.INSTANCE.d(TAG, "exposure: " + exposure);
+                    d(TAG, "add burst request for " + i + "th dark image:")
+                    d(TAG, "exposure: " + exposure)
                 }
             }
 
             // lighter images
-            for (int i = 0; i < n_half_images; i++) {
-                int exposure = exposure_current + (i + 1) * steps;
-                exposure = Math.min(exposure, max_exposure);
-                requests.add(exposure);
+            for (i in 0..<n_half_images) {
+                var exposure = exposure_current + (i + 1) * steps
+                exposure = min(exposure, max_exposure)
+                requests.add(exposure)
                 if (MyDebug.LOG) {
-                    Logger.INSTANCE.d(TAG, "add burst request for " + i + "th light image:");
-                    Logger.INSTANCE.d(TAG, "exposure: " + exposure);
+                    d(TAG, "add burst request for " + i + "th light image:")
+                    d(TAG, "exposure: " + exposure)
                 }
             }
 
-            burst_exposures = requests;
-            n_burst = requests.size();
+            burst_exposures = requests
+            n_burst = requests.size
         }
 
         if (frontscreen_flash) {
-            Logger.INSTANCE.d(TAG, "front screen flash");
-            picture.onFrontScreenTurnOn();
+            d(TAG, "front screen flash")
+            picture.onFrontScreenTurnOn()
             // take picture after a delay, to allow autoexposure and autofocus to update (unlike CameraController2, we can't tell when this happens, so we just wait for a fixed delay)
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Logger.INSTANCE.d(TAG, "take picture after delay for front screen flash");
+            val handler = Handler()
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    d(TAG, "take picture after delay for front screen flash")
                     if (camera != null) { // make sure camera wasn't released in the meantime
-                        takePictureNow(picture, error);
+                        takePictureNow(picture, error)
                     }
                 }
-            }, 1000);
-            return;
+            }, 1000)
+            return
         }
-        takePictureNow(picture, error);
+        takePictureNow(picture, error)
     }
 
-    public void setDisplayOrientation(int degrees) {
+    override fun setDisplayOrientation(degrees: Int) {
         // see http://developer.android.com/reference/android/hardware/Camera.html#setDisplayOrientation(int)
-        int result;
+        var result: Int
         if (camera_info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (camera_info.orientation + degrees) % 360;
-            result = (360 - result) % 360;
+            result = (camera_info.orientation + degrees) % 360
+            result = (360 - result) % 360
         } else {
-            result = (camera_info.orientation - degrees + 360) % 360;
+            result = (camera_info.orientation - degrees + 360) % 360
         }
         if (MyDebug.LOG) {
-            Logger.INSTANCE.d(TAG, "    info orientation is " + camera_info.orientation);
-            Logger.INSTANCE.d(TAG, "    setDisplayOrientation to " + result);
+            d(TAG, "    info orientation is " + camera_info.orientation)
+            d(TAG, "    setDisplayOrientation to " + result)
         }
 
         try {
-            camera.setDisplayOrientation(result);
-        } catch (RuntimeException e) {
+            camera!!.setDisplayOrientation(result)
+        } catch (e: RuntimeException) {
             // unclear why this happens, but have had crashes from Google Play...
-            Logger.INSTANCE.e(TAG, "failed to set display orientation");
-            e.printStackTrace();
+            e(TAG, "failed to set display orientation")
+            e.printStackTrace()
         }
-        this.display_orientation = result;
+        this.display_orientation = result
     }
 
-    public int getDisplayOrientation() {
-        return this.display_orientation;
+    override fun getDisplayOrientation(): Int {
+        return this.display_orientation
     }
 
-    public int getCameraOrientation() {
-        return camera_info.orientation;
+    override fun getCameraOrientation(): Int {
+        return camera_info.orientation
     }
 
-    @Override
-    public Facing getFacing() {
-        switch (camera_info.facing) {
-            case Camera.CameraInfo.CAMERA_FACING_FRONT:
-                return Facing.FACING_FRONT;
-            case Camera.CameraInfo.CAMERA_FACING_BACK:
-                return Facing.FACING_BACK;
+    override fun getFacing(): Facing {
+        when (camera_info.facing) {
+            Camera.CameraInfo.CAMERA_FACING_FRONT -> return Facing.FACING_FRONT
+            Camera.CameraInfo.CAMERA_FACING_BACK -> return Facing.FACING_BACK
         }
-        Logger.INSTANCE.e(TAG, "unknown camera_facing: " + camera_info.facing);
-        return Facing.FACING_UNKNOWN;
+        e(TAG, "unknown camera_facing: " + camera_info.facing)
+        return Facing.FACING_UNKNOWN
     }
 
-    public void unlock() {
-        this.stopPreview(); // although not documented, we need to stop preview to prevent device freeze or video errors shortly after video recording starts on some devices (e.g., device freeze on Samsung Galaxy S2 - I could reproduce this on Samsung RTL; also video recording fails and preview becomes corrupted on Galaxy S3 variant "SGH-I747-US2"); also see http://stackoverflow.com/questions/4244999/problem-with-video-recording-after-auto-focus-in-android
-        camera.unlock();
+    override fun unlock() {
+        this.stopPreview() // although not documented, we need to stop preview to prevent device freeze or video errors shortly after video recording starts on some devices (e.g., device freeze on Samsung Galaxy S2 - I could reproduce this on Samsung RTL; also video recording fails and preview becomes corrupted on Galaxy S3 variant "SGH-I747-US2"); also see http://stackoverflow.com/questions/4244999/problem-with-video-recording-after-auto-focus-in-android
+        camera!!.unlock()
     }
 
-    @Override
-    public void initVideoRecorderPrePrepare(MediaRecorder video_recorder) {
-        video_recorder.setCamera(camera);
+    override fun initVideoRecorderPrePrepare(video_recorder: MediaRecorder) {
+        video_recorder.setCamera(camera)
     }
 
-    @Override
-    public void initVideoRecorderPostPrepare(MediaRecorder video_recorder, boolean want_photo_video_recording) {
+    override fun initVideoRecorderPostPrepare(
+        video_recorder: MediaRecorder?, want_photo_video_recording: Boolean
+    ) {
         // no further actions necessary
     }
 
-    @Override
-    public String getParametersString() {
-        String string = "";
+    override fun getParametersString(): String? {
+        var string: String? = ""
         try {
-            string = this.getParameters().flatten();
-        } catch (Exception e) {
+            string = this.parameters.flatten()
+        } catch (e: Exception) {
             // received a StringIndexOutOfBoundsException from beneath getParameters().flatten() on Google Play!
-            Logger.INSTANCE.e(TAG, "exception from getParameters().flatten()");
-            e.printStackTrace();
+            e(TAG, "exception from getParameters().flatten()")
+            e.printStackTrace()
         }
-        return string;
+        return string
+    }
+
+    companion object {
+        private const val TAG = "CameraController1"
+
+        private const val max_expo_bracketing_n_images =
+            3 // seem to have problems with 5 images in some cases, e.g., images coming out same brightness on OnePlus 3T
     }
 }

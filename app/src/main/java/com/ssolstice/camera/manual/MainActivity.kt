@@ -98,6 +98,8 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.exifinterface.media.ExifInterface
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.ssolstice.camera.manual.MyApplicationInterface.PhotoMode
 import com.ssolstice.camera.manual.billing.BillingManager
 import com.ssolstice.camera.manual.billing.BillingManager.ActiveSubscription
@@ -148,6 +150,29 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     lateinit var binding: ActivityMainBinding
 
     private val viewModel: CameraViewModel by viewModels()
+
+    private var mAdView: AdView? = null
+
+    private fun setupBannerAd(showAd: Boolean) {
+        if (showAd && !isPremiumUser()) {
+            mAdView = AdView(this)
+            mAdView?.setAdSize(AdSize.BANNER)
+            mAdView?.adUnitId = getString(R.string.banner)
+
+            // Tạo yêu cầu quảng cáo
+            val adRequest = AdRequest.Builder().build()
+
+            // Thêm AdView vào layout
+            binding.adLayout.removeAllViews()
+            binding.adLayout.addView(mAdView)
+
+            // Nạp quảng cáo
+            mAdView?.loadAd(adRequest)
+            binding.adLayout.visibility = View.VISIBLE
+        } else {
+            binding.adLayout.visibility = View.GONE
+        }
+    }
 
     var isAppPaused: Boolean = true
         private set
@@ -751,13 +776,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
 
         viewModel.showAd.observe(this) { showAd ->
             Logger.log("showAd: $showAd")
-            if (showAd && !isPremiumUser()) {
-                val adRequest = AdRequest.Builder().build()
-                binding.adView.loadAd(adRequest)
-                binding.adView.visibility = View.VISIBLE
-            } else {
-                binding.adView.visibility = View.GONE
-            }
+            setupBannerAd(showAd)
         }
 
         binding.composeView.setContent {
@@ -1862,28 +1881,13 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     private fun preloadIcons(iconsId: Int) {
-        var debug_time: Long = 0
-        if (MyDebug.LOG) {
-            Logger.d(TAG, "preloadIcons: $iconsId")
-            debug_time = System.currentTimeMillis()
-        }
         val icons = getResources().getStringArray(iconsId)
         for (icon in icons) {
             val resource = getResources().getIdentifier(
                 icon, null, this.applicationContext.packageName
             )
-            Logger.d(TAG, "load resource: $resource")
             val bm = BitmapFactory.decodeResource(getResources(), resource)
             this.preloaded_bitmap_resources.put(resource, bm)
-        }
-        if (MyDebug.LOG) {
-            Logger.d(
-                TAG,
-                "preloadIcons: total time for preloadIcons: " + (System.currentTimeMillis() - debug_time)
-            )
-            Logger.d(
-                TAG, "size of preloaded_bitmap_resources: " + preloaded_bitmap_resources.size
-            )
         }
     }
 
@@ -1896,14 +1900,8 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
     }
 
     override fun onDestroy() {
-        if (MyDebug.LOG) {
-            Logger.d(TAG, "onDestroy")
-            Logger.d(
-                TAG, "size of preloaded_bitmap_resources: " + preloaded_bitmap_resources.size
-            )
-        }
+        mAdView?.destroy()
         activity_count--
-        Logger.d(TAG, "activity_count: $activity_count")
 
         billingManager?.endConnection()
         // should do asap before waiting for images to be saved - as risk the application will be killed whilst waiting for that to happen,
@@ -2128,6 +2126,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             debug_time = System.currentTimeMillis()
         }
         super.onResume()
+        mAdView?.resume()
         this.isAppPaused = false // must be set before initLocation() at least
 
         // this is intentionally true, not false, as the uncovering happens in DrawPreview when we receive frames from the camera after it's opened
@@ -2274,6 +2273,7 @@ class MainActivity : AppCompatActivity(), OnPreferenceStartFragmentCallback {
             Logger.d(TAG, "onPause")
             debug_time = System.currentTimeMillis()
         }
+        mAdView?.pause()
         super.onPause() // docs say to call this before freeing other things
         this.isAppPaused = true
 

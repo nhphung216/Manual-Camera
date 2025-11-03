@@ -86,7 +86,7 @@
     <string name="preference_exposure">Nastavi izravnavo osvetlitve</string>
     <string name="preference_exposure_summary">Nastavite na 0 za privzeto izravnavo osvetlitve</string>
     <string name="preference_lock_orientation">Zakleni usmerjenost fotografij/videoposnetkov</string>
-    <string name="preference_lock_orientation_summary">Če je nastavljeno, bo usmerjenost naprave prezrta in fotografije/videoposnetki bodo usmerjeni glede na določeno usmerjenost\n%s</string>
+    <string name="preference_lock_orientation_summary">Če je nastavljeno, bo usmerjenost naprave prezrta in fotografije/videoposnetki bodo usmerjeni glede na določeno usmerjenost</string>
     <string name="preference_face_detection">Zaznavanje obrazov</string>
     <string name="preference_face_detection_summary">Uporabi zaznavanje obrazov namesto področij ostrenja</string>
 
@@ -100,7 +100,7 @@
     <string name="preference_burst_interval">Razmik zaporednega načina</string>
     <string name="preference_screen_camera_controls_more">Več nastavitev fotoaparata …</string>
     <string name="preference_touch_capture">Dotik za zajem</string>
-    <string name="preference_touch_capture_summary">Posnemi fotografijo z dotikom ali dvojnim dotikom predogleda\n%s</string>
+    <string name="preference_touch_capture_summary">Posnemi fotografijo z dotikom ali dvojnim dotikom predogleda</string>
     <string name="preference_pause_preview">Premor po slikanju fotografije</string>
     <string name="preference_pause_preview_summary">Premor zaslona po slikanju fotografje z možnostjo deljenja ali izbrisa fotografije</string>
     <string name="preference_shutter_sound">Zvok zaklopa</string>
@@ -125,7 +125,7 @@
     <string name="preference_lock_video">Zakleni zaslon ob snemanju videoposnetkov</string>
     <string name="preference_lock_video_summary">Ob snemanju videoposnetkov se bo gr. up. vmesnik zaklenil, da se prepreči naključna ustavitev snemanja.  Povlecite zaslon za odklepanje.  Upoštevajte, da se bo snemanje videoposnetkov vedno ustavilo, če se program postavi v ozadje ali zaslon izprazni.</string>
     <string name="preference_rotate_preview">Zavrti predogled</string>
-    <string name="preference_rotate_preview_summary">Možnost vrtenja predogleda (ne bo vplivalo na nastale fotografije/videoposnetke)\n%s</string>
+    <string name="preference_rotate_preview_summary">Možnost vrtenja predogleda (ne bo vplivalo na nastale fotografije/videoposnetke)</string>
     <string name="preference_screen_gui">Gr. up. vmesnik na zaslonu …</string>
     <string name="preference_preview_size">Velikost predogleda</string>
     <string name="preference_ui_placement">Postavitev up. vmesnika</string>
@@ -155,7 +155,7 @@
     <string name="preference_grid">Prikaži mrežo</string>
     <string name="grid">Mreža</string>
     <string name="preference_crop_guide">Prikaži vodnik za obrezovanje</string>
-    <string name="preference_crop_guide_summary">Vodnik za obrezovanje prikazuje pravokotnik določenega razmerja slike - uporabno, če boste kasneje obrezali fotografijo/videoposnetek na drugo razmerje. Zahteva način za fotografije WYSIWYG ali način za videoposnetke\n%s</string>
+    <string name="preference_crop_guide_summary">Vodnik za obrezovanje prikazuje pravokotnik določenega razmerja slike - uporabno, če boste kasneje obrezali fotografijo/videoposnetek na drugo razmerje. Zahteva način za fotografije WYSIWYG ali način za videoposnetke</string>
     <string name="preference_show_toasts">Prikaži \"pojavna\" sporočila</string>
     <string name="preference_show_toasts_summary">Ali naj se prikažejo \"pojavna\" sporočila</string>
     <string name="preference_thumbnail_animation">Prikaži animacijo sličice</string>
@@ -173,7 +173,7 @@
     <string name="preference_screen_location_settings">Nastavitve lokacije …</string>
     <string name="preference_resolution">Ločljivost fotoaparata</string>
     <string name="preference_quality">Kakovost slik</string>
-    <string name="preference_quality_summary">Nastavite kakovost shranjenih slik JPEG ali WebP (privzeta vrednost je 90 %%).  Nima učinka na obliko PNG.\n%s</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
+    <string name="preference_quality_summary">Nastavite kakovost shranjenih slik JPEG ali WebP (privzeta vrednost je 90 %%).  Nima učinka na obliko PNG.</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
     <string name="preference_raw">RAW</string>
     <string name="preference_location">Shrani podatke o lokaciji (označevanje z zemljepisno lego)</string>
     <string name="preference_location_summary">Shrani podatke o lokaciji GPS v fotografijah/videoposnetkih (v fotografijah se podatki o lokaciji lahko shranijo samo pri oblikah JPEG in DNG)</string>
@@ -182,18 +182,18 @@
     <string name="preference_require_location">Zahtevaj podatke o lokaciji</string>
     <string name="preference_require_location_summary">Če so podatki o lokaciji omogočeni, snemaj fotografije/videoposnetke samo, če so ti podatki na voljo</string>
     <string name="preference_stamp">Časovni žig fotografij</string>
-    <string name="preference_stamp_summary">Na fotografije dodaj časovni žig in tudi podatke GPS, če so podatki o lokaciji/smeri omogočeni\n%s</string>
+    <string name="preference_stamp_summary">Na fotografije dodaj časovni žig in tudi podatke GPS, če so podatki o lokaciji/smeri omogočeni</string>
     <string name="preference_stamp_dateformat">Oblika datumskega žiga</string>
     <string name="preference_stamp_timeformat">Oblika časovnega žiga</string>
     <string name="preference_stamp_gpsformat">Oblika žiga GPS</string>
     <string name="preference_textstamp">Besedilo po meri</string>
     <string name="preference_textstamp_summary">Na fotografije dodaj žig z besedilom po meri</string>
     <string name="preference_stamp_fontsize">Velikost pisave</string>
-    <string name="preference_stamp_fontsize_summary">Velikost pisave žiga z besedilom\n%s</string>
+    <string name="preference_stamp_fontsize_summary">Velikost pisave žiga z besedilom</string>
     <string name="preference_stamp_font_color">Barva pisave</string>
-    <string name="preference_stamp_font_color_summary">Barva pisave žiga z besedilom\n%s</string>
+    <string name="preference_stamp_font_color_summary">Barva pisave žiga z besedilom</string>
     <string name="preference_stamp_style">Slog besedila</string>
-    <string name="preference_stamp_style_summary">Slog besedila žiga\n%s</string>
+    <string name="preference_stamp_style_summary">Slog besedila žiga</string>
     <string name="preference_background_photo_saving">Uporabi nit v ozadju</string>
     <string name="preference_background_photo_saving_summary">Ali naj se fotografije shranjujejo z uporabo niti v ozadju (za hitrejše delovanje)</string>
     <string name="video_quality">Ločljivost videoposnetkov</string>
@@ -202,23 +202,23 @@
     <string name="preference_video_stabilization">Omogoči ustalitev videoposnetkov</string>
     <string name="preference_video_stabilization_summary">Ustaltev videoposnetkov zmanjša tresenje zaradi gibanja kamere tako v predogledu, kot v posnetku.</string>
     <string name="preference_video_bitrate">Bitna hitrost videoposnetkov (pribl.)</string>
-    <string name="preference_video_bitrate_summary">Nastavite pribl. hitrost videoposnetkov (višje vrednosti pomenijo boljšo kakovost, vendar zavzamejo več prostora na disku; snemanje videoposnetkov lahko spodleti, če bitna hitrost ni podprta)\n%s</string>
+    <string name="preference_video_bitrate_summary">Nastavite pribl. hitrost videoposnetkov (višje vrednosti pomenijo boljšo kakovost, vendar zavzamejo več prostora na disku; snemanje videoposnetkov lahko spodleti, če bitna hitrost ni podprta)</string>
     <string name="preference_video_fps">Hitrost sličic videoposnetkov (pribl.)</string>
-    <string name="preference_video_fps_summary">Nastavite hitrost sličic (sl./s) videoposnetkov (je lahko približna. Doseganje nastavljene vrednosti ni zagotovljeno in snemanje videoposnetkov lahko spodleti, če hitrost sličic ni podprta).  Preverite nastali videoposnetek za dejansko uporabljeno hitrost sličic.  Upoštevajte, da se ta nastavitev pri počasnih posnetkih prezre.\n%s</string>
+    <string name="preference_video_fps_summary">Nastavite hitrost sličic (sl./s) videoposnetkov (je lahko približna. Doseganje nastavljene vrednosti ni zagotovljeno in snemanje videoposnetkov lahko spodleti, če hitrost sličic ni podprta).  Preverite nastali videoposnetek za dejansko uporabljeno hitrost sličic.  Upoštevajte, da se ta nastavitev pri počasnih posnetkih prezre.</string>
     <string name="preference_video_max_duration">Najdaljše trajanje videoposnetkov</string>
-    <string name="preference_video_max_duration_summary">Snemanje videoposnetkov se bo ustavilo po tem času\n%s</string>
+    <string name="preference_video_max_duration_summary">Snemanje videoposnetkov se bo ustavilo po tem času</string>
     <string name="preference_video_restart">Ponovno zaženi videoposnetek po najdaljšem trajanju</string>
-    <string name="preference_video_restart_summary">Če se je videoposnetek ustavil, ko je bilo doseženo najdaljše trajanje (če je nastavljeno), bo ta možnost povzročila ponovni zagon videoposnetka do določenega števila ponovitev\n%s</string>
+    <string name="preference_video_restart_summary">Če se je videoposnetek ustavil, ko je bilo doseženo najdaljše trajanje (če je nastavljeno), bo ta možnost povzročila ponovni zagon videoposnetka do določenega števila ponovitev</string>
     <string name="preference_video_max_filesize">Največja velikost videoposnetkov</string>
-    <string name="preference_video_max_filesize_summary">Snemanje videoposnetkov se bo ustavilo in/ali ponovno zagnalo (glejte spodnjo možnost), ko je dosežena (pribl.) največja velikost datoteke. Upoštevajte, da imajo skoraj vse naprave Android zgornjo omejitev velikosti datoteke za videoposnetke (običajno okoli 2 ali 4 GB), vendar ta možnost omogoča nastavitev določene vrednosti\n%s</string>
+    <string name="preference_video_max_filesize_summary">Snemanje videoposnetkov se bo ustavilo in/ali ponovno zagnalo (glejte spodnjo možnost), ko je dosežena (pribl.) največja velikost datoteke. Upoštevajte, da imajo skoraj vse naprave Android zgornjo omejitev velikosti datoteke za videoposnetke (običajno okoli 2 ali 4 GB), vendar ta možnost omogoča nastavitev določene vrednosti</string>
     <string name="preference_video_restart_max_filesize">Ponovno zaženi ob največji velikosti datoteke</string>
     <string name="preference_video_restart_max_filesize_summary">Ali naj se videoposnetek ponovno zažene, ko je dosežena (privzeta ali uporabniško določena) največja velikost datoteke</string>
     <string name="preference_record_audio">Snemaj zvok</string>
     <string name="preference_record_audio_summary">Snemaj zvok ob snemanju vidoposnetkov</string>
     <string name="preference_record_audio_src">Vir zvoka</string>
-    <string name="preference_record_audio_src_summary">Kateri mikrofon naj se uporabi za snemanje zvoka.  Upoštevajte, da je podrobno vedenje te možnosti odvisno od načina vdelave te možnosti v napravo.\n%s</string>
+    <string name="preference_record_audio_src_summary">Kateri mikrofon naj se uporabi za snemanje zvoka.  Upoštevajte, da je podrobno vedenje te možnosti odvisno od načina vdelave te možnosti v napravo.</string>
     <string name="preference_record_audio_channels">Zvočni kanali</string>
-    <string name="preference_record_audio_channels_summary">Določite mono ali stereo za snemanje zvoka (stereo je podprt samo na nekaterih napravah)\n%s</string>
+    <string name="preference_record_audio_channels_summary">Določite mono ali stereo za snemanje zvoka (stereo je podprt samo na nekaterih napravah)</string>
     <string name="preference_video_flash">Svetilka med snemanjem videoposnetkov</string>
     <string name="preference_video_flash_summary">Če je omogočeno, se bo ob snemanju videoposnetkov vklopila/izklopila svetilka (se lahko uporabi za prepoznavanje delovanja kamere na razdaljo)</string>
 
@@ -312,12 +312,12 @@
     <string name="preference_camera2_fake_flash_summary">Omogočite, če se vaša naprava neobičajno vede z API-jem Camera2</string>
 
     <string name="preference_expo_bracketing_n_images">Stopnjevanje osvetlitve</string>
-    <string name="preference_expo_bracketing_n_images_summary">Število slik stopnjevanja osvetlitve\n%s</string>
+    <string name="preference_expo_bracketing_n_images_summary">Število slik stopnjevanja osvetlitve</string>
     <string name="preference_expo_bracketing_stops">Korak stopnjevanja osvetlitve</string>
-    <string name="preference_expo_bracketing_stops_summary">Število pozitivnih/negativnih korakov za najtemnejšo/najsvetlejšo sliko\n%s</string>
+    <string name="preference_expo_bracketing_stops_summary">Število pozitivnih/negativnih korakov za najtemnejšo/najsvetlejšo sliko</string>
 
     <string name="preference_nr_save">Izvirne slike zmanjševanja šuma</string>
-    <string name="preference_nr_save_summary">Ali naj se izvirne slike shranijo v načinu zmanjševanja šuma.  Upoštevajte, da se bodo pri tem slike shranjevale dalj časa.\n%s</string>
+    <string name="preference_nr_save_summary">Ali naj se izvirne slike shranijo v načinu zmanjševanja šuma.  Upoštevajte, da se bodo pri tem slike shranjevale dalj časa.</string>
 
     <string name="preference_nr_save_no">Ne shrani izvirnih slik</string>
     <string name="preference_nr_save_single">Shrani eno izvirno sliko</string>
@@ -344,7 +344,7 @@
     <string name="selfie">Samoposnetek</string>
 
     <string name="preference_front_camera_mirror">Zrcaljenje sprednjega fotoaparata</string>
-    <string name="preference_front_camera_mirror_summary">Ali naj se ob uporabi sprednjega fotoaparata nastale slike zrcalijo\n%s</string>
+    <string name="preference_front_camera_mirror_summary">Ali naj se ob uporabi sprednjega fotoaparata nastale slike zrcalijo</string>
 
     <string name="preference_calibrate_level">Umeri kot ravni</string>
     <string name="preference_calibrate_level_summary">Ta možnost umeri pospeškomer naprave za pravilno delovanje samodejne poravnave in prikaza ravni/kota na zaslonu.</string>
@@ -361,7 +361,7 @@
     <string name="preference_show_geo_direction_lines">Prikaži črte smeri neba</string>
     <string name="preference_show_geo_direction_lines_summary">Prikaži črte smeri neba</string>
     <string name="preference_video_subtitle">Podnapisi</string>
-    <string name="preference_video_subtitle_summary">Ustvari datoteko podnapisov (.srt) s podatki o času, datumu in tudi GPS-u, če sta lokacija in smer omogočena\n%s</string>
+    <string name="preference_video_subtitle_summary">Ustvari datoteko podnapisov (.srt) s podatki o času, datumu in tudi GPS-u, če sta lokacija in smer omogočena</string>
 
     <string name="duration_unlimited">Neomejeno</string>
     <string name="duration_3s">3 s</string>
@@ -518,14 +518,14 @@
     <string name="flash_frontscreen_torch">Zaslonska svetilka</string>
 
     <string name="preference_antibanding">Odstranjevanje pasov</string>
-    <string name="preference_antibanding_summary">Algoritmi za pomoč pri utripanju svetlobe.\n%s</string>
+    <string name="preference_antibanding_summary">Algoritmi za pomoč pri utripanju svetlobe.</string>
     <string name="anti_banding_auto">Samodejno</string>
     <string name="anti_banding_50hz">50 Hz</string>
     <string name="anti_banding_60hz">60 Hz</string>
     <string name="anti_banding_off">Izk.</string>
 
     <string name="preference_ghost_image">Prekrivna slika</string>
-    <string name="preference_ghost_image_summary">Prekrivna slika za pomoč pri uravnavi.\n%s</string>
+    <string name="preference_ghost_image_summary">Prekrivna slika za pomoč pri uravnavi.</string>
     <string name="preference_ghost_image_off">Izk.</string>
     <string name="preference_ghost_image_last">Nazadje posneta fotografija</string>
     <string name="preference_ghost_image_selected">Izbrana slika</string>
@@ -537,7 +537,7 @@
     <string name="preference_camera2_photo_video_recording_summary">Dovoli fotografiranje med snemanjem videoposnetka.  Onemogočite to, če naletite na težave pri snemanju videoposnetkov, ko imate na napravi omogočen API Camera2.</string>
 
     <string name="preference_video_log">Profili slike videoposnetkov</string>
-    <string name="preference_video_log_summary">Nastavite običajni ali difuzni profil za način videoposnetkov\n%s</string>
+    <string name="preference_video_log_summary">Nastavite običajni ali difuzni profil za način videoposnetkov</string>
     <string name="preference_video_log_off">Privzeti</string>
     <string name="preference_video_log_fine">Log (podrobno)</string>
     <string name="preference_video_log_low">Log (nizko)</string>
@@ -603,7 +603,7 @@
     <string name="accuracy_unknown">Neznano</string>
 
     <string name="preference_units_distance">Enote razdalje</string>
-    <string name="preference_units_distance_summary">Uporablja se za nadmorsko višino GPS pri žigih na fotografijah in pri podnapisih na videoposnetkih\n%s</string>
+    <string name="preference_units_distance_summary">Uporablja se za nadmorsko višino GPS pri žigih na fotografijah in pri podnapisih na videoposnetkih</string>
     <string name="preference_units_distance_m">Metri</string>
     <string name="preference_units_distance_ft">Čevlji</string>
     <string name="feet_abbreviation">čev.</string> <!-- symbol short for feet -->
@@ -612,12 +612,12 @@
     <string name="preference_show_whats_new_summary">Ali naj se prikažejo podatki o novih značilnostih in izboljšavah ob posodobitvi programa</string>
 
     <string name="preference_edge_mode">Algoritem robnega načina</string>
-    <string name="preference_edge_mode_summary">Algoritem, ki naj ga gonilnik fotoaparata uporabi za poudarjanje robov.  Poudarjanje robov izboljša ostrino in podrobnosti zajete slike (ta nastavitev se prezre v načinu zmanjševanja šumov).\n%s</string>
+    <string name="preference_edge_mode_summary">Algoritem, ki naj ga gonilnik fotoaparata uporabi za poudarjanje robov.  Poudarjanje robov izboljša ostrino in podrobnosti zajete slike (ta nastavitev se prezre v načinu zmanjševanja šumov).</string>
 
     <string name="preference_screen_processing_settings">Obdelovanje nastavitev …</string>
 
     <string name="preference_noise_reduction_mode">Algoritem zmanjševanja šumov</string>
-    <string name="preference_noise_reduction_mode_summary">Algoritem, ki naj ga gonilnik fotoaparata uporabi za zmanjševanje šumov.  Algortem za zmanjševanje šumov poizkuša izboljšati kakovost slike z odstranjevanjem odvečnega šuma, ki ga doda postopek zajema, še posebno v temnih pogojih (upoševajte, da to ni povezano z načinom odstranjevanja šuma, v katerem se ta nastavitev pravzaprev prezre).\n%s</string>
+    <string name="preference_noise_reduction_mode_summary">Algoritem, ki naj ga gonilnik fotoaparata uporabi za zmanjševanje šumov.  Algortem za zmanjševanje šumov poizkuša izboljšati kakovost slike z odstranjevanjem odvečnega šuma, ki ga doda postopek zajema, še posebno v temnih pogojih (upoševajte, da to ni povezano z načinom odstranjevanja šuma, v katerem se ta nastavitev pravzaprev prezre).</string>
     <string name="noise_reduction_mode_default">Privzeto</string>
     <string name="noise_reduction_mode_off">Izk.</string>
     <string name="noise_reduction_mode_minimal">Najmanjše</string>
@@ -625,7 +625,7 @@
     <string name="noise_reduction_mode_high_quality">Visoka kakovost</string>
 
     <string name="preference_focus_assist">Pomoč pri ostrenju</string>
-    <string name="preference_focus_assist_summary">Ali naj se predogled poveča pri ročnem uravnavanju ostrine\n%s</string>
+    <string name="preference_focus_assist_summary">Ali naj se predogled poveča pri ročnem uravnavanju ostrine</string>
     <string name="preference_focus_assist_off">Izk.</string>
     <string name="preference_focus_assist_2x">2x</string>
     <string name="preference_focus_assist_4x">4x</string>
@@ -703,13 +703,13 @@
     <string name="preference_audio_noise_control_sensitivity_m3">-3 (nizka občutljivost)</string>
 
     <string name="preference_hdr_contrast_enhancement">Izboljšava kontrasta HDR</string>
-    <string name="preference_hdr_contrast_enhancement_summary">Kdaj naj se uporabi algoritem za izboljšavo kontrasta v načinu HDR.  To lahko izboljša videz v primerih zelo visokega dinamičnega razpona prizora in rezultatom doda "HDR-videz".\n%s</string>
+    <string name="preference_hdr_contrast_enhancement_summary">Kdaj naj se uporabi algoritem za izboljšavo kontrasta v načinu HDR.  To lahko izboljša videz v primerih zelo visokega dinamičnega razpona prizora in rezultatom doda "HDR-videz".</string>
     <string name="preference_hdr_contrast_enhancement_off">Izk.</string>
     <string name="preference_hdr_contrast_enhancement_smart">Pametno</string>
     <string name="preference_hdr_contrast_enhancement_always">Vedno</string>
 
     <string name="preference_video_output_format">Oblika videposnetkov</string>
-    <string name="preference_video_output_format_summary">Oblika datotek zvoka in videoposnetkov, in kodeki\n%s</string>
+    <string name="preference_video_output_format_summary">Oblika datotek zvoka in videoposnetkov, in kodeki</string>
 
     <string name="preference_video_output_format_default">Privzeto</string>
     <string name="preference_video_output_format_mpeg4_h264">MPEG4 H264</string>
@@ -811,7 +811,7 @@
     <string name="preference_location_disable">Prenehaj shranjevati podatke o lokaciji</string>
 
     <string name="preference_histogram">Prikaži histogram</string>
-    <string name="preference_histogram_summary">Ali naj se prikaže histogram barv na zaslonu\n%s</string>
+    <string name="preference_histogram_summary">Ali naj se prikaže histogram barv na zaslonu</string>
     <string name="preference_histogram_off">Izk.</string>
     <string name="preference_histogram_rgb">Barve RGB</string>
     <string name="preference_histogram_luminance">Svetilnost</string>
@@ -820,7 +820,7 @@
     <string name="preference_histogram_lightness">Svetlost (povprečje od najm.-najv.)</string>
 
     <string name="preference_zebra_stripes">Prikaži zebrine črte</string>
-    <string name="preference_zebra_stripes_summary">Če je ta možnost omogočena, bodo na zaslonu prikazane zebrine črte, kjer je predogled slike preosvetljen.\n%s</string>
+    <string name="preference_zebra_stripes_summary">Če je ta možnost omogočena, bodo na zaslonu prikazane zebrine črte, kjer je predogled slike preosvetljen.</string>
     <string name="preference_zebra_stripes_off">Izk.</string>
     <string name="preference_zebra_stripes_70pc">70 %</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
     <string name="preference_zebra_stripes_80pc">80 %</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
@@ -833,11 +833,11 @@
     <string name="preference_zebra_stripes_100pc">100 %</string> <!-- shouldn't escape %, not needed when shown in ListPreference -->
 
     <string name="preference_focus_peaking">Izboljšava ostrenja</string>
-    <string name="preference_focus_peaking_summary">Če je ta možnost omogočena, bodo na izostrenih robovih prikazani poudarki (orisi).  To je v glavnem uporabno za ročno ostrenje in za pomoč pri določanju, kateri deli slike zo izostreni.\n%s</string>
+    <string name="preference_focus_peaking_summary">Če je ta možnost omogočena, bodo na izostrenih robovih prikazani poudarki (orisi).  To je v glavnem uporabno za ročno ostrenje in za pomoč pri določanju, kateri deli slike zo izostreni.</string>
     <string name="preference_focus_peaking_off">Izk.</string>
     <string name="preference_focus_peaking_on">Vkl.</string>
     <string name="preference_focus_peaking_color">Barva izboljšave ostrenja</string>
-    <string name="preference_focus_peaking_color_summary">Barva za prikaz na izostrenih robovih\n%s</string>
+    <string name="preference_focus_peaking_color_summary">Barva za prikaz na izostrenih robovih</string>
 
     <string name="remaining">Preostalo</string> <!-- images remaining for "processing" -->
 
@@ -872,12 +872,12 @@
     <string name="failed_to_process_panorama">Ustvarjanje panoramske slike je spodletelo.</string>
 
     <string name="preference_panorama_crop">Samodejno obreži panoramo</string>
-    <string name="preference_panorama_crop_summary">Obrezovanje nazobčanih robov panoramske slike\n%s</string>
+    <string name="preference_panorama_crop_summary">Obrezovanje nazobčanih robov panoramske slike</string>
 
     <string name="panorama_info">Za zajem panoramske slike držite napravo v pokončnem položaju in kliknite za slikanje fotografije, da začnete panoramo.  Nato premaknite napravo levo ali desno, da bel krog na sredini premaknate na modro piko.  Ko se vsaka nova slika zajame, še naprej premikajte napravo, da pokrijete vsako novo modro piko.\n\nKliknite na kljukico, da shranite panoramo, ali križec, da jo prekličete.\n\nUpoštevajte, da traja nekaj časa, da se panoramske fotografije obdelajo in shranijo.</string>
 
     <string name="preference_panorama_save">Izvirne slike panorame</string>
-    <string name="preference_panorama_save_summary">Ali naj se shranijo izvirne slike v načinu panorame.  To bo podaljšalo čas shranjevanja slik panorame.  Dovoli tudi možnost shranjevanja datoteke XML, ki je uporabna pri poročanju o težavah s panoramo.\n%s</string>
+    <string name="preference_panorama_save_summary">Ali naj se shranijo izvirne slike v načinu panorame.  To bo podaljšalo čas shranjevanja slik panorame.  Dovoli tudi možnost shranjevanja datoteke XML, ki je uporabna pri poročanju o težavah s panoramo.</string>
 
     <string name="preference_panorama_save_no">Ne shrani izvirnih slik</string>
     <string name="preference_panorama_save_all">Shrani izvirne slike</string>
@@ -887,16 +887,16 @@
 
     <string name="exposure_compensation_seekbar">Iskalna vrstica za spremembo izravnave osvetlitve</string>
 
-    <string name="preference_image_format_summary">Izberite obliko datototek za shranjevanje fotografij.  To vpliva na fotografije v \"običajni\" obliki (ne v obliki RAW).  Samo oblika JPEG podpira shranjevanje metapodatkov Exif.  Upoštevajte, da oblika PNG ni popolnoma brezizgubna in se zaradi tega pretvori iz oblike JPEG pri 100 %% kakovosti.\n%s</string>
+    <string name="preference_image_format_summary">Izberite obliko datototek za shranjevanje fotografij.  To vpliva na fotografije v \"običajni\" obliki (ne v obliki RAW).  Samo oblika JPEG podpira shranjevanje metapodatkov Exif.  Upoštevajte, da oblika PNG ni popolnoma brezizgubna in se zaradi tega pretvori iz oblike JPEG pri 100 %% kakovosti.</string>
 
     <string name="preference_camera_api">API fotoaparata</string>
-    <string name="preference_camera_api_summary">Izberite API Camera2, da omogočite dodatne značilnosti, kot so ročni načini za osvetlitev, ostrino, ravnovesje beline, kot tudi obliko RAW (če jo naprava podpira).  Sprememba API-ja po ponovno zagnala program.\n%s</string>
+    <string name="preference_camera_api_summary">Izberite API Camera2, da omogočite dodatne značilnosti, kot so ročni načini za osvetlitev, ostrino, ravnovesje beline, kot tudi obliko RAW (če jo naprava podpira).  Sprememba API-ja po ponovno zagnala program.</string>
     <string name="preference_camera_api_old">Izvirni API fotoaparata</string>
     <string name="preference_camera_api_camera2">API Camera2</string>
 
     <string name="preference_audio_control_summary">Posnemite fotografijo/videposnetek, ko naprava zazna zvok.
         Ko je omogočeno, uporabite zaslonski gumb za mikrofon, da vklopite/izklopite zaznavo zvoka.
-        \n%s</string>
+        </string>
 
     <string name="intro_text">Dotaknite se za izostritev in pritisnite moder gumb za fotoaparat, da posnamete fotografijo.
         \n\nZa shranjevanje na kartico SD na Androidih 5+ glejte Nastavitve/Več nastavitev fotoaparata/\"Storage Access Framework\".
@@ -909,7 +909,7 @@
     <string name="preference_video_srgb">sRGB</string>
     <string name="preference_video_gamma">Gamma</string>
     <string name="preference_video_profile_gamma">Vrednost gama videoposnetkov</string>
-    <string name="preference_video_profile_gamma_summary">Vrednost gama, k naj se uporabi v videoposnetkih, če je profil slike videoposnetkov nastavljen na Gama\n%s</string>
+    <string name="preference_video_profile_gamma_summary">Vrednost gama, k naj se uporabi v videoposnetkih, če je profil slike videoposnetkov nastavljen na Gama</string>
     <string name="preference_video_profile_gamma_1_6">1,6</string>
     <string name="preference_video_profile_gamma_1_8">1,8</string>
     <string name="preference_video_profile_gamma_1_9">1,9</string>
@@ -927,12 +927,12 @@
     <string name="preference_immersive_mode_everything">Skrij vse</string>
 
     <string name="preference_ghost_image_alpha">Prosojnost prekrivne slike</string>
-    <string name="preference_ghost_image_alpha_summary">Vrednost alfa pri uporabi prekrivne slike.  Nižja vrednost pomeni večjo prosojnost.\n%s</string>
+    <string name="preference_ghost_image_alpha_summary">Vrednost alfa pri uporabi prekrivne slike.  Nižja vrednost pomeni večjo prosojnost.</string>
 
     <string name="preference_zebra_stripes_foreground_color">Ospredna barva zebrinih črt</string>
-    <string name="preference_zebra_stripes_foreground_color_summary">Barva, ki naj se uporabi za osprednje črte med prikazom zebrinih črt.\n%s</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">Barva, ki naj se uporabi za osprednje črte med prikazom zebrinih črt.</string>
     <string name="preference_zebra_stripes_background_color">Ozadna barva zebrinih črt</string>
-    <string name="preference_zebra_stripes_background_color_summary">Barva, ki naj se uporabi za ozadne črte med prikazom zebrinih črt.\n%s</string>
+    <string name="preference_zebra_stripes_background_color_summary">Barva, ki naj se uporabi za ozadne črte med prikazom zebrinih črt.</string>
 
     <string name="preference_zebra_stripes_color_black">Črna</string>
     <string name="preference_zebra_stripes_color_red">Rdeča</string>
@@ -1031,13 +1031,13 @@
     <string name="unlock_pro">Odkleni Pro</string>
     <string name="later">Kasneje</string>
     <string name="preference_hdr_tonemapping">HDR tonemapping</string>
-    <string name="preference_hdr_tonemapping_summary">Algoritem za tonemapping v HDR načinu za fotografije\n%s</string>
+    <string name="preference_hdr_tonemapping_summary">Algoritem za tonemapping v HDR načinu za fotografije</string>
     <string name="preference_hdr_tonemapping_clamp">Preprosta obrezava</string>
     <string name="preference_hdr_tonemapping_exponential">Eksponentno</string>
     <string name="preference_hdr_tonemapping_default">Privzeto</string>
     <string name="preference_hdr_tonemapping_aces">ACES</string>
     <string name="preference_remove_device_exif">Odstrani EXIF naprave</string>
-    <string name="preference_remove_device_exif_summary">Ali odstraniti EXIF metapodatke naprave iz JPEG fotografij. To ne odstrani EXIF oznak iz drugih nastavitev (npr. geolokacija). Druge opcije so neodvisne in lahko preglasijo to nastavitev. RAW/DNG in videoposnetki niso prizadeti.\n%s</string>
+    <string name="preference_remove_device_exif_summary">Ali odstraniti EXIF metapodatke naprave iz JPEG fotografij. To ne odstrani EXIF oznak iz drugih nastavitev (npr. geolokacija). Druge opcije so neodvisne in lahko preglasijo to nastavitev. RAW/DNG in videoposnetki niso prizadeti.</string>
     <string name="preference_remove_device_exif_off">Ne odstranjuj EXIF naprave</string>
     <string name="preference_remove_device_exif_on">Odstrani EXIF naprave</string>
     <string name="preference_remove_device_exif_keep_datetime">Odstrani razen datuma/časa</string>
@@ -1047,18 +1047,18 @@
     <string name="focus_peaking_enable">Omogoči fokus-peaking</string>
     <string name="focus_peaking_disable">Onemogoči fokus-peaking</string>
     <string name="preference_photo_optimise_focus">Optimiziraj fokus za…</string>
-    <string name="preference_photo_optimise_focus_summary">Pri fotografiranju optimiziraj fokus po zamiku ali kakovosti. Velja samo v načinu neprekinjene ostrenja. Optimizacija za kakovost zagotavlja ostrino, a lahko povzroči zamudo.\n%s</string>
+    <string name="preference_photo_optimise_focus_summary">Pri fotografiranju optimiziraj fokus po zamiku ali kakovosti. Velja samo v načinu neprekinjene ostrenja. Optimizacija za kakovost zagotavlja ostrino, a lahko povzroči zamudo.</string>
     <string name="preference_photo_optimise_focus_latency">Zamik</string>
     <string name="preference_photo_optimise_focus_quality">Kakovost</string>
     <string name="preference_save_preshots">Shrani predogledne posnetke</string>
-    <string name="preference_save_preshots_summary">Če je omogočeno, se shrani kratek video skupaj s fotografijo, ki prikazuje trenutke pred zajemom. Ni podprto za eksponiranje, bracketing ali panoramo.\n%s</string>
+    <string name="preference_save_preshots_summary">Če je omogočeno, se shrani kratek video skupaj s fotografijo, ki prikazuje trenutke pred zajemom. Ni podprto za eksponiranje, bracketing ali panoramo.</string>
     <string name="telephoto">Teleobjektiv</string>
     <string name="auto_lens">Samodejni objektiv</string>
     <string name="lens">Objektiv</string>
     <string name="physical_cameras_info">&#9432; Privzeto kamera uporablja samodejni izbor objektiva glede na zoom. V tem meniju pa lahko objektiv izberete ročno.</string>
     <string name="focus_bracketing_auto_source_distance">Samodejni vir</string>
     <string name="preference_allow_haptic_feedback">Dovoli povratno vibracijo</string>
-    <string name="preference_allow_haptic_feedback_summary">Dovoli vibracijsko povratno informacijo pri nastavitvah. Zahteva aktivirane dotikne interakcije v nastavitvah naprave.\n%s</string>
+    <string name="preference_allow_haptic_feedback_summary">Dovoli vibracijsko povratno informacijo pri nastavitvah. Zahteva aktivirane dotikne interakcije v nastavitvah naprave.</string>
     <string name="preference_using_saf">Storage Access Framework</string>
     <string name="color_effects">Barvni učinki</string>
     <string name="preference_languages">Jeziki</string>

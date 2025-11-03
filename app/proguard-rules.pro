@@ -186,4 +186,8 @@
 -keep class com.ssolstice.camera.manual.billing.** { *; }
 -dontwarn com.ssolstice.camera.manual.billing.**
 
+-keep enum *PhotoMode* { *; }
+-keep class **PhotoMode** { *; }
+
+
 

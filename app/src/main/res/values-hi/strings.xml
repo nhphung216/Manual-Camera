@@ -490,7 +490,7 @@
     <string name="selfie">सेल्फी</string>
 
     <string name="preference_front_camera_mirror">फ्रंट कैमरा मिरर</string>
-    <string name="preference_front_camera_mirror_summary">फ्रंट कैमरे का उपयोग करते समय परिणामी तस्वीरों को मिरर करना है या नहीं\n%s</string>
+    <string name="preference_front_camera_mirror_summary">फ्रंट कैमरे का उपयोग करते समय परिणामी तस्वीरों को मिरर करना है या नहीं</string>
     <string name="preference_calibrate_level">लेवल एंगल कैलिब्रेट करें</string>
     <string name="preference_calibrate_level_summary">यह विकल्प आपके डिवाइस के एक्सेलेरोमीटर को कैलिब्रेट करता है, ताकि ऑटो-लेवल और ऑन-स्क्रीन लेवल/एंगल विकल्प सही तरीके से काम करें</string>
     <string name="preference_calibrate_level_dialog">कृपया अपने डिवाइस को एक सपाट क्षैतिज सतह पर रखें ताकि यह समतल हो (या तो पोर्ट्रेट या लैंडस्केप ओरिएंटेशन में), और फिर कैलिब्रेट चुनें।\n\nअपने डिवाइस से कैलिब्रेशन हटाने के लिए रीसेट दबाएं।\n\nरद्द करने के लिए बैक बटन दबाएं।</string>
@@ -504,7 +504,7 @@
     <string name="preference_show_geo_direction_lines">कम्पास दिशा लाइनें दिखाएं</string>
     <string name="preference_show_geo_direction_lines_summary">कम्पास दिशा लाइनें प्रदर्शित करें</string>
     <string name="preference_video_subtitle">वीडियो उपशीर्षक</string>
-    <string name="preference_video_subtitle_summary">दिनांक और समय संग्रहीत करने वाली एक उपशीर्षक (.SRT) फ़ाइल बनाएं; और यदि स्थान/दिशा डेटा सक्षम है तो जीपीएस जानकारी भी। (एंड्रॉइड 11+ पर, इस विकल्प के लिए अधिक कैमरा नियंत्रण/स्टोरेज एक्सेस फ्रेमवर्क सक्षम होना आवश्यक है।)\n%s</string>
+    <string name="preference_video_subtitle_summary">दिनांक और समय संग्रहीत करने वाली एक उपशीर्षक (.SRT) फ़ाइल बनाएं; और यदि स्थान/दिशा डेटा सक्षम है तो जीपीएस जानकारी भी। (एंड्रॉइड 11+ पर, इस विकल्प के लिए अधिक कैमरा नियंत्रण/स्टोरेज एक्सेस फ्रेमवर्क सक्षम होना आवश्यक है।)</string>
 
     <string name="duration_unlimited">असीमित</string>
     <string name="duration_3s">3 सेकंड</string>
@@ -657,13 +657,13 @@
     <string name="flash_frontscreen_on">स्क्रीन फ्लैश ऑन</string>
     <string name="flash_frontscreen_torch">स्क्रीन टॉर्च</string>
     <string name="preference_antibanding">एंटी-बैंडिंग</string>
-    <string name="preference_antibanding_summary">प्रकाश टिमटिमाहट में मदद करने के लिए एल्गोरिदम।\n%s</string>
+    <string name="preference_antibanding_summary">प्रकाश टिमटिमाहट में मदद करने के लिए एल्गोरिदम।</string>
     <string name="anti_banding_auto">ऑटो</string>
     <string name="anti_banding_50hz">50 हर्ट्ज</string>
     <string name="anti_banding_60hz">60 हर्ट्ज</string>
     <string name="anti_banding_off">बंद</string>
     <string name="preference_ghost_image">घोस्ट इमेज</string>
-    <string name="preference_ghost_image_summary">संरेखण में मदद करने के लिए पूर्वावलोकन पर एक छवि प्रदर्शित करें।\n%s</string>
+    <string name="preference_ghost_image_summary">संरेखण में मदद करने के लिए पूर्वावलोकन पर एक छवि प्रदर्शित करें।</string>
     <string name="preference_ghost_image_off">बंद</string>
     <string name="preference_ghost_image_last">अंतिम ली गई तस्वीर</string>
     <string name="preference_ghost_image_selected">चयनित छवि</string>
@@ -679,7 +679,7 @@
     <string name="preference_camera2_photo_video_recording">वीडियो रिकॉर्ड करते समय फ़ोटो की अनुमति दें</string>
     <string name="preference_camera2_photo_video_recording_summary">वीडियो रिकॉर्ड करते समय फ़ोटो लेने की अनुमति देता है। यदि आपके डिवाइस पर Camera2 API सक्षम होने पर वीडियो रिकॉर्डिंग में समस्याएँ हैं तो इसे अक्षम करें।</string>
     <string name="preference_video_log">वीडियो चित्र प्रोफाइल</string>
-    <string name="preference_video_log_summary">वीडियो मोड के लिए मानक या फ्लैट चित्र प्रोफ़ाइल सेट करें\n%s</string>
+    <string name="preference_video_log_summary">वीडियो मोड के लिए मानक या फ्लैट चित्र प्रोफ़ाइल सेट करें</string>
     <string name="preference_video_log_off">डिफ़ॉल्ट</string>
     <string name="preference_video_log_fine">लॉग (ठीक)</string>
     <string name="preference_video_log_low">लॉग (कम)</string>
@@ -738,24 +738,24 @@
     <string name="accuracy_unknown">अज्ञात</string>
 
     <string name="preference_units_distance">दूरी इकाई</string>
-    <string name="preference_units_distance_summary">फोटो स्टाम्प और वीडियो उपशीर्षक के लिए जीपीएस ऊंचाई के लिए उपयोग किया जाता है\n%s</string>
+    <string name="preference_units_distance_summary">फोटो स्टाम्प और वीडियो उपशीर्षक के लिए जीपीएस ऊंचाई के लिए उपयोग किया जाता है</string>
     <string name="preference_units_distance_m">मीटर</string>
     <string name="preference_units_distance_ft">फीट</string>
     <string name="feet_abbreviation">फीट</string> <!-- symbol short for feet -->
     <string name="preference_show_whats_new">नया क्या है संवाद दिखाता है</string>
     <string name="preference_show_whats_new_summary">एप्लिकेशन अपडेट होने पर नई सुविधाओं और सुधारों पर जानकारी प्रदर्शित करना है या नहीं</string>
     <string name="preference_edge_mode">एज मोड एल्गोरिदम</string>
-    <string name="preference_edge_mode_summary">एल्गोरिदम जिसका उपयोग कैमरा ड्राइवर को एज एन्हांसमेंट लागू करने के लिए करना चाहिए। एज एन्हांसमेंट कैप्चर की गई छवि में तीखेपन और विवरण में सुधार करता है। (यह सेटिंग NR फोटो मोड में अनदेखा कर दी जाती है।)\n%s</string>
+    <string name="preference_edge_mode_summary">एल्गोरिदम जिसका उपयोग कैमरा ड्राइवर को एज एन्हांसमेंट लागू करने के लिए करना चाहिए। एज एन्हांसमेंट कैप्चर की गई छवि में तीखेपन और विवरण में सुधार करता है। (यह सेटिंग NR फोटो मोड में अनदेखा कर दी जाती है।)</string>
     <string name="preference_screen_processing_settings">प्रसंस्करण सेटिंग्स...</string>
     <string name="preference_noise_reduction_mode">शोर में कमी एल्गोरिदम</string>
-    <string name="preference_noise_reduction_mode_summary">एल्गोरिदम जिसका उपयोग कैमरा ड्राइवर को शोर में कमी लागू करने के लिए करना चाहिए। शोर में कमी एल्गोरिदम कैप्चर प्रक्रिया द्वारा जोड़े गए अत्यधिक शोर को हटाकर छवि गुणवत्ता में सुधार करने का प्रयास करता है, खासकर अंधेरे परिस्थितियों में। (ध्यान दें कि यह शोर में कमी फोटो मोड से संबंधित नहीं है, और वास्तव में यह सेटिंग NR फोटो मोड में अनदेखा कर दी जाती है।)\n%s</string>
+    <string name="preference_noise_reduction_mode_summary">एल्गोरिदम जिसका उपयोग कैमरा ड्राइवर को शोर में कमी लागू करने के लिए करना चाहिए। शोर में कमी एल्गोरिदम कैप्चर प्रक्रिया द्वारा जोड़े गए अत्यधिक शोर को हटाकर छवि गुणवत्ता में सुधार करने का प्रयास करता है, खासकर अंधेरे परिस्थितियों में। (ध्यान दें कि यह शोर में कमी फोटो मोड से संबंधित नहीं है, और वास्तव में यह सेटिंग NR फोटो मोड में अनदेखा कर दी जाती है।)</string>
     <string name="noise_reduction_mode_default">डिफ़ॉल्ट</string>
     <string name="noise_reduction_mode_off">बंद</string>
     <string name="noise_reduction_mode_minimal">न्यूनतम</string>
     <string name="noise_reduction_mode_fast">तेज</string>
     <string name="noise_reduction_mode_high_quality">उच्च गुणवत्ता</string>
     <string name="preference_focus_assist">फोकस असिस्ट</string>
-    <string name="preference_focus_assist_summary">मैनुअल फोकस दूरी समायोजित करते समय ज़ूम इन करना है या नहीं\n%s</string>
+    <string name="preference_focus_assist_summary">मैनुअल फोकस दूरी समायोजित करते समय ज़ूम इन करना है या नहीं</string>
     <string name="preference_focus_assist_off">बंद</string>
     <string name="preference_focus_assist_2x">2x</string>
     <string name="preference_focus_assist_4x">4x</string>

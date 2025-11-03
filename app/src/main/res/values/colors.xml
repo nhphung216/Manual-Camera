@@ -26,4 +26,5 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="title">#FF9800</color>
     <color name="title_secondary">#C8C5C5</color>
+    <color name="pref_background">#004aad</color>
 </resources>

@@ -86,7 +86,7 @@
     <string name="preference_exposure">Компенсація експозиції</string>
     <string name="preference_exposure_summary">Типове значення 0 для компенсації експозиції</string>
     <string name="preference_lock_orientation">Блокування орієнтації фото/відео</string>
-    <string name="preference_lock_orientation_summary">Ігнорування системної орієнтації екрану пристрою\n%s</string>
+    <string name="preference_lock_orientation_summary">Ігнорування системної орієнтації екрану пристрою</string>
     <string name="preference_face_detection">Розпізнавання облич</string>
     <string name="preference_face_detection_summary">"Розпізнавання облич в об'єктиві для фокусування"</string>
 
@@ -100,7 +100,7 @@
     <string name="preference_burst_interval">Інтервал в пакетному режимі</string>
     <string name="preference_screen_camera_controls_more">Додаткові налаштування</string>
     <string name="preference_touch_capture">Дотик для зйомки</string>
-    <string name="preference_touch_capture_summary">Робити знімок по одному чи подвійному дотику по області перегляду\n%s</string>
+    <string name="preference_touch_capture_summary">Робити знімок по одному чи подвійному дотику по області перегляду</string>
     <string name="preference_pause_preview">Пауза після знімку</string>
     <string name="preference_pause_preview_summary">Пауза після зняття фото, з можливістю поділитися чи видалити фотографію</string>
     <string name="preference_shutter_sound">Звук затвору</string>
@@ -125,7 +125,7 @@
     <string name="preference_lock_video">Блокувати екран під час запису відео</string>
     <string name="preference_lock_video_summary">Під час запису відео, графічний інтерфейс буде заблоковано, аби запобігати випадковому припиненню запису. Проведіть по екрану, аби розблокувати. Зверніть увагу, що запис відео припиниться, якщо додаток перейде у фоновий режим або ж згасне екран.</string>
     <string name="preference_rotate_preview">Поворот попереднього перегляду</string>
-    <string name="preference_rotate_preview_summary">Можливість повороту попереднього перегляду (не впливає на фото/відео)\n%s</string>
+    <string name="preference_rotate_preview_summary">Можливість повороту попереднього перегляду (не впливає на фото/відео)</string>
     <string name="preference_screen_gui">Налаштування інтерфейсу</string>
     <string name="preference_preview_size">Розмір попереднього перегляду</string>
     <string name="preference_ui_placement">Розміщення інтерфейсу</string>
@@ -155,7 +155,7 @@
     <string name="preference_grid">Показати сітку</string>
     <string name="grid">Сітка</string> <!-- short form of Show a grid -->
     <string name="preference_crop_guide">Порадник по обрізанню фото</string>
-    <string name="preference_crop_guide_summary">Показ прямокутника, який показуватиме відношення сторін - корисно, якщо ви плануєте обрізати фото/відео. Потребує WYSIWYG режим фотознімку чи режим відео\n%s</string>
+    <string name="preference_crop_guide_summary">Показ прямокутника, який показуватиме відношення сторін - корисно, якщо ви плануєте обрізати фото/відео. Потребує WYSIWYG режим фотознімку чи режим відео</string>
     <string name="preference_show_toasts">Зринаючі повідомлення</string>
     <string name="preference_show_toasts_summary">Показувати зринаючі повідомлення під час роботи</string>
     <string name="preference_thumbnail_animation">Показувати ескіз анімації</string>
@@ -173,7 +173,7 @@
     <string name="preference_screen_location_settings">Налаштування місце-розташування…</string>
     <string name="preference_resolution">Розширення камери</string>
     <string name="preference_quality">Якість зображення</string>
-    <string name="preference_quality_summary">Вибір якості фотографій (рекомендується 90%%)\n%s</string>
+    <string name="preference_quality_summary">Вибір якості фотографій (рекомендується 90%%)</string>
     <string name="preference_raw">RAW</string>
     <string name="preference_location">Зберігати дані про місце-розташування (Geotagging)</string>
     <string name="preference_location_summary">Зберігати дані про місце-розташування в фотографіях в момент зйомки</string>
@@ -182,18 +182,18 @@
     <string name="preference_require_location">Вимагати дані про місце-розташування</string>
     <string name="preference_require_location_summary">Якщо вимога даних про місце розташування увімкнуто, ви зможете знімати фото/відео лише коли вони доступні</string>
     <string name="preference_stamp">Відмітки</string>
-    <string name="preference_stamp_summary">Зберігати разом із фотографіями такі дані, як: дата/час/місце-розташування\n%s</string>
+    <string name="preference_stamp_summary">Зберігати разом із фотографіями такі дані, як: дата/час/місце-розташування</string>
     <string name="preference_stamp_dateformat">Формат дати</string>
     <string name="preference_stamp_timeformat">Формат часу</string>
     <string name="preference_stamp_gpsformat">Формат GPS</string>
     <string name="preference_textstamp">Підпис фото</string>
     <string name="preference_textstamp_summary">Додавання тексту на фотографію</string>
     <string name="preference_stamp_fontsize">Розмір шрифту</string>
-    <string name="preference_stamp_fontsize_summary">Розмір шрифту для тексту, що додаватиметься на фотографію\n%s</string>
+    <string name="preference_stamp_fontsize_summary">Розмір шрифту для тексту, що додаватиметься на фотографію</string>
     <string name="preference_stamp_font_color">Колір</string>
-    <string name="preference_stamp_font_color_summary">Колір для тексту, що додаватиметься на фотографію\n%s</string>
+    <string name="preference_stamp_font_color_summary">Колір для тексту, що додаватиметься на фотографію</string>
     <string name="preference_stamp_style">Стиль</string>
-    <string name="preference_stamp_style_summary">Стиль для тексту, що додаватиметься на фотографію\n%s</string>
+    <string name="preference_stamp_style_summary">Стиль для тексту, що додаватиметься на фотографію</string>
     <string name="preference_background_photo_saving">Використовувати фоновий потік</string>
     <string name="preference_background_photo_saving_summary">Зберігати фото у фоновому процесі (для прискорення роботи)</string>
     <string name="video_quality">Розширення відео</string>
@@ -202,22 +202,22 @@
     <string name="preference_video_stabilization">Увімкнути стабілізацію відео</string>
     <string name="preference_video_stabilization_summary">Стабілізація відео зменшує тряску, через рух камерою</string>
     <string name="preference_video_bitrate">Відео бітрейт (приблизно)</string>
-    <string name="preference_video_bitrate_summary">Вибір бітрейту відео (чим вище, тим краще якість, але файл буде займати більше місця на флеш-картці. Якщо бітрейт не підтримується, це може викликати помилку під час запису відео)\n%s</string>
+    <string name="preference_video_bitrate_summary">Вибір бітрейту відео (чим вище, тим краще якість, але файл буде займати більше місця на флеш-картці. Якщо бітрейт не підтримується, це може викликати помилку під час запису відео)</string>
     <string name="preference_video_fps">Частота кадрів відео (приблизно)</string>
-    <string name="preference_video_fps_summary">Кількість кадрів на секунду (FPS) у відео (може викликати помилку під час запису, якщо частота не підтримується)\n%s</string>
+    <string name="preference_video_fps_summary">Кількість кадрів на секунду (FPS) у відео (може викликати помилку під час запису, якщо частота не підтримується)</string>
     <string name="preference_video_max_duration">Максимальна тривалість відео</string>
-    <string name="preference_video_max_duration_summary">Відеозапис припиниться, через вказаний час\n%s</string>
+    <string name="preference_video_max_duration_summary">Відеозапис припиниться, через вказаний час</string>
     <string name="preference_video_restart">Записати нове відео, коли буде досягнуто ліміту</string>
-    <string name="preference_video_restart_summary">При досягненні ліміту тривалості, буде записано нове відео. (стільки разів, скільки ви вказали)\n%s</string>
+    <string name="preference_video_restart_summary">При досягненні ліміту тривалості, буде записано нове відео. (стільки разів, скільки ви вказали)</string>
     <string name="preference_video_max_filesize">Максимальний розмір файлу відео</string>
 
 
     <string name="preference_record_audio">Запис звуку</string>
     <string name="preference_record_audio_summary">Запис звуку під час запису відео</string>
     <string name="preference_record_audio_src">Джерело звуку</string>
-    <string name="preference_record_audio_src_summary">Мікрофон для запису звуку\n%s</string>
+    <string name="preference_record_audio_src_summary">Мікрофон для запису звуку</string>
     <string name="preference_record_audio_channels">Число каналів</string>
-    <string name="preference_record_audio_channels_summary">Налаштування моно чи стереозвуку (стерео доступно не для всіх пристроїв)\n%s</string>
+    <string name="preference_record_audio_channels_summary">Налаштування моно чи стереозвуку (стерео доступно не для всіх пристроїв)</string>
     <string name="preference_video_flash">Спалах під час запису відео</string>
     <string name="preference_video_flash_summary">Якщо увімкнуто, спалах буде вмикатися/вимикатися під час запису відео (можна використовувати, аби виконувати запис на відстані)</string>
 
@@ -577,13 +577,13 @@
     <string name="color_effect_solarize">Соляризація</string>
     <string name="color_effect_whiteboard">Біла дошка</string>
     <string name="preference_hdr_tonemapping">HDR тонемапінг</string>
-    <string name="preference_hdr_tonemapping_summary">Алгоритм тонемапінгу в режимі HDR-фото\n%s</string>
+    <string name="preference_hdr_tonemapping_summary">Алгоритм тонемапінгу в режимі HDR-фото</string>
     <string name="preference_hdr_tonemapping_clamp">Просте обрізання</string>
     <string name="preference_hdr_tonemapping_exponential">Експоненцільний</string>
     <string name="preference_hdr_tonemapping_default">За замовчуванням</string>
     <string name="preference_hdr_tonemapping_aces">ACES</string>
     <string name="preference_remove_device_exif">Видалити EXIF‑дані пристрою</string>
-    <string name="preference_remove_device_exif_summary">Видаляти EXIF метадані пристрою з фотографій JPEG чи ні. Не видаляє інші EXIF теги, додані іншими налаштуваннями (напр. геотеги). Інші параметри незалежні і можуть перевизначати це. RAW/DNG і відео не зачіпаються.\n%s</string>
+    <string name="preference_remove_device_exif_summary">Видаляти EXIF метадані пристрою з фотографій JPEG чи ні. Не видаляє інші EXIF теги, додані іншими налаштуваннями (напр. геотеги). Інші параметри незалежні і можуть перевизначати це. RAW/DNG і відео не зачіпаються.</string>
     <string name="preference_remove_device_exif_off">Не видаляти EXIF пристрою</string>
     <string name="preference_remove_device_exif_on">Видалити EXIF пристрою</string>
     <string name="preference_remove_device_exif_keep_datetime">Видалити, окрім дати/часу</string>
@@ -593,18 +593,18 @@
     <string name="focus_peaking_enable">Увімкнути фокус-пікінг</string>
     <string name="focus_peaking_disable">Вимкнути фокус-пікінг</string>
     <string name="preference_photo_optimise_focus">Оптимізувати фокус для…</string>
-    <string name="preference_photo_optimise_focus_summary">Під час зйомки фото оптимізувати фокус для затримки або якості. Актуально лише в режимі безперервної фокусування. Оптимізація для якості гарантує фокусність, але може затримати зйомку.\n%s</string>
+    <string name="preference_photo_optimise_focus_summary">Під час зйомки фото оптимізувати фокус для затримки або якості. Актуально лише в режимі безперервної фокусування. Оптимізація для якості гарантує фокусність, але може затримати зйомку.</string>
     <string name="preference_photo_optimise_focus_latency">Затримка</string>
     <string name="preference_photo_optimise_focus_quality">Якість</string>
     <string name="preference_save_preshots">Зберігати попередній перегляд</string>
-    <string name="preference_save_preshots_summary">Якщо увімкнено, коротке відео буде збережено разом з кожним фото, з кадрами до моменту зйомки. Не підтримується для режимів експозиції, фокусного бракета або панорами.\n%s</string>
+    <string name="preference_save_preshots_summary">Якщо увімкнено, коротке відео буде збережено разом з кожним фото, з кадрами до моменту зйомки. Не підтримується для режимів експозиції, фокусного бракета або панорами.</string>
     <string name="telephoto">Телеоб’єктив</string>
     <string name="auto_lens">Автооб’єктив</string>
     <string name="lens">Об’єктив</string>
     <string name="physical_cameras_info">&#9432; За замовчуванням камера використовує автопідбір об’єктива залежно від рівня зуму. У цьому меню можна вибрати конкретний об’єктив вручну.</string>
     <string name="focus_bracketing_auto_source_distance">Автоджерело</string>
     <string name="preference_allow_haptic_feedback">Дозволити тактильний відгук</string>
-    <string name="preference_allow_haptic_feedback_summary">Чи дозволяти вібрацію як відгук, наприклад при налаштуванні деяких контролів. Перевірте, щоб сенсорні взаємодії були включені в налаштуваннях пристрою.\n%s</string>
+    <string name="preference_allow_haptic_feedback_summary">Чи дозволяти вібрацію як відгук, наприклад при налаштуванні деяких контролів. Перевірте, щоб сенсорні взаємодії були включені в налаштуваннях пристрою.</string>
     <string name="preference_using_saf">Storage Access Framework</string>
     <string name="color_effects">Колірні ефекти</string>
     <string name="preference_languages">Мови</string>
@@ -626,7 +626,7 @@
     <string name="preference_location_enable">Зберігати дані про місцезнаходження</string>
     <string name="preference_location_disable">Припинити зберігати місцезнаходження</string>
     <string name="preference_histogram">Показати гістограму</string>
-    <string name="preference_histogram_summary">Показувати гістограму кольорів, що відображаються на екрані\n%s</string>
+    <string name="preference_histogram_summary">Показувати гістограму кольорів, що відображаються на екрані</string>
     <string name="preference_histogram_off">Вимкнено</string>
     <string name="preference_histogram_rgb">Кольори RGB</string>
     <string name="preference_histogram_luminance">Яскравість</string>
@@ -634,14 +634,14 @@
     <string name="preference_histogram_intensity">Інтенсивність (Середнє)</string>
     <string name="preference_histogram_lightness">Світлість (Середнє min‑max)</string>
     <string name="preference_zebra_stripes">Показати зеброві смуги</string>
-    <string name="preference_zebra_stripes_summary">Якщо ввімкнено, на екрані з’являться зеброві смуги там, де попередній перегляд камери є пересвітленим.\n%s</string>
+    <string name="preference_zebra_stripes_summary">Якщо ввімкнено, на екрані з’являться зеброві смуги там, де попередній перегляд камери є пересвітленим.</string>
     <string name="preference_zebra_stripes_off">Вимкнено</string>
     <string name="preference_focus_peaking">Фокус‑пікінг</string>
-    <string name="preference_focus_peaking_summary">Якщо ввімкнено, будуть підсвічені краю, що в фокусі. Корисно для ручного фокусування.\n%s</string>
+    <string name="preference_focus_peaking_summary">Якщо ввімкнено, будуть підсвічені краю, що в фокусі. Корисно для ручного фокусування.</string>
     <string name="preference_focus_peaking_off">Вимкнено</string>
     <string name="preference_focus_peaking_on">Увімкнено</string>
     <string name="preference_focus_peaking_color">Колір фокус‑пікінгу</string>
-    <string name="preference_focus_peaking_color_summary">Якого кольору слід використовувати, щоб виділити фокусовані краї\n%s</string>
+    <string name="preference_focus_peaking_color_summary">Якого кольору слід використовувати, щоб виділити фокусовані краї</string>
     <string name="no_permission" translatable="false">ДОЗВОЛИ НЕДОСТУПНІ</string>
     <string name="permission_rationale_title">Потрібен дозвіл</string>
     <string name="permission_rationale_camera">Для ввімкнення камери потрібен дозвіл на доступ до камери</string>
@@ -651,11 +651,11 @@
     <string name="preference_camera2_fake_flash">Використовувати альтернативний метод спалаху</string>
     <string name="preference_camera2_fake_flash_summary">Увімкніть це, якщо на вашому пристрої спостерігається некоректна робота спалаху з Camera2 API</string>
     <string name="preference_expo_bracketing_n_images">Брекетинг експозиції</string>
-    <string name="preference_expo_bracketing_n_images_summary">Кількість зображень для режиму брекетингу експозиції\n%s</string>
+    <string name="preference_expo_bracketing_n_images_summary">Кількість зображень для режиму брекетингу експозиції</string>
     <string name="preference_expo_bracketing_stops">Стопи брекетингу експозиції</string>
-    <string name="preference_expo_bracketing_stops_summary">Скільки стопів відняти/додати для найтемнішого/найсвітлішого зображення\n%s</string>
+    <string name="preference_expo_bracketing_stops_summary">Скільки стопів відняти/додати для найтемнішого/найсвітлішого зображення</string>
     <string name="preference_nr_save">Оригінальні зображення шумозаглушення</string>
-    <string name="preference_nr_save_summary">Чи зберігати оригінальні зображення в режимі шумозаглушення. Зауважте, що це може значно сповільнити збереження фотографій.\n%s</string>
+    <string name="preference_nr_save_summary">Чи зберігати оригінальні зображення в режимі шумозаглушення. Зауважте, що це може значно сповільнити збереження фотографій.</string>
     <string name="preference_nr_save_no">Не зберігати оригінальні зображення</string>
     <string name="preference_nr_save_single">Зберегти одне оригінальне зображення</string>
     <string name="preference_nr_save_all">Зберегти всі оригінальні зображення (повільно)</string>
@@ -664,7 +664,7 @@
     <string name="preference_camera2_fast_burst">Увімкнути швидку серійну зйомку HDR/експозиції</string>
     <string name="preference_camera2_fast_burst_summary">Дозволяє швидше знімати HDR/експозиційні кадри. Вимкніть цю опцію, якщо ваш пристрій має проблеми під час фотографування в режимах HDR або Експозиція.</string>
     <string name="preference_front_camera_mirror">Дзеркало передньої камери</string>
-    <string name="preference_front_camera_mirror_summary">Чи віддзеркалювати кінцеві фотографії під час використання передньої камери\n%s</string>
+    <string name="preference_front_camera_mirror_summary">Чи віддзеркалювати кінцеві фотографії під час використання передньої камери</string>
     <string name="preference_calibrate_level_summary">Ця опція калібрує акселерометр вашого пристрою, щоб параметри автоматичного вирівнювання та рівня/кута на екрані працювали правильно</string>
     <string name="preference_calibrate_level_dialog">Будь ласка, покладіть пристрій на рівну горизонтальну поверхню так, щоб він був вирівняний (у портретній або альбомній орієнтації), а потім виберіть «Калібрувати».\n\nНатисніть «Скинути», щоб видалити калібрування з пристрою.\n\nНатисніть кнопку «Назад», щоб скасувати.</string>
     <string name="preference_show_pitch_lines">Показувати лінії тангажу</string>
@@ -672,7 +672,7 @@
     <string name="preference_show_geo_direction_lines">Показувати лінії напрямку компаса</string>
     <string name="preference_show_geo_direction_lines_summary">Відображати лінії напрямку компаса</string>
     <string name="preference_video_subtitle">Субтитри до відео</string>
-    <string name="preference_video_subtitle_summary">Створити файл субтитрів (.SRT), який зберігає дату та час; а також інформацію GPS, якщо ввімкнено дані про місцезнаходження/напрямок. (На Android 11+ ця опція вимагає ввімкнення Додаткових елементів керування камерою/Framework доступу до сховища.)\n%s</string>
+    <string name="preference_video_subtitle_summary">Створити файл субтитрів (.SRT), який зберігає дату та час; а також інформацію GPS, якщо ввімкнено дані про місцезнаходження/напрямок. (На Android 11+ ця опція вимагає ввімкнення Додаткових елементів керування камерою/Framework доступу до сховища.)</string>
     <string name="preference_show_take_photo">Показати значок "Зробити фото"</string>
     <string name="preference_show_take_photo_summary">Показувати значок для фотографування та запису відео. Зніміть прапорець, якщо ви віддаєте перевагу робити фотографії іншими способами (наприклад, якщо на вашому пристрої є апаратна кнопка спуску затвора або за допомогою клавіш гучності).</string>
     <string name="failed_to_process_hdr">Не вдалося створити HDR-зображення</string>
@@ -682,12 +682,12 @@
     <string name="preference_video_max_filesize_9gb">9 ГБ</string>
     <string name="cancelled_focus_bracketing">Скасовано брекетинг фокусування</string>
     <string name="preference_hdr_contrast_enhancement">Покращення контрастності HDR</string>
-    <string name="preference_hdr_contrast_enhancement_summary">Коли використовувати алгоритм покращення контрастності для HDR. Це може покращити вигляд у випадках, коли в сцені дуже високий динамічний діапазон, а також надає результатам «вигляд HDR».\n%s</string>
+    <string name="preference_hdr_contrast_enhancement_summary">Коли використовувати алгоритм покращення контрастності для HDR. Це може покращити вигляд у випадках, коли в сцені дуже високий динамічний діапазон, а також надає результатам «вигляд HDR».</string>
     <string name="preference_hdr_contrast_enhancement_off">Вимкнено</string>
     <string name="preference_hdr_contrast_enhancement_smart">Розумний</string>
     <string name="preference_hdr_contrast_enhancement_always">Завжди</string>
     <string name="preference_video_output_format">Формат відео</string>
-    <string name="preference_video_output_format_summary">Формат відео- та аудіофайлів та кодеки\n%s</string>
+    <string name="preference_video_output_format_summary">Формат відео- та аудіофайлів та кодеки</string>
     <string name="preference_video_output_format_default">За замовчуванням</string>
     <string name="preference_video_output_format_mpeg4_h264">MPEG4 H264</string>
     <string name="preference_video_output_format_mpeg4_hevc">MPEG4 HEVC</string>
@@ -719,7 +719,7 @@
     <string name="face_detection_disable">Вимкнути виявлення облич</string>
     <string name="face_detection_enabled">Виявлення облич увімкнено</string>
     <string name="face_detection_disabled">Виявлення облич вимкнено</string>
-    <string name="preference_video_max_filesize_summary">Запис відео зупиниться та/або перезапуститься (див. параметр нижче), коли буде досягнуто (приблизного) максимального розміру файлу. Зауважте, що багато пристроїв Android мають максимальний розмір файлу для відео (зазвичай близько 2 ГБ або 4 ГБ), але цей параметр дозволяє встановити конкретне значення. Зауважте, що цей параметр не можна використовувати для збільшення вбудованого максимуму пристрою.\n%s</string>
+    <string name="preference_video_max_filesize_summary">Запис відео зупиниться та/або перезапуститься (див. параметр нижче), коли буде досягнуто (приблизного) максимального розміру файлу. Зауважте, що багато пристроїв Android мають максимальний розмір файлу для відео (зазвичай близько 2 ГБ або 4 ГБ), але цей параметр дозволяє встановити конкретне значення. Зауважте, що цей параметр не можна використовувати для збільшення вбудованого максимуму пристрою.</string>
     <string name="preference_video_restart_max_filesize">Перезапустити при максимальному розмірі файлу</string>
     <string name="preference_video_restart_max_filesize_summary">Чи автоматично перезапускати, коли досягнуто максимального розміру файлу (чи то максимальний розмір файлу за замовчуванням пристрою, чи то вказаний користувачем)</string>
     <string name="whats_new">Що нового:</string>
@@ -745,13 +745,13 @@
     <string name="slow_motion_disabled">Уповільнену зйомку вимкнено</string>
     <string name="flash_frontscreen_torch">Ліхтарик екрана</string>
     <string name="preference_antibanding">Антимерехтіння</string>
-    <string name="preference_antibanding_summary">Алгоритми для допомоги з мерехтінням світла.\n%s</string>
+    <string name="preference_antibanding_summary">Алгоритми для допомоги з мерехтінням світла.</string>
     <string name="anti_banding_auto">Авто</string>
     <string name="anti_banding_50hz">50 Гц</string>
     <string name="anti_banding_60hz">60 Гц</string>
     <string name="anti_banding_off">Вимкнено</string>
     <string name="preference_ghost_image">Фантомне зображення</string>
-    <string name="preference_ghost_image_summary">Відобразити зображення поверх попереднього перегляду для допомоги з вирівнюванням.\n%s</string>
+    <string name="preference_ghost_image_summary">Відобразити зображення поверх попереднього перегляду для допомоги з вирівнюванням.</string>
     <string name="preference_ghost_image_off">Вимкнено</string>
     <string name="preference_ghost_image_last">Останнє зроблене фото</string>
     <string name="preference_ghost_image_selected">Вибране зображення</string>
@@ -760,7 +760,7 @@
     <string name="preference_camera2_photo_video_recording">Дозволити фотографувати під час запису відео</string>
     <string name="preference_camera2_photo_video_recording_summary">Дозволяє робити фотографії під час запису відео. Вимкніть це, якщо на вашому пристрої виникають проблеми із записом відео з увімкненим Camera2 API.</string>
     <string name="preference_video_log">Профілі відеозображень</string>
-    <string name="preference_video_log_summary">Встановити стандартний або плаский профіль зображення для режиму відео\n%s</string>
+    <string name="preference_video_log_summary">Встановити стандартний або плаский профіль зображення для режиму відео</string>
     <string name="preference_video_log_off">За замовчуванням</string>
     <string name="preference_video_log_fine">Log (Детальний)</string>
     <string name="preference_video_log_low">Log (Низький)</string>
@@ -793,18 +793,18 @@
     <string name="panorama_cancelled">Панораму скасовано</string>
     <string name="failed_to_process_panorama">Не вдалося створити панорамне зображення</string>
     <string name="preference_panorama_crop">Автоматичне обрізання панорами</string>
-    <string name="preference_panorama_crop_summary">Для режиму панорами, чи видаляти хвилясті межі\n%s</string>
+    <string name="preference_panorama_crop_summary">Для режиму панорами, чи видаляти хвилясті межі</string>
     <string name="panorama_info">Щоб зробити панорамний знімок, тримайте пристрій у портретній орієнтації та клацніть, щоб зробити фото та розпочати панораму. Потім поверніть пристрій ліворуч або праворуч, щоб перемістити центральне біле коло на синю крапку. Після кожного нового захопленого зображення продовжуйте обертати пристрій, щоб накрити кожну нову синю крапку, яка з’являється по черзі.\n\nКлацніть значок галочки, щоб зберегти панораму, або значок хрестика, щоб скасувати.\n\nЗауважте, що обробка та збереження панорамних фотографій може зайняти деякий час.</string>
     <string name="preference_panorama_save">Оригінальні зображення панорами</string>
-    <string name="preference_panorama_save_summary">Чи зберігати оригінальні зображення в режимі панорами. Зауважте, що це сповільнить збереження панорамних фотографій. Також дозволяє зберегти XML-файл, який може бути корисним для повідомлення про проблеми з панорамою.\n%s</string>
+    <string name="preference_panorama_save_summary">Чи зберігати оригінальні зображення в режимі панорами. Зауважте, що це сповільнить збереження панорамних фотографій. Також дозволяє зберегти XML-файл, який може бути корисним для повідомлення про проблеми з панорамою.</string>
     <string name="preference_panorama_save_no">Не зберігати оригінальні зображення</string>
     <string name="preference_panorama_save_all">Зберегти оригінальні зображення</string>
     <string name="preference_panorama_save_all_plus_debug">Зберегти оригінальні зображення плюс налагоджувальний XML</string>
     <string name="camera_id">Ідентифікатор</string>
     <string name="exposure_compensation_seekbar">Повзунок для зміни компенсації експозиції</string>
-    <string name="preference_image_format_summary">Виберіть формат файлу, який використовується для збереження фотографій. Це впливає на "стандартні" (не RAW) фотографії. Лише формати JPEG підтримують збереження метаданих Exif. UltraHDR не підтримується для режимів NR, HDR, Pano, X-. Зауважте, що формат PNG не є справді без втрат, натомість він конвертується з JPEG зі 100%% якістю.\n%s</string>
+    <string name="preference_image_format_summary">Виберіть формат файлу, який використовується для збереження фотографій. Це впливає на "стандартні" (не RAW) фотографії. Лише формати JPEG підтримують збереження метаданих Exif. UltraHDR не підтримується для режимів NR, HDR, Pano, X-. Зауважте, що формат PNG не є справді без втрат, натомість він конвертується з JPEG зі 100%% якістю.</string>
     <string name="preference_camera_api">API камери</string>
-    <string name="preference_camera_api_summary">Виберіть Camera2 API, щоб увімкнути додаткові функції, такі як ручні режими для експозиції, фокусування, балансу білого, а також RAW (якщо підтримується пристроєм). Зміна API призведе до перезапуску.\n%s</string>
+    <string name="preference_camera_api_summary">Виберіть Camera2 API, щоб увімкнути додаткові функції, такі як ручні режими для експозиції, фокусування, балансу білого, а також RAW (якщо підтримується пристроєм). Зміна API призведе до перезапуску.</string>
     <string name="preference_camera_api_old">Оригінальний API камери</string>
     <string name="preference_camera_api_camera2">Camera2 API</string>
     <string name="no_burst">немає серії</string>
@@ -823,24 +823,24 @@
     <string name="accuracy_high">Висока</string>
     <string name="accuracy_unknown">Невідома</string>
     <string name="preference_units_distance">Одиниця відстані</string>
-    <string name="preference_units_distance_summary">Використовується для висоти GPS для позначки на фото та субтитрів до відео\n%s</string>
+    <string name="preference_units_distance_summary">Використовується для висоти GPS для позначки на фото та субтитрів до відео</string>
     <string name="preference_units_distance_m">Метри</string>
     <string name="preference_units_distance_ft">Фути</string>
     <string name="feet_abbreviation">фут</string>
     <string name="preference_show_whats_new">Показувати діалогове вікно "Що нового"</string>
     <string name="preference_show_whats_new_summary">Чи показувати інформацію про нові функції та покращення після оновлення програми</string>
     <string name="preference_edge_mode">Алгоритм режиму країв</string>
-    <string name="preference_edge_mode_summary">Алгоритм, який драйвер камери повинен використовувати для застосування покращення країв. Покращення країв покращує різкість та деталізацію знятого зображення. (Цей параметр ігнорується в фоторежимі NR.)\n%s</string>
+    <string name="preference_edge_mode_summary">Алгоритм, який драйвер камери повинен використовувати для застосування покращення країв. Покращення країв покращує різкість та деталізацію знятого зображення. (Цей параметр ігнорується в фоторежимі NR.)</string>
     <string name="preference_screen_processing_settings">Налаштування обробки…</string>
     <string name="preference_noise_reduction_mode">Алгоритм зменшення шуму</string>
-    <string name="preference_noise_reduction_mode_summary">Алгоритм, який драйвер камери повинен використовувати для застосування зменшення шуму. Алгоритм зменшення шуму намагається покращити якість зображення, видаляючи надмірний шум, доданий процесом зйомки, особливо в темних умовах. (Зауважте, що це не пов\'язано з фоторежимом зменшення шуму, і фактично цей параметр ігнорується в фоторежимі NR.)\n%s</string>
+    <string name="preference_noise_reduction_mode_summary">Алгоритм, який драйвер камери повинен використовувати для застосування зменшення шуму. Алгоритм зменшення шуму намагається покращити якість зображення, видаляючи надмірний шум, доданий процесом зйомки, особливо в темних умовах. (Зауважте, що це не пов\'язано з фоторежимом зменшення шуму, і фактично цей параметр ігнорується в фоторежимі NR.)</string>
     <string name="noise_reduction_mode_default">За замовчуванням</string>
     <string name="noise_reduction_mode_off">Вимкнено</string>
     <string name="noise_reduction_mode_minimal">Мінімальний</string>
     <string name="noise_reduction_mode_fast">Швидкий</string>
     <string name="noise_reduction_mode_high_quality">Висока якість</string>
     <string name="preference_focus_assist">Допомога при фокусуванні</string>
-    <string name="preference_focus_assist_summary">Чи збільшувати масштаб при регулюванні відстані ручного фокусування\n%s</string>
+    <string name="preference_focus_assist_summary">Чи збільшувати масштаб при регулюванні відстані ручного фокусування</string>
     <string name="preference_focus_assist_off">Вимкнено</string>
     <string name="preference_focus_assist_2x">2x</string>
     <string name="preference_focus_assist_4x">4x</string>
@@ -923,7 +923,7 @@
     <string name="remote_connected">Пульт дистанційного керування підключено</string>
     <string name="preference_audio_control_summary">Зробити фото/відео при виявленні шуму.
         Якщо ввімкнено, використовуйте екранну кнопку мікрофона, щоб почати/зупинити прослуховування.
-        \n%s</string>
+        </string>
     <string name="intro_text">Торкніться, щоб сфокусуватися, і натисніть круглу синю кнопку спуску, щоб зробити фотографії.
         \n\nЩоб зберегти на SD-карти, див. Налаштування/Додаткові елементи керування камерою/\"Фреймворк доступу до сховища\".
         Для отримання додаткової допомоги натисніть \"Онлайн-довідка\" в Налаштуваннях.
@@ -933,13 +933,13 @@
     <string name="preference_video_srgb">sRGB</string>
     <string name="preference_video_gamma">Гама</string>
     <string name="preference_video_profile_gamma">Значення гами відео</string>
-    <string name="preference_video_profile_gamma_summary">Значення гами, яке буде використовуватися для відео, якщо для профілю зображення відео встановлено значення Гама\n%s</string>
+    <string name="preference_video_profile_gamma_summary">Значення гами, яке буде використовуватися для відео, якщо для профілю зображення відео встановлено значення Гама</string>
     <string name="preference_ghost_image_alpha">Непрозорість фантомного зображення</string>
-    <string name="preference_ghost_image_alpha_summary">Альфа-значення, яке буде використовуватися для фантомних зображень. Менше значення означає більшу прозорість, більше — більшу непрозорість.\n%s</string>
+    <string name="preference_ghost_image_alpha_summary">Альфа-значення, яке буде використовуватися для фантомних зображень. Менше значення означає більшу прозорість, більше — більшу непрозорість.</string>
     <string name="preference_zebra_stripes_foreground_color">Колір переднього плану зебрових смуг</string>
-    <string name="preference_zebra_stripes_foreground_color_summary">Колір, який буде використовуватися для смуги переднього плану при показі зебрових смуг.\n%s</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">Колір, який буде використовуватися для смуги переднього плану при показі зебрових смуг.</string>
     <string name="preference_zebra_stripes_background_color">Колір фону зебрових смуг</string>
-    <string name="preference_zebra_stripes_background_color_summary">Колір, який буде використовуватися для фонової смуги при показі зебровых смуг.\n%s</string>
+    <string name="preference_zebra_stripes_background_color_summary">Колір, який буде використовуватися для фонової смуги при показі зебровых смуг.</string>
     <string name="preference_zebra_stripes_color_black">Чорний</string>
     <string name="preference_zebra_stripes_color_red">Червоний</string>
     <string name="preference_zebra_stripes_color_orange">Помаранчевий</string>

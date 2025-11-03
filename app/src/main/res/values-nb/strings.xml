@@ -86,7 +86,7 @@
     <string name="preference_exposure">Bestem eksponeringskompensasjonen.</string>
     <string name="preference_exposure_summary">Sett den til 0 for å bruke standard-eksponeringskompensasjonen.</string>
     <string name="preference_lock_orientation">Lås foto-/video-roteringen</string>
-    <string name="preference_lock_orientation_summary">Hvis dette er valgt, vil enhetens rotering bli ignorert, og bildets/videoens rotering vil samsvare med den bestemte roteringen\n%s</string>
+    <string name="preference_lock_orientation_summary">Hvis dette er valgt, vil enhetens rotering bli ignorert, og bildets/videoens rotering vil samsvare med den bestemte roteringen</string>
     <string name="preference_face_detection">Ansiktsoppdagelse</string>
     <string name="preference_face_detection_summary">Bruk ansikstsoppdagelse istedet for fokusområder.</string>
 
@@ -100,7 +100,7 @@
     <string name="preference_burst_interval">Seriefotograferingsintervall</string>
     <string name="preference_screen_camera_controls_more">Flere kamerakontrollere…</string>
     <string name="preference_touch_capture">Trykk for å ta bilde</string>
-    <string name="preference_touch_capture_summary">Ta et foto kun ved å trykke på dobbelt-tappe på forhåndsvisningen\n%s</string>
+    <string name="preference_touch_capture_summary">Ta et foto kun ved å trykke på dobbelt-tappe på forhåndsvisningen</string>
     <string name="preference_pause_preview">Pause etter å ha tatt et bilde</string>
     <string name="preference_pause_preview_summary">Sett skjermen på pause etter å ha tatt et bilde, med valgene om å dele eller slette bildet.</string>
     <string name="preference_shutter_sound">Lukkerlyd</string>
@@ -124,7 +124,7 @@
     <string name="preference_lock_video">Lås skjermen under videoopptak</string>
     <string name="preference_lock_video_summary">Under opptak av video, vil brukergrensesnitt bli låst for å unngå at opptaket blir stoppet ved et uhell. Sveip skjermen for å låse opp. Bemerk at opptak alltid vil bli stoppet dersom appen går inn i bakgrunnen eller at skjermen blir blank.</string>
     <string name="preference_rotate_preview">Rotér forhåndsvisningen</string>
-    <string name="preference_rotate_preview_summary">Innstilling for å rotere forhåndsvisningen (Påvirker ikke de resulterende bildene/videoene)\n%s</string>
+    <string name="preference_rotate_preview_summary">Innstilling for å rotere forhåndsvisningen (Påvirker ikke de resulterende bildene/videoene)</string>
     <string name="preference_screen_gui">Grensesnittet på skjermen…</string>
     <string name="preference_preview_size">Forhåndsvisningsstørrelse</string>
     <string name="preference_ui_placement">Grensesnittsplassering</string>
@@ -154,7 +154,7 @@
     <string name="preference_grid">Vis netting</string>
     <string name="grid">Netting</string> <!-- short form of Show a grid -->
     <string name="preference_crop_guide">Vis en klippingsveiviser</string>
-    <string name="preference_crop_guide_summary">En klippeveiviser viser et rektangel som vis hva det bestemte skjermforholdet ser ut som — Nyttig dersom du planlegger å klippe bildet/videoen etterpå til et annet skjermforhold. Krever WYSIWYG-fotomodus, eller å være i videomodus\n%s</string>
+    <string name="preference_crop_guide_summary">En klippeveiviser viser et rektangel som vis hva det bestemte skjermforholdet ser ut som — Nyttig dersom du planlegger å klippe bildet/videoen etterpå til et annet skjermforhold. Krever WYSIWYG-fotomodus, eller å være i videomodus</string>
     <string name="preference_show_toasts">Vis oppsprettsbeskjeder</string>
     <string name="preference_show_toasts_summary">Hvorvidt oppsprettsbeskjedene skal vises.</string>
     <string name="preference_thumbnail_animation">Vis forhåndsvisningsanimasjon</string>
@@ -172,7 +172,7 @@
     <string name="preference_screen_location_settings">Posisjonsinnstillinger…</string>
     <string name="preference_resolution">Kameraoppløsning</string>
     <string name="preference_quality">Bildekvalitet</string>
-    <string name="preference_quality_summary">Velg JPEG-kvaliteten til de lagrede bildene (Standardverdien er 90%%)\n%s</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
+    <string name="preference_quality_summary">Velg JPEG-kvaliteten til de lagrede bildene (Standardverdien er 90%%)</string> <!-- '%' is encoded as '%%' - a single % can crash devices, and this isn't picked up by Android Lint! -->
     <string name="preference_raw">RAW</string>
     <string name="preference_location">Lagre posisjonsdata (Geotagging)</string>
     <string name="preference_location_summary">Lagre GPS-posisjonsdata i bildene/videoene.</string>
@@ -181,18 +181,18 @@
     <string name="preference_require_location">Krever posisjonsdata</string>
     <string name="preference_require_location_summary">Dersom posisjonsdataer er aktiver, så ta kun (opp) bilder/videoer dersom posisjonsdataer er tilgjengelige.</string>
     <string name="preference_stamp">Stemple bilder</string>
-    <string name="preference_stamp_summary">Stemple bilder med dato og klokkeslett; og også GPS-info dersom posisjons-/retnings-dataer er aktivert\n%s</string>
+    <string name="preference_stamp_summary">Stemple bilder med dato og klokkeslett; og også GPS-info dersom posisjons-/retnings-dataer er aktivert</string>
     <string name="preference_stamp_dateformat">Datostemplingsformat</string>
     <string name="preference_stamp_timeformat">Klokkeslettsstemplingsformat</string>
     <string name="preference_stamp_gpsformat">GPS-stemplingsformat</string>
     <string name="preference_textstamp">Tilpasset tekst</string>
     <string name="preference_textstamp_summary">Stemple bilder med tilpasset tekst.</string>
     <string name="preference_stamp_fontsize">Skrifttypestørrelse</string>
-    <string name="preference_stamp_fontsize_summary">Skrifttypestørrelsen som skal brukes når det stemples tekst oppå bilder.\n%s</string>
+    <string name="preference_stamp_fontsize_summary">Skrifttypestørrelsen som skal brukes når det stemples tekst oppå bilder.</string>
     <string name="preference_stamp_font_color">Skrifttypefarge</string>
-    <string name="preference_stamp_font_color_summary">Skrifttypefargen som skal brukes når det stemples tekst oppå bilder.\n%s</string>
+    <string name="preference_stamp_font_color_summary">Skrifttypefargen som skal brukes når det stemples tekst oppå bilder.</string>
     <string name="preference_stamp_style">Tekststil</string>
-    <string name="preference_stamp_style_summary">Stilen som skal brukes når det stemples tekst oppå bilder.\n%s</string>
+    <string name="preference_stamp_style_summary">Stilen som skal brukes når det stemples tekst oppå bilder.</string>
     <string name="preference_background_photo_saving">Bruk bakgrunnstråd</string>
     <string name="preference_background_photo_saving_summary">Hvorvidt det skal lagres bilder på en bakgrunnstråd (for å kunne kjøre raskere)</string>
     <string name="video_quality">Videooppløsning</string>
@@ -201,23 +201,23 @@
     <string name="preference_video_stabilization">Aktiver videovater</string>
     <string name="preference_video_stabilization_summary">Videovater reduserer ristingen fra kamerabevegelsene, både i forhåndsvisningen og i opptatte videoer.</string>
     <string name="preference_video_bitrate">Videobitfrekvens (Omtrentlig)</string>
-    <string name="preference_video_bitrate_summary">Bestem den omtrentlige bitfrekvensen til videoene (Høyere betyr bedre kvalitet, men tar opp mere diskplass; Det kan få videoopptak til å mislykkes dersom bitfrekvensen ikke er støttet).\n%s</string>
+    <string name="preference_video_bitrate_summary">Bestem den omtrentlige bitfrekvensen til videoene (Høyere betyr bedre kvalitet, men tar opp mere diskplass; Det kan få videoopptak til å mislykkes dersom bitfrekvensen ikke er støttet).</string>
     <string name="preference_video_fps">Video-bildefrekvens (Omtrentlig)</string>
-    <string name="preference_video_fps_summary">Bestem antall bilder i sekundet (FPS) i videoer (Kan være omtrentlig, er ikke garantert å lykkes, og kan få videotopptakt til å mislykkes dersom bildefrekvensen ikke er støttet).\n%s</string>
+    <string name="preference_video_fps_summary">Bestem antall bilder i sekundet (FPS) i videoer (Kan være omtrentlig, er ikke garantert å lykkes, og kan få videotopptakt til å mislykkes dersom bildefrekvensen ikke er støttet).</string>
     <string name="preference_video_max_duration">Maksvarigheten til videoer</string>
-    <string name="preference_video_max_duration_summary">Videoopptakene vil stoppes etter den bestemte tidslengden.\n%s</string>
+    <string name="preference_video_max_duration_summary">Videoopptakene vil stoppes etter den bestemte tidslengden.</string>
     <string name="preference_video_restart">Start videoen på nytt etter maksvarigheten</string>
-    <string name="preference_video_restart_summary">Dersom videoen har stoppet etter å ha truffet maksvarighetene (om den er valgt), vil denne innstillingen få videoen til å starte på nytt, frem til det bestemte antall ganger.\n%s</string>
+    <string name="preference_video_restart_summary">Dersom videoen har stoppet etter å ha truffet maksvarighetene (om den er valgt), vil denne innstillingen få videoen til å starte på nytt, frem til det bestemte antall ganger.</string>
     <string name="preference_video_max_filesize">Maksfilstørrelsen til videoen</string>
-    <string name="preference_video_max_filesize_summary">Videoopptaket vil stoppes og/eller startes på nytt (Se innstillingen nedenfor), når den omtrentlige maksfilstørrelsen har blitt nådd. Bemerk at nesten alle Android enheter har en maksfilstørrelse for videoen (Vanligvis omkring 2GB eller 4GB), men denne innstillingen tillater å velge en bestemt verdi.\n%s</string>
+    <string name="preference_video_max_filesize_summary">Videoopptaket vil stoppes og/eller startes på nytt (Se innstillingen nedenfor), når den omtrentlige maksfilstørrelsen har blitt nådd. Bemerk at nesten alle Android enheter har en maksfilstørrelse for videoen (Vanligvis omkring 2GB eller 4GB), men denne innstillingen tillater å velge en bestemt verdi.</string>
     <string name="preference_video_restart_max_filesize">Start på nytt ved maks filstørrelse</string>
     <string name="preference_video_restart_max_filesize_summary">Hvorvidt det skal automatisk startes på nytt når maksfilstørrelsen har blitt nådd (Hvorvidt det skal være enhetens maksfilstørrelse, eller en brukerbestemt verdi).</string>
     <string name="preference_record_audio">Ta opp lyd</string>
     <string name="preference_record_audio_summary">Ta opp lyd under videoopptak.</string>
     <string name="preference_record_audio_src">Lydkilde</string>
-    <string name="preference_record_audio_src_summary">Mikrofonen som skal brukes til lydopptak\n%s</string>
+    <string name="preference_record_audio_src_summary">Mikrofonen som skal brukes til lydopptak</string>
     <string name="preference_record_audio_channels">Lydkanaler</string>
-    <string name="preference_record_audio_channels_summary">Velg mono eller stereo for opptak av lyd (Stereo støttes kun på noen enheter).\n%s</string>
+    <string name="preference_record_audio_channels_summary">Velg mono eller stereo for opptak av lyd (Stereo støttes kun på noen enheter).</string>
     <string name="preference_video_flash">Blits under videoopptak</string>
     <string name="preference_video_flash_summary">Hvis dette er aktivert, vil blitsen skru seg av/på under videoopptak (Kan brukes til å se på avstand om kameraet fortsatt tar opp).</string>
 
@@ -306,12 +306,12 @@
     <string name="preference_camera2_fake_flash_summary">Aktiver dette dersom enheten har trøbbel med blitsen i Camera2-APIen. this if your device has buggy flash behaviour with Camera2 API</string>
 
     <string name="preference_expo_bracketing_n_images">Eksponeringsbrakett</string>
-    <string name="preference_expo_bracketing_n_images_summary">Antall bilder i eksponeringsbrakettmodusen\n%s</string>
+    <string name="preference_expo_bracketing_n_images_summary">Antall bilder i eksponeringsbrakettmodusen</string>
     <string name="preference_expo_bracketing_stops">Eksponeringsbrakett-stopper</string>
-    <string name="preference_expo_bracketing_stops_summary">Hvor mange stopp som skal legges til / fjernes fra, for det mørkeste/lyseste bildet\n%s</string>
+    <string name="preference_expo_bracketing_stops_summary">Hvor mange stopp som skal legges til / fjernes fra, for det mørkeste/lyseste bildet</string>
 
     <string name="preference_nr_save">Støyreduksjon av opprinnelige bilder</string>
-    <string name="preference_nr_save_summary">Hvorvidt de opprinnelige bildene skal lagres under støyreduksjonsmodus. Bemerk at dette kan gjøre det mye tregere å lagre bilder.\n%s</string>
+    <string name="preference_nr_save_summary">Hvorvidt de opprinnelige bildene skal lagres under støyreduksjonsmodus. Bemerk at dette kan gjøre det mye tregere å lagre bilder.</string>
 
     <string name="preference_nr_save_no">Ikke lagre de opprinnelige bildene</string>
     <string name="preference_nr_save_single">Lagre ett enkelt opprinnelig bilde</string>
@@ -338,7 +338,7 @@
     <string name="selfie">Selfie</string>
 
     <string name="preference_front_camera_mirror">Speil frontkameraet</string>
-    <string name="preference_front_camera_mirror_summary">Hvorvidt bilder skal speiles når frontkameraet brukes\n%s</string>
+    <string name="preference_front_camera_mirror_summary">Hvorvidt bilder skal speiles når frontkameraet brukes</string>
 
     <string name="preference_calibrate_level">Kalibrer vatervinkelen</string>
     <string name="preference_calibrate_level_summary">Denne innstillingen kalibrerer din enhets akselleromenter, sånn at auto-vateren og vater-/vinkel-innstillingene på skjermen virker riktig.</string>
@@ -355,7 +355,7 @@
     <string name="preference_show_geo_direction_lines">Vis kompassretnings-linjer</string>
     <string name="preference_show_geo_direction_lines_summary">Vis kompassretnings-linjer.</string>
     <string name="preference_video_subtitle">Videoundertekster</string>
-    <string name="preference_video_subtitle_summary">Lag en undertekstfil (.SRT) som lagrer dato og klokkeslett; og også GPS-info dersom plasserings-/retnings-dataer er aktivert\n%s</string>
+    <string name="preference_video_subtitle_summary">Lag en undertekstfil (.SRT) som lagrer dato og klokkeslett; og også GPS-info dersom plasserings-/retnings-dataer er aktivert</string>
 
     <string name="duration_unlimited">Ubegrenset</string>
     <string name="duration_3s">3 sekunder</string>
@@ -632,7 +632,7 @@
     <string name="preference_location_enable">Lag posisjonsdata</string>
     <string name="preference_location_disable">Stopp lagring av posisjonsdata</string>
     <string name="preference_histogram">Vis histogram</string>
-    <string name="preference_histogram_summary">Vis histogram over fargene som vises på skjermen\n%s</string>
+    <string name="preference_histogram_summary">Vis histogram over fargene som vises på skjermen</string>
     <string name="preference_histogram_off">Av</string>
     <string name="preference_histogram_rgb">RGB-farger</string>
     <string name="preference_histogram_luminance">Luminans</string>
@@ -640,14 +640,14 @@
     <string name="preference_histogram_intensity">Intensitet (Gjennomsnitt)</string>
     <string name="preference_histogram_lightness">Lyshet (Gjennomsnitt min‑maks)</string>
     <string name="preference_zebra_stripes">Vis sebra-striper</string>
-    <string name="preference_zebra_stripes_summary">Hvis denne er aktiv, vises sebrastriper der kameraforhåndsvisningen er overeksponert.\n%s</string>
+    <string name="preference_zebra_stripes_summary">Hvis denne er aktiv, vises sebrastriper der kameraforhåndsvisningen er overeksponert.</string>
     <string name="preference_zebra_stripes_off">Av</string>
     <string name="preference_focus_peaking">Focus peaking</string>
-    <string name="preference_focus_peaking_summary">Hvis aktivert, fremheves fokusert kant (kontur). Nyttig ved manuell fokus.\n%s</string>
+    <string name="preference_focus_peaking_summary">Hvis aktivert, fremheves fokusert kant (kontur). Nyttig ved manuell fokus.</string>
     <string name="preference_focus_peaking_off">Av</string>
     <string name="preference_focus_peaking_on">På</string>
     <string name="preference_focus_peaking_color">Farge for focus peaking</string>
-    <string name="preference_focus_peaking_color_summary">Hvilken farge som skal brukes for å markere fokuserte kanter\n%s</string>
+    <string name="preference_focus_peaking_color_summary">Hvilken farge som skal brukes for å markere fokuserte kanter</string>
     <string name="preference_video_capture_rate">Hastighet</string>
     <string name="preference_video_capture_rate_normal">Normal</string>
     <string name="slow_motion_enabled">Sakte film aktivert</string>
@@ -656,14 +656,14 @@
     <string name="flash_frontscreen_torch">Skjermlommelykt</string>
 
     <string name="preference_antibanding">Anti-flimmer</string>
-    <string name="preference_antibanding_summary">Algoritmer for å hjelpe med lysflimring.\n%s</string>
+    <string name="preference_antibanding_summary">Algoritmer for å hjelpe med lysflimring.</string>
     <string name="anti_banding_auto">Auto</string>
     <string name="anti_banding_50hz">50Hz</string>
     <string name="anti_banding_60hz">60Hz</string>
     <string name="anti_banding_off">Av</string>
 
     <string name="preference_ghost_image">Spøkelsesbilde</string>
-    <string name="preference_ghost_image_summary">Vis et bilde over forhåndsvisningen for å hjelpe med justering.\n%s</string>
+    <string name="preference_ghost_image_summary">Vis et bilde over forhåndsvisningen for å hjelpe med justering.</string>
     <string name="preference_ghost_image_off">Av</string>
     <string name="preference_ghost_image_last">Sist tatt bilde</string>
     <string name="preference_ghost_image_selected">Valgt bilde</string>
@@ -676,12 +676,12 @@
     <string name="preference_video_max_filesize_9gb">9 GB</string>
     <string name="cancelled_focus_bracketing">Avbrutt fokusbracketing</string>
     <string name="preference_hdr_contrast_enhancement">HDR-kontrastforbedring</string>
-    <string name="preference_hdr_contrast_enhancement_summary">Når skal du bruke en algoritme for kontrastforbedring for HDR. Dette kan forbedre utseendet i tilfeller der det er et veldig høyt dynamisk område i scenen, og gir også et «HDR-utseende» til resultatene.\n%s</string>
+    <string name="preference_hdr_contrast_enhancement_summary">Når skal du bruke en algoritme for kontrastforbedring for HDR. Dette kan forbedre utseendet i tilfeller der det er et veldig høyt dynamisk område i scenen, og gir også et «HDR-utseende» til resultatene.</string>
     <string name="preference_hdr_contrast_enhancement_off">Av</string>
     <string name="preference_hdr_contrast_enhancement_smart">Smart</string>
     <string name="preference_hdr_contrast_enhancement_always">Alltid</string>
     <string name="preference_video_output_format">Videoformat</string>
-    <string name="preference_video_output_format_summary">Video- og lydfilformat og kodeker\n%s</string>
+    <string name="preference_video_output_format_summary">Video- og lydfilformat og kodeker</string>
     <string name="preference_video_output_format_default">Standard</string>
     <string name="preference_video_output_format_mpeg4_h264">MPEG4 H264</string>
     <string name="preference_video_output_format_mpeg4_hevc">MPEG4 HEVC</string>
@@ -733,7 +733,7 @@
     <string name="preference_camera2_photo_video_recording">Tillat bilder mens du tar opp video</string>
     <string name="preference_camera2_photo_video_recording_summary">Tillater å ta bilder mens du tar opp videoer. Deaktiver dette hvis det er problemer med videoopptak med Camera2 API aktivert på enheten din.</string>
     <string name="preference_video_log">Videobildeprofiler</string>
-    <string name="preference_video_log_summary">Angi standard eller flat bildeprofil for videomodus\n%s</string>
+    <string name="preference_video_log_summary">Angi standard eller flat bildeprofil for videomodus</string>
     <string name="preference_video_log_off">Standard</string>
     <string name="preference_video_log_fine">Logg (Fin)</string>
     <string name="preference_video_log_low">Logg (Lav)</string>
@@ -766,18 +766,18 @@
     <string name="panorama_cancelled">Panorama avbrutt</string>
     <string name="failed_to_process_panorama">Kunne ikke opprette panoramabilde</string>
     <string name="preference_panorama_crop">Automatisk beskjæring av panorama</string>
-    <string name="preference_panorama_crop_summary">For panoramamodus, om de bølgete grensene skal fjernes\n%s</string>
+    <string name="preference_panorama_crop_summary">For panoramamodus, om de bølgete grensene skal fjernes</string>
     <string name="panorama_info">For å ta et panoramabilde, hold enheten i portrettmodus og klikk for å ta et bilde for å starte panoramaet. Roter deretter enheten enten til venstre eller høyre for å flytte den sentrerte hvite sirkelen over den blå prikken. Etter at hvert nytt bilde er tatt, fortsett å rotere enheten for å dekke hver nye blå prikk som vises etter tur.\n\nKlikk på hakeikonet for å lagre panoramaet, eller kryssikonet for å avbryte.\n\nMerk at panoramabilder kan ta tid å behandle og lagre.</string>
     <string name="preference_panorama_save">Originalbilder for panorama</string>
-    <string name="preference_panorama_save_summary">Om originalbilder skal lagres i panoramamodus. Merk at dette vil gjøre lagring av panoramabilder tregere. Gir også muligheten til å lagre en XML-fil som kan være nyttig for å rapportere problemer med panorama.\n%s</string>
+    <string name="preference_panorama_save_summary">Om originalbilder skal lagres i panoramamodus. Merk at dette vil gjøre lagring av panoramabilder tregere. Gir også muligheten til å lagre en XML-fil som kan være nyttig for å rapportere problemer med panorama.</string>
     <string name="preference_panorama_save_no">Ikke lagre originalbilder</string>
     <string name="preference_panorama_save_all">Lagre originalbilder</string>
     <string name="preference_panorama_save_all_plus_debug">Lagre originalbilder pluss feilsøkings-XML</string>
     <string name="camera_id">ID</string>
     <string name="exposure_compensation_seekbar">Glidebryter for å endre eksponeringskompensasjon</string>
-    <string name="preference_image_format_summary">Velg filformatet som brukes til å lagre bilder. Dette påvirker "standard" (ikke RAW) bilder. Bare JPEG-formater støtter lagring av Exif-metadata. UltraHDR støttes ikke for NR-, HDR-, Pano-, X-moduser. Merk at PNG-formatet ikke er virkelig tapsfritt, i stedet konverteres det fra en JPEG med 100 %% kvalitet.\n%s</string>
+    <string name="preference_image_format_summary">Velg filformatet som brukes til å lagre bilder. Dette påvirker "standard" (ikke RAW) bilder. Bare JPEG-formater støtter lagring av Exif-metadata. UltraHDR støttes ikke for NR-, HDR-, Pano-, X-moduser. Merk at PNG-formatet ikke er virkelig tapsfritt, i stedet konverteres det fra en JPEG med 100 %% kvalitet.</string>
     <string name="preference_camera_api">Kamera-API</string>
-    <string name="preference_camera_api_summary">Velg Camera2 API for å aktivere ekstra funksjoner som manuelle moduser for eksponering, fokus, hvitbalanse, sammen med RAW (hvis støttet av enheten). Endring av API-et vil føre til en omstart.\n%s</string>
+    <string name="preference_camera_api_summary">Velg Camera2 API for å aktivere ekstra funksjoner som manuelle moduser for eksponering, fokus, hvitbalanse, sammen med RAW (hvis støttet av enheten). Endring av API-et vil føre til en omstart.</string>
     <string name="preference_camera_api_old">Originalt kamera-API</string>
     <string name="preference_camera_api_camera2">Camera2 API</string>
     <string name="no_burst">ingen serie</string>
@@ -796,24 +796,24 @@
     <string name="accuracy_high">Høy</string>
     <string name="accuracy_unknown">Ukjent</string>
     <string name="preference_units_distance">Avstandsenhet</string>
-    <string name="preference_units_distance_summary">Brukes for GPS-høyde for fotostempel og videoteksting\n%s</string>
+    <string name="preference_units_distance_summary">Brukes for GPS-høyde for fotostempel og videoteksting</string>
     <string name="preference_units_distance_m">Meter</string>
     <string name="preference_units_distance_ft">Fot</string>
     <string name="feet_abbreviation">ft</string>
     <string name="preference_show_whats_new">Vis dialogboksen «Hva er nytt»</string>
     <string name="preference_show_whats_new_summary">Om informasjon om nye funksjoner og forbedringer skal vises når programmet er oppdatert</string>
     <string name="preference_edge_mode">Kantmodusalgoritme</string>
-    <string name="preference_edge_mode_summary">Algoritme som kameradriveren skal bruke for å bruke kantforbedring. Kantforbedring forbedrer skarpheten og detaljene i det fangede bildet. (Denne innstillingen ignoreres i NR-fotomodus.)\n%s</string>
+    <string name="preference_edge_mode_summary">Algoritme som kameradriveren skal bruke for å bruke kantforbedring. Kantforbedring forbedrer skarpheten og detaljene i det fangede bildet. (Denne innstillingen ignoreres i NR-fotomodus.)</string>
     <string name="preference_screen_processing_settings">Behandlingsinnstillinger …</string>
     <string name="preference_noise_reduction_mode">Støyreduksjonsalgoritme</string>
-    <string name="preference_noise_reduction_mode_summary">Algoritme som kameradriveren skal bruke for å bruke støyreduksjon. Støyreduksjonsalgoritmen prøver å forbedre bildekvaliteten ved å fjerne overdreven støy lagt til av fangstprosessen, spesielt under mørke forhold. (Merk at dette ikke er relatert til støyreduksjonsfotomodus, og faktisk ignoreres denne innstillingen i NR-fotomodus.)\n%s</string>
+    <string name="preference_noise_reduction_mode_summary">Algoritme som kameradriveren skal bruke for å bruke støyreduksjon. Støyreduksjonsalgoritmen prøver å forbedre bildekvaliteten ved å fjerne overdreven støy lagt til av fangstprosessen, spesielt under mørke forhold. (Merk at dette ikke er relatert til støyreduksjonsfotomodus, og faktisk ignoreres denne innstillingen i NR-fotomodus.)</string>
     <string name="noise_reduction_mode_default">Standard</string>
     <string name="noise_reduction_mode_off">Av</string>
     <string name="noise_reduction_mode_minimal">Minimal</string>
     <string name="noise_reduction_mode_fast">Rask</string>
     <string name="noise_reduction_mode_high_quality">Høy kvalitet</string>
     <string name="preference_focus_assist">Fokushjelp</string>
-    <string name="preference_focus_assist_summary">Om du skal zoome inn når du justerer manuell fokusavstand\n%s</string>
+    <string name="preference_focus_assist_summary">Om du skal zoome inn når du justerer manuell fokusavstand</string>
     <string name="preference_focus_assist_off">Av</string>
     <string name="preference_focus_assist_2x">2x</string>
     <string name="preference_focus_assist_4x">4x</string>
@@ -843,11 +843,11 @@
     <string name="focus_peaking_enable">Aktiver fokusmarkering</string>
     <string name="focus_peaking_disable">Deaktiver fokusmarkering</string>
     <string name="preference_photo_optimise_focus">Optimaliser fokus for…</string>
-    <string name="preference_photo_optimise_focus_summary">Når du tar bilder, om du skal optimalisere for latens eller kvalitet. Bare relevant når du bruker kontinuerlig fokusmodus. Optimalisering for kvalitet sikrer at motivet er i fokus, men kan føre til en forsinkelse når du tar bilder.\n%s</string>
+    <string name="preference_photo_optimise_focus_summary">Når du tar bilder, om du skal optimalisere for latens eller kvalitet. Bare relevant når du bruker kontinuerlig fokusmodus. Optimalisering for kvalitet sikrer at motivet er i fokus, men kan føre til en forsinkelse når du tar bilder.</string>
     <string name="preference_photo_optimise_focus_latency">Latens</string>
     <string name="preference_photo_optimise_focus_quality">Kvalitet</string>
     <string name="preference_save_preshots">Lagre forhåndsbilder</string>
-    <string name="preference_save_preshots_summary">Når aktivert, lagres en kort video sammen med hvert bilde, som inneholder bilder fra øyeblikket før bildet ble tatt. Støttes ikke for eksponerings-, fokusbracketing- eller panoramamodus.\n%s</string>
+    <string name="preference_save_preshots_summary">Når aktivert, lagres en kort video sammen med hvert bilde, som inneholder bilder fra øyeblikket før bildet ble tatt. Støttes ikke for eksponerings-, fokusbracketing- eller panoramamodus.</string>
     <string name="telephoto">Telefoto</string>
     <string name="auto_lens">Automatisk linse</string>
     <string name="lens">Linse</string>
@@ -869,12 +869,12 @@
     <string name="photo_mode_x_beauty">X-Skjønnhet</string>
     <string name="photo_mode_x_beauty_full">Skjønnhet / Ansiktsretusjering</string>
     <string name="preference_hdr_tonemapping">HDR-tonekartlegging</string>
-    <string name="preference_hdr_tonemapping_summary">Algoritme som skal brukes for tonekartlegging i HDR-fotomodus\n%s</string>
+    <string name="preference_hdr_tonemapping_summary">Algoritme som skal brukes for tonekartlegging i HDR-fotomodus</string>
     <string name="preference_hdr_tonemapping_clamp">Enkel klemme</string>
     <string name="preference_hdr_tonemapping_exponential">Eksponentiell</string>
     <string name="preference_hdr_tonemapping_default">Standard</string>
     <string name="preference_remove_device_exif">Fjern EXIF-data fra enheten</string>
-    <string name="preference_remove_device_exif_summary">Om EXIF-metadata fra enheten skal fjernes fra JPEG-bilder. Dette fjerner ikke exif-koder som brukes av andre innstillinger som bruker EXIF-metadata (f.eks. plassering/geotagging). Disse andre alternativene er uavhengige og vil overstyre denne innstillingen. RAW/DNG og videoer påvirkes ikke.\n%s</string>
+    <string name="preference_remove_device_exif_summary">Om EXIF-metadata fra enheten skal fjernes fra JPEG-bilder. Dette fjerner ikke exif-koder som brukes av andre innstillinger som bruker EXIF-metadata (f.eks. plassering/geotagging). Disse andre alternativene er uavhengige og vil overstyre denne innstillingen. RAW/DNG og videoer påvirkes ikke.</string>
     <string name="preference_remove_device_exif_off">Ikke fjern EXIF-data fra enheten</string>
     <string name="preference_remove_device_exif_on">Fjern EXIF-data fra enheten</string>
     <string name="preference_remove_device_exif_keep_datetime">Fjern unntatt dato/klokkeslett</string>
@@ -922,7 +922,7 @@
     <string name="remote_connected">Fjernkontroll tilkoblet</string>
     <string name="preference_audio_control_summary">Ta bilde/video når en lyd oppdages.
         Når aktivert, bruk mikrofonknappen på skjermen for å starte/stoppe lytting.
-        \n%s</string>
+        </string>
     <string name="intro_text">Trykk for å fokusere, og trykk på den sirkulære blå utløserknappen for å ta bilder.
         \n\nFor å lagre på SD-kort, se Innstillinger/Flere kamerakontroller/\"Lagringstilgangsrammeverk\".
         For mer hjelp, klikk på \"Online hjelp\" fra Innstillinger.
@@ -932,13 +932,13 @@
     <string name="preference_video_srgb">sRGB</string>
     <string name="preference_video_gamma">Gamma</string>
     <string name="preference_video_profile_gamma">Videogammaverdi</string>
-    <string name="preference_video_profile_gamma_summary">Gammaverdi som skal brukes for video hvis videobildeprofilen er satt til Gamma\n%s</string>
+    <string name="preference_video_profile_gamma_summary">Gammaverdi som skal brukes for video hvis videobildeprofilen er satt til Gamma</string>
     <string name="preference_ghost_image_alpha">Gjennomsiktighet for spøkelsesbilde</string>
-    <string name="preference_ghost_image_alpha_summary">Alfaverdi som skal brukes for spøkelsesbilder. En lavere verdi betyr mer gjennomsiktig, høyere betyr mer ugjennomsiktig.\n%s</string>
+    <string name="preference_ghost_image_alpha_summary">Alfaverdi som skal brukes for spøkelsesbilder. En lavere verdi betyr mer gjennomsiktig, høyere betyr mer ugjennomsiktig.</string>
     <string name="preference_zebra_stripes_foreground_color">Forgrunnsfarge for sebrastriper</string>
-    <string name="preference_zebra_stripes_foreground_color_summary">Farge som skal brukes for forgrunnsstripen når sebrastriper vises.\n%s</string>
+    <string name="preference_zebra_stripes_foreground_color_summary">Farge som skal brukes for forgrunnsstripen når sebrastriper vises.</string>
     <string name="preference_zebra_stripes_background_color">Bakgrunnsfarge for sebrastriper</string>
-    <string name="preference_zebra_stripes_background_color_summary">Farge som skal brukes for bakgrunnsstripen når sebrastriper vises.\n%s</string>
+    <string name="preference_zebra_stripes_background_color_summary">Farge som skal brukes for bakgrunnsstripen når sebrastriper vises.</string>
     <string name="preference_zebra_stripes_color_black">Svart</string>
     <string name="preference_zebra_stripes_color_red">Rød</string>
     <string name="preference_zebra_stripes_color_orange">Oransje</string>
